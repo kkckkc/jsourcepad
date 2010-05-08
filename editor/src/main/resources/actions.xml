@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans 
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
+	default-autowire="constructor" default-lazy-init="true">
+
+	<bean id="lazyAction" class="kkckkc.jsourcepad.util.action.LazyAction">
+		<property name="properties" ref="action-properties" />
+	</bean>
+
+	<bean id="action-group-file-menu" class="kkckkc.jsourcepad.util.action.ActionGroup">
+		<property name="items">
+			<list>
+				<bean parent="lazyAction" p:action="action-file-new" />
+				<bean parent="lazyAction" p:action="action-file-open" />
+				<null />
+								
+				<bean parent="lazyAction" p:action="action-tab-close" />
+				<bean parent="lazyAction" p:action="action-file-save" />
+				<bean parent="lazyAction" p:action="action-file-save-as" />
+				<null />
+
+
+				<bean parent="lazyAction" p:action="action-window-new" />
+				<bean parent="lazyAction" p:action="action-window-close" />
+				<null />
+				
+				<bean parent="lazyAction" p:action="action-window-exit" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="action-group-edit-menu" class="kkckkc.jsourcepad.util.action.ActionGroup">
+		<property name="items">
+			<list>
+				<bean parent="lazyAction" p:action="action-edit-undo" />
+				<bean parent="lazyAction" p:action="action-edit-redo" />
+				<null />
+				
+				<bean parent="lazyAction" p:action="action-edit-cut" />
+				<bean parent="lazyAction" p:action="action-edit-copy" />
+				<bean parent="lazyAction" p:action="action-edit-paste" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="action-group-navigation-menu" class="kkckkc.jsourcepad.util.action.ActionGroup">
+		<property name="items">
+			<list>
+				<bean parent="lazyAction" p:action="action-navigation-next-file-tab" />
+				<bean parent="lazyAction" p:action="action-navigation-previous-file-tab" />
+				<bean parent="lazyAction" p:action="action-navigation-goto-file" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="action-group-text-menu" class="kkckkc.jsourcepad.util.action.ActionGroup">
+		<property name="items">
+			<list>
+				<bean parent="lazyAction" p:action="action-text-shift-left" />
+				<bean parent="lazyAction" p:action="action-text-shift-right" />
+				<bean parent="lazyAction" p:action="action-text-indent-line" />
+				<null />
+				
+				<bean parent="lazyAction" p:action="action-text-execute-line-inserting-result" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="action-group-tab-context-menu" class="kkckkc.jsourcepad.util.action.ActionGroup">
+		<property name="items">
+			<list>
+				<bean parent="lazyAction" p:action="action-tab-close" />
+				<bean parent="lazyAction" p:action="action-tab-close-all" />
+				<bean parent="lazyAction" p:action="action-tab-close-others" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="action-group-project-context-menu" class="kkckkc.jsourcepad.util.action.ActionGroup">
+		<property name="items">
+			<list>
+				<bean parent="lazyAction" p:action="action-project-file-open" />
+				<null />
+				<bean parent="lazyAction" p:action="action-project-refresh" />
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="action-group-language-menu" class="kkckkc.jsourcepad.action.LanguageActionGroup" autowire="constructor" />
+
+
+	<bean id="action-project-refresh" class="kkckkc.jsourcepad.action.ProjectRefreshAction" autowire="constructor"/>
+	<bean id="action-project-file-open" class="kkckkc.jsourcepad.action.ProjectFileOpenAction" autowire="constructor"/>
+
+	<bean id="action-file-new" class="kkckkc.jsourcepad.action.FileNewAction" autowire="constructor"/>
+	<bean id="action-file-open" class="kkckkc.jsourcepad.action.FileOpenAction" autowire="constructor"/>
+	<bean id="action-file-save" class="kkckkc.jsourcepad.action.FileSaveAction" autowire="constructor"/>
+	<bean id="action-file-save-as" class="kkckkc.jsourcepad.action.FileSaveAsAction" autowire="constructor"/>
+
+	<bean id="action-file-test" class="kkckkc.jsourcepad.action.TestAction" autowire="constructor"/>
+	
+	<bean id="action-navigation-goto-file" class="kkckkc.jsourcepad.action.NavigationGotoFileAction" autowire="constructor"/>
+	<bean id="action-navigation-next-file-tab" class="kkckkc.jsourcepad.action.NavigationNextFileTabAction" autowire="constructor"/>
+	<bean id="action-navigation-previous-file-tab" class="kkckkc.jsourcepad.action.NavigationPreviousFileTabAction" autowire="constructor"/>
+
+	<bean id="action-text-shift-left" class="kkckkc.jsourcepad.action.TextShiftLeftAction" autowire="constructor"/>
+	<bean id="action-text-shift-right" class="kkckkc.jsourcepad.action.TextShiftRightAction" autowire="constructor"/>
+	<bean id="action-text-indent-line" class="kkckkc.jsourcepad.action.TextIndentLineAction" autowire="constructor"/>
+	<bean id="action-text-execute-line-inserting-result" class="kkckkc.jsourcepad.action.TextExecuteLineInsertingResultAction" autowire="constructor"/>
+
+	<bean id="action-edit-undo" class="kkckkc.jsourcepad.action.EditUndoAction" autowire="constructor"/>
+	<bean id="action-edit-redo" class="kkckkc.jsourcepad.action.EditRedoAction" autowire="constructor"/>
+	<bean id="action-edit-cut" class="kkckkc.jsourcepad.action.EditCutAction" autowire="constructor"/>
+	<bean id="action-edit-copy" class="kkckkc.jsourcepad.action.EditCopyAction" autowire="constructor"/>
+	<bean id="action-edit-paste" class="kkckkc.jsourcepad.action.EditPasteAction" autowire="constructor"/>
+
+	<bean id="action-window-new" class="kkckkc.jsourcepad.action.WindowNewAction" autowire="constructor"/>
+	<bean id="action-window-close" class="kkckkc.jsourcepad.action.WindowCloseAction" autowire="constructor"/>
+	<bean id="action-window-exit" class="kkckkc.jsourcepad.action.WindowExitAction" autowire="constructor"/>
+
+	<bean id="action-tab-close" class="kkckkc.jsourcepad.action.TabCloseAction" autowire="constructor" />
+	<bean id="action-tab-close-all" class="kkckkc.jsourcepad.action.TabCloseAllAction" autowire="constructor" />
+	<bean id="action-tab-close-others" class="kkckkc.jsourcepad.action.TabCloseOthersAction" autowire="constructor" />
+
+</beans>

@@ -1,0 +1,108 @@
+package kkckkc.syntaxpane.parse.grammar;
+
+import java.util.Map;
+
+import kkckkc.syntaxpane.model.Scope;
+import kkckkc.syntaxpane.parse.grammar.SubPatternContext.Where;
+import kkckkc.syntaxpane.regex.Matcher;
+import kkckkc.syntaxpane.regex.Pattern;
+import kkckkc.syntaxpane.regex.PatternFactory;
+import kkckkc.syntaxpane.util.StringUtils;
+
+public class ContainerContext extends MatchableContext {
+	protected Pattern beginPattern;
+	protected Pattern endPattern;
+	
+	protected boolean styleInside;
+	protected boolean endAtLineEnd;
+
+	protected String previousEndPattern = "";
+	private PatternFactory factory;
+	
+	public ContainerContext(PatternFactory factory) {
+		this.factory = factory;
+		this.beginPattern = factory.create("$^");
+	}
+
+	public ContainerContext(PatternFactory factory, String id) {
+		this.id = id;
+		this.factory = factory;
+		this.beginPattern = factory.create("$^");
+	}
+
+	public void setBegin(Pattern begin) {
+		this.beginPattern = begin;
+	}
+	
+	public void setEnd(Pattern end) {
+		this.endPattern = end;
+	}
+
+	public boolean isStyleInside() {
+		return styleInside;
+	}
+
+	public void setStyleInside(boolean styleInside) {
+		this.styleInside = styleInside;
+	}
+	
+	public boolean isEndAtLineEnd() {
+		return endAtLineEnd;
+	}
+
+	public void setEndAtLineEnd(boolean endAtLineEnd) {
+		this.endAtLineEnd = endAtLineEnd;
+	}
+
+	
+	public Scope createScope(Scope parent, Matcher matcher) {
+		Scope s;
+		if (isStyleInside()) {
+			s = new Scope(matcher.end(), matcher.end(), this, parent);
+		} else {
+			s = new Scope(matcher.start(), matcher.end(), this, parent);
+		}
+		
+		if (endPattern != null && endPattern.pattern().indexOf("@start") >= 0) {
+			for (int i = 0; i <= matcher.groupCount(); i++) {
+				s.addAttribute(i + "@start", matcher.group(i));
+			}
+		}
+		
+		buildSubPatternScopes(s, matcher, Where.START);
+		return s;
+	}
+	
+	public int close(Scope scope, Matcher matcher) {
+		if (isStyleInside()) {
+			scope.close(matcher.start());
+			buildSubPatternScopes(scope, matcher, Where.END);
+			return matcher.start();
+		} else {
+			scope.close(matcher.end());
+			buildSubPatternScopes(scope, matcher, Where.END);
+			return matcher.end();
+		}
+	}
+
+	public Matcher getEndMatcher(CharSequence segment, Scope scope) {
+		if (endPattern != null && endPattern.pattern().indexOf("@start") >= 0) {
+			String p = endPattern.pattern();
+			for (Map.Entry<String, String> entry : scope.getAttributes().entrySet()) {
+				p = StringUtils.replace(p, "\\%\\{" + entry.getKey() + "\\}", entry.getValue());
+			}
+			
+			if (! previousEndPattern.equals(p)) {
+				previousEndPattern = p;
+				endPattern = factory.create(p);
+			}
+		}		
+		
+		return endPattern.matcher(segment);
+	}
+
+	public Matcher getMatcher(CharSequence s) {
+		return beginPattern.matcher(s);
+	}
+	
+}

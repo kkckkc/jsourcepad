@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<bean id="windowManager" class="kkckkc.jsourcepad.model.WindowManagerImpl" />
+	<bean id="application" class="kkckkc.jsourcepad.model.Application" />
+	<bean id="applicationView" class="kkckkc.jsourcepad.ui.ApplicationController" />
+
+	<bean id="bundleManager" class="kkckkc.jsourcepad.model.bundle.BundleManagerImpl" />
+	<bean id="settingsManager" class="kkckkc.jsourcepad.model.SettingsManagerImpl" />
+	
+	<bean id="languageManager" class="kkckkc.syntaxpane.parse.grammar.LanguageManager">
+		<property name="provider">
+			<bean class="kkckkc.syntaxpane.parse.grammar.textmate.TextmateLanguageProvider">
+				<constructor-arg value="/home/magnus/Dropbox/SharedSupport/Bundles" type="java.io.File" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="styleParser" class="kkckkc.syntaxpane.parse.grammar.textmate.TextmateStyleParser" />
+
+
+	<bean id="httpServer" class="kkckkc.jsourcepad.http.HttpServerFactoryBean" />
+</beans>

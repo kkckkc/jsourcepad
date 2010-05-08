@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
+	default-lazy-init="true">
+
+	<!-- Domain model -->
+	<bean id="window" class="kkckkc.jsourcepad.model.WindowImpl" />
+	<bean id="docList" class="kkckkc.jsourcepad.model.DocListImpl" />
+	<bean id="project" class="kkckkc.jsourcepad.model.ProjectImpl" />
+
+
+	<!-- Utils -->
+	<bean id="actionManager" class="kkckkc.jsourcepad.util.action.ActionManager" />
+
+	<bean id="action-properties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="location" value="classpath:/actions.properties" />
+	</bean>
+
+	<import resource="actions.xml" />
+
+
+	<!-- User interface -->
+	<bean id="windowPresenter" class="kkckkc.jsourcepad.ui.WindowPresenter" />
+	<bean id="windowView" class="kkckkc.jsourcepad.ui.WindowViewImpl" />
+
+	<bean id="docListPresenter" class="kkckkc.jsourcepad.ui.DocListPresenter" />
+	<bean id="docListView" class="kkckkc.jsourcepad.ui.DocListViewImpl" />
+
+	<bean id="fileOpenDialog" class="kkckkc.jsourcepad.ui.dialog.filechooser.FileOpenDialog" />
+	<bean id="fileSaveDialog" class="kkckkc.jsourcepad.ui.dialog.filechooser.FileSaveDialog" />
+	<bean id="fileChooser" class="kkckkc.jsourcepad.ui.dialog.filechooser.SwingFileChooserView" />
+
+	<bean id="quickNavigationDialog" class="kkckkc.jsourcepad.ui.dialog.navigation.QuickNavigationDialog" />
+	<bean id="quickNavigationDialogView" class="kkckkc.jsourcepad.ui.dialog.navigation.QuickNavigationDialogViewImpl" autowire="constructor"/>
+
+	<bean id="progressDialog" class="kkckkc.jsourcepad.ui.dialog.ProgressDialog" />
+	<bean id="progressDialogView" class="kkckkc.jsourcepad.ui.dialog.ProgressDialogViewImpl" autowire="constructor"/>
+
+	<bean id="projectPresenter" class="kkckkc.jsourcepad.ui.ProjectPresenter" />
+	<bean id="projectView" class="kkckkc.jsourcepad.ui.ProjectViewImpl" />
+</beans>

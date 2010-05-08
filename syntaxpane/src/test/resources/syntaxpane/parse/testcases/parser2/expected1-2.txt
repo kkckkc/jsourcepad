@@ -1,0 +1,4 @@
+<root>Lorem <string>"ip-</string></root>
+<root><string>sum"</string> dolor</root>
+<root>Sit a<comment>/*m<comment>/*a*/</comment>e*/t</comment>t</root>
+<root></root>
