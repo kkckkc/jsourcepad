@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import kkckkc.jsourcepad.Presenter;
 import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.DocList;
+import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.util.action.ActionGroup;
 import kkckkc.jsourcepad.util.action.ActionManager;
 import kkckkc.jsourcepad.util.action.MenuFactory;
@@ -77,6 +78,10 @@ public class DocListPresenter implements Presenter<DocListView>, DocList.Listene
 		
 		PopupUtils.bind(jpm, tabbedPane, false);
 
+		
+		WindowPresenter windowPresenter = docList.getWindow().getPresenter(WindowPresenter.class);
+		windowPresenter.bindFocus(docListView.getTabbedPane(), Window.FocusedComponentType.DOCUMENT);
+		
     }	
 	
 	public JComponent getJComponent() {

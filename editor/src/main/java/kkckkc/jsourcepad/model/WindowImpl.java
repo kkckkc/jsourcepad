@@ -21,9 +21,12 @@ public class WindowImpl extends AbstractMessageBus implements Window, MessageBus
 	private JFrame jframe;
 	private ActionManager actionManager;
 
+	private FocusedComponentType focusedComponent;
+
 	@Autowired
 	public void setJframe(JFrame jframe) {
 	    this.jframe = jframe;
+	    
     }
 	
 	@Autowired
@@ -68,9 +71,15 @@ public class WindowImpl extends AbstractMessageBus implements Window, MessageBus
 
 	@Override
     public FocusedComponentType getFocusedComponent() {
-	    // TODO Auto-generated method stub
-	    return null;
+	    return focusedComponent;
     }
+
+	@Override
+    public void setFocusedComponent(FocusedComponentType focusedComponent) {
+	    this.focusedComponent = focusedComponent;
+    }
+
+
 
 
 }

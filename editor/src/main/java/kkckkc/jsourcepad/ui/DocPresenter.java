@@ -14,6 +14,7 @@ import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.StyleSettings;
 import kkckkc.jsourcepad.model.TabSettings;
+import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.SettingsManager.Listener;
 import kkckkc.jsourcepad.model.SettingsManager.Setting;
 import kkckkc.jsourcepad.util.ui.CompoundUndoManager;
@@ -78,6 +79,12 @@ public class DocPresenter implements Presenter<DocView> {
 				KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), new TabAction(doc));
 
 		sourcePane.getEditorPane().requestFocus();
+		
+		
+		
+		WindowPresenter windowPresenter = doc.getDocList().getWindow().getPresenter(WindowPresenter.class);
+		windowPresenter.bindFocus(sourcePane.getEditorPane(), Window.FocusedComponentType.DOCUMENT);
+		
     }
 	
 	public String getTitle() {

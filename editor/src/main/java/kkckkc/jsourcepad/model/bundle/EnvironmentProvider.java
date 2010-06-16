@@ -1,19 +1,17 @@
 package kkckkc.jsourcepad.model.bundle;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.syntaxpane.model.Interval;
+
+import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 public class EnvironmentProvider {
 	public static Map<String, String> getEnvironment(Window window, BundleItemSupplier bundleItemSupplier) {

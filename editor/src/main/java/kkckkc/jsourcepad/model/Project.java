@@ -14,6 +14,8 @@ public interface Project {
 	public void refresh(File file);
 
 	public String getProjectRelativePath(String path);
+	
 	public List<File> getSelectedFiles();
+	public void setSelectedFiles(List<File> paths);
 
 }

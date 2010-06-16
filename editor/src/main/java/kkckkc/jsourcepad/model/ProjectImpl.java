@@ -39,6 +39,7 @@ public class ProjectImpl implements Project, DocList.Listener, Window.FocusListe
 	private Set<File> cache = Sets.newHashSet();
 	
 	private DefaultFileMonitor fileMonitor;
+	private List<File> selectedFiles = Lists.newArrayList();
 	
 	@Autowired
 	public void setWindow(Window window) {
@@ -212,8 +213,13 @@ public class ProjectImpl implements Project, DocList.Listener, Window.FocusListe
 
 	@Override
     public List<File> getSelectedFiles() {
-	    // TODO Auto-generated method stub
-	    return null;
+	    return selectedFiles;
     }
+
+	@Override
+    public void setSelectedFiles(List<File> paths) {
+	    this.selectedFiles = paths;
+    }
+
 
 }
