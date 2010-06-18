@@ -28,7 +28,11 @@ public class TextmateStyleParser implements kkckkc.syntaxpane.style.StyleParser 
 			for (int i = 1; i < settings.size(); i++) {
 				Map<?, ?> style = (Map<?, ?>) settings.get(i);
 				Map<?, ?> styleSettings = (Map<?, ?>) style.get("settings");
-				selectors.put(ScopeSelector.parse((String) style.get("scope")), new StyleBean(
+				
+				String scope = (String) style.get("scope");
+				if (scope == null) continue;
+				
+				selectors.put(ScopeSelector.parse(scope), new StyleBean(
 							color(styleSettings, "foreground"), null,
 							isStyle(styleSettings, "bold"),
 							isStyle(styleSettings, "italic"),

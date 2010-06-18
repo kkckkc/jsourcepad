@@ -232,22 +232,6 @@ public class TextmateLanguageParser {
 		
 		return sc;
     }
-
-	public static void main(String... args) throws IOException {
-		String fs = "/home/magnus/Dropbox/SharedSupport/Bundles/Java.tmbundle/Syntaxes/Java.plist"; 
-		
-		TextmateLanguageParser lp = new TextmateLanguageParser(new File(fs));
-		System.out.println(lp.parse());
-		
-		GeneralPListReader r = new GeneralPListReader();
-		PListFormatter f = new PListFormatter();
-		System.out.println(
-				f.format(r.read(new File(fs))));
-		
-		long l = System.currentTimeMillis();
-		recurse(new File("/home/magnus/Dropbox/SharedSupport/Bundles"), r);
-		System.out.println(System.currentTimeMillis() - l);
-	}
 	
 	private static void recurse(File file, PListReader r) throws FileNotFoundException, IOException {
 		for (File f : file.listFiles()) {

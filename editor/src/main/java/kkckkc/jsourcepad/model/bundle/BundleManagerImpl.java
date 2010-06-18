@@ -29,6 +29,12 @@ public class BundleManagerImpl implements BundleManager {
 	private Map<String, List<Bundle>> bundles;
 	private HashMap<String, Map<ScopeSelector, Object>> preferences;
 
+	private String bundleDir;
+	
+	public BundleManagerImpl(String bundleDir) {
+		this.bundleDir = bundleDir;
+	}
+	
 	@Override
     public ActionGroup getBundleActionGroup() {
 		loadBundlesIfNeeded();
@@ -77,7 +83,7 @@ public class BundleManagerImpl implements BundleManager {
 
 		PerformanceLogger.get().enter(this, "reload.load");
 
-		File[] bundles = new File("/home/magnus/Dropbox/SharedSupport/Bundles").listFiles();
+		File[] bundles = new File(bundleDir).listFiles();
 		Arrays.sort(bundles);
 	    for (File bundleDir : bundles) {
 	    	if (! bundleDir.isDirectory()) continue;
@@ -222,10 +228,6 @@ public class BundleManagerImpl implements BundleManager {
 	}
 
 	
-	public static void main(String... args) {
-		BundleManager bm = new BundleManagerImpl();
-		bm.getBundles();
-	}
 
 	@Override
     public Collection<BundleItemSupplier> getItemsForShortcut(KeyEvent ks, Scope scope) {

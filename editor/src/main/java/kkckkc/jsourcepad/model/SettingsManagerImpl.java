@@ -8,20 +8,20 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.Map;
 
-import com.google.common.collect.Maps;
-
+import kkckkc.jsourcepad.util.ApplicationFolder;
 import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
 import kkckkc.jsourcepad.util.messagebus.MessageBus;
+
+import com.google.common.collect.Maps;
 
 public class SettingsManagerImpl implements SettingsManager {
 	private File settingsDir;
 	private Map<Class<?>, Setting> cache;
 	
 	public SettingsManagerImpl() {
-		settingsDir = new File(System.getProperty("user.home"), ".jsourcepad");
+		settingsDir = ApplicationFolder.get();
 		settingsDir.mkdirs();
 		settingsDir.mkdir();
 		

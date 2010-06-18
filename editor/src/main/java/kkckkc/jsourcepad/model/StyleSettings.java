@@ -1,6 +1,7 @@
 package kkckkc.jsourcepad.model;
 
 import kkckkc.jsourcepad.model.SettingsManager.Setting;
+import kkckkc.jsourcepad.util.ApplicationFolder;
 
 public class StyleSettings implements Setting {
 
@@ -23,8 +24,7 @@ public class StyleSettings implements Setting {
 
 	@Override
     public StyleSettings getDefault() {
-	    // TODO Change this
-	    return new StyleSettings("/home/magnus/Dropbox/SharedSupport/krTheme.tmTheme");
+	    return new StyleSettings(ApplicationFolder.get("Shared/Themes/Mac Classic.tmTheme").toString());
     }
 
 }
