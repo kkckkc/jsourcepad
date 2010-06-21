@@ -63,7 +63,7 @@ public class FoldMargin extends JComponent implements PropertyChangeListener {
 	public void paintComponent(Graphics g) {
 		Rectangle drawHere = g.getClipBounds();
 		
-		g.setColor(Color.black);
+		g.setColor(getBackground());
 		g.fillRect(drawHere.x, drawHere.y, drawHere.width, drawHere.height);
 		
 		int startPos = editorPane.viewToModel(new Point(drawHere.x, drawHere.y));
@@ -79,7 +79,7 @@ public class FoldMargin extends JComponent implements PropertyChangeListener {
 			do {
 				FoldManager.State s = document.getFoldManager().getFoldState(startLine.getIdx()); 
 				if (s == FoldManager.State.FOLDABLE || s == FoldManager.State.FOLDED_FIRST_LINE) {
-					g.setColor(Color.darkGray);
+					g.setColor(getForeground());
 
 					int yo = document.getFoldManager().toVisibleIndex(startLine.getIdx()) * h + 7;
 					if (s == FoldManager.State.FOLDED_FIRST_LINE) {

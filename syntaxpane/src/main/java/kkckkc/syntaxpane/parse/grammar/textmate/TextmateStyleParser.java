@@ -41,9 +41,10 @@ public class TextmateStyleParser implements kkckkc.syntaxpane.style.StyleParser 
 
 			final TextStyle textStyle = new StyleBean(color(global, "foreground"), color(global, "background"));
 			final Style selectionStyle = new StyleBean(color(global, "foreground"), color(global, "selection"));
-			final Style lineNumberStyle = new StyleBean(color(global, "foreground"), color(global, "background"));
+			final Style lineNumberStyle = new StyleBean(color(global, "invisibles"), color(global, "background"));
 			final Color caretColor = color(global, "caret");
 			final Color lineSelectionColor = color(global, "lineHighlight");
+			final Color invisibles = color(global, "invisibles");
 				
         	return new StyleScheme() {
         		public File getSource() { return file; }
@@ -52,6 +53,7 @@ public class TextmateStyleParser implements kkckkc.syntaxpane.style.StyleParser 
 				public Style getLineNumberStyle() { return lineNumberStyle; }
 
 				public Color getCaretColor() { return caretColor; }
+				public Color getInvisiblesColor() { return invisibles; }
 				public Color getRightMarginColor() { return lineSelectionColor; }
                 public Color getLineSelectionColor() { return lineSelectionColor; }
 				public Map<ScopeSelector, TextStyle> getStyles() { return selectors; }
@@ -80,11 +82,10 @@ public class TextmateStyleParser implements kkckkc.syntaxpane.style.StyleParser 
 			Integer i = Integer.decode("#" + string.substring(1, 7));
 			Integer i2 = Integer.decode("#" + string.substring(7));
 
-			return new Color((i >> 16) & 0xFF, (i >> 8) & 0xFF, i & 0xFF); //, i2);
+			return new Color((i >> 16) & 0xFF, (i >> 8) & 0xFF, i & 0xFF, i2);
 			
 		} else {
 			return Color.decode(string.substring(0, 7));	
 		}
-		
     }
 }

@@ -88,6 +88,9 @@ public class ScrollableSourcePane extends JPanel {
 		lineNumberPane.setBackground(this.styleScheme.getLineNumberStyle().getBackground());
 		lineNumberPane.setForeground(this.styleScheme.getLineNumberStyle().getColor());
 		
+		foldMargin.setBackground(this.styleScheme.getLineNumberStyle().getBackground());
+		foldMargin.setForeground(this.styleScheme.getLineNumberStyle().getColor());
+		
 		CurrentLinePainter.apply(new CurrentLinePainter(this.styleScheme.getLineSelectionColor()), editorPane);
 	}
 

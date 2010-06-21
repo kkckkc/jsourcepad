@@ -91,6 +91,10 @@ public class GtkSourceViewStyleParser implements kkckkc.syntaxpane.style.StylePa
 					return textStyle;
 				}
 	
+				public Color getInvisiblesColor() {
+					return textStyle.getColor();
+				}
+				
 				public Color getCaretColor() {
 					return caretStyle.getColor();
 				}

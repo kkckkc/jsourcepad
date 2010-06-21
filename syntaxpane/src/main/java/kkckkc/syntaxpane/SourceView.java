@@ -20,6 +20,7 @@ import kkckkc.syntaxpane.model.Scope;
 import kkckkc.syntaxpane.model.SourceDocument;
 import kkckkc.syntaxpane.model.LineManager.Line;
 import kkckkc.syntaxpane.style.ScopeSelectorManager;
+import kkckkc.syntaxpane.style.StyleScheme;
 import kkckkc.syntaxpane.style.TextStyle;
 
 
@@ -28,10 +29,12 @@ public class SourceView extends FoldablePlainView {
 
 	private ScopeSelectorManager scopeSelectorManager = new ScopeSelectorManager();
 	private SourceEditorKit editorKit;
+	private ScrollableSourcePane sourcePane;
 
-	public SourceView(Element elem, SourceEditorKit editorKit) {
+	public SourceView(Element elem, SourceEditorKit editorKit, ScrollableSourcePane sourcePane) {
 		super(elem);
 		this.editorKit = editorKit;
+		this.sourcePane = sourcePane;
 	}
 
 	
@@ -93,8 +96,7 @@ public class SourceView extends FoldablePlainView {
 	private void drawHiddenText(Segment segment, int p0, int p1, Graphics2D g, int origX, int y) throws BadLocationException {
 		getDocument().getText(p0, p1 - p0, segment);
 
-		// TODO: Make this configurable
-		g.setColor(new Color((float) 0.2, (float) 0.2, (float) 0.2));
+		g.setColor(sourcePane.getStyleScheme().getInvisiblesColor());
 		
 		int width = g.getFontMetrics().stringWidth(" ");
         

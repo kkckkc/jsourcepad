@@ -17,4 +17,5 @@ public interface StyleScheme {
 	public Color getRightMarginColor();
 	public Color getCaretColor();
 	public Color getLineSelectionColor();
+	public Color getInvisiblesColor();
 }
