@@ -19,6 +19,7 @@ import kkckkc.syntaxpane.model.LineManager;
 import kkckkc.syntaxpane.model.SourceDocument;
 import kkckkc.syntaxpane.model.FoldManager.FoldListener;
 import kkckkc.syntaxpane.model.LineManager.Line;
+import kkckkc.syntaxpane.util.ColorUtils;
 import kkckkc.syntaxpane.util.Wiring;
 
 
@@ -27,6 +28,7 @@ public class FoldMargin extends JComponent implements PropertyChangeListener {
 	private static final long serialVersionUID = 1L;
 	private SourceDocument document;
 	private JEditorPane editorPane;
+	private Color borderColor;
 	
 	public FoldMargin(JEditorPane ep) { 
 		Dimension d = new Dimension(10, Integer.MAX_VALUE - 1000000);
@@ -60,11 +62,18 @@ public class FoldMargin extends JComponent implements PropertyChangeListener {
 		});		
 	}
 	
+	public void setBorderColor(Color borderColor) {
+	    this.borderColor = borderColor;
+    }
+	
 	public void paintComponent(Graphics g) {
 		Rectangle drawHere = g.getClipBounds();
 		
 		g.setColor(getBackground());
 		g.fillRect(drawHere.x, drawHere.y, drawHere.width, drawHere.height);
+		
+		g.setColor(borderColor);
+		g.drawLine(drawHere.x + drawHere.width - 1, drawHere.y, drawHere.x + drawHere.width - 1, drawHere.height);
 		
 		int startPos = editorPane.viewToModel(new Point(drawHere.x, drawHere.y));
 		int endPos = editorPane.viewToModel(new Point(drawHere.x, drawHere.y + drawHere.height));

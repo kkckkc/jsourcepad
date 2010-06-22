@@ -1,6 +1,5 @@
 package kkckkc.syntaxpane;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -20,7 +19,6 @@ import kkckkc.syntaxpane.model.Scope;
 import kkckkc.syntaxpane.model.SourceDocument;
 import kkckkc.syntaxpane.model.LineManager.Line;
 import kkckkc.syntaxpane.style.ScopeSelectorManager;
-import kkckkc.syntaxpane.style.StyleScheme;
 import kkckkc.syntaxpane.style.TextStyle;
 
 
@@ -47,14 +45,13 @@ public class SourceView extends FoldablePlainView {
 		host.repaint();
 	}
 
+
 	@Override
 	protected int drawUnselectedText(Graphics graphics, int x, int y, int p0,
 			int p1) throws BadLocationException {
 		Graphics2D graphics2d = (Graphics2D) graphics;
 		graphics2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
 				RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
-//		graphics2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, 
-//				RenderingHints.VALUE_FRACTIONALMETRICS_ON);
 		graphics2d.setRenderingHint(RenderingHints.KEY_TEXT_LCD_CONTRAST, 200);
 
 		SourceDocument doc = getDocument();
@@ -62,11 +59,6 @@ public class SourceView extends FoldablePlainView {
 		Line line = doc.getLineManager().getLineByPosition(p0);
 
 		Segment segment = getLineBuffer();
-
-		int h = graphics.getFontMetrics().getHeight();
-		int w = graphics.getFontMetrics().charWidth('m');
-		graphics2d.setColor(editorKit.getSourcePane().getStyleScheme().getRightMarginColor());
-		graphics2d.drawLine(80 * w, y - h, 80 * w, y + 3);
 
 		if (line == null) {
 			getDocument().getText(p0, p1 - p0, segment);

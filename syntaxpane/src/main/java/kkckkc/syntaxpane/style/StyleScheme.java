@@ -14,7 +14,7 @@ public interface StyleScheme {
 	public Style getSelectionStyle();
 	public Style getLineNumberStyle();
 	
-	public Color getRightMarginColor();
+	public Style getRightMargin();
 	public Color getCaretColor();
 	public Color getLineSelectionColor();
 	public Color getInvisiblesColor();

@@ -56,6 +56,8 @@ public abstract class FoldablePlainView extends PlainView {
 		int linesAbove = Math.max(0, heightAbove / fontHeight);
 		int linesTotal = alloc.height / fontHeight;
 
+		drawBackground(g, clip);
+		
 		if (alloc.height % fontHeight != 0) {
 			linesTotal++;
 		}
@@ -74,6 +76,8 @@ public abstract class FoldablePlainView extends PlainView {
 		for (int line = getDocument().getFoldManager().fromVisibleIndex(linesAbove); line < endLine; line++) {
 			FoldManager.State state = getDocument().getFoldManager().getFoldState(line);
 			if (state != FoldManager.State.FOLDED_SECOND_LINE_AND_REST) {
+				Rectangle b = originalA.getBounds();
+				drawLineBackground(g, b.x, b.y, b.height, b.width);
 				if (dh != null) {
 					Element lineElement = map.getElement(line);
 					if (line == lineCount) {
@@ -96,6 +100,12 @@ public abstract class FoldablePlainView extends PlainView {
 			}
 		}
 	}
+
+	protected void drawBackground(Graphics g, Rectangle clip) {
+    }
+
+	public void drawLineBackground(Graphics g, int x, int y, int height, int width) {
+    }
 
 	public int viewToModel(float fx, float fy, Shape a, Position.Bias[] bias) {
     	// PENDING(prinz) properly calculate bias

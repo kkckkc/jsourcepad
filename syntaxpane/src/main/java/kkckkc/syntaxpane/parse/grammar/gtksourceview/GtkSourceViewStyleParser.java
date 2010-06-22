@@ -107,8 +107,8 @@ public class GtkSourceViewStyleParser implements kkckkc.syntaxpane.style.StylePa
 					return lineNumberStyle;
 				}
 	
-				public Color getRightMarginColor() {
-					return rightMarginStyle.getColor();
+				public Style getRightMargin() {
+					return new StyleBean(rightMarginStyle.getColor(), textStyle.getBackground());
 				}
 
                 public Color getLineSelectionColor() {
