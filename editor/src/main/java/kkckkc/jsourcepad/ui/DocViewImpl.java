@@ -40,7 +40,6 @@ public class DocViewImpl implements DocView {
 
 	@Override
     public void setStyleScheme(StyleScheme styleScheme) {
-    	// TODO: Verify this
 		sourcePane.setStyleScheme(styleScheme);
     }
 

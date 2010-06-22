@@ -79,6 +79,7 @@ public class ScrollableSourcePane extends JPanel {
 	}
 	
 	public void setStyleScheme(StyleScheme styleScheme) {
+		boolean styleSchemeChanged = this.styleScheme != null;
 		this.styleScheme = styleScheme;
 		
 		setBackground(this.styleScheme.getTextStyle().getBackground());
@@ -97,6 +98,10 @@ public class ScrollableSourcePane extends JPanel {
 		foldMargin.setBorderColor(this.styleScheme.getLineNumberStyle().getBorder());
 		
 		CurrentLinePainter.apply(new CurrentLinePainter(this.styleScheme.getLineSelectionColor()), editorPane);
+		
+		if (styleSchemeChanged) {
+			repaint();
+		}
 	}
 
 	public JEditorPane getEditorPane() {
