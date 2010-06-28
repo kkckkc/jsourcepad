@@ -260,31 +260,77 @@ public class BufferImpl implements Buffer {
 
 		
 		if (insertionPoint.getPosition() > 0) { 
-			
-			BundleManager bundleManager = Application.get().getBundleManager();
-			
-			List<List<String>> pairs = (List) bundleManager.getPreference(PrefKeys.HIGHLIGHT_PAIRS, insertionPoint.getScope());
-			if (pairs == null) return;
-			
-			for (List<String> p : pairs) {
-				String start = p.get(0);
-				String end = p.get(1);
-				
-				String cur = getText(Interval.createWithLength(insertionPoint.getPosition() - 1, 1));
-				
-				if (end.equals(cur)) {
-					Interval i = doc.getActiveBuffer().find(insertionPoint.getPosition(), start, FindType.Literal, Direction.Backward);
-					if (i == null) return;
-					doc.getActiveBuffer().highlight(i, HighlightType.Box, new StyleBean(null, null, Color.gray), true);
-				} else if (start.equals(cur)) {
-					Interval i = doc.getActiveBuffer().find(insertionPoint.getPosition(), end, FindType.Literal, Direction.Forward);
-					if (i == null) return;
-					doc.getActiveBuffer().highlight(i, HighlightType.Box, new StyleBean(null, null, Color.gray), true);
-				}
-			}
+			highlighPairs();
 		}
 	
 	}
+
+	private void highlighPairs() {
+	    BundleManager bundleManager = Application.get().getBundleManager();
+	    
+	    List<List<String>> pairs = (List) bundleManager.getPreference(PrefKeys.HIGHLIGHT_PAIRS, insertionPoint.getScope());
+	    if (pairs == null) return;
+	    
+	    for (List<String> p : pairs) {
+	    	char start = p.get(0).charAt(0);
+	    	char end = p.get(1).charAt(0);
+	    	
+	    	char cur = getText(Interval.createWithLength(insertionPoint.getPosition() - 1, 1)).charAt(0);
+	    	
+	    	try {
+	    		int pos = insertionPoint.getPosition();
+	    		if (end == cur) {
+	    			int level = 1, found = -1;
+	    			char[] s = document.getText(0, pos - 1).toCharArray();
+	    			for (int f = 0; f < s.length; f++) {
+	    				char c = s[s.length - f - 1];
+	    				if (c == start) level--;
+	    				if (c == end) level++;
+
+	    				if (level == 0) {
+	    					found = f;
+	    					break;
+	    				}
+	    			}
+
+	    			if (found == -1) {
+		    			Interval i = Interval.createWithLength(pos - 1, 1);
+		    			highlight(i, HighlightType.Box, new StyleBean(null, null, Color.red), true);
+	    				return;
+	    			}
+	    			
+	    			Interval i = Interval.createWithLength(pos - found - 2, 1);
+	    			highlight(i, HighlightType.Box, new StyleBean(null, null, Color.gray), true);
+	    		} else if (start == cur) {
+	    			if (getLength() <= pos) return;
+
+	    			int level = 1, found = -1;
+	    			char s[] = document.getText(pos, getLength() - pos).toCharArray();
+	    			for (int f = 0; f < s.length; f++) {
+	    				char c = s[f];
+	    				if (c == start) level++;
+	    				if (c == end) level--;
+	    				
+	    				if (level == 0) {
+	    					found = f;
+	    					break;
+	    				}
+	    			}
+
+	    			if (found == -1) {
+		    			Interval i = Interval.createWithLength(pos - 1, 1);
+		    			highlight(i, HighlightType.Box, new StyleBean(null, null, Color.red), true);
+	    				return;
+	    			}
+	    			
+	    			Interval i = Interval.createWithLength(pos + found, 1);
+	    			highlight(i, HighlightType.Box, new StyleBean(null, null, Color.gray), true);
+	    		}
+	    	} catch (BadLocationException ble) {
+	    		throw new RuntimeException(ble);
+	    	}
+	    }
+    }
 
 	private void indent(Line current) {
 		if (current == null) return;
