@@ -58,11 +58,15 @@ public class BundleManagerImpl implements BundleManager {
 		loadBundlesIfNeeded();
 	    return bundles;
     }
-	 
+
+    public Map<String, Map<ScopeSelector, Object>> getPreferences() {
+    	return preferences;
+    }
+    
 	@Override
-    public String getPreference(String key, Scope scope) {
+    public Object getPreference(String key, Scope scope) {
 		Map<ScopeSelector, Object> prefs = preferences.get(key);
-		return (String) new ScopeSelectorManager().getMatch(scope, prefs);
+		return new ScopeSelectorManager().getMatch(scope, prefs);
     }
 	
 	private void buildMenu(ActionGroup ag, List<Bundle> list) {

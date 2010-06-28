@@ -64,12 +64,7 @@ public final class TabAction extends AbstractAction {
 				});
 				
 			} else {
-
-				try {
-	                doc.getActiveBuffer().remove(new Interval(ip.getPosition() - token.length(), ip.getPosition()));
-                } catch (BadLocationException e1) {
-	                throw new RuntimeException(e1);
-                }
+				doc.getActiveBuffer().remove(new Interval(ip.getPosition() - token.length(), ip.getPosition()));
 				tempActionGroup.get(0).actionPerformed(
 						new ActionEvent(((Component) e.getSource()), 1, null));
 				
