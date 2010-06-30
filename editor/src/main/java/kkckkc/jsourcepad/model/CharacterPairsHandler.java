@@ -60,9 +60,9 @@ public class CharacterPairsHandler extends DocumentFilter {
 	        		fb.replace(offset + length + 1, 0, end, attrs);
 	        		
 	        		// TODO: Decide what to do with selection
+		        	handled = true;
+		        	break;
 	        	}
-	        	handled = true;
-	        	break;
 	        }    		
     	} else {
 	        for (final List<String> pair : pairs) {
