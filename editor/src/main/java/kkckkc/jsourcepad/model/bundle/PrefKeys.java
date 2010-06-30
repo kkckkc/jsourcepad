@@ -6,5 +6,6 @@ public class PrefKeys {
 	public static final String INDENT_NEXT_LINE = "indentNextLinePattern";
 	public static final String INDENT_IGNORE = "unIndentedLinePattern";
 	
-	public static final String HIGHLIGHT_PAIRS = "highlightPairs";
+	public static final String PAIRS_HIGHLIGHT = "highlightPairs";
+	public static final String PAIRS_SMART_TYPING = "smartTypingPairs";
 }

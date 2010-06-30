@@ -5,6 +5,7 @@ public class Anchor {
 
 	private int position;
 	private Bias bias;
+	private boolean removed;
 	
 	public Anchor(int position, Bias bias) {
 		this.position = position;
@@ -26,4 +27,12 @@ public class Anchor {
 	public String toString() {
 		return "Anchor <" + position + ", " + bias + ">";
 	}
+
+	public void remove() {
+		this.removed = true;
+    }
+	
+	public boolean isRemoved() {
+	    return removed;
+    }
 }

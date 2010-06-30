@@ -60,6 +60,7 @@ public class AnchorManager implements DocumentListener {
 	    			if (a.getPosition() == end && a.getBias() == Bias.RIGHT) continue;
 	    			
 	    			it.remove();
+	    			a.remove();
 	    		}
 	    	}
 	    }
