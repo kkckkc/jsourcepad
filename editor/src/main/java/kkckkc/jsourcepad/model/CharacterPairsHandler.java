@@ -1,14 +1,14 @@
 package kkckkc.jsourcepad.model;
 
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
 
 import kkckkc.jsourcepad.model.Anchor.Bias;
 import kkckkc.jsourcepad.model.Buffer.HighlightType;
@@ -19,75 +19,95 @@ import kkckkc.syntaxpane.style.StyleBean;
 
 import com.google.common.collect.MapMaker;
 
-public class CharacterPairsHandler implements DocumentListener {
+public class CharacterPairsHandler extends DocumentFilter {
     private final Buffer buffer;
 	private final Map<Anchor, Boolean> anchors;
-    private boolean disabled = false;
+	private AnchorManager anchorManager;
 
-    public CharacterPairsHandler(Buffer buffer) {
+    public CharacterPairsHandler(Buffer buffer, AnchorManager anchorManager) {
 	    this.buffer = buffer;
+	    this.anchorManager = anchorManager;
+	    
 		this.anchors = new MapMaker().expiration(30, TimeUnit.SECONDS).makeMap();
     }
-
+    
     @Override
-    public void insertUpdate(final DocumentEvent e) {
-    	if (e.getLength() != 1) return;
-    	if (disabled) return;
+    public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs)
+            throws BadLocationException {
+    	if (text.length() != 1) {
+    		fb.replace(offset, length, text, attrs);
+    		return;
+    	}
 
 	    InsertionPoint insertionPoint = buffer.getInsertionPoint();
 	    
-	    BundleManager bundleManager = Application.get().getBundleManager();
-	    List<List<String>> pairs = (List) bundleManager.getPreference(PrefKeys.PAIRS_SMART_TYPING, insertionPoint.getScope());
+	    List<List<String>> pairs = (List) Application.get().getBundleManager().getPreference(
+	    		PrefKeys.PAIRS_SMART_TYPING, insertionPoint.getScope());
 	    
-	    if (pairs == null) return;
+	    if (pairs == null) {
+	    	fb.replace(offset, length, text, attrs);
+	    	return;
+	    }
 	    
-        String s = buffer.getText(Interval.createWithLength(e.getOffset(), 1));
-        for (final List<String> pair : pairs) {
-        	if (pair.get(0).equals(s)) {
-            	EventQueue.invokeLater(new Runnable() {
-                    public void run() {
-                    	Anchor a = new Anchor(0, Bias.RIGHT);
-                    	anchors.put(a, Boolean.TRUE);
-                    	
-                    	disabled = true;
-                        buffer.insertText(e.getOffset() + 1, pair.get(1), new Anchor[] { a });
-                        disabled = false;
-                        
-                        buffer.setSelection(Interval.createEmpty(e.getOffset() + 1));
-                    }
-            	});
-        	} else if (pair.get(1).equals(s)) {
-            	if (buffer.getText(Interval.createWithLength(e.getOffset() + 1, 1)).equals(pair.get(1))) {
-            		Iterator<Map.Entry<Anchor, Boolean>> it = anchors.entrySet().iterator();
-            		while (it.hasNext()) {
-            			Map.Entry<Anchor, Boolean> en = it.next();
-            			Anchor a = en.getKey();
-            			if (a.isRemoved()) continue;
-            			
-            			if (a.getPosition() == e.getOffset()) {
-                    		EventQueue.invokeLater(new Runnable() {
-        						public void run() {
-        							buffer.remove(Interval.createWithLength(e.getOffset() + 1, 1));
-        						}
-        					});
-                    		
-                    		it.remove();
-                    		break;
-            			}
-            		}
-            	}
-        	}
+
+	    boolean handled = false;
+    	if (length > 0) {
+	        for (final List<String> pair : pairs) {
+	        	String start = pair.get(0);
+	        	String end = pair.get(1);
+	        	if (text.equals(start)) {
+	        		fb.replace(offset, 0, start, attrs);
+	        		fb.replace(offset + length + 1, 0, end, attrs);
+	        		
+	        		// TODO: Decide what to do with selection
+	        	}
+	        	handled = true;
+	        	break;
+	        }    		
+    	} else {
+	        for (final List<String> pair : pairs) {
+	        	String start = pair.get(0);
+	        	String end = pair.get(1);
+	        	
+	        	if (start.equals(text)) {
+	            	Anchor a = new Anchor(offset + 1, Bias.RIGHT);
+	            	anchors.put(a, Boolean.TRUE);
+	                    	
+	    	    	fb.replace(offset, length, start + end, attrs);
+	                buffer.setSelection(Interval.createEmpty(offset + 1));
+	                
+	                anchorManager.addAnchor(a);
+	                
+	                handled = true;
+	                break;
+	                
+	        	} else if (end.equals(text)) {
+	        		String charToTheRight = buffer.getText(Interval.createWithLength(offset, 1));
+	            	if (charToTheRight.equals(end)) {
+	            		Iterator<Map.Entry<Anchor, Boolean>> it = anchors.entrySet().iterator();
+	            		while (it.hasNext()) {
+	            			Map.Entry<Anchor, Boolean> en = it.next();
+	            			Anchor a = en.getKey();
+	            			if (a.isRemoved()) continue;
+	            			
+	            			if (a.getPosition() == offset) {
+	                    		it.remove();
+	                            buffer.setSelection(Interval.createEmpty(offset + 1));
+	                    		
+	                            handled = true;
+	                            break;
+	            			}
+	            		}
+	            	}
+	        	}
+	        }
+    	}
+    	
+        if (! handled) {
+        	fb.replace(offset, length, text, attrs);
         }
     }
 
-    @Override
-    public void removeUpdate(DocumentEvent e) {
-    }
-
-    @Override
-    public void changedUpdate(DocumentEvent e) {
-    }
-    
     
     public void highlight() {
 	    InsertionPoint insertionPoint = buffer.getInsertionPoint();
