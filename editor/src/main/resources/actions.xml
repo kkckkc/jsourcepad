@@ -52,6 +52,7 @@
 				<bean parent="lazyAction" p:action="action-navigation-next-file-tab" />
 				<bean parent="lazyAction" p:action="action-navigation-previous-file-tab" />
 				<bean parent="lazyAction" p:action="action-navigation-goto-file" />
+				<bean parent="lazyAction" p:action="action-navigation-goto-symbol" />
 			</list>
 		</property>
 	</bean>
@@ -103,6 +104,7 @@
 	<bean id="action-file-test" class="kkckkc.jsourcepad.action.TestAction" autowire="constructor"/>
 	
 	<bean id="action-navigation-goto-file" class="kkckkc.jsourcepad.action.NavigationGotoFileAction" autowire="constructor"/>
+	<bean id="action-navigation-goto-symbol" class="kkckkc.jsourcepad.action.NavigationGotoSymbolAction" autowire="constructor"/>
 	<bean id="action-navigation-next-file-tab" class="kkckkc.jsourcepad.action.NavigationNextFileTabAction" autowire="constructor"/>
 	<bean id="action-navigation-previous-file-tab" class="kkckkc.jsourcepad.action.NavigationPreviousFileTabAction" autowire="constructor"/>
 

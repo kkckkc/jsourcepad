@@ -8,6 +8,8 @@ import javax.swing.text.JTextComponent;
 import javax.swing.text.Keymap;
 
 import kkckkc.syntaxpane.model.Interval;
+import kkckkc.syntaxpane.model.LineManager;
+import kkckkc.syntaxpane.model.SourceDocument;
 import kkckkc.syntaxpane.parse.grammar.Language;
 import kkckkc.syntaxpane.style.Style;
 
@@ -73,4 +75,6 @@ public interface Buffer {
 	
 	public enum FindType { Literal, Regexp } 
 	public enum Direction { Forward, Backward }
+
+	public SourceDocument getSourceDocument();
 }
