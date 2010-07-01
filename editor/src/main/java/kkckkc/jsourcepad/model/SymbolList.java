@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
+import kkckkc.jsourcepad.model.bundle.BundleManager;
 import kkckkc.jsourcepad.model.bundle.PrefKeys;
 import kkckkc.jsourcepad.util.SedUtils;
 import kkckkc.syntaxpane.model.LineManager;
@@ -37,11 +38,13 @@ public class SymbolList {
 	
 
 	private void visit(Line l, Scope s, List<Pair<String, Integer>> symbolList) {
-		Object o = Application.get().getBundleManager().getPreference(PrefKeys.SYMBOL_SHOW_IN_LIST, s);
+		BundleManager bundleManager = Application.get().getBundleManager();
+		
+		Object o = bundleManager.getPreference(PrefKeys.SYMBOL_SHOW_IN_LIST, s);
 		if (s.getRoot() != s && o != null) {
 			String symbol = l.getCharSequence().subSequence(s.getStart(), s.getEnd()).toString();
 			
-			String transformation = (String) Application.get().getBundleManager().getPreference(PrefKeys.SYMBOL_TRANSFORMATION, s);
+			String transformation = (String) bundleManager.getPreference(PrefKeys.SYMBOL_TRANSFORMATION, s);
 			if (transformation != null) {
 				symbol = SedUtils.applySedExpressions(symbol, transformation);
 			}

@@ -46,6 +46,8 @@ public class SymbolView extends JLabel {
 					
 					List<Pair<String, Integer>> symbols = new SymbolList(buffer).getSymbols();
 					
+					if (symbols == null || symbols.isEmpty()) return;
+					
 					JPopupMenu popupMenu = new JPopupMenu();
 
 					for (final Pair<String, Integer> p : symbols) {
