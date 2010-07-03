@@ -1,12 +1,10 @@
 package kkckkc.jsourcepad.model;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,7 +29,6 @@ import kkckkc.syntaxpane.model.LineManager.Line;
 import kkckkc.syntaxpane.parse.grammar.Language;
 import kkckkc.syntaxpane.regex.JoniPatternFactory;
 import kkckkc.syntaxpane.style.Style;
-import kkckkc.syntaxpane.style.StyleBean;
 
 public class BufferImpl implements Buffer {
 	// State
@@ -57,6 +54,7 @@ public class BufferImpl implements Buffer {
 	// Restricted editing
 	private ChangeListener restrictedChangeListener;
 	private DocumentListener restrictedDocumentListener;
+	private CharacterPairsHandler characterPairsHandler;
 	
 
 	public BufferImpl(SourceDocument d, Doc doc, Window window) {
@@ -81,7 +79,7 @@ public class BufferImpl implements Buffer {
 	    this.caret.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				if (caret.getDot() == caret.getMark()) {
-					if (insertionPoint == null || insertionPoint.getPosition() != caret.getDot()) {
+					if (insertionPoint == null || insertionPoint.getPosition() != caret.getDot() || selection != null) {
 						insertionPoint = new InsertionPoint(caret.getDot(), document.getScopeForPosition(caret.getDot()), document.getLineManager());
 						postInsertionPointUpdate();
 					}
@@ -91,6 +89,9 @@ public class BufferImpl implements Buffer {
 			}
 		});
 
+	    characterPairsHandler = new CharacterPairsHandler(this, anchorManager);
+	    document.setDocumentFilter(characterPairsHandler);
+	    
 		postInsertionPointUpdate();
 	}
 
@@ -258,79 +259,10 @@ public class BufferImpl implements Buffer {
 	private void postInsertionPointUpdate() {
         window.topic(InsertionPointListener.class).post().update(getInsertionPoint());
 
-		
-		if (insertionPoint.getPosition() > 0) { 
-			highlighPairs();
-		}
-	
+		characterPairsHandler.highlight();
 	}
 
-	private void highlighPairs() {
-	    BundleManager bundleManager = Application.get().getBundleManager();
-	    
-	    List<List<String>> pairs = (List) bundleManager.getPreference(PrefKeys.HIGHLIGHT_PAIRS, insertionPoint.getScope());
-	    if (pairs == null) return;
-	    
-	    for (List<String> p : pairs) {
-	    	char start = p.get(0).charAt(0);
-	    	char end = p.get(1).charAt(0);
-	    	
-	    	char cur = getText(Interval.createWithLength(insertionPoint.getPosition() - 1, 1)).charAt(0);
-	    	
-	    	try {
-	    		int pos = insertionPoint.getPosition();
-	    		if (end == cur) {
-	    			int level = 1, found = -1;
-	    			char[] s = document.getText(0, pos - 1).toCharArray();
-	    			for (int f = 0; f < s.length; f++) {
-	    				char c = s[s.length - f - 1];
-	    				if (c == start) level--;
-	    				if (c == end) level++;
-
-	    				if (level == 0) {
-	    					found = f;
-	    					break;
-	    				}
-	    			}
-
-	    			if (found == -1) {
-		    			Interval i = Interval.createWithLength(pos - 1, 1);
-		    			highlight(i, HighlightType.Box, new StyleBean(null, null, Color.red), true);
-	    				return;
-	    			}
-	    			
-	    			Interval i = Interval.createWithLength(pos - found - 2, 1);
-	    			highlight(i, HighlightType.Box, new StyleBean(null, null, Color.gray), true);
-	    		} else if (start == cur) {
-	    			if (getLength() <= pos) return;
-
-	    			int level = 1, found = -1;
-	    			char s[] = document.getText(pos, getLength() - pos).toCharArray();
-	    			for (int f = 0; f < s.length; f++) {
-	    				char c = s[f];
-	    				if (c == start) level++;
-	    				if (c == end) level--;
-	    				
-	    				if (level == 0) {
-	    					found = f;
-	    					break;
-	    				}
-	    			}
-
-	    			if (found == -1) {
-		    			Interval i = Interval.createWithLength(pos - 1, 1);
-		    			highlight(i, HighlightType.Box, new StyleBean(null, null, Color.red), true);
-	    				return;
-	    			}
-	    			
-	    			Interval i = Interval.createWithLength(pos + found, 1);
-	    			highlight(i, HighlightType.Box, new StyleBean(null, null, Color.gray), true);
-	    		}
-	    	} catch (BadLocationException ble) {
-	    		throw new RuntimeException(ble);
-	    	}
-	    }
-    }
+	
 
 	private void indent(Line current) {
 		if (current == null) return;
@@ -634,4 +566,7 @@ public class BufferImpl implements Buffer {
 		}
     }
 
+	public SourceDocument getSourceDocument() {
+		return document;
+	}
 }
