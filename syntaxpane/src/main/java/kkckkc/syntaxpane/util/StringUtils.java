@@ -20,4 +20,12 @@ public class StringUtils {
 	public static String capitalize(String s) {
 		return s.substring(0, 1).toUpperCase() + s.substring(1);
 	}
+	
+	public static String multiply(String s, int count) {
+		StringBuilder b = new StringBuilder();
+		for (int i = 0; i < count; i++) {
+			b.append(s);
+		} 
+		return b.toString();
+	}
 }
