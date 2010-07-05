@@ -1,6 +1,7 @@
 package kkckkc.jsourcepad.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 
@@ -54,18 +55,27 @@ public class WindowViewImpl implements WindowView {
 		menubar = new JMenuBar();
 		frame.setJMenuBar(menubar);
 		
-		JPanel statusBarPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING, 15, 0));
-		statusBarPanel.setBorder(new EmptyBorder(0, 0, 0, 0));
+		JPanel statusBarPanel = createStatusBar();
 		
-		statusBarPanel.add(new ScopeView(window));
+		statusBarPanel.add(processStatusBarView(new ScopeView(window)));
 		statusBarPanel.add(delimiter());
-		statusBarPanel.add(new LanguageView(window));
+		statusBarPanel.add(processStatusBarView(new LanguageView(window)));
 		statusBarPanel.add(delimiter());
-		statusBarPanel.add(new CurrentPosition(window));
+		statusBarPanel.add(processStatusBarView(new CurrentPosition(window)));
 		statusBarPanel.add(delimiter());
-		statusBarPanel.add(new TabView(window));
+		statusBarPanel.add(processStatusBarView(new TabView(window)));
 		
 		frame.add(statusBarPanel, BorderLayout.SOUTH);
+	}
+
+	protected Component processStatusBarView(JComponent view) {
+		return view;
+	}
+
+	protected JPanel createStatusBar() {
+		JPanel statusBarPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING, 15, 0));
+		statusBarPanel.setBorder(new EmptyBorder(0, 0, 0, 0));
+		return statusBarPanel;
 	}
 
 	protected JScrollPane createTreeScrollPane(JComponent tree) {
@@ -77,7 +87,7 @@ public class WindowViewImpl implements WindowView {
 	    return menubar;
     }
 	
-	private JLabel delimiter() {
+	protected JLabel delimiter() {
 	    JLabel jl = new JLabel("");
 		jl.setBorder(new EtchedBorder(EtchedBorder.RAISED));
 		jl.setPreferredSize(new Dimension(1, 20));

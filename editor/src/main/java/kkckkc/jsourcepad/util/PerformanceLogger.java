@@ -61,7 +61,7 @@ public class PerformanceLogger {
         }
 
 		public long getAvg() {
-	        return getAccumulatedTime() / count;
+	        return getAccumulatedTime() / (count == 0 ? 1 : count);
         }
 
 		public void exit() {

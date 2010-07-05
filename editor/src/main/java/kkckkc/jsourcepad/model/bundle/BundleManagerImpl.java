@@ -77,7 +77,7 @@ public class BundleManagerImpl implements BundleManager {
 
 		PerformanceLogger.get().enter(this, "reload.load");
 
-		File[] bundles = new File("/home/magnus/Dropbox/SharedSupport/Bundles").listFiles();
+		File[] bundles = new File("/Users/kkckkc/Dropbox/SharedSupport/Bundles").listFiles();
 		Arrays.sort(bundles);
 	    for (File bundleDir : bundles) {
 	    	if (! bundleDir.isDirectory()) continue;

@@ -13,7 +13,7 @@
 	<bean id="languageManager" class="kkckkc.syntaxpane.parse.grammar.LanguageManager">
 		<property name="provider">
 			<bean class="kkckkc.syntaxpane.parse.grammar.textmate.TextmateLanguageProvider">
-				<constructor-arg value="/home/magnus/Dropbox/SharedSupport/Bundles" type="java.io.File" />
+				<constructor-arg value="/Users/kkckkc/Dropbox/SharedSupport/Bundles" type="java.io.File" />
 			</bean>
 		</property>
 	</bean>

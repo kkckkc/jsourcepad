@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
+	default-autowire="constructor">
+<!-- 
+	<bean id="fileChooser" class="kkckkc.jsourcepad.theme.GtkFileChooserView" />
+	
+	<bean id="windowView" class="kkckkc.jsourcepad.theme.GtkWindowViewImpl" />
+ -->
+ 
+	<bean id="docView" class="kkckkc.jsourcepad.theme.OsxDocViewImpl" />
+	<bean id="docListView" class="kkckkc.jsourcepad.theme.OsxDocListViewImpl" />
+ 	<bean id="projectView" class="kkckkc.jsourcepad.theme.OsxProjectViewImpl" />
+	<bean id="windowView" class="kkckkc.jsourcepad.theme.OsxWindowViewImpl" />
+	
+	<bean id="fileChooser" class="kkckkc.jsourcepad.theme.AWTFileChooserView" />
+	
+</beans>
