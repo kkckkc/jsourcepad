@@ -13,6 +13,7 @@
 		<module>editor</module>
 		<module>theme-gtk</module>
 		<module>editor-package</module>
+		<module>dev-tools</module>
 	</modules>
 
 	<build>

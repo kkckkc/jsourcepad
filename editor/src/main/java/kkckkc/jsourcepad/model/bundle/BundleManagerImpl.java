@@ -201,29 +201,29 @@ public class BundleManagerImpl implements BundleManager {
 	}
 
 	
-	private void load(File file, PListReader r, Map<String, BundleItemSupplier> uuidToItem) throws FileNotFoundException, IOException {
-		if (! file.exists()) return;
+	private void load(File dir, PListReader reader, Map<String, BundleItemSupplier> uuidToItem) throws FileNotFoundException, IOException {
+		if (! dir.exists()) return;
 		
-		for (File f : file.listFiles()) {
-			String n = f.getName();
+		for (File file : dir.listFiles()) {
+			String n = file.getName();
 			if (n.equals("info.plist")) continue;
 			if (n.endsWith(".plist") || n.endsWith(".tmLanguage") || n.endsWith(".tmSnippet") || 
 					n.endsWith(".tmCommand")) {
 
-				Map o = (Map) r.read(f);
+				Map data = (Map) reader.read(file);
 				
-				String tabTrigger = (String) o.get("tabTrigger");
-				String keyEq = (String) o.get("keyEquivalent");
-				String scope = (String) o.get("scope");
+				String tabTrigger = (String) data.get("tabTrigger");
+				String keyEq = (String) data.get("keyEquivalent");
+				String scope = (String) data.get("scope");
 				
 				KeyStroke ks = null;
 				if (keyEq != null && ! "".equals(keyEq)) {
 					ks = new KeystrokeParser().parse(keyEq);
 				}
 				
-				uuidToItem.put((String) o.get("uuid"), 
+				uuidToItem.put((String) data.get("uuid"), 
 						new BundleItemSupplier(
-								f, (String) o.get("name"), 
+								file, (String) data.get("name"), 
 								new Activator(ks, tabTrigger, 
 									scope != null ? ScopeSelector.parse(scope) : null	
 								)));
