@@ -7,13 +7,16 @@
 	<bean id="application" class="kkckkc.jsourcepad.model.Application" />
 	<bean id="applicationView" class="kkckkc.jsourcepad.ui.ApplicationController" />
 
-	<bean id="bundleManager" class="kkckkc.jsourcepad.model.bundle.BundleManagerImpl" />
+	<bean id="bundleManager" class="kkckkc.jsourcepad.model.bundle.BundleManagerImpl">
+		<constructor-arg value="${user.home}/.jsourcepad/Shared/Bundles" />
+	</bean>
+	
 	<bean id="settingsManager" class="kkckkc.jsourcepad.model.SettingsManagerImpl" />
 	
 	<bean id="languageManager" class="kkckkc.syntaxpane.parse.grammar.LanguageManager">
 		<property name="provider">
 			<bean class="kkckkc.syntaxpane.parse.grammar.textmate.TextmateLanguageProvider">
-				<constructor-arg value="/Users/kkckkc/Dropbox/SharedSupport/Bundles" type="java.io.File" />
+				<constructor-arg value="${user.home}/.jsourcepad/Shared/Bundles" type="java.io.File" />
 			</bean>
 		</property>
 	</bean>

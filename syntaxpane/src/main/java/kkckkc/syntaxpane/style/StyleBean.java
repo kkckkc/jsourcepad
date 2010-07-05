@@ -5,6 +5,7 @@ import java.awt.Color;
 public class StyleBean implements Style, TextStyle {
 	private Color color;
 	private Color background;
+	private Color border;
 	boolean bold;
 	boolean italic;
 	boolean underline;
@@ -17,6 +18,12 @@ public class StyleBean implements Style, TextStyle {
 		this.color = color;
 		this.background = background;
 	}
+
+	public StyleBean(Color color, Color background, Color border) {
+		this.color = color;
+		this.background = background;
+		this.border = border;
+	}
 	
 	public StyleBean(Color color, Color background, boolean bold,
 			boolean italic, boolean underline) {
@@ -27,6 +34,10 @@ public class StyleBean implements Style, TextStyle {
 		this.underline = underline;
 	}
 
+	public Color getBorder() {
+		return border;
+	}
+	
 	public Color getColor() {
 		return color;
 	}

@@ -12,6 +12,7 @@ import kkckkc.syntaxpane.style.Style;
 import kkckkc.syntaxpane.style.StyleBean;
 import kkckkc.syntaxpane.style.StyleScheme;
 import kkckkc.syntaxpane.style.TextStyle;
+import kkckkc.syntaxpane.util.ColorUtils;
 import kkckkc.syntaxpane.util.plist.GeneralPListReader;
 import kkckkc.syntaxpane.util.plist.PListUtils;
 	
@@ -28,27 +29,45 @@ public class TextmateStyleParser implements kkckkc.syntaxpane.style.StyleParser 
 			for (int i = 1; i < settings.size(); i++) {
 				Map<?, ?> style = (Map<?, ?>) settings.get(i);
 				Map<?, ?> styleSettings = (Map<?, ?>) style.get("settings");
-				selectors.put(ScopeSelector.parse((String) style.get("scope")), new StyleBean(
+				
+				String scope = (String) style.get("scope");
+				if (scope == null) continue;
+				
+				selectors.put(ScopeSelector.parse(scope), new StyleBean(
 							color(styleSettings, "foreground"), null,
 							isStyle(styleSettings, "bold"),
 							isStyle(styleSettings, "italic"),
 							isStyle(styleSettings, "underline")));
 			}					
 
-			final TextStyle textStyle = new StyleBean(color(global, "foreground"), color(global, "background"));
+			final TextStyle textStyle = new StyleBean(
+					color(global, "foreground"), 
+					color(global, "background"));
+			
 			final Style selectionStyle = new StyleBean(color(global, "foreground"), color(global, "selection"));
-			final Style lineNumberStyle = new StyleBean(color(global, "foreground"), color(global, "background"));
+			final Style lineNumberStyle = new StyleBean(
+					ColorUtils.offset(color(global, "foreground"), 3), 
+					ColorUtils.offset(color(global, "background"), 2),
+					ColorUtils.offset(color(global, "background"), 3));
+			
 			final Color caretColor = color(global, "caret");
 			final Color lineSelectionColor = color(global, "lineHighlight");
+			final Color invisibles = color(global, "invisibles");
 				
+			final Style rightMarginStyle = new StyleBean(
+					ColorUtils.offset(color(global, "background"), 2), 
+					ColorUtils.offset(color(global, "background"), 1)		
+			);
+			
         	return new StyleScheme() {
         		public File getSource() { return file; }
 				public TextStyle getTextStyle() { return textStyle; }
 				public Style getSelectionStyle() { return selectionStyle; }
 				public Style getLineNumberStyle() { return lineNumberStyle; }
+				public Style getRightMargin() { return rightMarginStyle; }
 
 				public Color getCaretColor() { return caretColor; }
-				public Color getRightMarginColor() { return lineSelectionColor; }
+				public Color getInvisiblesColor() { return invisibles; }
                 public Color getLineSelectionColor() { return lineSelectionColor; }
 				public Map<ScopeSelector, TextStyle> getStyles() { return selectors; }
 			};
@@ -76,11 +95,10 @@ public class TextmateStyleParser implements kkckkc.syntaxpane.style.StyleParser 
 			Integer i = Integer.decode("#" + string.substring(1, 7));
 			Integer i2 = Integer.decode("#" + string.substring(7));
 
-			return new Color((i >> 16) & 0xFF, (i >> 8) & 0xFF, i & 0xFF); //, i2);
+			return new Color((i >> 16) & 0xFF, (i >> 8) & 0xFF, i & 0xFF, i2);
 			
 		} else {
 			return Color.decode(string.substring(0, 7));	
 		}
-		
     }
 }

@@ -3,6 +3,9 @@ package kkckkc.syntaxpane;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -35,7 +38,8 @@ public class ScrollableSourcePane extends JPanel {
 		
 		editorKit = new SourceEditorKit(this, languageManager);
 
-		editorPane = new JEditorPane();
+		editorPane = new SourceJEditorPane();
+		editorPane.setOpaque(false);
 		editorPane.setEditorKit(editorKit);
 		editorPane.setUI(new javax.swing.plaf.basic.BasicEditorPaneUI());
 		
@@ -75,6 +79,7 @@ public class ScrollableSourcePane extends JPanel {
 	}
 	
 	public void setStyleScheme(StyleScheme styleScheme) {
+		boolean styleSchemeChanged = this.styleScheme != null;
 		this.styleScheme = styleScheme;
 		
 		setBackground(this.styleScheme.getTextStyle().getBackground());
@@ -88,7 +93,15 @@ public class ScrollableSourcePane extends JPanel {
 		lineNumberPane.setBackground(this.styleScheme.getLineNumberStyle().getBackground());
 		lineNumberPane.setForeground(this.styleScheme.getLineNumberStyle().getColor());
 		
+		foldMargin.setBackground(this.styleScheme.getLineNumberStyle().getBackground());
+		foldMargin.setForeground(this.styleScheme.getLineNumberStyle().getColor());
+		foldMargin.setBorderColor(this.styleScheme.getLineNumberStyle().getBorder());
+		
 		CurrentLinePainter.apply(new CurrentLinePainter(this.styleScheme.getLineSelectionColor()), editorPane);
+		
+		if (styleSchemeChanged) {
+			repaint();
+		}
 	}
 
 	public JEditorPane getEditorPane() {
@@ -114,4 +127,26 @@ public class ScrollableSourcePane extends JPanel {
 	public void read(File f) throws IOException {
 		editorPane.read(new FileReader(f), f);
 	}
+	
+	private final class SourceJEditorPane extends JEditorPane {
+		public static final int FOLD_MARGIN = 120;
+		
+	    @Override
+	    public void paint(Graphics graphics) {
+	    	Graphics2D graphics2d = (Graphics2D) graphics;
+
+	    	int wm = graphics.getFontMetrics().charWidth('m');
+	    	
+	    	Rectangle clip = graphics.getClipBounds();
+	    	
+	    	graphics2d.setColor(getStyleScheme().getRightMargin().getBackground());
+	    	
+	    	graphics2d.fillRect(FOLD_MARGIN * wm, clip.y, clip.width, clip.height);
+	    	
+	    	graphics2d.setColor(getStyleScheme().getRightMargin().getColor());
+	    	graphics2d.drawLine(FOLD_MARGIN * wm, clip.y, FOLD_MARGIN * wm, clip.y + clip.height);
+
+	    	super.paint(graphics);
+	    }
+    }
 }

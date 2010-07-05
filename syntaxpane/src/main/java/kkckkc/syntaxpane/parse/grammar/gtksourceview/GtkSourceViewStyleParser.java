@@ -91,6 +91,10 @@ public class GtkSourceViewStyleParser implements kkckkc.syntaxpane.style.StylePa
 					return textStyle;
 				}
 	
+				public Color getInvisiblesColor() {
+					return textStyle.getColor();
+				}
+				
 				public Color getCaretColor() {
 					return caretStyle.getColor();
 				}
@@ -103,8 +107,8 @@ public class GtkSourceViewStyleParser implements kkckkc.syntaxpane.style.StylePa
 					return lineNumberStyle;
 				}
 	
-				public Color getRightMarginColor() {
-					return rightMarginStyle.getColor();
+				public Style getRightMargin() {
+					return new StyleBean(rightMarginStyle.getColor(), textStyle.getBackground());
 				}
 
                 public Color getLineSelectionColor() {

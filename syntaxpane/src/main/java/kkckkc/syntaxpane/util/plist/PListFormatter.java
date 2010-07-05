@@ -18,8 +18,12 @@ public class PListFormatter {
 	    	formatList((List) o, dest, i);
 	    } else if (o instanceof String) {
 	    	dest.append("'").append(o).append("'");
+	    } else if (o instanceof Number) {
+	    	dest.append(o);
+	    } else if (o instanceof Boolean) {
+	    	dest.append(o);
 	    } else {
-	    	System.out.println(o.getClass());
+	    	System.out.println("Unsupported: " + o.getClass());
 	    }
     }
 

@@ -41,7 +41,7 @@ public class SourceEditorKit extends DefaultEditorKit {
 	public ViewFactory getViewFactory() {
 		return new ViewFactory() {
 			public View create(Element elem) {
-				return new SourceView(elem, SourceEditorKit.this);
+				return new SourceView(elem, SourceEditorKit.this, sourcePane);
 			}
 		};
 	}

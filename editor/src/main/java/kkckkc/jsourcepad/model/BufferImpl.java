@@ -1,5 +1,8 @@
 package kkckkc.jsourcepad.model;
 
+import java.awt.Graphics;
+import java.awt.Rectangle;
+import java.awt.Shape;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.regex.Matcher;
@@ -9,9 +12,11 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.plaf.TextUI;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Caret;
 import javax.swing.text.JTextComponent;
+import javax.swing.text.Highlighter.HighlightPainter;
 
 import kkckkc.jsourcepad.model.Doc.InsertionPointListener;
 import kkckkc.jsourcepad.model.Doc.StateListener;
@@ -23,6 +28,7 @@ import kkckkc.syntaxpane.model.SourceDocument;
 import kkckkc.syntaxpane.model.LineManager.Line;
 import kkckkc.syntaxpane.parse.grammar.Language;
 import kkckkc.syntaxpane.regex.JoniPatternFactory;
+import kkckkc.syntaxpane.style.Style;
 
 public class BufferImpl implements Buffer {
 	// State
@@ -48,6 +54,7 @@ public class BufferImpl implements Buffer {
 	// Restricted editing
 	private ChangeListener restrictedChangeListener;
 	private DocumentListener restrictedDocumentListener;
+	private CharacterPairsHandler characterPairsHandler;
 	
 
 	public BufferImpl(SourceDocument d, Doc doc, Window window) {
@@ -72,7 +79,7 @@ public class BufferImpl implements Buffer {
 	    this.caret.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				if (caret.getDot() == caret.getMark()) {
-					if (insertionPoint == null || insertionPoint.getPosition() != caret.getDot()) {
+					if (insertionPoint == null || insertionPoint.getPosition() != caret.getDot() || selection != null) {
 						insertionPoint = new InsertionPoint(caret.getDot(), document.getScopeForPosition(caret.getDot()), document.getLineManager());
 						postInsertionPointUpdate();
 					}
@@ -82,6 +89,9 @@ public class BufferImpl implements Buffer {
 			}
 		});
 
+	    characterPairsHandler = new CharacterPairsHandler(this, anchorManager);
+	    document.setDocumentFilter(characterPairsHandler);
+	    
 		postInsertionPointUpdate();
 	}
 
@@ -156,8 +166,12 @@ public class BufferImpl implements Buffer {
     }
 
 	@Override
-    public void remove(Interval interval) throws BadLocationException {
-	    document.remove(interval.getStart(), interval.getLength());
+    public void remove(Interval interval) {
+	    try {
+	        document.remove(interval.getStart(), interval.getLength());
+        } catch (BadLocationException e) {
+	        throw new RuntimeException(e);
+        }
     }
 
 	@Override
@@ -244,7 +258,11 @@ public class BufferImpl implements Buffer {
 
 	private void postInsertionPointUpdate() {
         window.topic(InsertionPointListener.class).post().update(getInsertionPoint());
-    }
+
+		characterPairsHandler.highlight();
+	}
+
+	
 
 	private void indent(Line current) {
 		if (current == null) return;
@@ -257,10 +275,10 @@ public class BufferImpl implements Buffer {
     	CharSequence prevLine = prev.getCharSequence();
     	int indentCount = doc.getTabManager().getTabCount(prevLine);
     	
-    	String decrease = bundleManager.getPreference(PrefKeys.INDENT_DECREASE, current.getScope());
-    	String increase = bundleManager.getPreference(PrefKeys.INDENT_INCREASE, current.getScope());
-    	String indentNextLine = bundleManager.getPreference(PrefKeys.INDENT_NEXT_LINE, current.getScope());
-    	String unIndentedLinePattern = bundleManager.getPreference(PrefKeys.INDENT_IGNORE, current.getScope());
+    	String decrease = (String) bundleManager.getPreference(PrefKeys.INDENT_DECREASE, current.getScope());
+    	String increase = (String) bundleManager.getPreference(PrefKeys.INDENT_INCREASE, current.getScope());
+    	String indentNextLine = (String) bundleManager.getPreference(PrefKeys.INDENT_NEXT_LINE, current.getScope());
+    	String unIndentedLinePattern = (String) bundleManager.getPreference(PrefKeys.INDENT_IGNORE, current.getScope());
     	
     	int position = caret.getDot();
     	
@@ -277,12 +295,8 @@ public class BufferImpl implements Buffer {
     			if (doc.getTabManager().getTabCount(prevprev.getCharSequence()) == indentCount && indentCount > 0) {
     				String s = doc.getTabManager().getFirstIndentionString(prev.getCharSequence());
     				Interval i = Interval.createWithLength(prev.getStart(), s.length());
-    	    		try {
-    	                doc.getActiveBuffer().remove(i);
-    	                position -= s.length();
-    	            } catch (BadLocationException e1) {
-    	                throw new RuntimeException(e1);
-    	            }
+	                doc.getActiveBuffer().remove(i);
+	                position -= s.length();
     				
     	    		indentCount--;
     			}
@@ -300,12 +314,8 @@ public class BufferImpl implements Buffer {
 		String s;
 		while ((s = doc.getTabManager().getFirstIndentionString(current.getCharSequence())) != null) {
 			Interval i = Interval.createWithLength(current.getStart(), s.length());
-			try {
-	            doc.getActiveBuffer().remove(i);
-	            position -= s.length();
-	        } catch (BadLocationException e1) {
-	            throw new RuntimeException(e1);
-	        }
+            doc.getActiveBuffer().remove(i);
+            position -= s.length();
 		}
 
     	String indent = doc.getTabManager().createIndent(indentCount);
@@ -330,12 +340,8 @@ public class BufferImpl implements Buffer {
 				insertText(line.getStart(), indent, null);
 			} else {
 				if (doc.getTabManager().getTabCount(line.getCharSequence()) > 0) {
-					try {
-		                remove(Interval.createWithLength(line.getStart(), indent.length()));
-		                end = end - indent.length();
-	                } catch (BadLocationException e) {
-	                	throw new RuntimeException(e);
-	                }
+	                remove(Interval.createWithLength(line.getStart(), indent.length()));
+	                end = end - indent.length();
 				}   
 			}
 			
@@ -343,8 +349,6 @@ public class BufferImpl implements Buffer {
 			line = lm.getNext(line);
 			if (line == null) break;
 		}
-		
-		System.out.println("----------------");
 	}
 	
 	
@@ -461,4 +465,108 @@ public class BufferImpl implements Buffer {
 		return null;
     }
 
+	@Override
+    public Highlight highlight(final Interval interval, final HighlightType type, final Style style, final boolean isTransient) {
+	    try {
+			final Object o = textComponent.getHighlighter().addHighlight(interval.getStart(), interval.getEnd(), new HighlightPainter() {
+				@Override
+	            public void paint(Graphics g, int o0, int o1, Shape bounds, JTextComponent c) {
+				    try {
+						TextUI mapper = c.getUI();
+						Rectangle p0 = mapper.modelToView(c, o0);
+						Rectangle p1 = mapper.modelToView(c, o1);
+						
+						if (p0.y == p1.y) {
+						    // same line, render a rectangle
+						    Rectangle r = p0.union(p1);
+						    
+						    if (type == HighlightType.Box) {
+							    if (style.getBackground() != null) {
+							    	g.setColor(style.getBackground());
+								    g.fillRect(r.x, r.y, r.width - 1, r.height - 1);
+							    }
+							    
+							    if (style.getBorder() != null) {
+							    	g.setColor(style.getBorder());
+								    g.drawRect(r.x, r.y, r.width - 1, r.height - 1);
+							    }
+						    } else {
+						    	g.setColor(style.getColor());
+						    	g.drawLine(p0.x, p0.y + p0.height, p1.x + p1.width, p0.y + p0.height);
+						    }
+						    
+						} else {
+							throw new UnsupportedOperationException("Cross-line highlights not implemented yet");
+						}
+				    } catch (BadLocationException ble) {
+				    	throw new RuntimeException(ble);
+				    }
+	            }
+			});
+
+			this.document.addDocumentListener(new DocumentListener() {
+				@Override
+				public void removeUpdate(DocumentEvent e) {
+	                textComponent.getHighlighter().removeHighlight(o);
+	                document.removeDocumentListener(this);
+				}
+				
+				@Override
+				public void insertUpdate(DocumentEvent e) {
+	                textComponent.getHighlighter().removeHighlight(o);
+	                document.removeDocumentListener(this);
+				}
+				
+				@Override
+				public void changedUpdate(DocumentEvent e) {
+	                textComponent.getHighlighter().removeHighlight(o);
+	                document.removeDocumentListener(this);
+				}
+			});
+
+			this.caret.addChangeListener(new ChangeListener() {
+				@Override
+				public void stateChanged(ChangeEvent e) {
+	                textComponent.getHighlighter().removeHighlight(o);
+	                caret.removeChangeListener(this);
+				}
+			});
+
+			return new Highlight() {
+                public void clear() {
+	                textComponent.getHighlighter().removeHighlight(o);
+                }
+			};
+	    } catch (BadLocationException ble) {
+	    	throw new RuntimeException(ble);
+	    }
+    }
+
+	@Override
+    public Interval find(int position, String pattern, FindType type, Direction direction) {
+		try {
+			if (type == FindType.Regexp) {
+				throw new UnsupportedOperationException("Not implemented yet");
+			} else {
+				if (direction == Direction.Backward) {
+					String s = document.getText(0, position);
+					int p = s.lastIndexOf(pattern);
+					if (p < 0) return null;
+					return Interval.createWithLength(p, pattern.length());
+				} else {
+					if (getLength() <= (position + 1)) return null;
+					String s = document.getText(position + 1, getLength() - (position + 1));
+					int p = s.indexOf(pattern);
+					if (p < 0) return null;
+					return Interval.createWithLength(p + position + 1, pattern.length());
+				}
+			}
+		} catch (BadLocationException ble) {
+			throw new RuntimeException(ble);
+		}
+    }
+
+	public SourceDocument getSourceDocument() {
+		return document;
+	}
 }

@@ -4,12 +4,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 
 import javax.swing.event.DocumentEvent;
-import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.Keymap;
 
 import kkckkc.syntaxpane.model.Interval;
+import kkckkc.syntaxpane.model.LineManager;
+import kkckkc.syntaxpane.model.SourceDocument;
 import kkckkc.syntaxpane.parse.grammar.Language;
+import kkckkc.syntaxpane.style.Style;
 
 public interface Buffer {
 	public interface BufferStateListener {
@@ -42,9 +44,11 @@ public interface Buffer {
 	public void insertText(int position, String content, Anchor[] anchors);
 	public void replaceText(Interval interval, String content, Anchor[] anchors);
 	
-	// TOOD: Remove exception
-	public void remove(Interval interval) throws BadLocationException;
+	public void remove(Interval interval);
 
+	
+	public Highlight highlight(Interval interval, HighlightType type, Style style, boolean isTransient);
+	
 	public String getCurrentLine();
 	public String getCurrentWord();
 
@@ -61,5 +65,16 @@ public interface Buffer {
 		public void textChanged(DocumentEvent de);
 	}
 
+	interface Highlight {
+		public void clear();
+	}
 
+	public enum HighlightType { Underline, Box }
+
+	public Interval find(int position, String pattern, FindType type, Direction direction);
+	
+	public enum FindType { Literal, Regexp } 
+	public enum Direction { Forward, Backward }
+
+	public SourceDocument getSourceDocument();
 }

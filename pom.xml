@@ -14,6 +14,7 @@
 		<module>theme-gtk</module>
 		<module>editor-package</module>
 		<module>theme-osx</module>
+		<module>dev-tools</module>
 	</modules>
 
 	<build>

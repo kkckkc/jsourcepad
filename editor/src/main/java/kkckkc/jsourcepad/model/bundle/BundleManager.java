@@ -7,13 +7,15 @@ import java.util.Map;
 
 import kkckkc.jsourcepad.util.action.ActionGroup;
 import kkckkc.syntaxpane.model.Scope;
+import kkckkc.syntaxpane.style.ScopeSelector;
 
 public interface BundleManager { // extends LanguageManager.Provider {
 	public Map<String, List<Bundle>> getBundles();
 
 	public ActionGroup getBundleActionGroup();
 	
-	public String getPreference(String key, Scope scope);
+	public Map<String, Map<ScopeSelector, Object>> getPreferences();
+	public Object getPreference(String key, Scope scope);
 	
 	public void reload();
 

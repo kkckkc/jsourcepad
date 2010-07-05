@@ -41,7 +41,6 @@ public class JoniPatternFactory implements PatternFactory {
                 		Syntax.ALLOW_INTERVAL_LOW_ABBREV |
                 		Syntax.DIFFERENT_LEN_ALT_LOOK_BEHIND |
 //	                		Syntax.CAPTURE_ONLY_NAMED_GROUP |
-                		// TODO: Check this...
                 		Syntax.ALLOW_EMPTY_RANGE_IN_CC |
                 		Syntax.ALLOW_MULTIPLEX_DEFINITION_NAME |
                 		Syntax.FIXED_INTERVAL_IS_GREEDY_ONLY |

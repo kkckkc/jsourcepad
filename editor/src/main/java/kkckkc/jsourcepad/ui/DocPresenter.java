@@ -1,11 +1,15 @@
 package kkckkc.jsourcepad.ui;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.annotation.PostConstruct;
 import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import kkckkc.jsourcepad.Presenter;
 import kkckkc.jsourcepad.action.text.IndentAction;
@@ -15,10 +19,13 @@ import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.StyleSettings;
 import kkckkc.jsourcepad.model.TabSettings;
 import kkckkc.jsourcepad.model.Window;
+import kkckkc.jsourcepad.model.Buffer.HighlightType;
 import kkckkc.jsourcepad.model.SettingsManager.Listener;
 import kkckkc.jsourcepad.model.SettingsManager.Setting;
 import kkckkc.jsourcepad.util.ui.CompoundUndoManager;
 import kkckkc.syntaxpane.ScrollableSourcePane;
+import kkckkc.syntaxpane.model.Interval;
+import kkckkc.syntaxpane.style.StyleBean;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -79,7 +86,6 @@ public class DocPresenter implements Presenter<DocView> {
 				KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), new TabAction(doc));
 
 		sourcePane.getEditorPane().requestFocus();
-		
 		
 		
 		WindowPresenter windowPresenter = doc.getDocList().getWindow().getPresenter(WindowPresenter.class);

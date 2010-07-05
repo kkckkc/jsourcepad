@@ -6,6 +6,7 @@ import javax.annotation.PreDestroy;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
 import org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor;
+import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.core.io.ClassPathResource;
@@ -79,6 +80,12 @@ public class BeanFactoryLoader {
 			}
 		}
 
+		
+		PropertyPlaceholderConfigurer ppc = new PropertyPlaceholderConfigurer();
+		ppc.postProcessBeanFactory(container);
+		
+		
+		
 		PerformanceLogger.get().exit();
 		
 		return container;

@@ -29,6 +29,12 @@ public class BundleManagerImpl implements BundleManager {
 	private Map<String, List<Bundle>> bundles;
 	private HashMap<String, Map<ScopeSelector, Object>> preferences;
 
+	private String bundleDir;
+	
+	public BundleManagerImpl(String bundleDir) {
+		this.bundleDir = bundleDir;
+	}
+	
 	@Override
     public ActionGroup getBundleActionGroup() {
 		loadBundlesIfNeeded();
@@ -52,11 +58,15 @@ public class BundleManagerImpl implements BundleManager {
 		loadBundlesIfNeeded();
 	    return bundles;
     }
-	 
+
+    public Map<String, Map<ScopeSelector, Object>> getPreferences() {
+    	return preferences;
+    }
+    
 	@Override
-    public String getPreference(String key, Scope scope) {
+    public Object getPreference(String key, Scope scope) {
 		Map<ScopeSelector, Object> prefs = preferences.get(key);
-		return (String) new ScopeSelectorManager().getMatch(scope, prefs);
+		return new ScopeSelectorManager().getMatch(scope, prefs);
     }
 	
 	private void buildMenu(ActionGroup ag, List<Bundle> list) {
@@ -77,7 +87,7 @@ public class BundleManagerImpl implements BundleManager {
 
 		PerformanceLogger.get().enter(this, "reload.load");
 
-		File[] bundles = new File("/Users/kkckkc/Dropbox/SharedSupport/Bundles").listFiles();
+		File[] bundles = new File(bundleDir).listFiles();
 		Arrays.sort(bundles);
 	    for (File bundleDir : bundles) {
 	    	if (! bundleDir.isDirectory()) continue;
@@ -191,29 +201,29 @@ public class BundleManagerImpl implements BundleManager {
 	}
 
 	
-	private void load(File file, PListReader r, Map<String, BundleItemSupplier> uuidToItem) throws FileNotFoundException, IOException {
-		if (! file.exists()) return;
+	private void load(File dir, PListReader reader, Map<String, BundleItemSupplier> uuidToItem) throws FileNotFoundException, IOException {
+		if (! dir.exists()) return;
 		
-		for (File f : file.listFiles()) {
-			String n = f.getName();
+		for (File file : dir.listFiles()) {
+			String n = file.getName();
 			if (n.equals("info.plist")) continue;
 			if (n.endsWith(".plist") || n.endsWith(".tmLanguage") || n.endsWith(".tmSnippet") || 
 					n.endsWith(".tmCommand")) {
 
-				Map o = (Map) r.read(f);
+				Map data = (Map) reader.read(file);
 				
-				String tabTrigger = (String) o.get("tabTrigger");
-				String keyEq = (String) o.get("keyEquivalent");
-				String scope = (String) o.get("scope");
+				String tabTrigger = (String) data.get("tabTrigger");
+				String keyEq = (String) data.get("keyEquivalent");
+				String scope = (String) data.get("scope");
 				
 				KeyStroke ks = null;
 				if (keyEq != null && ! "".equals(keyEq)) {
 					ks = new KeystrokeParser().parse(keyEq);
 				}
 				
-				uuidToItem.put((String) o.get("uuid"), 
+				uuidToItem.put((String) data.get("uuid"), 
 						new BundleItemSupplier(
-								f, (String) o.get("name"), 
+								file, (String) data.get("name"), 
 								new Activator(ks, tabTrigger, 
 									scope != null ? ScopeSelector.parse(scope) : null	
 								)));
@@ -222,10 +232,6 @@ public class BundleManagerImpl implements BundleManager {
 	}
 
 	
-	public static void main(String... args) {
-		BundleManager bm = new BundleManagerImpl();
-		bm.getBundles();
-	}
 
 	@Override
     public Collection<BundleItemSupplier> getItemsForShortcut(KeyEvent ks, Scope scope) {

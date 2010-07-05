@@ -4,7 +4,6 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.KeyStroke;
 
-import kkckkc.syntaxpane.model.Scope;
 import kkckkc.syntaxpane.style.ScopeSelector;
 
 

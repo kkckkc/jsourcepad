@@ -20,6 +20,7 @@ import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.ui.statusbar.CurrentPosition;
 import kkckkc.jsourcepad.ui.statusbar.LanguageView;
 import kkckkc.jsourcepad.ui.statusbar.ScopeView;
+import kkckkc.jsourcepad.ui.statusbar.SymbolView;
 import kkckkc.jsourcepad.ui.statusbar.TabView;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,14 +57,16 @@ public class WindowViewImpl implements WindowView {
 		frame.setJMenuBar(menubar);
 		
 		JPanel statusBarPanel = createStatusBar();
-		
-		statusBarPanel.add(processStatusBarView(new ScopeView(window)));
-		statusBarPanel.add(delimiter());
+
+//		statusBarPanel.add(processStatusBarView(new ScopeView(window)));
+//		statusBarPanel.add(delimiter());
 		statusBarPanel.add(processStatusBarView(new LanguageView(window)));
 		statusBarPanel.add(delimiter());
 		statusBarPanel.add(processStatusBarView(new CurrentPosition(window)));
 		statusBarPanel.add(delimiter());
 		statusBarPanel.add(processStatusBarView(new TabView(window)));
+		statusBarPanel.add(delimiter());
+		statusBarPanel.add(processStatusBarView(new SymbolView(window)));
 		
 		frame.add(statusBarPanel, BorderLayout.SOUTH);
 	}

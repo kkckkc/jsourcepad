@@ -56,7 +56,9 @@ public class SourceDocument extends PlainDocument {
 	
 	public Scope getScopeForPosition(int dot) {
 		LineManager.Line l = this.lineManager.getLineByPosition(dot);
-		if (l == null) return null;
+		if (l == null || getLength() == 0) {
+			return new Scope(0, 0, this.parser.getLanguage().getRootContext(), null);
+		}
 		return l.getScope().getRoot().getForPosition(dot - l.getStart());
 	}
 	

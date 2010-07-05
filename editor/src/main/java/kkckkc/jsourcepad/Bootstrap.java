@@ -8,9 +8,11 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.Collection;
 
+import javax.script.ScriptException;
 import javax.swing.JComponent;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingWorker;
@@ -81,7 +83,14 @@ public class Bootstrap implements Runnable {
 			public void run() {
 				// Create new window
 				try {
-	                Application.get().getWindowManager().newWindow(new File(".").getCanonicalFile());
+	                Window w = Application.get().getWindowManager().newWindow(new File(".").getCanonicalFile());
+	                if (System.getProperty("startupScript") != null) {
+		                try {
+		                    w.getScriptEngine().eval(new FileReader(System.getProperty("startupScript")));
+	                    } catch (ScriptException e1) {
+		                    e1.printStackTrace();
+	                    }
+	                }
                 } catch (IOException e) {
 	                throw new RuntimeException(e);
                 }
