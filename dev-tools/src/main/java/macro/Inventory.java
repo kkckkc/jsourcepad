@@ -2,25 +2,31 @@ package macro;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
+import kkckkc.jsourcepad.model.bundle.MacroEngine;
 import kkckkc.syntaxpane.util.plist.GeneralPListReader;
+import kkckkc.syntaxpane.util.plist.PListFormatter;
 
 public class Inventory {
-	private static Set<String> commandset = new HashSet<String>();
+	private static Map<String, String> commandset = new HashMap<String, String>();
 	
 	public static void main(String... args) throws IOException {
 		recurse(new File("/home/magnus/.jsourcepad/Shared/Bundles"));
 		
-		for (String s: commandset) {
+		int i = 0;
+		for (String s: commandset.keySet()) {
+			if (MacroEngine.commands.containsKey(s)) continue;
+			
+			i++;
 			System.out.println(s);
+			System.out.println(commandset.get(s));
 		}
 		
 		System.out.println("--------------------------");
-		System.out.println(commandset.size());
+		System.out.println(i);
 	}
 
 	private static void recurse(File dir) throws IOException {
@@ -33,7 +39,7 @@ public class Inventory {
 	    		
 	    		List<Map> commands = (List<Map>) m.get("commands");
 	    		for (Map cmd : commands) {
-	    			commandset.add((String) cmd.get("command"));
+	    			commandset.put((String) cmd.get("command"), new PListFormatter().format(cmd));
 	    		}
 	    		//System.out.println(new PListFormatter().format(m));
 	    	}
