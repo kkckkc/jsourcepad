@@ -1,5 +1,8 @@
 package kkckkc.jsourcepad.model;
 
+import javax.script.Bindings;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 import javax.swing.JFrame;
 
 import kkckkc.jsourcepad.ScopeRoot;
@@ -23,11 +26,26 @@ public class WindowImpl extends AbstractMessageBus implements Window, MessageBus
 
 	private FocusedComponentType focusedComponent;
 
+	private ScriptEngine scriptEngine;
+	
 	@Autowired
 	public void setJframe(JFrame jframe) {
 	    this.jframe = jframe;
 	    
     }
+	
+	public ScriptEngine getScriptEngine() {
+		if (scriptEngine == null) {
+			ScriptEngineManager mgr = new ScriptEngineManager();
+			
+			scriptEngine = mgr.getEngineByName("JavaScript");
+			Bindings bindings = scriptEngine.createBindings();
+			bindings.put("window", this);
+			bindings.put("app", Application.get());
+		}
+		
+		return scriptEngine;
+	}
 	
 	@Autowired
 	public void setActionManager(ActionManager actionManager) {
