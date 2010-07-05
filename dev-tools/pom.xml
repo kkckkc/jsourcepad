@@ -8,4 +8,11 @@
   <groupId>kkckkc.jsourcepad</groupId>
   <artifactId>dev-tools</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  <dependencies>
+  	<dependency>
+  		<groupId>kkckkc.jsourcepad</groupId>
+  		<artifactId>editor</artifactId>
+  		<version>0.0.1-SNAPSHOT</version>
+  	</dependency>
+  </dependencies>
 </project>
