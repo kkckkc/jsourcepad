@@ -66,6 +66,7 @@
 				<null />
 				
 				<bean parent="lazyAction" p:action="action-text-execute-line-inserting-result" />
+				<bean parent="lazyAction" p:action="action-text-execute-script" />
 			</list>
 		</property>
 	</bean>
@@ -112,6 +113,7 @@
 	<bean id="action-text-shift-right" class="kkckkc.jsourcepad.action.TextShiftRightAction" autowire="constructor"/>
 	<bean id="action-text-indent-line" class="kkckkc.jsourcepad.action.TextIndentLineAction" autowire="constructor"/>
 	<bean id="action-text-execute-line-inserting-result" class="kkckkc.jsourcepad.action.TextExecuteLineInsertingResultAction" autowire="constructor"/>
+	<bean id="action-text-execute-script" class="kkckkc.jsourcepad.action.TextExecuteScriptAction" autowire="constructor"/>
 
 	<bean id="action-edit-undo" class="kkckkc.jsourcepad.action.EditUndoAction" autowire="constructor"/>
 	<bean id="action-edit-redo" class="kkckkc.jsourcepad.action.EditRedoAction" autowire="constructor"/>
