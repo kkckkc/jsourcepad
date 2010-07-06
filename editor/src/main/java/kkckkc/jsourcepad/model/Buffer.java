@@ -3,6 +3,7 @@ package kkckkc.jsourcepad.model;
 import java.io.BufferedReader;
 import java.io.IOException;
 
+import javax.swing.ActionMap;
 import javax.swing.event.DocumentEvent;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.Keymap;
@@ -77,4 +78,5 @@ public interface Buffer {
 	public enum Direction { Forward, Backward }
 
 	public SourceDocument getSourceDocument();
+	public ActionMap getActionMap();
 }

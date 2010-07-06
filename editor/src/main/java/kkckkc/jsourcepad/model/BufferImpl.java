@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.swing.ActionMap;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
@@ -566,7 +567,13 @@ public class BufferImpl implements Buffer {
 		}
     }
 
+	@Override
 	public SourceDocument getSourceDocument() {
 		return document;
 	}
+
+	@Override
+    public ActionMap getActionMap() {
+	    return textComponent.getActionMap();
+    }
 }

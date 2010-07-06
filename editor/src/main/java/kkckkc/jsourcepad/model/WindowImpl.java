@@ -7,6 +7,7 @@ import javax.script.ScriptEngineManager;
 import javax.swing.JFrame;
 
 import kkckkc.jsourcepad.ScopeRoot;
+import kkckkc.jsourcepad.model.bundle.MacroEngine;
 import kkckkc.jsourcepad.util.action.ActionManager;
 import kkckkc.jsourcepad.util.messagebus.AbstractMessageBus;
 import kkckkc.jsourcepad.util.messagebus.MessageBus;
@@ -100,6 +101,8 @@ public class WindowImpl extends AbstractMessageBus implements Window, MessageBus
     }
 
 
-
+	public MacroEngine getMacroEngine() {
+		return container.getBean(MacroEngine.class);
+	}
 
 }

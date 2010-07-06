@@ -4,6 +4,7 @@ import javax.script.ScriptEngine;
 import javax.swing.JFrame;
 
 import kkckkc.jsourcepad.ScopeRoot;
+import kkckkc.jsourcepad.model.bundle.MacroEngine;
 import kkckkc.jsourcepad.util.action.ActionManager;
 import kkckkc.jsourcepad.util.messagebus.MessageBus;
 
@@ -30,4 +31,5 @@ public interface Window extends MessageBus, ScopeRoot {
 	public FocusedComponentType getFocusedComponent();
 	public void setFocusedComponent(FocusedComponentType focusedComponent);
 
+	public MacroEngine getMacroEngine();
 }
