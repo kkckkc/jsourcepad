@@ -85,7 +85,7 @@ public class ProjectViewImpl extends JTree implements ProjectView, MouseListener
 //			e.printStackTrace();
 //		}
 
-        setFont(getFont().deriveFont(11f));
+//        setFont(getFont().deriveFont(11f));
 
 		addMouseListener(this);
 		
@@ -280,9 +280,9 @@ public class ProjectViewImpl extends JTree implements ProjectView, MouseListener
 	public static class FileTreeCellRenderer extends DefaultTreeCellRenderer {
 
 		public FileTreeCellRenderer() {
-			 setBackgroundNonSelectionColor(null); 
-			 setBackgroundSelectionColor(null);
-			 setBorderSelectionColor(null);
+//			 setBackgroundNonSelectionColor(null); 
+//			 setBackgroundSelectionColor(null);
+//			 setBorderSelectionColor(null);
 		}
 		
 	    public Component getTreeCellRendererComponent(
@@ -309,11 +309,11 @@ public class ProjectViewImpl extends JTree implements ProjectView, MouseListener
 	    
 		private Icon getNodeIcon(File file) {
 		    if (file.isDirectory()) {
-		    	return UIManager.getDefaults().getIcon("FileChooser.newFolderIcon");
-				// return new ImageIcon("/usr/share/icons/Human/16x16/places/folder.png");
+//		    	return UIManager.getDefaults().getIcon("FileChooser.newFolderIcon");
+				return new ImageIcon("/usr/share/icons/Human/16x16/places/folder.png");
 			} else {
-		    	return UIManager.getDefaults().getIcon("FileView.fileIcon");
-//				return new ImageIcon("/usr/share/icons/gnome/16x16/mimetypes/text-x-generic.png");
+//		    	return UIManager.getDefaults().getIcon("FileView.fileIcon");
+				return new ImageIcon("/usr/share/icons/gnome/16x16/mimetypes/text-x-generic.png");
 			}
 	    }
 
