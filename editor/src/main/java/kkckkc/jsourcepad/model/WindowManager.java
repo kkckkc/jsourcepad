@@ -2,6 +2,7 @@ package kkckkc.jsourcepad.model;
 
 import java.awt.Container;
 import java.io.File;
+import java.util.Collection;
 
 
 public interface WindowManager {
@@ -15,4 +16,6 @@ public interface WindowManager {
 	public Window newWindow(File baseDir);
 
 	public void closeWindow(Window window);
+	
+	public Collection<Window> getWindows();
 }

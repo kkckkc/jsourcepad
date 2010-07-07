@@ -2,6 +2,7 @@ package kkckkc.jsourcepad.model;
 
 import java.awt.Container;
 import java.io.File;
+import java.util.Collection;
 import java.util.Map;
 
 import javax.swing.JFrame;
@@ -68,4 +69,9 @@ public class WindowManagerImpl implements WindowManager {
 		openWindows.remove(window.getJFrame());
 		app.getMessageBus().topic(Listener.class).post().destroyed(window);
 	}
+
+	@Override
+    public Collection<Window> getWindows() {
+	    return openWindows.values();
+    }
 }
