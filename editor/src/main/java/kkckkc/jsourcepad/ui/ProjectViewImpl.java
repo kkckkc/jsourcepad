@@ -2,11 +2,6 @@ package kkckkc.jsourcepad.ui;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
@@ -20,13 +15,11 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
-import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.EventListenerList;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
-import javax.swing.plaf.TreeUI;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
@@ -37,6 +30,7 @@ import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.util.action.ActionGroup;
 import kkckkc.jsourcepad.util.action.MenuFactory;
 import kkckkc.jsourcepad.util.ui.PopupUtils;
+import kkckkc.syntaxpane.util.EnvironmentUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -71,21 +65,6 @@ public class ProjectViewImpl extends JTree implements ProjectView, MouseListener
         setModel(model);
 		setCellRenderer(new FileTreeCellRenderer());
         setShowsRootHandles(true);
-
-//        try {
-//			setUI((TreeUI) Class.forName("kkckkc.jsourcepad.theme.TigerTreeUI").newInstance());
-//		} catch (InstantiationException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IllegalAccessException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (ClassNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-
-//        setFont(getFont().deriveFont(11f));
 
 		addMouseListener(this);
 		
@@ -280,9 +259,11 @@ public class ProjectViewImpl extends JTree implements ProjectView, MouseListener
 	public static class FileTreeCellRenderer extends DefaultTreeCellRenderer {
 
 		public FileTreeCellRenderer() {
-//			 setBackgroundNonSelectionColor(null); 
-//			 setBackgroundSelectionColor(null);
-//			 setBorderSelectionColor(null);
+			if (EnvironmentUtils.isMac()) {
+				setBackgroundNonSelectionColor(null); 
+				setBackgroundSelectionColor(null);
+				setBorderSelectionColor(null);
+			}
 		}
 		
 	    public Component getTreeCellRendererComponent(
@@ -309,11 +290,17 @@ public class ProjectViewImpl extends JTree implements ProjectView, MouseListener
 	    
 		private Icon getNodeIcon(File file) {
 		    if (file.isDirectory()) {
-//		    	return UIManager.getDefaults().getIcon("FileChooser.newFolderIcon");
-				return new ImageIcon("/usr/share/icons/Human/16x16/places/folder.png");
+				if (EnvironmentUtils.isMac()) {
+					return UIManager.getDefaults().getIcon("FileChooser.newFolderIcon");
+				} else {
+					return new ImageIcon("/usr/share/icons/Human/16x16/places/folder.png");
+				}
 			} else {
-//		    	return UIManager.getDefaults().getIcon("FileView.fileIcon");
-				return new ImageIcon("/usr/share/icons/gnome/16x16/mimetypes/text-x-generic.png");
+				if (EnvironmentUtils.isMac()) {
+					return UIManager.getDefaults().getIcon("FileView.fileIcon");
+				} else {
+					return new ImageIcon("/usr/share/icons/gnome/16x16/mimetypes/text-x-generic.png");
+				}
 			}
 	    }
 
@@ -327,3 +314,5 @@ public class ProjectViewImpl extends JTree implements ProjectView, MouseListener
 }
 
 
+
+	

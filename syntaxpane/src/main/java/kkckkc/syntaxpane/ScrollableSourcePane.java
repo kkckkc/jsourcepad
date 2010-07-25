@@ -19,6 +19,7 @@ import kkckkc.syntaxpane.model.SourceDocument;
 import kkckkc.syntaxpane.parse.grammar.Language;
 import kkckkc.syntaxpane.parse.grammar.LanguageManager;
 import kkckkc.syntaxpane.style.StyleScheme;
+import kkckkc.syntaxpane.util.EnvironmentUtils;
 import kkckkc.syntaxpane.util.Wiring;
 
 
@@ -58,9 +59,11 @@ public class ScrollableSourcePane extends JPanel {
 		scrollPane.setRowHeaderView(rowHeaderPane);
 		scrollPane.setViewportBorder(null);
 		
-		setFont(new Font("Liberation Mono", Font.PLAIN, 12));
-//		setFont(new Font("Courier New", Font.PLAIN, 12));
-//		setFont(new Font("Monaco", Font.PLAIN, 12));
+		if (EnvironmentUtils.isMac()) {
+			setFont(new Font("Monaco", Font.PLAIN, 12));
+		} else {
+			setFont(new Font("Liberation Mono", Font.PLAIN, 12));
+		}
 		origBackground = super.getBackground();
 		setBackground(Color.WHITE);
 		setForeground(Color.BLACK);
