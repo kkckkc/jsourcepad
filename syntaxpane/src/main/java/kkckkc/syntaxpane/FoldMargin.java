@@ -3,8 +3,10 @@ package kkckkc.syntaxpane;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
@@ -67,6 +69,12 @@ public class FoldMargin extends JComponent implements PropertyChangeListener {
     }
 	
 	public void paintComponent(Graphics g) {
+		Graphics2D graphics2d = (Graphics2D) g;
+		graphics2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		graphics2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+				RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
+		graphics2d.setRenderingHint(RenderingHints.KEY_TEXT_LCD_CONTRAST, 200);
+
 		Rectangle drawHere = g.getClipBounds();
 		
 		g.setColor(getBackground());

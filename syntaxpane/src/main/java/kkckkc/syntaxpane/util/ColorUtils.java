@@ -7,13 +7,17 @@ public class ColorUtils {
 		return offset(base, 1);
 	}
 
-	private static final double FACTOR = 0.95;
+	private static final double FACTOR = 0.98;
 
 	private static Color darker(Color c) {
+		int r = c.getRed();
+		int g = c.getGreen();
+		int b = c.getBlue();
+
 		return new Color(
-				Math.max((int) (c.getRed() * FACTOR), 0), 
-				Math.max((int) (c.getGreen() * FACTOR), 0), 
-				Math.max((int) (c.getBlue() * FACTOR), 0));
+				Math.max(adjust(r, FACTOR), 0), 
+				Math.max(adjust(g, FACTOR), 0), 
+				Math.max(adjust(b, FACTOR), 0));
 	}
 
 	private static Color brighter(Color c) {
@@ -33,11 +37,23 @@ public class ColorUtils {
 			b = i;
 
 		return new Color(
-				Math.min((int) (r / FACTOR), 255), 
-				Math.min((int) (g / FACTOR), 255), 
-				Math.min((int) (b / FACTOR), 255));
+				Math.min(adjust(r, 1 / FACTOR), 255), 
+				Math.min(adjust(g, 1 / FACTOR), 255), 
+				Math.min(adjust(b, 1 / FACTOR), 255));
 	}
 
+	private static final int adjust(int color, double factor, double gamma) {
+		double c = ((double) color) / 255;
+		double gammaCorrectedC = Math.pow(c, gamma);
+		double gammaCorrectedAdjusted = gammaCorrectedC * factor;
+		double adjusted = Math.pow(gammaCorrectedAdjusted, 1 / gamma);
+		return (int) (adjusted * 255);
+	}
+		
+	private static final int adjust(int color, double factor) {
+		return adjust(color, factor, 1 / 2.2);
+	}
+	
 	public static Color offset(Color base, int amount) {
 		int red = base.getRed();
 		int green = base.getGreen();

@@ -4,8 +4,10 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -71,6 +73,11 @@ public class LineNumberMargin extends JComponent implements PropertyChangeListen
 	}
 
 	public void paintComponent(Graphics g) {
+		Graphics2D graphics2d = (Graphics2D) g;
+		graphics2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+				RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
+		graphics2d.setRenderingHint(RenderingHints.KEY_TEXT_LCD_CONTRAST, 200);
+
 		Rectangle drawHere = g.getClipBounds();
 
 		g.setColor(getBackground());
