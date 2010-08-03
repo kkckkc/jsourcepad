@@ -28,6 +28,11 @@
 				<null />
 				
 				<bean parent="lazyAction" p:action="action-window-exit" />
+
+
+				<bean parent="lazyAction" p:action="action-view-font-increase" />
+				<bean parent="lazyAction" p:action="action-view-font-decrease" />
+				<bean parent="lazyAction" p:action="action-window-exit" />
 			</list>
 		</property>
 	</bean>
@@ -108,6 +113,9 @@
 	<bean id="action-navigation-goto-symbol" class="kkckkc.jsourcepad.action.NavigationGotoSymbolAction" autowire="constructor"/>
 	<bean id="action-navigation-next-file-tab" class="kkckkc.jsourcepad.action.NavigationNextFileTabAction" autowire="constructor"/>
 	<bean id="action-navigation-previous-file-tab" class="kkckkc.jsourcepad.action.NavigationPreviousFileTabAction" autowire="constructor"/>
+
+	<bean id="action-view-font-increase" class="kkckkc.jsourcepad.action.ViewFontIncreaseAction" autowire="constructor"/>
+	<bean id="action-view-font-decrease" class="kkckkc.jsourcepad.action.ViewFontDecreaseAction" autowire="constructor"/>
 
 	<bean id="action-text-shift-left" class="kkckkc.jsourcepad.action.TextShiftLeftAction" autowire="constructor"/>
 	<bean id="action-text-shift-right" class="kkckkc.jsourcepad.action.TextShiftRightAction" autowire="constructor"/>

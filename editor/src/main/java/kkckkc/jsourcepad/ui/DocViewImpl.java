@@ -14,6 +14,7 @@ public class DocViewImpl implements DocView {
 
 	public DocViewImpl() {
 		sourcePane = createScrollableSource();
+		
 	}
 	
 	@Override

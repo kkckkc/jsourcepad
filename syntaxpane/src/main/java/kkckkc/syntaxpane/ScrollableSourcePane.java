@@ -58,12 +58,7 @@ public class ScrollableSourcePane extends JPanel {
 		
 		scrollPane.setRowHeaderView(rowHeaderPane);
 		scrollPane.setViewportBorder(null);
-		
-		if (EnvironmentUtils.isMac()) {
-			setFont(new Font("Monaco", Font.PLAIN, 12));
-		} else {
-			setFont(new Font("Liberation Mono", Font.PLAIN, 12));
-		}
+
 		origBackground = super.getBackground();
 		setBackground(Color.WHITE);
 		setForeground(Color.BLACK);

@@ -1,31 +1,25 @@
 package kkckkc.jsourcepad.ui;
 
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
 import javax.annotation.PostConstruct;
 import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 import kkckkc.jsourcepad.Presenter;
 import kkckkc.jsourcepad.action.text.IndentAction;
 import kkckkc.jsourcepad.action.text.TabAction;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Doc;
+import kkckkc.jsourcepad.model.FontSettings;
 import kkckkc.jsourcepad.model.StyleSettings;
 import kkckkc.jsourcepad.model.TabSettings;
 import kkckkc.jsourcepad.model.Window;
-import kkckkc.jsourcepad.model.Buffer.HighlightType;
 import kkckkc.jsourcepad.model.SettingsManager.Listener;
 import kkckkc.jsourcepad.model.SettingsManager.Setting;
 import kkckkc.jsourcepad.util.ui.CompoundUndoManager;
 import kkckkc.syntaxpane.ScrollableSourcePane;
-import kkckkc.syntaxpane.model.Interval;
-import kkckkc.syntaxpane.style.StyleBean;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -91,6 +85,7 @@ public class DocPresenter implements Presenter<DocView> {
 		WindowPresenter windowPresenter = doc.getDocList().getWindow().getPresenter(WindowPresenter.class);
 		windowPresenter.bindFocus(sourcePane.getEditorPane(), Window.FocusedComponentType.DOCUMENT);
 		
+		sourcePane.setFont(Application.get().getSettingsManager().get(FontSettings.class).asFont());
     }
 	
 	public String getTitle() {
@@ -105,6 +100,7 @@ public class DocPresenter implements Presenter<DocView> {
 		    // Init
 			settingUpdated(Application.get().getSettingsManager().get(TabSettings.class));
 			settingUpdated(Application.get().getSettingsManager().get(StyleSettings.class));
+			settingUpdated(Application.get().getSettingsManager().get(FontSettings.class));
 	    }
 
 	    @Override
@@ -115,6 +111,9 @@ public class DocPresenter implements Presenter<DocView> {
 	        } else if (settings instanceof StyleSettings) {
 	        	StyleSettings styleSettings = (StyleSettings) settings;
 	        	view.setStyleScheme(Application.get().getStyleScheme(styleSettings));
+	        } else if (settings instanceof FontSettings) {
+	        	FontSettings fontSettings = (FontSettings) settings;
+	        	view.getComponent().setFont(fontSettings.asFont());
 	        }
 
 	        view.redraw();
