@@ -8,6 +8,7 @@
   <groupId>kkckkc.jsourcepad</groupId>
   <artifactId>theme-osx</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  <name>theme-osx</name>
   <dependencies>
   	<dependency>
   		<groupId>kkckkc.jsourcepad</groupId>

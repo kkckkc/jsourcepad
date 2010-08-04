@@ -39,14 +39,14 @@ public class TigerTreeUI extends BasicTreeUI {
 		    g2d.setColor(lineColor);
 		    g2d.drawLine(0, bounds.y, tree.getWidth(), bounds.y);
 		}
-		// Do not call super. We don’t want the lines.
+		// Do not call super. We dont want the lines.
 	}
 
 	
 	
 	protected void paintVerticalPartOfLeg(Graphics g, Rectangle clipBounds,
 			Insets insets, TreePath path) {
-		// Do not call super. We don’t want the lines.
+		// Do not call super. We dont want the lines.
 	}
 
 	protected java.awt.event.MouseListener createMouseListener() {

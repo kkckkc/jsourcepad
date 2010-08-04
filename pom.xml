@@ -9,7 +9,7 @@
 	<name>jsourcepad Multi Project</name>
 	<url>http://maven.apache.org</url>
 	<modules>
-		<module>jsyntaxpane</module>
+		<module>syntaxpane</module>
 		<module>editor</module>
 		<module>theme-gtk</module>
 		<module>editor-package</module>
