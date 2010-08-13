@@ -350,8 +350,6 @@ public class Snippet {
 	    }
 
 		private void destroy() {
-			System.out.println("**** DESTROY ***");
-			
 	    	buffer.endRestrictedEditing();
 	    	
 	    	keymap.removeKeyStrokeBinding(KeyStroke.getKeyStroke(TAB));
