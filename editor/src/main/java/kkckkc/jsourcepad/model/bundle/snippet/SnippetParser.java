@@ -1,6 +1,5 @@
 package kkckkc.jsourcepad.model.bundle.snippet;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -8,10 +7,10 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.google.common.collect.Lists;
-
 import kkckkc.syntaxpane.regex.NamedPatternFactory;
 import kkckkc.syntaxpane.regex.PatternFactory;
+
+import com.google.common.collect.Lists;
 
 
 class SnippetParser {

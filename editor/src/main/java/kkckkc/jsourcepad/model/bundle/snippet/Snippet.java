@@ -4,9 +4,7 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -17,9 +15,6 @@ import javax.swing.Action;
 import javax.swing.KeyStroke;
 import javax.swing.event.DocumentEvent;
 import javax.swing.text.Keymap;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 import kkckkc.jsourcepad.model.Anchor;
 import kkckkc.jsourcepad.model.Application;
@@ -37,6 +32,9 @@ import kkckkc.jsourcepad.util.io.UISupportCallback;
 import kkckkc.jsourcepad.util.io.ScriptExecutor.Execution;
 import kkckkc.syntaxpane.model.Interval;
 import kkckkc.syntaxpane.util.Pair;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 public class Snippet {
 	
