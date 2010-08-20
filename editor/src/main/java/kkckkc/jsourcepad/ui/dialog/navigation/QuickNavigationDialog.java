@@ -19,7 +19,7 @@ import kkckkc.jsourcepad.model.Window;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class QuickNavigationDialog implements Dialog<QuickNavigationDialogView>, 
-	KeyListener, MouseListener {
+	KeyListener, MouseListener, ListSelectionListener {
 
 	private Window window;
 	private QuickNavigationDialogView view;
@@ -44,21 +44,21 @@ public class QuickNavigationDialog implements Dialog<QuickNavigationDialogView>,
 			}
 		});
 
-		view.getResult().addListSelectionListener(new ListSelectionListener() {
-			public void valueChanged(ListSelectionEvent e) {
-				File obj = (File) view.getResult().getSelectedValue();
-				if (obj == null) {
-					view.getPath().setText("Path: ");
-				} else {
-					view.getPath().setText("Path: " + 
-							window.getProject().getProjectRelativePath(obj.getParent()));
-				}
-			}
-		});
+		view.getResult().addListSelectionListener(this);
 		
 		view.getTextField().addKeyListener(this);
 		view.getResult().addKeyListener(this);
 		view.getResult().addMouseListener(this);
+	}
+	
+	public void valueChanged(ListSelectionEvent e) {
+		File obj = (File) view.getResult().getSelectedValue();
+		if (obj == null) {
+			view.getPath().setText("Path: ");
+		} else {
+			view.getPath().setText("Path: " + 
+					window.getProject().getProjectRelativePath(obj.getParent()));
+		}
 	}
 	
 	public void show() {
