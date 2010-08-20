@@ -1,5 +1,6 @@
 package kkckkc.jsourcepad.ui;
 
+import java.awt.Container;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.WindowAdapter;
@@ -30,10 +31,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class WindowPresenter implements Presenter<WindowView>, DocList.Listener {
 
-	private JFrame frame;
 	private Window window;
 	private WindowView windowView;
 	private BundleManager bundleManager;
+	private JFrame frame;
 	
 	@Autowired
 	public void setWindow(Window window) {
@@ -53,7 +54,7 @@ public class WindowPresenter implements Presenter<WindowView>, DocList.Listener 
 
 	@PostConstruct
     public void init() throws Exception {
-		frame = window.getJFrame();
+		frame = windowView.getJFrame();
 		frame.setTitle("JSourcePad");
 		
 		frame.setLocationRelativeTo(null);
@@ -115,6 +116,10 @@ public class WindowPresenter implements Presenter<WindowView>, DocList.Listener 
 	            window.setFocusedComponent(type);
             }
 		});
+    }
+
+	public Container getContainer() {
+	    return this.windowView.getJFrame();
     }
 
 	

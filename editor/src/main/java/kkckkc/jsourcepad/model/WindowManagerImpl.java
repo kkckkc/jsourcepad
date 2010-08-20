@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.swing.JFrame;
 
 import kkckkc.jsourcepad.theme.Theme;
+import kkckkc.jsourcepad.ui.WindowPresenter;
 import kkckkc.jsourcepad.util.BeanFactoryLoader;
 import kkckkc.jsourcepad.util.ui.ComponentUtils;
 
@@ -19,21 +20,15 @@ import com.google.common.collect.Maps;
 
 
 public class WindowManagerImpl implements WindowManager {
-	private Map<JFrame, Window> openWindows = Maps.newHashMap();
+	private Map<Container, Window> openWindows = Maps.newHashMap();
 	
 	// Collaborators
 	private Application app;
-	private Theme theme;
 	private BeanFactoryLoader beanFactoryLoader;
 
 	@Autowired
 	public void setApp(Application app) {
 	    this.app = app;
-    }
-	
-	@Autowired
-	public void setTheme(Theme theme) {
-	    this.theme = theme;
     }
 
 	@Autowired
@@ -49,16 +44,17 @@ public class WindowManagerImpl implements WindowManager {
 
 	@Override
 	public Window newWindow(File projectDir) {
-		JFrame frame = new JFrame();
 
 		DefaultListableBeanFactory container = 
 			beanFactoryLoader.load(BeanFactoryLoader.WINDOW, app);
 		
 		container.registerSingleton("projectDir", new ProjectRoot(projectDir));
-		container.registerSingleton("jFrame", frame);
 		
 		Window window = container.getBean("window", Window.class);
-		
+		Container frame = getContainer(window);
+
+		container.registerSingleton("frame", frame);
+
 		openWindows.put(frame, window);
 		app.getMessageBus().topic(Listener.class).post().created(window);
 		return window;
@@ -66,7 +62,7 @@ public class WindowManagerImpl implements WindowManager {
 
 	@Override
 	public void closeWindow(Window window) {
-		openWindows.remove(window.getJFrame());
+		openWindows.remove(getContainer(window));
 		app.getMessageBus().topic(Listener.class).post().destroyed(window);
 	}
 
@@ -74,4 +70,8 @@ public class WindowManagerImpl implements WindowManager {
     public Collection<Window> getWindows() {
 	    return openWindows.values();
     }
+	
+	public Container getContainer(Window window) {
+		return window.getPresenter(WindowPresenter.class).getContainer();
+	}
 }

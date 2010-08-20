@@ -23,18 +23,11 @@ public class WindowImpl extends AbstractMessageBus implements Window, MessageBus
 	private BeanFactory container;
 
 	// Collaborators
-	private JFrame jframe;
 	private ActionManager actionManager;
 
 	private FocusedComponentType focusedComponent;
 
 	private ScriptEngine scriptEngine;
-	
-	@Autowired
-	public void setJframe(JFrame jframe) {
-	    this.jframe = jframe;
-	    
-    }
 	
 	public ScriptEngine getScriptEngine() {
 		if (scriptEngine == null) {
@@ -55,12 +48,6 @@ public class WindowImpl extends AbstractMessageBus implements Window, MessageBus
 	    this.actionManager = actionManager;
     }
 	
-	
-	@Override
-	public JFrame getJFrame() {
-		return jframe;
-	}
-
 	@Override
 	public Project getProject() {
 		return container.getBean(Project.class);

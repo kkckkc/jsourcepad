@@ -10,6 +10,7 @@ import javax.swing.JTabbedPane;
 import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.DocList;
 import kkckkc.jsourcepad.model.Window;
+import kkckkc.jsourcepad.model.WindowManager;
 import kkckkc.jsourcepad.util.ui.PopupUtils;
 
 
@@ -17,17 +18,19 @@ import kkckkc.jsourcepad.util.ui.PopupUtils;
 public class TabCloseAction extends AbstractAction {
 	private DocList docList;
 	private Window window;
+	private WindowManager wm;
 
-	public TabCloseAction(Window window, DocList docList) {
+	public TabCloseAction(Window window, WindowManager wm, DocList docList) {
 		this.window = window;
 		this.docList = docList;
+		this.wm = wm;
 	}
 
 	public void actionPerformed(ActionEvent e) {
 		Point p = PopupUtils.getRequestedLocation(e);
 		if (p == null) {
 			if (docList.getActiveDoc().isModified()) {
-				int j = JOptionPane.showConfirmDialog(window.getJFrame(), "Not saved");
+				int j = JOptionPane.showConfirmDialog(wm.getContainer(window), "Not saved");
 				if (j == JOptionPane.CANCEL_OPTION) return;
 			}
 			docList.getActiveDoc().close();
@@ -38,7 +41,7 @@ public class TabCloseAction extends AbstractAction {
 			for (Doc doc : docList.getDocs()) {
 				if (i == tabIndex) {
 					if (doc.isModified()) {
-						int j = JOptionPane.showConfirmDialog(window.getJFrame(), "Not saved");
+						int j = JOptionPane.showConfirmDialog(wm.getContainer(window), "Not saved");
 						if (j == JOptionPane.CANCEL_OPTION) return;
 					}
 					doc.close();

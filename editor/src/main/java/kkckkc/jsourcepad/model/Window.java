@@ -21,7 +21,7 @@ public interface Window extends MessageBus, ScopeRoot {
 	}
 	
 	public Project getProject();
-	public JFrame getJFrame();
+	//public JFrame getJFrame();
 	public DocList getDocList();
 	public <T> T getPresenter(Class<? extends T> clazz);
 	public ActionManager getActionManager();

@@ -1,7 +1,7 @@
 package kkckkc.jsourcepad.util.io;
 
+import java.awt.Container;
 import java.awt.EventQueue;
-import java.awt.Frame;
 
 import javax.swing.JOptionPane;
 
@@ -13,14 +13,14 @@ import kkckkc.jsourcepad.util.io.ScriptExecutor.Execution;
 public class UISupportCallback implements Callback {
 	private ProgressDialog dialog;
 	private String title;
-	private Frame parent;
+	private Container parent;
 	
-	public UISupportCallback(Frame parent, String title) {
+	public UISupportCallback(Container parent, String title) {
 	    this.parent = parent;
 	    this.title = title;
     }
 
-	public UISupportCallback(Frame parent) {
+	public UISupportCallback(Container parent) {
 	    this(parent, "Executing Script...");
     }
 

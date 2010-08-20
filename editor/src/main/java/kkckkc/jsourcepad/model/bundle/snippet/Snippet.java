@@ -20,6 +20,7 @@ import kkckkc.jsourcepad.model.Anchor;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Buffer;
 import kkckkc.jsourcepad.model.Window;
+import kkckkc.jsourcepad.model.WindowManager;
 import kkckkc.jsourcepad.model.bundle.BundleItemSupplier;
 import kkckkc.jsourcepad.model.bundle.EnvironmentProvider;
 import kkckkc.jsourcepad.model.bundle.snippet.SnippetParser.Literal;
@@ -208,9 +209,11 @@ public class Snippet {
 
 	    @Override
 	    public void visit(Script script) {
+	    	WindowManager wm = Application.get().getWindowManager();
+	    	
 	        ScriptExecutor scriptExecutor = new ScriptExecutor(script.getBody(), Application.get().getThreadPool());
 	        try {
-	            Execution ex = scriptExecutor.execute(new UISupportCallback(window.getJFrame()), 
+	            Execution ex = scriptExecutor.execute(new UISupportCallback(wm.getContainer(window)), 
 	            		new StringReader(""), 
 	            		environment);
 	            

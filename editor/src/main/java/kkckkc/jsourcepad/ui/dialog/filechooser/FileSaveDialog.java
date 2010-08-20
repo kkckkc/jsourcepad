@@ -5,7 +5,9 @@ import java.io.File;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import kkckkc.jsourcepad.Dialog;
+import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
+import kkckkc.jsourcepad.model.WindowManager;
 
 public class FileSaveDialog implements Dialog<FileChooserView> {
 	private FileChooserView view;
@@ -22,7 +24,8 @@ public class FileSaveDialog implements Dialog<FileChooserView> {
 	}
 	
     public void show(File pwd, FileChooserCallback fileChooserCallback, boolean confirmOverwrite) {
-    	view.saveFile(window.getJFrame(), pwd, fileChooserCallback, confirmOverwrite);
+    	WindowManager wm = Application.get().getWindowManager();
+    	view.saveFile(wm.getContainer(window), pwd, fileChooserCallback, confirmOverwrite);
     }
 
 	@Override

@@ -5,7 +5,9 @@ import java.io.File;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import kkckkc.jsourcepad.Dialog;
+import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
+import kkckkc.jsourcepad.model.WindowManager;
 
 public class FileOpenDialog implements Dialog<FileChooserView> {
 	private FileChooserView view;
@@ -22,7 +24,8 @@ public class FileOpenDialog implements Dialog<FileChooserView> {
 	}
 	
     public void show(File pwd, FileChooserCallback fileChooserCallback) {
-    	view.openFile(window.getJFrame(), pwd, fileChooserCallback);
+    	WindowManager wm = Application.get().getWindowManager();
+    	view.openFile(wm.getContainer(window), pwd, fileChooserCallback);
     }
 
 	@Override

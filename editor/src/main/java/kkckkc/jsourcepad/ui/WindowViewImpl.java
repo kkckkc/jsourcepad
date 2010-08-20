@@ -29,6 +29,7 @@ public class WindowViewImpl implements WindowView {
 
 	private Window window;
 	private JMenuBar menubar;
+	private JFrame frame;
 	
 	@Autowired
 	public void setWindow(Window window) {
@@ -37,7 +38,7 @@ public class WindowViewImpl implements WindowView {
 	
 	@PostConstruct
 	public void init() {
-		JFrame frame = window.getJFrame();
+		frame = new JFrame();
 		
 		frame.setSize(900, 650);
 		
@@ -89,6 +90,10 @@ public class WindowViewImpl implements WindowView {
 	public JMenuBar getMenubar() {
 	    return menubar;
     }
+	
+	public JFrame getJFrame() {
+		return frame;
+	}
 	
 	protected JLabel delimiter() {
 	    JLabel jl = new JLabel("");

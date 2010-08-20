@@ -4,6 +4,8 @@ import java.awt.Container;
 import java.io.File;
 import java.util.Collection;
 
+import kkckkc.jsourcepad.ui.WindowPresenter;
+
 
 public interface WindowManager {
 	interface Listener {
@@ -18,4 +20,6 @@ public interface WindowManager {
 	public void closeWindow(Window window);
 	
 	public Collection<Window> getWindows();
+
+	public Container getContainer(Window window);
 }

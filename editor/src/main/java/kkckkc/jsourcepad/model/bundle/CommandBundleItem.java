@@ -17,6 +17,7 @@ import javax.swing.text.BadLocationException;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Buffer;
 import kkckkc.jsourcepad.model.Window;
+import kkckkc.jsourcepad.model.WindowManager;
 import kkckkc.jsourcepad.util.io.UISupportCallback;
 import kkckkc.jsourcepad.util.io.ScriptExecutor;
 import kkckkc.jsourcepad.util.io.ScriptExecutor.Execution;
@@ -71,16 +72,18 @@ public class CommandBundleItem implements BundleItem {
 	public void execute(Window window) throws Exception {
 		ScriptExecutor scriptExecutor = new ScriptExecutor(command, Application.get().getThreadPool());
 
-		ExecutionMethod executionMethod = createExecutionMethod(window);
+		WindowManager wm = Application.get().getWindowManager();
+		
+		ExecutionMethod executionMethod = createExecutionMethod(window, wm);
 		executionMethod.start(scriptExecutor, getInput(window), EnvironmentProvider.getEnvironment(window, bundleItemSupplier));
 	}
 
-	private ExecutionMethod createExecutionMethod(Window window) {
+	private ExecutionMethod createExecutionMethod(Window window, WindowManager wm) {
 	    ExecutionMethod outputMethod;
 	    if (OUTPUT_SHOW_AS_HTML.equals(output)) {
-	    	outputMethod = new HtmlExectuionMethod(window);
+	    	outputMethod = new HtmlExectuionMethod(window, wm);
 	    } else {
-	    	outputMethod = new DefaultExecutionMethod(output, window);
+	    	outputMethod = new DefaultExecutionMethod(output, window, wm);
 	    }
 	    return outputMethod;
     }
@@ -122,9 +125,11 @@ public class CommandBundleItem implements BundleItem {
 
 	public static class HtmlExectuionMethod implements ExecutionMethod {
 		private Window window;
+		private WindowManager wm;
 
-		public HtmlExectuionMethod(Window window) {
+		public HtmlExectuionMethod(Window window, WindowManager wm) {
 			this.window = window;
+			this.wm = wm;
 		}
 
 		@Override
@@ -147,7 +152,7 @@ public class CommandBundleItem implements BundleItem {
     					
     					final CountDownLatch cdl = new CountDownLatch(1);
     					
-    					scriptExecutor.execute(new UISupportCallback(window.getJFrame()) {
+    					scriptExecutor.execute(new UISupportCallback(wm.getContainer(window)) {
                             public void onAfterDone() {
 	            				cdl.countDown();
 	        					try {
@@ -176,21 +181,23 @@ public class CommandBundleItem implements BundleItem {
 	public static class DefaultExecutionMethod implements ExecutionMethod {
 		private String output;
 		private Window window;
+		private WindowManager wm;
 		
-		public DefaultExecutionMethod(String output, Window window) {
+		public DefaultExecutionMethod(String output, Window window, WindowManager wm) {
 			this.output = output;
 			this.window = window;
+			this.wm = wm;
 		}
 		
 		@Override
         public void start(ScriptExecutor scriptExecutor, String input, Map<String, String> environment) throws IOException {
-	        scriptExecutor.execute(new UISupportCallback(window.getJFrame()) {
+	        scriptExecutor.execute(new UISupportCallback(wm.getContainer(window)) {
                 public void onAfterSuccess(final Execution execution) {
                     String s = execution.getStdout();
                 	if (s == null) s = "";
 
         			if (OUTPUT_SHOW_AS_TOOLTIP.equals(output)) {
-        				JOptionPane.showMessageDialog(window.getJFrame(), s);
+        				JOptionPane.showMessageDialog(wm.getContainer(window), s);
         			} else if (OUTPUT_REPLACE_SELECTED_TEXT.equals(output)) {
         				Buffer buffer = window.getDocList().getActiveDoc().getActiveBuffer();
         				Interval selection = buffer.getSelection();

@@ -8,6 +8,7 @@ import java.util.HashMap;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Buffer;
 import kkckkc.jsourcepad.model.Window;
+import kkckkc.jsourcepad.model.WindowManager;
 import kkckkc.jsourcepad.util.io.ScriptExecutor;
 import kkckkc.jsourcepad.util.io.UISupportCallback;
 import kkckkc.jsourcepad.util.io.ScriptExecutor.Execution;
@@ -15,8 +16,11 @@ import kkckkc.syntaxpane.model.Interval;
 
 public class TextExecuteLineInsertingResultAction extends AbstractEditorAction {
 
-	public TextExecuteLineInsertingResultAction(Window window) {
+	private WindowManager wm;
+
+	public TextExecuteLineInsertingResultAction(Window window, WindowManager wm) {
 		super(window);
+		this.wm = wm;
 	}
 	
 	@Override
@@ -28,7 +32,7 @@ public class TextExecuteLineInsertingResultAction extends AbstractEditorAction {
 		
 		ScriptExecutor scriptExecutor = new ScriptExecutor(line, Application.get().getThreadPool());
 		try {
-	        scriptExecutor.execute(new UISupportCallback(window.getJFrame()) {
+	        scriptExecutor.execute(new UISupportCallback(wm.getContainer(window)) {
 	            public void onAfterFailure(Execution execution) {
 	            	b.replaceText(i, execution.getStdout(), null);
 	            }
