@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite skipped="0" tests="8" failures="0" errors="0" name="com.github.kkckkc.syntaxpane.parse.LineManagerTest" time="0.011">
+<testsuite skipped="0" tests="8" failures="0" errors="0" name="com.github.kkckkc.syntaxpane.parse.MutableLineManagerTest" time="0.011">
   <properties>
     <property value="IBM Corporation" name="java.vendor"/>
     <property value="local/magnus-laptop:@/tmp/.ICE-unix/4264,unix/magnus-laptop:/tmp/.ICE-unix/4264" name="env.SESSION_MANAGER"/>
@@ -135,12 +135,12 @@ GC   - 20090817_AA" name="java.fullversion"/>
     <property value="1.6" name="java.specification.version"/>
     <property value="scar" name="com.ibm.oti.configuration"/>
   </properties>
-  <testcase classname="com.github.kkckkc.syntaxpane.parse.LineManagerTest" name="testAddOneLine" time="0.002"/>
-  <testcase classname="com.github.kkckkc.syntaxpane.parse.LineManagerTest" name="testAddTwoLine" time="0"/>
-  <testcase classname="com.github.kkckkc.syntaxpane.parse.LineManagerTest" name="testAddLineInMiddle" time="0"/>
-  <testcase classname="com.github.kkckkc.syntaxpane.parse.LineManagerTest" name="testTextInLine" time="0.003"/>
-  <testcase classname="com.github.kkckkc.syntaxpane.parse.LineManagerTest" name="testAddLineInLine" time="0"/>
-  <testcase classname="com.github.kkckkc.syntaxpane.parse.LineManagerTest" name="testRemoveInLine" time="0.001"/>
-  <testcase classname="com.github.kkckkc.syntaxpane.parse.LineManagerTest" name="testRemoveCrossLine" time="0"/>
-  <testcase classname="com.github.kkckkc.syntaxpane.parse.LineManagerTest" name="testRemoveLine" time="0"/>
+  <testcase classname="com.github.kkckkc.syntaxpane.parse.MutableLineManagerTest" name="testAddOneLine" time="0.002"/>
+  <testcase classname="com.github.kkckkc.syntaxpane.parse.MutableLineManagerTest" name="testAddTwoLine" time="0"/>
+  <testcase classname="com.github.kkckkc.syntaxpane.parse.MutableLineManagerTest" name="testAddLineInMiddle" time="0"/>
+  <testcase classname="com.github.kkckkc.syntaxpane.parse.MutableLineManagerTest" name="testTextInLine" time="0.003"/>
+  <testcase classname="com.github.kkckkc.syntaxpane.parse.MutableLineManagerTest" name="testAddLineInLine" time="0"/>
+  <testcase classname="com.github.kkckkc.syntaxpane.parse.MutableLineManagerTest" name="testRemoveInLine" time="0.001"/>
+  <testcase classname="com.github.kkckkc.syntaxpane.parse.MutableLineManagerTest" name="testRemoveCrossLine" time="0"/>
+  <testcase classname="com.github.kkckkc.syntaxpane.parse.MutableLineManagerTest" name="testRemoveLine" time="0"/>
 </testsuite>

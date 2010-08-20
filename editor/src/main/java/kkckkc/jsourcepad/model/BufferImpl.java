@@ -568,8 +568,8 @@ public class BufferImpl implements Buffer {
     }
 
 	@Override
-	public SourceDocument getSourceDocument() {
-		return document;
+	public LineManager getLineManager() {
+		return document.getLineManager();
 	}
 
 	@Override

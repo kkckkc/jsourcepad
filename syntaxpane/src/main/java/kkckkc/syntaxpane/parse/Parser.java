@@ -5,6 +5,7 @@ import java.util.List;
 import kkckkc.syntaxpane.model.FoldManager;
 import kkckkc.syntaxpane.model.Interval;
 import kkckkc.syntaxpane.model.LineManager;
+import kkckkc.syntaxpane.model.MutableLineManager;
 import kkckkc.syntaxpane.model.Scope;
 import kkckkc.syntaxpane.model.LineManager.Line;
 import kkckkc.syntaxpane.parse.grammar.ContainerContext;
@@ -18,11 +19,11 @@ import kkckkc.syntaxpane.util.Pair;
 public class Parser {
 	public enum ChangeEvent { ADD, UPDATE, REMOVE }
 	
-	private LineManager lineManager;
+	private MutableLineManager lineManager;
 	private Language language;
 	private FoldManager foldManager;
 	
-	public Parser(Language language, LineManager lineManager, FoldManager foldManager) {
+	public Parser(Language language, MutableLineManager lineManager, FoldManager foldManager) {
 		this.language = language;
 		this.lineManager = lineManager;
 		this.foldManager = foldManager;

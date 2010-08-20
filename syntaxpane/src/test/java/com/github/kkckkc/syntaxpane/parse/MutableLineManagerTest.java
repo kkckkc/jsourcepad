@@ -2,20 +2,18 @@ package com.github.kkckkc.syntaxpane.parse;
 
 import java.util.Iterator;
 
-
-
 import junit.framework.TestCase;
 import kkckkc.syntaxpane.model.Interval;
-import kkckkc.syntaxpane.model.LineManager;
+import kkckkc.syntaxpane.model.MutableLineManager;
 import kkckkc.syntaxpane.model.LineManager.Line;
 import kkckkc.syntaxpane.parse.CharProvider;
  
-public class LineManagerTest extends TestCase {
+public class MutableLineManagerTest extends TestCase {
 	public void testAddOneLine() {
 		StringBuffer b = new StringBuffer("Lorem ipsum");
 		CharProvider p = new CharProvider.StringBuffer(b);
 		
-		LineManager lineManager = new LineManager(p);
+		MutableLineManager lineManager = new MutableLineManager(p);
 		lineManager.addInterval(new Interval(0, b.length()));
 		
 		assertState(lineManager, new Interval(0, 11));
@@ -25,7 +23,7 @@ public class LineManagerTest extends TestCase {
 		StringBuffer b = new StringBuffer("Lorem ipsum\ndolor sit amet");
 		CharProvider p = new CharProvider.StringBuffer(b);
 		
-		LineManager lineManager = new LineManager(p);
+		MutableLineManager lineManager = new MutableLineManager(p);
 		lineManager.addInterval(new Interval(0, b.length()));
 		
 		assertState(lineManager, new Interval(0, 11), new Interval(12, 26));
@@ -35,7 +33,7 @@ public class LineManagerTest extends TestCase {
 		StringBuffer b = new StringBuffer("Lorem ipsum\ndolor sit amet");
 		CharProvider p = new CharProvider.StringBuffer(b);
 		
-		LineManager lineManager = new LineManager(p);
+		MutableLineManager lineManager = new MutableLineManager(p);
 		lineManager.addInterval(new Interval(0, b.length()));
 		
 		b.insert(12, "consectetuer\n");
@@ -48,7 +46,7 @@ public class LineManagerTest extends TestCase {
 		StringBuffer b = new StringBuffer("Lorem ipsum\ndolor sit amet");
 		CharProvider p = new CharProvider.StringBuffer(b);
 		
-		LineManager lineManager = new LineManager(p);
+		MutableLineManager lineManager = new MutableLineManager(p);
 		lineManager.addInterval(new Interval(0, b.length()));
 		
 		b.insert(11, " consectetuer");
@@ -61,7 +59,7 @@ public class LineManagerTest extends TestCase {
 		StringBuffer b = new StringBuffer("Lorem ipsum\ndolor sit amet");
 		CharProvider p = new CharProvider.StringBuffer(b);
 		
-		LineManager lineManager = new LineManager(p);
+		MutableLineManager lineManager = new MutableLineManager(p);
 		lineManager.addInterval(new Interval(0, b.length()));
 		
 		b.insert(11, " consectetuer\ntest\n");
@@ -74,7 +72,7 @@ public class LineManagerTest extends TestCase {
 		StringBuffer b = new StringBuffer("Lorem ipsum dolor sit amet");
 		CharProvider p = new CharProvider.StringBuffer(b);
 		
-		LineManager lineManager = new LineManager(p);
+		MutableLineManager lineManager = new MutableLineManager(p);
 		lineManager.addInterval(new Interval(0, b.length()));
 		
 		b.delete(12, 18);
@@ -87,7 +85,7 @@ public class LineManagerTest extends TestCase {
 		StringBuffer b = new StringBuffer("Lorem ipsum\ndolor sit amet");
 		CharProvider p = new CharProvider.StringBuffer(b);
 		
-		LineManager lineManager = new LineManager(p);
+		MutableLineManager lineManager = new MutableLineManager(p);
 		lineManager.addInterval(new Interval(0, b.length()));
 		
 		b.delete(8, 18);
@@ -100,7 +98,7 @@ public class LineManagerTest extends TestCase {
 		StringBuffer b = new StringBuffer("\n\n\n");
 		CharProvider p = new CharProvider.StringBuffer(b);
 		
-		LineManager lineManager = new LineManager(p);
+		MutableLineManager lineManager = new MutableLineManager(p);
 		lineManager.addInterval(new Interval(0, b.length()));
 		
 		b.delete(2, 3);
@@ -109,7 +107,7 @@ public class LineManagerTest extends TestCase {
 		assertState(lineManager, new Interval(0, 0), new Interval(1, 1), new Interval(2, 2));
 	}
 	
-	private void assertState(LineManager lineManager, Interval... intervals) {
+	private void assertState(MutableLineManager lineManager, Interval... intervals) {
 		assertEquals(lineManager.size(), intervals.length);
 		
 		Iterator<Line> lines = lineManager.iterator();

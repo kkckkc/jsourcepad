@@ -10,7 +10,7 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 import kkckkc.syntaxpane.model.FoldManager;
-import kkckkc.syntaxpane.model.LineManager;
+import kkckkc.syntaxpane.model.MutableLineManager;
 import kkckkc.syntaxpane.parse.CharProvider;
 import kkckkc.syntaxpane.parse.Parser;
 import kkckkc.syntaxpane.parse.Parser.ChangeEvent;
@@ -66,7 +66,7 @@ public class ParserTest extends TestCase {
 		for (String[] f : ids) {
 			String input = FileUtils.readFile(BASE + parser + "/" + f[0]);
 			CharProvider pro = new CharProvider.StringBuffer(input);
-			LineManager lineManager = new LineManager(pro);
+			MutableLineManager lineManager = new MutableLineManager(pro);
 			Parser p = new Parser(l, lineManager, new FoldManager(lineManager));
 			p.parse(0, pro.getLength(), ChangeEvent.ADD);
 			
@@ -95,7 +95,7 @@ public class ParserTest extends TestCase {
 		StringBuffer b = new StringBuffer("Lorem ipsum \"dolor");
 	
 		CharProvider pro = new CharProvider.StringBuffer(b); 
-		LineManager lineManager = new LineManager(pro);
+		MutableLineManager lineManager = new MutableLineManager(pro);
 		Parser p = new Parser(l, lineManager, new FoldManager(lineManager));
 
 		p.parse(0, pro.getLength(), ChangeEvent.ADD);
@@ -124,7 +124,7 @@ public class ParserTest extends TestCase {
 		StringBuffer b = new StringBuffer("Lorem ipsum \"dolor\n");
 	
 		CharProvider pro = new CharProvider.StringBuffer(b); 
-		LineManager lineManager = new LineManager(pro);
+		MutableLineManager lineManager = new MutableLineManager(pro);
 		Parser p = new Parser(l, lineManager, new FoldManager(lineManager));
 
 		p.parse(0, pro.getLength(), ChangeEvent.ADD);
@@ -154,7 +154,7 @@ public class ParserTest extends TestCase {
 		StringBuffer b = new StringBuffer("Lorem ipsum \"dolor");
 	
 		CharProvider pro = new CharProvider.StringBuffer(b); 
-		LineManager lineManager = new LineManager(pro);
+		MutableLineManager lineManager = new MutableLineManager(pro);
 		Parser p = new Parser(l, lineManager, new FoldManager(lineManager));
 
 		p.parse(0, pro.getLength(), ChangeEvent.ADD);
@@ -189,7 +189,7 @@ public class ParserTest extends TestCase {
 		StringBuffer b = new StringBuffer("Lorem ipsum \"dolor\" sit amet");
 	
 		CharProvider pro = new CharProvider.StringBuffer(b); 
-		LineManager lineManager = new LineManager(pro);
+		MutableLineManager lineManager = new MutableLineManager(pro);
 		Parser p = new Parser(l, lineManager, new FoldManager(lineManager));
 
 		p.parse(0, pro.getLength(), ChangeEvent.ADD);
@@ -217,7 +217,7 @@ public class ParserTest extends TestCase {
 		StringBuffer b = new StringBuffer("pub\nlic");
 		
 		CharProvider pro = new CharProvider.StringBuffer(b); 
-		LineManager lineManager = new LineManager(pro);
+		MutableLineManager lineManager = new MutableLineManager(pro);
 		Parser p = new Parser(l, lineManager, new FoldManager(lineManager));
 
 		p.parse(0, pro.getLength(), ChangeEvent.ADD);
@@ -245,7 +245,7 @@ public class ParserTest extends TestCase {
 		StringBuffer b = new StringBuffer("/* Lorem\nIpsum\nDolor */");
 		
 		CharProvider pro = new CharProvider.StringBuffer(b); 
-		LineManager lineManager = new LineManager(pro);
+		MutableLineManager lineManager = new MutableLineManager(pro);
 		Parser p = new Parser(l, lineManager, new FoldManager(lineManager));
 
 		p.parse(0, pro.getLength(), ChangeEvent.ADD);
@@ -277,7 +277,7 @@ public class ParserTest extends TestCase {
 		StringBuffer b = new StringBuffer("x");
 		
 		CharProvider pro = new CharProvider.StringBuffer(b); 
-		LineManager lineManager = new LineManager(pro);
+		MutableLineManager lineManager = new MutableLineManager(pro);
 		Parser p = new Parser(l, lineManager, new FoldManager(lineManager));
 
 		p.parse(0, pro.getLength(), ChangeEvent.ADD);

@@ -77,6 +77,6 @@ public interface Buffer {
 	public enum FindType { Literal, Regexp } 
 	public enum Direction { Forward, Backward }
 
-	public SourceDocument getSourceDocument();
+	public LineManager getLineManager();
 	public ActionMap getActionMap();
 }
