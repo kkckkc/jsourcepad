@@ -9,16 +9,19 @@ public class DocListViewImpl implements DocListView {
 	JTabbedPane tabbedPane;
 
     public DocListViewImpl() {
-		tabbedPane = createTabbedPane();
-		tabbedPane.setPreferredSize(new Dimension(200, 0));
     }
 
 	protected JTabbedPane createTabbedPane() {
-	    return new JTabbedPane();
+	    tabbedPane = new JTabbedPane();
+		tabbedPane.setPreferredSize(new Dimension(200, 0));
+		return tabbedPane;
     }
 
 	public JTabbedPane getTabbedPane() {
-	    return tabbedPane;
+		if (tabbedPane == null) {
+			tabbedPane = createTabbedPane();
+		}
+		return tabbedPane;
     }
 	
 }

@@ -40,7 +40,7 @@ public class ProjectViewImpl extends JTree implements ProjectView, MouseListener
 	private static final long serialVersionUID = 1L;
 	private DocList docList;
 	private Project project;
-	private Window window;
+	protected Window window;
 	private FileTreeModel model;
 	
 	@Autowired

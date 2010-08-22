@@ -23,6 +23,8 @@ public class DocumentTabbedPaneUI extends BasicTabbedPaneUI {
 	private FontMetrics boldFontMetrics;
 	private Color fillColor;
 
+	private boolean focused = true;
+
 	public static ComponentUI createUI(JComponent c) {
 		return new DocumentTabbedPaneUI();
 	}
@@ -77,6 +79,16 @@ public class DocumentTabbedPaneUI extends BasicTabbedPaneUI {
 		if (isSelected) {
 			c1 = new Color(182, 182, 182);
 			c2 = new Color(152, 152, 152);
+		}
+		
+		if (! focused) {
+			if (isSelected) {
+				c1 = new Color(207, 207, 207);
+				c2 = new Color(187, 187, 187);
+			} else {
+				c1 = new Color(222, 222, 222);
+				c2 = new Color(199, 199, 199);
+			}
 		}
 		
 		GradientPaint gradient = new GradientPaint(0,0,c1,0,h,c2,true);
@@ -182,7 +194,7 @@ public class DocumentTabbedPaneUI extends BasicTabbedPaneUI {
 		if (tabPane.isEnabled() && tabPane.isEnabledAt(tabIndex)) {
 			Color fg = new Color(68, 68, 68);
 			Color shadow = new Color(220, 220, 220);
-			if (isSelected) {
+			if (isSelected && focused) {
 				fg = Color.black;
 				shadow = new Color(192, 192, 192);
 			}
@@ -209,5 +221,9 @@ public class DocumentTabbedPaneUI extends BasicTabbedPaneUI {
 	
 	protected int getTabLabelShiftY (int tabPlacement, int tabIndex, boolean isSelected) {
 		return 0;
+	}
+
+	public void setFocused(boolean focused) {
+		this.focused  = focused;
 	}
 }
