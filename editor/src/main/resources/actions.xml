@@ -52,8 +52,15 @@
 	<bean id="action-group-view-menu" class="kkckkc.jsourcepad.util.action.ActionGroup">
 		<property name="items">
 			<list>
-				<bean parent="lazyAction" p:action="action-view-font-increase" />
-				<bean parent="lazyAction" p:action="action-view-font-decrease" />
+				<bean class="kkckkc.jsourcepad.util.action.ActionGroup">
+					<constructor-arg><value>Font</value></constructor-arg>
+					<property name="items">
+						<list>
+							<bean parent="lazyAction" p:action="action-view-font-increase" />
+							<bean parent="lazyAction" p:action="action-view-font-decrease" />
+						</list>
+					</property>
+				</bean>
 				
 				<null />
 				<bean parent="lazyAction" p:action="action-view-fullscreen" />
