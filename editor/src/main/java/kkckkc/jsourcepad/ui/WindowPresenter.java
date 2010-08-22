@@ -81,6 +81,7 @@ public class WindowPresenter implements Presenter<WindowView>, DocList.Listener 
 
 		mb.add(menuFactory.buildMenu("File", window.getActionManager().getActionGroup("file-menu"), null, false));
 		mb.add(menuFactory.buildMenu("Edit", window.getActionManager().getActionGroup("edit-menu"), null, false));
+		mb.add(menuFactory.buildMenu("View", window.getActionManager().getActionGroup("view-menu"), null, false));
 		mb.add(menuFactory.buildMenu("Text", window.getActionManager().getActionGroup("text-menu"), null, false));
 		mb.add(menuFactory.buildMenu("Navigation", window.getActionManager().getActionGroup("navigation-menu"), null, false));
 		mb.add(menuFactory.buildMenu("Bundles", bundleManager.getBundleActionGroup(), new MenuFactory.ItemBuilder() {
