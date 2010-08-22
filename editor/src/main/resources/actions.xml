@@ -46,6 +46,14 @@
 		</property>
 	</bean>
 
+	<bean id="action-group-view-menu" class="kkckkc.jsourcepad.util.action.ActionGroup">
+		<property name="items">
+			<list>
+				<bean parent="lazyAction" p:action="action-view-fullscreen" />
+			</list>
+		</property>
+	</bean>
+
 	<bean id="action-group-navigation-menu" class="kkckkc.jsourcepad.util.action.ActionGroup">
 		<property name="items">
 			<list>
@@ -120,6 +128,8 @@
 	<bean id="action-edit-cut" class="kkckkc.jsourcepad.action.EditCutAction" autowire="constructor"/>
 	<bean id="action-edit-copy" class="kkckkc.jsourcepad.action.EditCopyAction" autowire="constructor"/>
 	<bean id="action-edit-paste" class="kkckkc.jsourcepad.action.EditPasteAction" autowire="constructor"/>
+
+	<bean id="action-view-fullscreen" class="kkckkc.jsourcepad.action.ViewFullscreenAction" autowire="constructor"/>
 
 	<bean id="action-window-new" class="kkckkc.jsourcepad.action.WindowNewAction" autowire="constructor"/>
 	<bean id="action-window-close" class="kkckkc.jsourcepad.action.WindowCloseAction" autowire="constructor"/>
