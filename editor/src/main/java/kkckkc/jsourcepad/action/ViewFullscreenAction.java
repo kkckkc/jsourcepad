@@ -1,6 +1,7 @@
 package kkckkc.jsourcepad.action;
 
 import java.awt.AWTEvent;
+import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.EventQueue;
 import java.awt.Image;
@@ -17,6 +18,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 
+import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
 
 // see http://code.google.com/p/bookjar-utils/source/browse/BookJar-utils/src/util/swing/components/FullScreenFrame.java?r=152&spec=svn194
@@ -46,7 +48,8 @@ public class ViewFullscreenAction extends AbstractAction {
 
 	private class HideMouse implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			w.getJFrame().setCursor(emptyCursor);
+			Container c = Application.get().getWindowManager().getContainer(w);
+			c.setCursor(emptyCursor);
 		}
 	}
 
@@ -55,7 +58,8 @@ public class ViewFullscreenAction extends AbstractAction {
 	private class HideMouseStart implements AWTEventListener {
 		public void eventDispatched(AWTEvent e) {
 			if (MAXIMIZED) {
-				w.getJFrame().setCursor(Cursor.getDefaultCursor());
+				Container c = Application.get().getWindowManager().getContainer(w);
+				c.setCursor(Cursor.getDefaultCursor());
 				timeToHideMouse.restart();
 				timeToHideMouse.setRepeats(false);
 			}
@@ -67,7 +71,7 @@ public class ViewFullscreenAction extends AbstractAction {
 		boolean setFull = !MAXIMIZED;
 
 		if (setFull != MAXIMIZED) {
-			final JFrame jf = w.getJFrame();
+			final JFrame jf = (JFrame) Application.get().getWindowManager().getContainer(w);
 			// stop processing window events now
 			PROCESS_WINDOW_EVENTS = false;
 			final boolean wasVisible = jf.isVisible();

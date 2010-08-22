@@ -30,8 +30,6 @@
 				<bean parent="lazyAction" p:action="action-window-exit" />
 
 
-				<bean parent="lazyAction" p:action="action-view-font-increase" />
-				<bean parent="lazyAction" p:action="action-view-font-decrease" />
 				<bean parent="lazyAction" p:action="action-window-exit" />
 			</list>
 		</property>
@@ -54,6 +52,10 @@
 	<bean id="action-group-view-menu" class="kkckkc.jsourcepad.util.action.ActionGroup">
 		<property name="items">
 			<list>
+				<bean parent="lazyAction" p:action="action-view-font-increase" />
+				<bean parent="lazyAction" p:action="action-view-font-decrease" />
+				
+				<null />
 				<bean parent="lazyAction" p:action="action-view-fullscreen" />
 			</list>
 		</property>

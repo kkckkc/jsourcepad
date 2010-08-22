@@ -23,8 +23,7 @@ public class SymbolList {
 	public List<Pair<String, Integer>> getSymbols() {
 		List<Pair<String, Integer>> symbols = Lists.newArrayList();
 
-		SourceDocument sd = buffer.getSourceDocument();
-		LineManager lm = sd.getLineManager();
+		LineManager lm = buffer.getLineManager();
 		Line l = lm.getLineByPosition(0);
 		while (l != null) {
 			Scope root = l.getScope().getRoot();

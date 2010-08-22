@@ -19,11 +19,11 @@ public class SourceDocument extends PlainDocument {
 	private static final long serialVersionUID = 1L;
 
 	private Parser parser;
-	private LineManager lineManager;
+	private MutableLineManager lineManager;
 	private FoldManager foldManager;
 	
 	public SourceDocument() {
-		this.lineManager = new LineManager(new ContentCharProvider(getContent()));
+		this.lineManager = new MutableLineManager(new ContentCharProvider(getContent()));
 		this.foldManager = new FoldManager(this.lineManager);
 
 		putProperty(PlainDocument.tabSizeAttribute, 4);
