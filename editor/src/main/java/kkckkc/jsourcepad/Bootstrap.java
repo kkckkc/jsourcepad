@@ -42,7 +42,9 @@ public class Bootstrap implements Runnable {
 	
 	public static void main(String... args) throws IOException {
         logger.info("Initializing");
-        
+
+        PerformanceLogger.get().enter(Bootstrap.class.getName() + "#init");
+
 		ThreadGroup tg = new ThreadGroup("Editor") {
 			public void uncaughtException(Thread t, Throwable e) {
 				super.uncaughtException(t, e);
@@ -65,8 +67,13 @@ public class Bootstrap implements Runnable {
 	public Bootstrap() {
 		SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
             protected Void doInBackground() throws Exception {
+                PerformanceLogger.get().enter(this, "bundleManager");
+
         		BundleManager bm = Application.get().getBundleManager();
         		bm.getBundles();
+
+                PerformanceLogger.get().exit();
+
 	            return null;
             }
 		};
@@ -162,5 +169,7 @@ public class Bootstrap implements Runnable {
 		});
 
         HttpServer server = Application.get().getHttpServer();
+
+        PerformanceLogger.get().exit();
 	}
 }

@@ -6,6 +6,7 @@ import java.beans.PropertyChangeListener;
 import java.util.Properties;
 
 import javax.swing.Action;
+import kkckkc.jsourcepad.util.PerformanceLogger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

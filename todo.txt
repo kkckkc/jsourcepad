@@ -1,5 +1,5 @@
 [ ] Focus on open tab
-[Ê]ÊDouble exit actions
-[ ] Test to remove lazy actions and see if it improves performance
+[x]ÊDouble exit actions
+[x] Test to remove lazy actions and see if it improves performance
 [X] Fold indicator alignment on OSX
 [X] Line numbers alignment on OSX
