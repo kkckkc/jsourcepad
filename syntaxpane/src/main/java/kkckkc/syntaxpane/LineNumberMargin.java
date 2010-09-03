@@ -46,7 +46,7 @@ public class LineNumberMargin extends JComponent implements PropertyChangeListen
 		Wiring.wire(editorPane, this, true, "font");
 
 		setPreferredWidth(99);
-	}
+    }
 
 	public void setPreferredWidth(int lines) {
 		int digits = String.valueOf(lines).length();
@@ -100,8 +100,9 @@ public class LineNumberMargin extends JComponent implements PropertyChangeListen
 					String lineNumber = String.valueOf(startLine.getIdx() + 1);
 					int stringWidth = fontMetrics.stringWidth(lineNumber);
 					int rowWidth = getSize().width;
+                    
 					g.drawString(lineNumber, rowWidth - stringWidth - MARGIN, 
-							((foldManager.toVisibleIndex(startLine.getIdx()) + 1) * fontHeight));
+							((foldManager.toVisibleIndex(startLine.getIdx()) + 1) * fontHeight) - (fontHeight - fontAscent));
 					--max;
 				}
 				
