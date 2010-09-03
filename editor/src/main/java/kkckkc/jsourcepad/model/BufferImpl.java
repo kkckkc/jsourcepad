@@ -21,6 +21,7 @@ import javax.swing.text.Highlighter.HighlightPainter;
 
 import kkckkc.jsourcepad.model.Doc.InsertionPointListener;
 import kkckkc.jsourcepad.model.Doc.StateListener;
+import kkckkc.jsourcepad.model.Finder.Options;
 import kkckkc.jsourcepad.model.bundle.BundleManager;
 import kkckkc.jsourcepad.model.bundle.PrefKeys;
 import kkckkc.syntaxpane.model.Interval;
@@ -56,7 +57,9 @@ public class BufferImpl implements Buffer {
 	private ChangeListener restrictedChangeListener;
 	private DocumentListener restrictedDocumentListener;
 	private CharacterPairsHandler characterPairsHandler;
-	
+
+    // Search and replace
+    private Finder finder;
 
 	public BufferImpl(SourceDocument d, Doc doc, Window window) {
 		this.window = window;
@@ -78,6 +81,7 @@ public class BufferImpl implements Buffer {
 	    this.textComponent = jtc;
 	    
 	    this.caret.addChangeListener(new ChangeListener() {
+            @Override
 			public void stateChanged(ChangeEvent e) {
 				if (caret.getDot() == caret.getMark()) {
 					if (insertionPoint == null || insertionPoint.getPosition() != caret.getDot() || selection != null) {
@@ -144,6 +148,7 @@ public class BufferImpl implements Buffer {
 		return selection;
 	}
 
+    @Override
 	public Interval getSelectionOrCurrentLine() {
 		if (selection != null && ! selection.isEmpty()) return selection;
 		
@@ -190,6 +195,7 @@ public class BufferImpl implements Buffer {
 		window.topic(Buffer.BufferStateListener.class).post().stateModified(this);
 	}
 	
+    @Override
 	public Language getLanguage() {
 		return document.getLanguage();
 	}
@@ -351,6 +357,16 @@ public class BufferImpl implements Buffer {
 			if (line == null) break;
 		}
 	}
+
+    @Override
+    public Finder getFinder() {
+        return this.finder;
+    }
+
+    @Override
+    public Finder newFinder(Interval scope, String searchFor, Options options) {
+        return (this.finder = new Finder(this, scope, searchFor, options));
+    }
 	
 	
 	class DocumentStateListener implements DocumentListener {
@@ -364,14 +380,17 @@ public class BufferImpl implements Buffer {
 			this.disabled = false;
 		}
 		
+        @Override
 		public void removeUpdate(DocumentEvent e) {
 			modify();
 		}
 		
+        @Override
 		public void insertUpdate(DocumentEvent e) {
 			modify();
 		}
 		
+        @Override
 		public void changedUpdate(DocumentEvent e) {
 		}
 		
@@ -406,20 +425,24 @@ public class BufferImpl implements Buffer {
 		restrictedEditor.init(textComponent.getKeymap());
 		
 		restrictedChangeListener = new ChangeListener() {
+            @Override
 			public void stateChanged(ChangeEvent e) {
 				restrictedEditor.caretPositionChanged(caret.getDot());
 			}
 		};
 		
 		restrictedDocumentListener = new DocumentListener() {
+            @Override
 			public void removeUpdate(DocumentEvent e) {
 				restrictedEditor.textChanged(e);
 			}
 			
+            @Override
 			public void insertUpdate(DocumentEvent e) {
 				restrictedEditor.textChanged(e);
 			}
 			
+            @Override
 			public void changedUpdate(DocumentEvent e) {
 			}
 		};
@@ -534,6 +557,7 @@ public class BufferImpl implements Buffer {
 			});
 
 			return new Highlight() {
+                @Override
                 public void clear() {
 	                textComponent.getHighlighter().removeHighlight(o);
                 }

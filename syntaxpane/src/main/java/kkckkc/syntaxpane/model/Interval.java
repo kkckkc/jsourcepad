@@ -1,6 +1,7 @@
 package kkckkc.syntaxpane.model;
 
 public class Interval implements Comparable<Interval> {
+
 	protected int start;
 	protected int end;
 	
@@ -76,4 +77,9 @@ public class Interval implements Comparable<Interval> {
 	public static Interval createEmpty(int start) {
 	    return createWithLength(start, 0);
     }
+
+    public static Interval offset(Interval interval, int offset) {
+        return new Interval(interval.getStart() + offset, interval.getEnd() + offset);
+    }
+
 }

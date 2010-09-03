@@ -79,4 +79,8 @@ public interface Buffer {
 
 	public LineManager getLineManager();
 	public ActionMap getActionMap();
+
+    public Finder getFinder();
+    public Finder newFinder(Interval scope, String searchFor, Finder.Options options);
+
 }

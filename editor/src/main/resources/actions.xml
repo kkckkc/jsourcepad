@@ -45,6 +45,19 @@
 				<bean parent="lazyAction" p:action="action-edit-cut" />
 				<bean parent="lazyAction" p:action="action-edit-copy" />
 				<bean parent="lazyAction" p:action="action-edit-paste" />
+
+                <null />
+                <bean class="kkckkc.jsourcepad.util.action.ActionGroup">
+					<constructor-arg><value>Find</value></constructor-arg>
+					<property name="items">
+						<list>
+							<bean parent="lazyAction" p:action="action-edit-find-find" />
+                            <null />
+							<bean parent="lazyAction" p:action="action-edit-find-next" />
+							<bean parent="lazyAction" p:action="action-edit-find-previous" />
+						</list>
+					</property>
+				</bean>
 			</list>
 		</property>
 	</bean>
@@ -145,6 +158,9 @@
 	<bean id="action-edit-cut" class="kkckkc.jsourcepad.action.EditCutAction" autowire="constructor"/>
 	<bean id="action-edit-copy" class="kkckkc.jsourcepad.action.EditCopyAction" autowire="constructor"/>
 	<bean id="action-edit-paste" class="kkckkc.jsourcepad.action.EditPasteAction" autowire="constructor"/>
+	<bean id="action-edit-find-find" class="kkckkc.jsourcepad.action.EditFindAction" autowire="constructor"/>
+	<bean id="action-edit-find-next" class="kkckkc.jsourcepad.action.EditFindNextAction" autowire="constructor"/>
+	<bean id="action-edit-find-previous" class="kkckkc.jsourcepad.action.EditFindPreviousAction" autowire="constructor"/>
 
 	<bean id="action-view-fullscreen" class="kkckkc.jsourcepad.action.ViewFullscreenAction" autowire="constructor"/>
 
