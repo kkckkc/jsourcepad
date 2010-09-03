@@ -1,0 +1,9 @@
+*.jar
+*.class
+
+.settings
+.project
+.classpath
+target
+nbactions.xml
+nb-configuration.xml
