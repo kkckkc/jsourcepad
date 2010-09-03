@@ -21,7 +21,6 @@ import kkckkc.syntaxpane.model.LineManager;
 import kkckkc.syntaxpane.model.SourceDocument;
 import kkckkc.syntaxpane.model.FoldManager.FoldListener;
 import kkckkc.syntaxpane.model.LineManager.Line;
-import kkckkc.syntaxpane.util.ColorUtils;
 import kkckkc.syntaxpane.util.Wiring;
 
 
@@ -90,7 +89,7 @@ public class FoldMargin extends JComponent implements PropertyChangeListener {
 		Line endLine = document.getLineManager().getLineByPosition(endPos);
 
 		int h = g.getFontMetrics().getHeight();
-
+ 
 		if (startLine != null && endLine != null) {
 			LineManager lineManager = document.getLineManager();
 			do {
@@ -98,7 +97,7 @@ public class FoldMargin extends JComponent implements PropertyChangeListener {
 				if (s == FoldManager.State.FOLDABLE || s == FoldManager.State.FOLDED_FIRST_LINE) {
 					g.setColor(getForeground());
 
-					int yo = document.getFoldManager().toVisibleIndex(startLine.getIdx()) * h + 7;
+					int yo = document.getFoldManager().toVisibleIndex(startLine.getIdx()) * h + (h / 2) - 3;
 					if (s == FoldManager.State.FOLDED_FIRST_LINE) {
 						paintFoldedFoldMark(g, yo);
 					} else {

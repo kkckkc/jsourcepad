@@ -1,3 +1,4 @@
 [ ] Focus on open tab
-[ ] Fold indicator alignment on OSX
+[Ê]ÊDouble exit actions
+[X] Fold indicator alignment on OSX
 [X] Line numbers alignment on OSX
