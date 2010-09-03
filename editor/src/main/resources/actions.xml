@@ -28,9 +28,6 @@
 				<null />
 				
 				<bean parent="lazyAction" p:action="action-window-exit" />
-
-
-				<bean parent="lazyAction" p:action="action-window-exit" />
 			</list>
 		</property>
 	</bean>
