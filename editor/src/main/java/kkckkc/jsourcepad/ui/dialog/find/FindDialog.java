@@ -19,16 +19,6 @@ import kkckkc.syntaxpane.model.Interval;
 import kkckkc.syntaxpane.model.LineManager;
 import org.springframework.beans.factory.annotation.Autowired;
 
-/*
- * TODO
- *  [x] Keep history
- *  [x] Replace
- *  [x] Replace all
- *  [x]ÊFind Next
- *  [x]ÊFind Previous
- *  [Ê]ÊEnter and other keyboard shortcuts
- *
- */
 public class FindDialog implements Dialog<FindDialogView> {
 
     private FindDialogView view;
