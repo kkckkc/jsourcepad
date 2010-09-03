@@ -77,8 +77,6 @@ public class Bootstrap implements Runnable {
 	
 	@Override
 	public void run() {
-		HttpServer server = Application.get().getHttpServer();
-		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				// Create new window
@@ -160,7 +158,9 @@ public class Bootstrap implements Runnable {
         				return false;
         			}
         		});
-			}
+            }
 		});
+
+        HttpServer server = Application.get().getHttpServer();
 	}
 }
