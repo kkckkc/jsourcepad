@@ -2,6 +2,7 @@ package kkckkc.jsourcepad.util;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import org.springframework.beans.factory.BeanDefinitionStoreException;
 
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
@@ -16,8 +17,31 @@ import kkckkc.jsourcepad.ScopeRoot;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.theme.Theme;
+import kkckkc.syntaxpane.util.DomUtil;
+import org.springframework.beans.factory.xml.DefaultDocumentLoader;
+import org.springframework.beans.factory.xml.DocumentLoader;
+import org.w3c.dom.Document;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
 
 public class BeanFactoryLoader {
+    private static final FastDocumentLoader FAST_DOCUMENT_LOADER = new FastDocumentLoader();
+
+    private void loadThemeXml(Scope<?> scope, XmlBeanDefinitionReader xmlBeanDefinitionReader) throws BeanDefinitionStoreException {
+        Theme theme = Application.get().getTheme();
+        Resource themeResource = theme.getOverridesLocation(scope);
+        if (themeResource != null) {
+            xmlBeanDefinitionReader.loadBeanDefinitions(themeResource);
+        }
+    }
+
+    private void loadXml(XmlBeanDefinitionReader xmlBeanDefinitionReader, Scope<?> scope) throws BeanDefinitionStoreException {
+        // Improve performance by reusing XML parsers
+        xmlBeanDefinitionReader.setDocumentLoader(FAST_DOCUMENT_LOADER);
+        xmlBeanDefinitionReader.loadBeanDefinitions(new ClassPathResource(scope.getResource()));
+    }
+
 	public interface Scope<P> { 
 		public String getResource();
 	}
@@ -69,19 +93,22 @@ public class BeanFactoryLoader {
 		
 		
 		XmlBeanDefinitionReader xmlBeanDefinitionReader = new XmlBeanDefinitionReader(container);
-		xmlBeanDefinitionReader.loadBeanDefinitions(new ClassPathResource(scope.getResource()));
+        
+		loadXml(xmlBeanDefinitionReader, scope);
 
 		// Load theme overrides
 		if (parent != null) {
-			Theme theme = Application.get().getTheme();
-			Resource themeResource = theme.getOverridesLocation(scope);
-			if (themeResource != null) {
-				xmlBeanDefinitionReader.loadBeanDefinitions(themeResource);
-			}
+            loadThemeXml(scope, xmlBeanDefinitionReader);
 		}
 		
 		PerformanceLogger.get().exit();
 		
 		return container;
 	}
+
+    private static class FastDocumentLoader implements DocumentLoader {
+        public Document loadDocument(InputSource inputSource, EntityResolver entityResolver, ErrorHandler errorHandler, int validationMode, boolean namespaceAware) throws Exception {
+            return DomUtil.parse(inputSource);
+        }
+    }
 }

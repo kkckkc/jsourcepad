@@ -17,7 +17,7 @@ public class OsxTheme implements Theme {
 	public OsxTheme() {
 		System.setProperty("apple.laf.useScreenMenuBar", "true");
 		
-		UIDefaults defaults = UIManager.getDefaults( );
+		//UIDefaults defaults = UIManager.getDefaults( );
 		//defaults.put( "TabbedPane.useSmallLayout", Boolean.TRUE );
 	}
 	

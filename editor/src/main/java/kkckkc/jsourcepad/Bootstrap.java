@@ -103,70 +103,9 @@ public class Bootstrap implements Runnable {
                 final BundleManager bundleManager = Application.get().getBundleManager();
                 
         		KeyboardFocusManager focusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
-        		focusManager.addKeyEventDispatcher(new KeyEventDispatcher() {
-                    public boolean dispatchKeyEvent(final KeyEvent e) {
-        				if (e.getID() == KeyEvent.KEY_RELEASED)
-        					return false;
-        				
-        				if (e.getKeyCode() == KeyEvent.VK_CONTROL || 
-        					e.getKeyCode() == KeyEvent.VK_SHIFT ||
-        					e.getKeyCode() == KeyEvent.VK_META || 
-        					e.getKeyCode() == KeyEvent.VK_META  || 
-        					e.getKeyCode() == KeyEvent.VK_ALT)
-        					return false;
-        				
-        				if (e.getID() == KeyEvent.KEY_TYPED) return false;
-        				
-        				// Ignore letters and digits without modifiers
-        				if ((Character.isLetter(e.getKeyChar()) || Character.isDigit(e.getKeyChar())) && 
-        						e.getModifiers() <= 1) 
-        					return false;
-
-                    	Window window = Application.get().getWindowManager().getWindow((JComponent) e.getComponent());
-                    	if (window == null) return false;
-                    	if (window.getDocList().getActiveDoc() == null) return false;
-
-        				Scope scope = window.getDocList().getActiveDoc().getActiveBuffer().getInsertionPoint().getScope();
-        				
-        				Collection<BundleItemSupplier> items = bundleManager.getItemsForShortcut(e, scope);
-        				if (! items.isEmpty()) {
-        					final ActionGroup tempActionGroup = new ActionGroup();
-        					
-	        				for (BundleItemSupplier r : items) {
-	        					tempActionGroup.add(r.getAction());
-	        				}
-	        				
-	        				if (tempActionGroup.size() > 1) {
-		        				
-		        				EventQueue.invokeLater(new Runnable() {
-	                                public void run() {
-	        	        				JPopupMenu jpm = new MenuFactory().buildPopup(tempActionGroup, null);
-	        	        				Point point = MouseInfo.getPointerInfo().getLocation();
-	        	        				
-	        	        				Point componentPosition = e.getComponent().getLocationOnScreen();
-	        	        				
-	        	        				point.translate(- (int) componentPosition.getX(), - (int) componentPosition.getY());
-	        	        				
-	        	        				PopupUtils.show(jpm, point, e.getComponent());
-	                                }
-		        				});
-		        				
-	        				} else {
-
-	        					tempActionGroup.get(0).actionPerformed(
-	        							new ActionEvent(e.getComponent(), 1, null));
-	        					
-	        				}
-	        				
-	        				e.consume();
-	        				return true;
-        				}
-        				
-        				return false;
-        			}
-        		});
+        		focusManager.addKeyEventDispatcher(new GlobalKeyEventDispatcher(bundleManager));
             }
-		});
+        });
 
         HttpServer server = Application.get().getHttpServer();
 

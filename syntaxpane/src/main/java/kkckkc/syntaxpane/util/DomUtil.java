@@ -165,9 +165,8 @@ public class DomUtil {
 			DocumentBuilder builder = documentBuilderPool.poll();
 		    if (builder == null) {
 		        builder = factory.newDocumentBuilder();
+                builder.setEntityResolver(ENTITY_RESOLVER);
 		    }
-
-			builder.setEntityResolver(ENTITY_RESOLVER);
 
 			Document d = builder.parse(source);
 

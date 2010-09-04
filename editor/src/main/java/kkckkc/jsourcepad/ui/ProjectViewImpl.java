@@ -41,37 +41,30 @@ public class ProjectViewImpl extends JTree implements ProjectView, MouseListener
 	private DocList docList;
 	private Project project;
 	protected Window window;
-	private FileTreeModel model;
 	
-	@Autowired
-	public void setProject(Project project) {
-	    this.project = project;
-    }
-	
-	@Autowired
-	public void setWindow(Window window) {
-	    this.window = window;
-    }
-	
-	@Autowired
-	public void setDocList(DocList docList) {
-	    this.docList = docList;
-    }
-	
-	@PostConstruct
-	public void init() {
-		model = new FileTreeModel(project.getProjectDir()); 
-        
-        setModel(model);
+    @Autowired
+    public ProjectViewImpl(Project project, Window window, DocList docList) {
+        super(new FileTreeModel(project.getProjectDir()));
+
+        this.project = project;
+        this.window = window;
+        this.docList = docList;
+
 		setCellRenderer(new FileTreeCellRenderer());
         setShowsRootHandles(true);
 
 		addMouseListener(this);
-		
+
 		ActionGroup actionGroup = window.getActionManager().getActionGroup("project-context-menu");
 		JPopupMenu jpm = new MenuFactory().buildPopup(actionGroup, null);
 		PopupUtils.bind(jpm, this, false);
-	}
+
+    }
+
+    @Override
+    public FileTreeModel getModel() {
+        return (FileTreeModel) super.getModel();
+    }
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
@@ -101,17 +94,17 @@ public class ProjectViewImpl extends JTree implements ProjectView, MouseListener
 
 	@Override
     public void insertFile(File file) {
-		model.insertFile(file);
+		getModel().insertFile(file);
     }
 
 	@Override
     public void refresh(File file) {
-		model.refresh(file);
+		getModel().refresh(file);
     }
 
 	@Override
     public void refresh() {
-		model.refresh();
+		getModel().refresh();
     }
 
 	
