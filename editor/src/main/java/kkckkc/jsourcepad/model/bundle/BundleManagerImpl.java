@@ -32,7 +32,7 @@ public class BundleManagerImpl implements BundleManager {
 	private String bundleDir;
 	
 	public BundleManagerImpl(String bundleDir) {
-		this.bundleDir = bundleDir;
+		this.bundleDir = bundleDir.replace("~", System.getProperty("user.home"));
 	}
 	
 	@Override

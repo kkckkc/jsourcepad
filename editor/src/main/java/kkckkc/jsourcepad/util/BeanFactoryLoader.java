@@ -79,12 +79,6 @@ public class BeanFactoryLoader {
 				xmlBeanDefinitionReader.loadBeanDefinitions(themeResource);
 			}
 		}
-
-		
-		PropertyPlaceholderConfigurer ppc = new PropertyPlaceholderConfigurer();
-		ppc.postProcessBeanFactory(container);
-		
-		
 		
 		PerformanceLogger.get().exit();
 		

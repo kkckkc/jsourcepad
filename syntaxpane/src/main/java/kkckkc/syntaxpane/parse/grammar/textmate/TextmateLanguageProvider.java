@@ -23,8 +23,8 @@ public class TextmateLanguageProvider implements LanguageManager.Provider {
 	private HashMap<String, Language> languages;
 	private File root;
 	
-	public TextmateLanguageProvider(File root) {
-		this.root = root;
+	public TextmateLanguageProvider(String root) {
+		this.root = new File(root.replace("~", System.getProperty("user.home")));
 	}
 	
 	public Map<String, Language> getLanguages(LanguageManager languageManager) {
