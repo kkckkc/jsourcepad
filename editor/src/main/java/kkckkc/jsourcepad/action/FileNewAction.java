@@ -7,13 +7,13 @@ import javax.swing.JComponent;
 
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
+import kkckkc.jsourcepad.util.action.BaseAction;
 
-public class FileNewAction  extends AbstractAction {
+public class FileNewAction extends BaseAction {
 
 	private Application app;
 
 	public FileNewAction(Application app) {
-		super("New");
 		this.app = app;
 	}
 

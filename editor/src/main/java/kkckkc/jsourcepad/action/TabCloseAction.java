@@ -11,11 +11,12 @@ import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.DocList;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.WindowManager;
+import kkckkc.jsourcepad.util.action.BaseAction;
 import kkckkc.jsourcepad.util.ui.PopupUtils;
 
 
 
-public class TabCloseAction extends AbstractAction {
+public class TabCloseAction extends BaseAction {
 	private DocList docList;
 	private Window window;
 	private WindowManager wm;

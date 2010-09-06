@@ -2,32 +2,26 @@
 <beans 
 	xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:p="http://www.springframework.org/schema/p"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
-	default-autowire="constructor" default-lazy-init="true">
-
-	<bean id="lazyAction" class="kkckkc.jsourcepad.util.action.LazyAction">
-		<property name="properties" ref="action-properties" />
-	</bean>
+	default-autowire="constructor" default-lazy-init="false">
 
 	<bean id="action-group-file-menu" class="kkckkc.jsourcepad.util.action.ActionGroup">
 		<property name="items">
 			<list>
-				<bean parent="lazyAction" p:action="action-file-new" />
-				<bean parent="lazyAction" p:action="action-file-open" />
+                <ref local="action-file-new" />
+				<ref local="action-file-open" />
 				<null />
 								
-				<bean parent="lazyAction" p:action="action-tab-close" />
-				<bean parent="lazyAction" p:action="action-file-save" />
-				<bean parent="lazyAction" p:action="action-file-save-as" />
+				<ref local="action-tab-close" />
+				<ref local="action-file-save" />
+				<ref local="action-file-save-as" />
 				<null />
 
-
-				<bean parent="lazyAction" p:action="action-window-new" />
-				<bean parent="lazyAction" p:action="action-window-close" />
+				<ref local="action-window-new" />
+				<ref local="action-window-close" />
 				<null />
 				
-				<bean parent="lazyAction" p:action="action-window-exit" />
+				<ref local="action-window-exit" />
 			</list>
 		</property>
 	</bean>
@@ -35,23 +29,23 @@
 	<bean id="action-group-edit-menu" class="kkckkc.jsourcepad.util.action.ActionGroup">
 		<property name="items">
 			<list>
-				<bean parent="lazyAction" p:action="action-edit-undo" />
-				<bean parent="lazyAction" p:action="action-edit-redo" />
+				<ref local="action-edit-undo" />
+				<ref local="action-edit-redo" />
 				<null />
 				
-				<bean parent="lazyAction" p:action="action-edit-cut" />
-				<bean parent="lazyAction" p:action="action-edit-copy" />
-				<bean parent="lazyAction" p:action="action-edit-paste" />
+				<ref local="action-edit-cut" />
+				<ref local="action-edit-copy" />
+				<ref local="action-edit-paste" />
 
                 <null />
                 <bean class="kkckkc.jsourcepad.util.action.ActionGroup">
 					<constructor-arg><value>Find</value></constructor-arg>
 					<property name="items">
 						<list>
-							<bean parent="lazyAction" p:action="action-edit-find-find" />
+							<ref local="action-edit-find-find" />
                             <null />
-							<bean parent="lazyAction" p:action="action-edit-find-next" />
-							<bean parent="lazyAction" p:action="action-edit-find-previous" />
+							<ref local="action-edit-find-next" />
+							<ref local="action-edit-find-previous" />
 						</list>
 					</property>
 				</bean>
@@ -66,14 +60,14 @@
 					<constructor-arg><value>Font</value></constructor-arg>
 					<property name="items">
 						<list>
-							<bean parent="lazyAction" p:action="action-view-font-increase" />
-							<bean parent="lazyAction" p:action="action-view-font-decrease" />
+							<ref local="action-view-font-increase" />
+							<ref local="action-view-font-decrease" />
 						</list>
 					</property>
 				</bean>
 				
 				<null />
-				<bean parent="lazyAction" p:action="action-view-fullscreen" />
+				<ref local="action-view-fullscreen" />
 			</list>
 		</property>
 	</bean>
@@ -81,10 +75,10 @@
 	<bean id="action-group-navigation-menu" class="kkckkc.jsourcepad.util.action.ActionGroup">
 		<property name="items">
 			<list>
-				<bean parent="lazyAction" p:action="action-navigation-next-file-tab" />
-				<bean parent="lazyAction" p:action="action-navigation-previous-file-tab" />
-				<bean parent="lazyAction" p:action="action-navigation-goto-file" />
-				<bean parent="lazyAction" p:action="action-navigation-goto-symbol" />
+				<ref local="action-navigation-next-file-tab" />
+				<ref local="action-navigation-previous-file-tab" />
+				<ref local="action-navigation-goto-file" />
+				<ref local="action-navigation-goto-symbol" />
 			</list>
 		</property>
 	</bean>
@@ -92,13 +86,13 @@
 	<bean id="action-group-text-menu" class="kkckkc.jsourcepad.util.action.ActionGroup">
 		<property name="items">
 			<list>
-				<bean parent="lazyAction" p:action="action-text-shift-left" />
-				<bean parent="lazyAction" p:action="action-text-shift-right" />
-				<bean parent="lazyAction" p:action="action-text-indent-line" />
+				<ref local="action-text-shift-left" />
+				<ref local="action-text-shift-right" />
+				<ref local="action-text-indent-line" />
 				<null />
 				
-				<bean parent="lazyAction" p:action="action-text-execute-line-inserting-result" />
-				<bean parent="lazyAction" p:action="action-text-execute-script" />
+				<ref local="action-text-execute-line-inserting-result" />
+				<ref local="action-text-execute-script" />
 			</list>
 		</property>
 	</bean>
@@ -106,9 +100,9 @@
 	<bean id="action-group-tab-context-menu" class="kkckkc.jsourcepad.util.action.ActionGroup">
 		<property name="items">
 			<list>
-				<bean parent="lazyAction" p:action="action-tab-close" />
-				<bean parent="lazyAction" p:action="action-tab-close-all" />
-				<bean parent="lazyAction" p:action="action-tab-close-others" />
+				<ref local="action-tab-close" />
+				<ref local="action-tab-close-all" />
+				<ref local="action-tab-close-others" />
 			</list>
 		</property>
 	</bean>
@@ -116,15 +110,14 @@
 	<bean id="action-group-project-context-menu" class="kkckkc.jsourcepad.util.action.ActionGroup">
 		<property name="items">
 			<list>
-				<bean parent="lazyAction" p:action="action-project-file-open" />
+				<ref local="action-project-file-open" />
 				<null />
-				<bean parent="lazyAction" p:action="action-project-refresh" />
+				<ref local="action-project-refresh" />
 			</list>
 		</property>
 	</bean>
 	
 	<bean id="action-group-language-menu" class="kkckkc.jsourcepad.action.LanguageActionGroup" autowire="constructor" />
-
 
 	<bean id="action-project-refresh" class="kkckkc.jsourcepad.action.ProjectRefreshAction" autowire="constructor"/>
 	<bean id="action-project-file-open" class="kkckkc.jsourcepad.action.ProjectFileOpenAction" autowire="constructor"/>

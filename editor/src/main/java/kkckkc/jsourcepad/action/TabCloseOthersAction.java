@@ -8,11 +8,12 @@ import javax.swing.JTabbedPane;
 
 import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.DocList;
+import kkckkc.jsourcepad.util.action.BaseAction;
 import kkckkc.jsourcepad.util.ui.PopupUtils;
 
 
 
-public class TabCloseOthersAction extends AbstractAction {
+public class TabCloseOthersAction extends BaseAction {
 	private DocList docList;
 
 	public TabCloseOthersAction(DocList docList) {

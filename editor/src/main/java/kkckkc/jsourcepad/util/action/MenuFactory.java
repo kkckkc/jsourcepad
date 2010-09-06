@@ -32,7 +32,7 @@ public class MenuFactory {
 				}
 			}
 		}
-		jp.addPopupMenuListener(new PopupMenuListener() {
+/*		jp.addPopupMenuListener(new PopupMenuListener() {
 			@Override
 			public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
 				for (JMenuItem jmi : items) {
@@ -61,7 +61,7 @@ public class MenuFactory {
 					}
 				}
 			}
-		});
+		}); */
 		return jp;
 	}
 
@@ -100,31 +100,31 @@ public class MenuFactory {
 			@Override
 			public void menuSelected(MenuEvent e) {
 				loadIfRequired();
-				for (JMenuItem jmi : items) {
+				/*for (JMenuItem jmi : items) {
 					Action a = jmi.getAction();
 					if (a instanceof LazyAction) {
 						((LazyAction) a).init();
 						((LazyAction) a).activate(jmi);
 					}
-				}
+				}*/
 			}
 			
 			@Override
 			public void menuDeselected(MenuEvent e) { 
-				for (Action a : actionGroup) {
+				/*for (Action a : actionGroup) {
 					if (a instanceof LazyAction) {
 						((LazyAction) a).deactivate();
 					}
-				}
+				}*/
 			}
 			
 			@Override
 			public void menuCanceled(MenuEvent e) { 
-				for (Action a : actionGroup) {
+				/*for (Action a : actionGroup) {
 					if (a instanceof LazyAction) {
 						((LazyAction) a).deactivate();
 					}
-				}
+				}*/
 			}
 		});
 		return jMenu;

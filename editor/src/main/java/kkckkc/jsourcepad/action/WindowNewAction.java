@@ -8,15 +8,15 @@ import javax.swing.AbstractAction;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.WindowManager;
+import kkckkc.jsourcepad.util.action.BaseAction;
 
 
 
-public class WindowNewAction extends AbstractAction {
+public class WindowNewAction extends BaseAction {
 
 	private Application app;
 
 	public WindowNewAction(Application app) {
-		super("New");
 		this.app = app;
 	}
 	

@@ -6,10 +6,11 @@ import javax.swing.AbstractAction;
 
 import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.DocList;
+import kkckkc.jsourcepad.util.action.BaseAction;
 
 
 
-public class TabCloseAllAction extends AbstractAction {
+public class TabCloseAllAction extends BaseAction {
 	private final DocList docList;
 
 	public TabCloseAllAction(DocList docList) {

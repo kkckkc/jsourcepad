@@ -7,8 +7,9 @@ import javax.swing.AbstractAction;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.FontSettings;
 import kkckkc.jsourcepad.model.SettingsManager;
+import kkckkc.jsourcepad.util.action.BaseAction;
 
-public class ViewFontIncreaseAction extends AbstractAction {
+public class ViewFontIncreaseAction extends BaseAction {
 
 	@Override
     public void actionPerformed(ActionEvent e) {

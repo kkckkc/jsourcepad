@@ -20,9 +20,10 @@ import javax.swing.Timer;
 
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
+import kkckkc.jsourcepad.util.action.BaseAction;
 
 // see http://code.google.com/p/bookjar-utils/source/browse/BookJar-utils/src/util/swing/components/FullScreenFrame.java?r=152&spec=svn194
-public class ViewFullscreenAction extends AbstractAction {
+public class ViewFullscreenAction extends BaseAction {
 
 	private Window w;
 

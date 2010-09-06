@@ -8,15 +8,15 @@ import javax.swing.JComponent;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.WindowManager;
+import kkckkc.jsourcepad.util.action.BaseAction;
 
 
 
-public class WindowCloseAction extends AbstractAction {
+public class WindowCloseAction extends BaseAction {
 
 	private Application app;
 
 	public WindowCloseAction(Application app) {
-		super("Close");
 		this.app = app;
 	}
 	
