@@ -58,7 +58,7 @@ public class SymbolView extends JLabel {
 						});
 					}
 
-					PopupUtils.show(popupMenu, e.getPoint(), SymbolView.this);
+                    popupMenu.show(SymbolView.this, e.getPoint().x, e.getPoint().y);
 				}
 			}
 

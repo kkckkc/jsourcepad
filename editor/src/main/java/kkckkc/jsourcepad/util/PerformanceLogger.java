@@ -5,15 +5,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 public class PerformanceLogger {
-	private static Logger logger = LoggerFactory.getLogger(PerformanceLogger.class);
-	
 	private static final PerformanceLogger INSTANCE = new PerformanceLogger();
 	private Map<String, Record> records = Maps.newHashMap();
 	private Stack<String> stack = new Stack<String>();

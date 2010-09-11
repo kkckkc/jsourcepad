@@ -61,7 +61,7 @@ public class GlobalKeyEventDispatcher implements KeyEventDispatcher {
                         Point point = MouseInfo.getPointerInfo().getLocation();
                         Point componentPosition = e.getComponent().getLocationOnScreen();
                         point.translate(-(int) componentPosition.getX(), -(int) componentPosition.getY());
-                        PopupUtils.show(jpm, point, e.getComponent());
+                        jpm.show(e.getComponent(), point.x, point.y);
                     }
                 });
             } else {

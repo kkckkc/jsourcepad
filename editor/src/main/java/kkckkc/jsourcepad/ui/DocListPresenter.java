@@ -14,9 +14,11 @@ import javax.swing.event.ChangeListener;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import kkckkc.jsourcepad.Presenter;
+import kkckkc.jsourcepad.action.ActionContextKeys;
 import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.DocList;
 import kkckkc.jsourcepad.model.Window;
+import kkckkc.jsourcepad.util.action.ActionContext;
 import kkckkc.jsourcepad.util.action.ActionGroup;
 import kkckkc.jsourcepad.util.action.ActionManager;
 import kkckkc.jsourcepad.util.action.MenuFactory;
@@ -72,11 +74,20 @@ public class DocListPresenter implements Presenter<DocListView>, DocList.Listene
 		});
 		
 		
-		ActionGroup actionGroup = actionManager.getActionGroup("tab-context-menu");
+		final ActionGroup actionGroup = actionManager.createActionGroup("tab-context-menu");
 		
 		JPopupMenu jpm = new MenuFactory().buildPopup(actionGroup, null);
 		
-		PopupUtils.bind(jpm, tabbedPane, false);
+		PopupUtils.bind(jpm, tabbedPane, false, new PopupUtils.PopupListener() {
+            public void show(MouseEvent e) {
+                int tabIndex = tabbedPane.indexAtLocation((int) e.getPoint().getX(), (int) e.getPoint().getY());
+
+                ActionContext a = actionManager.getActionContext().subContext();
+                a.put(ActionContextKeys.TAB_INDEX, new Integer(tabIndex));
+                a.commit();
+                actionGroup.setActionContext(a);
+            }
+        });
 		
     }	
 	

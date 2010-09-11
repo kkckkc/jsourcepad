@@ -58,8 +58,8 @@ public final class TabAction extends AbstractAction {
         				Point componentPosition = ((Component) e.getSource()).getLocationOnScreen();
         				
         				point.translate(- (int) componentPosition.getX(), - (int) componentPosition.getY());
-        				
-        				PopupUtils.show(jpm, point, ((Component) e.getSource()));
+
+                        jpm.show((Component) e.getSource(), point.x, point.y);
                     }
 				});
 				

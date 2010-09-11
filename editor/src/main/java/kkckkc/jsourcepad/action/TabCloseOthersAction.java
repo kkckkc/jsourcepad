@@ -1,15 +1,11 @@
 package kkckkc.jsourcepad.action;
 
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 
-import javax.swing.AbstractAction;
-import javax.swing.JTabbedPane;
 
 import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.DocList;
 import kkckkc.jsourcepad.util.action.BaseAction;
-import kkckkc.jsourcepad.util.ui.PopupUtils;
 
 
 
@@ -21,8 +17,7 @@ public class TabCloseOthersAction extends BaseAction {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		Point p = PopupUtils.getRequestedLocation(e);
-		int tabIndex = ((JTabbedPane) PopupUtils.getInvoker(e)).indexAtLocation((int) p.getX(), (int) p.getY());
+        int tabIndex = actionContext.get(ActionContextKeys.TAB_INDEX);
 		
 		int i = 0;
 		for (Doc doc : docList.getDocs()) {
