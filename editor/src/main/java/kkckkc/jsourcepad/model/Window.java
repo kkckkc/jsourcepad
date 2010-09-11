@@ -16,20 +16,12 @@ public interface Window extends MessageBus, ScopeRoot {
 		public void focusLost(Window window);
 	}
 	
-	public enum FocusedComponentType {
-		PROJECT, DOCUMENT
-	}
-	
 	public Project getProject();
-	//public JFrame getJFrame();
 	public DocList getDocList();
 	public <T> T getPresenter(Class<? extends T> clazz);
 	public ActionManager getActionManager();
 	
 	public ScriptEngine getScriptEngine();
-	
-	public FocusedComponentType getFocusedComponent();
-	public void setFocusedComponent(FocusedComponentType focusedComponent);
 
 	public MacroEngine getMacroEngine();
 }

@@ -1,15 +1,12 @@
 package kkckkc.jsourcepad.ui;
 
 import java.awt.Container;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 
 import javax.annotation.PostConstruct;
 import javax.swing.Action;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -21,7 +18,6 @@ import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.DocList;
 import kkckkc.jsourcepad.model.Window;
-import kkckkc.jsourcepad.model.Window.FocusedComponentType;
 import kkckkc.jsourcepad.model.bundle.BundleManager;
 import kkckkc.jsourcepad.util.action.MenuFactory;
 import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
@@ -110,14 +106,6 @@ public class WindowPresenter implements Presenter<WindowView>, DocList.Listener 
 	public void selected(int index, Doc doc) {
 		this.frame.setTitle("JSourcePad - " + doc.getTitle());
 	}
-
-	public void bindFocus(JComponent view, final FocusedComponentType type) {
-	    view.addFocusListener(new FocusAdapter() {
-            public void focusGained(FocusEvent e) {
-	            window.setFocusedComponent(type);
-            }
-		});
-    }
 
 	public Container getContainer() {
 	    return this.windowView.getJFrame();

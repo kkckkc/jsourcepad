@@ -4,12 +4,15 @@ import java.awt.event.ActionEvent;
 import kkckkc.jsourcepad.model.Buffer;
 
 import kkckkc.jsourcepad.model.Window;
+import kkckkc.jsourcepad.util.action.BaseAction;
 import kkckkc.syntaxpane.model.Interval;
 
-public class EditFindNextAction extends AbstractEditorAction {
+public class EditFindNextAction extends BaseAction {
+    private final Window window;
 
 	public EditFindNextAction(Window window) {
-		super(window);
+		this.window = window;
+        setActionStateRules(ActionStateRules.HAS_ACTIVE_DOC);
 	}
 	
 	@Override

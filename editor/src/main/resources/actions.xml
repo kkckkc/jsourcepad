@@ -3,9 +3,12 @@
 	xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
-	default-autowire="constructor" default-lazy-init="false">
+    default-autowire="constructor" default-lazy-init="false">
 
-	<bean id="action-group-file-menu" class="kkckkc.jsourcepad.util.action.ActionGroup">
+    <bean id="action-group" class="kkckkc.jsourcepad.util.action.ActionGroup" abstract="true" scope="prototype" />
+    <bean id="action" class="kkckkc.jsourcepad.util.action.BaneAction" abstract="true" scope="prototype" />
+
+	<bean id="action-group-file-menu" parent="action-group">
 		<property name="items">
 			<list>
                 <ref local="action-file-new" />
@@ -26,7 +29,7 @@
 		</property>
 	</bean>
 
-	<bean id="action-group-edit-menu" class="kkckkc.jsourcepad.util.action.ActionGroup">
+	<bean id="action-group-edit-menu" parent="action-group">
 		<property name="items">
 			<list>
 				<ref local="action-edit-undo" />
@@ -38,7 +41,7 @@
 				<ref local="action-edit-paste" />
 
                 <null />
-                <bean class="kkckkc.jsourcepad.util.action.ActionGroup">
+                <bean parent="action-group">
 					<constructor-arg><value>Find</value></constructor-arg>
 					<property name="items">
 						<list>
@@ -53,10 +56,10 @@
 		</property>
 	</bean>
 
-	<bean id="action-group-view-menu" class="kkckkc.jsourcepad.util.action.ActionGroup">
+	<bean id="action-group-view-menu" parent="action-group">
 		<property name="items">
 			<list>
-				<bean class="kkckkc.jsourcepad.util.action.ActionGroup">
+				<bean parent="action-group">
 					<constructor-arg><value>Font</value></constructor-arg>
 					<property name="items">
 						<list>
@@ -72,7 +75,7 @@
 		</property>
 	</bean>
 
-	<bean id="action-group-navigation-menu" class="kkckkc.jsourcepad.util.action.ActionGroup">
+	<bean id="action-group-navigation-menu" parent="action-group">
 		<property name="items">
 			<list>
 				<ref local="action-navigation-next-file-tab" />
@@ -83,7 +86,7 @@
 		</property>
 	</bean>
 
-	<bean id="action-group-text-menu" class="kkckkc.jsourcepad.util.action.ActionGroup">
+	<bean id="action-group-text-menu" parent="action-group">
 		<property name="items">
 			<list>
 				<ref local="action-text-shift-left" />
@@ -97,7 +100,7 @@
 		</property>
 	</bean>
 
-	<bean id="action-group-tab-context-menu" class="kkckkc.jsourcepad.util.action.ActionGroup">
+	<bean id="action-group-tab-context-menu" parent="action-group">
 		<property name="items">
 			<list>
 				<ref local="action-tab-close" />
@@ -107,7 +110,7 @@
 		</property>
 	</bean>
 
-	<bean id="action-group-project-context-menu" class="kkckkc.jsourcepad.util.action.ActionGroup">
+	<bean id="action-group-project-context-menu" parent="action-group">
 		<property name="items">
 			<list>
 				<ref local="action-project-file-open" />
@@ -117,49 +120,49 @@
 		</property>
 	</bean>
 	
-	<bean id="action-group-language-menu" class="kkckkc.jsourcepad.action.LanguageActionGroup" autowire="constructor" />
+	<bean id="action-group-language-menu" parent="action" class="kkckkc.jsourcepad.action.LanguageActionGroup" autowire="constructor" />
 
-	<bean id="action-project-refresh" class="kkckkc.jsourcepad.action.ProjectRefreshAction" autowire="constructor"/>
-	<bean id="action-project-file-open" class="kkckkc.jsourcepad.action.ProjectFileOpenAction" autowire="constructor"/>
+	<bean id="action-project-refresh" parent="action" class="kkckkc.jsourcepad.action.ProjectRefreshAction" autowire="constructor"/>
+	<bean id="action-project-file-open" parent="action" class="kkckkc.jsourcepad.action.ProjectFileOpenAction" autowire="constructor"/>
 
-	<bean id="action-file-new" class="kkckkc.jsourcepad.action.FileNewAction" autowire="constructor"/>
-	<bean id="action-file-open" class="kkckkc.jsourcepad.action.FileOpenAction" autowire="constructor"/>
-	<bean id="action-file-save" class="kkckkc.jsourcepad.action.FileSaveAction" autowire="constructor"/>
-	<bean id="action-file-save-as" class="kkckkc.jsourcepad.action.FileSaveAsAction" autowire="constructor"/>
+	<bean id="action-file-new" parent="action" class="kkckkc.jsourcepad.action.FileNewAction" autowire="constructor"/>
+	<bean id="action-file-open" parent="action" class="kkckkc.jsourcepad.action.FileOpenAction" autowire="constructor"/>
+	<bean id="action-file-save" parent="action" class="kkckkc.jsourcepad.action.FileSaveAction" autowire="constructor"/>
+	<bean id="action-file-save-as" parent="action" class="kkckkc.jsourcepad.action.FileSaveAsAction" autowire="constructor"/>
 
-	<bean id="action-file-test" class="kkckkc.jsourcepad.action.TestAction" autowire="constructor"/>
+	<bean id="action-file-test" parent="action" class="kkckkc.jsourcepad.action.TestAction" autowire="constructor"/>
 	
-	<bean id="action-navigation-goto-file" class="kkckkc.jsourcepad.action.NavigationGotoFileAction" autowire="constructor"/>
-	<bean id="action-navigation-goto-symbol" class="kkckkc.jsourcepad.action.NavigationGotoSymbolAction" autowire="constructor"/>
-	<bean id="action-navigation-next-file-tab" class="kkckkc.jsourcepad.action.NavigationNextFileTabAction" autowire="constructor"/>
-	<bean id="action-navigation-previous-file-tab" class="kkckkc.jsourcepad.action.NavigationPreviousFileTabAction" autowire="constructor"/>
+	<bean id="action-navigation-goto-file" parent="action" class="kkckkc.jsourcepad.action.NavigationGotoFileAction" autowire="constructor"/>
+	<bean id="action-navigation-goto-symbol" parent="action" class="kkckkc.jsourcepad.action.NavigationGotoSymbolAction" autowire="constructor"/>
+	<bean id="action-navigation-next-file-tab" parent="action" class="kkckkc.jsourcepad.action.NavigationNextFileTabAction" autowire="constructor"/>
+	<bean id="action-navigation-previous-file-tab" parent="action" class="kkckkc.jsourcepad.action.NavigationPreviousFileTabAction" autowire="constructor"/>
 
-	<bean id="action-view-font-increase" class="kkckkc.jsourcepad.action.ViewFontIncreaseAction" autowire="constructor"/>
-	<bean id="action-view-font-decrease" class="kkckkc.jsourcepad.action.ViewFontDecreaseAction" autowire="constructor"/>
+	<bean id="action-view-font-increase" parent="action" class="kkckkc.jsourcepad.action.ViewFontIncreaseAction" autowire="constructor"/>
+	<bean id="action-view-font-decrease" parent="action" class="kkckkc.jsourcepad.action.ViewFontDecreaseAction" autowire="constructor"/>
 
-	<bean id="action-text-shift-left" class="kkckkc.jsourcepad.action.TextShiftLeftAction" autowire="constructor"/>
-	<bean id="action-text-shift-right" class="kkckkc.jsourcepad.action.TextShiftRightAction" autowire="constructor"/>
-	<bean id="action-text-indent-line" class="kkckkc.jsourcepad.action.TextIndentLineAction" autowire="constructor"/>
-	<bean id="action-text-execute-line-inserting-result" class="kkckkc.jsourcepad.action.TextExecuteLineInsertingResultAction" autowire="constructor"/>
-	<bean id="action-text-execute-script" class="kkckkc.jsourcepad.action.TextExecuteScriptAction" autowire="constructor"/>
+	<bean id="action-text-shift-left" parent="action" class="kkckkc.jsourcepad.action.TextShiftLeftAction" autowire="constructor"/>
+	<bean id="action-text-shift-right" parent="action" class="kkckkc.jsourcepad.action.TextShiftRightAction" autowire="constructor"/>
+	<bean id="action-text-indent-line" parent="action" class="kkckkc.jsourcepad.action.TextIndentLineAction" autowire="constructor"/>
+	<bean id="action-text-execute-line-inserting-result" parent="action" class="kkckkc.jsourcepad.action.TextExecuteLineInsertingResultAction" autowire="constructor"/>
+	<bean id="action-text-execute-script" parent="action" class="kkckkc.jsourcepad.action.TextExecuteScriptAction" autowire="constructor"/>
 
-	<bean id="action-edit-undo" class="kkckkc.jsourcepad.action.EditUndoAction" autowire="constructor"/>
-	<bean id="action-edit-redo" class="kkckkc.jsourcepad.action.EditRedoAction" autowire="constructor"/>
-	<bean id="action-edit-cut" class="kkckkc.jsourcepad.action.EditCutAction" autowire="constructor"/>
-	<bean id="action-edit-copy" class="kkckkc.jsourcepad.action.EditCopyAction" autowire="constructor"/>
-	<bean id="action-edit-paste" class="kkckkc.jsourcepad.action.EditPasteAction" autowire="constructor"/>
-	<bean id="action-edit-find-find" class="kkckkc.jsourcepad.action.EditFindAction" autowire="constructor"/>
-	<bean id="action-edit-find-next" class="kkckkc.jsourcepad.action.EditFindNextAction" autowire="constructor"/>
-	<bean id="action-edit-find-previous" class="kkckkc.jsourcepad.action.EditFindPreviousAction" autowire="constructor"/>
+	<bean id="action-edit-undo" parent="action" class="kkckkc.jsourcepad.action.EditUndoAction" autowire="constructor"/>
+	<bean id="action-edit-redo" parent="action" class="kkckkc.jsourcepad.action.EditRedoAction" autowire="constructor"/>
+	<bean id="action-edit-cut" parent="action" class="kkckkc.jsourcepad.action.EditCutAction" autowire="constructor"/>
+	<bean id="action-edit-copy" parent="action" class="kkckkc.jsourcepad.action.EditCopyAction" autowire="constructor"/>
+	<bean id="action-edit-paste" parent="action" class="kkckkc.jsourcepad.action.EditPasteAction" autowire="constructor"/>
+	<bean id="action-edit-find-find" parent="action" class="kkckkc.jsourcepad.action.EditFindAction" autowire="constructor"/>
+	<bean id="action-edit-find-next" parent="action" class="kkckkc.jsourcepad.action.EditFindNextAction" autowire="constructor"/>
+	<bean id="action-edit-find-previous" parent="action" class="kkckkc.jsourcepad.action.EditFindPreviousAction" autowire="constructor"/>
 
-	<bean id="action-view-fullscreen" class="kkckkc.jsourcepad.action.ViewFullscreenAction" autowire="constructor"/>
+	<bean id="action-view-fullscreen" parent="action" class="kkckkc.jsourcepad.action.ViewFullscreenAction" autowire="constructor"/>
 
-	<bean id="action-window-new" class="kkckkc.jsourcepad.action.WindowNewAction" autowire="constructor"/>
-	<bean id="action-window-close" class="kkckkc.jsourcepad.action.WindowCloseAction" autowire="constructor"/>
-	<bean id="action-window-exit" class="kkckkc.jsourcepad.action.WindowExitAction" autowire="constructor"/>
+	<bean id="action-window-new" parent="action" class="kkckkc.jsourcepad.action.WindowNewAction" autowire="constructor"/>
+	<bean id="action-window-close" parent="action" class="kkckkc.jsourcepad.action.WindowCloseAction" autowire="constructor"/>
+	<bean id="action-window-exit" parent="action" class="kkckkc.jsourcepad.action.WindowExitAction" autowire="constructor"/>
 
-	<bean id="action-tab-close" class="kkckkc.jsourcepad.action.TabCloseAction" autowire="constructor" />
-	<bean id="action-tab-close-all" class="kkckkc.jsourcepad.action.TabCloseAllAction" autowire="constructor" />
-	<bean id="action-tab-close-others" class="kkckkc.jsourcepad.action.TabCloseOthersAction" autowire="constructor" />
+	<bean id="action-tab-close" parent="action" class="kkckkc.jsourcepad.action.TabCloseAction" autowire="constructor" />
+	<bean id="action-tab-close-all" parent="action" class="kkckkc.jsourcepad.action.TabCloseAllAction" autowire="constructor" />
+	<bean id="action-tab-close-others" parent="action" class="kkckkc.jsourcepad.action.TabCloseOthersAction" autowire="constructor" />
 
 </beans>

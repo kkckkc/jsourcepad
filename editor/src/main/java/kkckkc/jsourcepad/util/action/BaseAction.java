@@ -3,37 +3,26 @@ package kkckkc.jsourcepad.util.action;
 import java.awt.event.ActionEvent;
 import java.util.Properties;
 import javax.swing.AbstractAction;
+import kkckkc.jsourcepad.util.action.ActionContext.Key;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public abstract class BaseAction extends AbstractAction implements BeanNameAware, InitializingBean {
-	private boolean active;
+public abstract class BaseAction extends AbstractAction implements BeanNameAware, InitializingBean, ActionContext.Listener {
     private Properties props;
     private String action;
-
-	public void activate(Object o) {
-		this.active = true;
-		setEnabled(shouldBeEnabled(o));
-	}
-	
-	public void deactivate() {
-		this.active = false;
-	}
-	
-	public boolean isActive() {
-		return active;
-	}
-	
-	public boolean shouldBeEnabled(Object source) {
-		return true;
-	}
+    protected ActionContext actionContext;
+    private ActionStateRule[] rules;
 
     @Autowired
 	public void setProperties(Properties props) {
 		this.props = props;
 	}
+
+    protected void setActionStateRules(ActionStateRule... rules) {
+        this.rules = rules;
+    }
 
     @Override
 	public void afterPropertiesSet() throws Exception {
@@ -47,7 +36,6 @@ public abstract class BaseAction extends AbstractAction implements BeanNameAware
 		value = props.getProperty(action + ".Accelerator");
 		if (value != null) {
 			putValue(ACCELERATOR_KEY, KeyStrokeUtils.getKeyStroke(value));
-			activate(null);
 			setEnabled(true);
 		}
 	}
@@ -60,5 +48,40 @@ public abstract class BaseAction extends AbstractAction implements BeanNameAware
     @Override
     public void setBeanName(String string) {
         this.action = string;
+    }
+
+    public void setActionContext(ActionContext actionContext) {
+        if (this.actionContext == actionContext) return;
+
+        if (this.actionContext != null) {
+            this.actionContext.removeListener(this);
+        }
+        this.actionContext = actionContext;
+
+        if (this.actionContext == null) return;
+        
+        this.actionContext.addListener(this);
+
+        updateEnabledState();
+    }
+
+    public void updateEnabledState() {
+        boolean shouldBeEnabled = shouldBeEnabled();
+        setEnabled(shouldBeEnabled);
+    }
+
+    public boolean shouldBeEnabled() {
+        if (rules == null) return true;
+
+        boolean result = true;
+        for (ActionStateRule rule : rules) {
+            result &= rule.shouldBeEnabled(actionContext);
+        }
+        return result;
+    }
+
+    @Override
+    public void actionContextUpdated(ActionContext actionContext) {
+        updateEnabledState();
     }
 }

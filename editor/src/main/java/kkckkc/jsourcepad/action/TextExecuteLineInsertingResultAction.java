@@ -9,17 +9,19 @@ import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Buffer;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.WindowManager;
+import kkckkc.jsourcepad.util.action.BaseAction;
 import kkckkc.jsourcepad.util.io.ScriptExecutor;
 import kkckkc.jsourcepad.util.io.UISupportCallback;
 import kkckkc.jsourcepad.util.io.ScriptExecutor.Execution;
 import kkckkc.syntaxpane.model.Interval;
 
-public class TextExecuteLineInsertingResultAction extends AbstractEditorAction {
+public class TextExecuteLineInsertingResultAction extends BaseAction {
 
 	private WindowManager wm;
+    private final Window window;
 
 	public TextExecuteLineInsertingResultAction(Window window, WindowManager wm) {
-		super(window);
+		this.window = window;
 		this.wm = wm;
 	}
 	

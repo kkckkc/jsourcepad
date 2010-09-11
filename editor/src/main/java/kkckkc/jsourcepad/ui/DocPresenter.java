@@ -8,16 +8,20 @@ import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
 
 import kkckkc.jsourcepad.Presenter;
+import kkckkc.jsourcepad.action.ActionContextKeys;
 import kkckkc.jsourcepad.action.text.IndentAction;
 import kkckkc.jsourcepad.action.text.TabAction;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.FontSettings;
+import kkckkc.jsourcepad.model.InsertionPoint;
 import kkckkc.jsourcepad.model.StyleSettings;
 import kkckkc.jsourcepad.model.TabSettings;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.SettingsManager.Listener;
 import kkckkc.jsourcepad.model.SettingsManager.Setting;
+import kkckkc.jsourcepad.util.action.ActionContext;
+import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
 import kkckkc.jsourcepad.util.ui.CompoundUndoManager;
 import kkckkc.syntaxpane.ScrollableSourcePane;
 
@@ -26,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class DocPresenter implements Presenter<DocView> {
 	private ScrollableSourcePane sourcePane;
 	private Doc doc;
+    private ActionContext actionContext;
 	
 	// Collaborators
 	private DocView view;
@@ -49,7 +54,17 @@ public class DocPresenter implements Presenter<DocView> {
     public void init() {
 		sourcePane = view.getComponent();
 
-		doc.getActiveBuffer().bind(sourcePane.getEditorPane());
+        actionContext = new ActionContext();
+        actionContext.put(ActionContextKeys.ACTIVE_DOC, doc);
+        actionContext.put(ActionContextKeys.FOCUSED_COMPONENT, this);
+        actionContext.commit();
+        
+        ActionContext.set(sourcePane, actionContext);
+
+        doc.getDocList().getWindow().topic(Doc.InsertionPointListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, ACTION_CONTEXT_UPDATER);
+        doc.getDocList().getWindow().topic(Doc.StateListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, ACTION_CONTEXT_UPDATER);
+
+ 		doc.getActiveBuffer().bind(sourcePane.getEditorPane());
 
 		Application app = Application.get();
 		
@@ -80,10 +95,6 @@ public class DocPresenter implements Presenter<DocView> {
 				KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), new TabAction(doc));
 
 		sourcePane.getEditorPane().requestFocus();
-		
-		
-		WindowPresenter windowPresenter = doc.getDocList().getWindow().getPresenter(WindowPresenter.class);
-		windowPresenter.bindFocus(sourcePane.getEditorPane(), Window.FocusedComponentType.DOCUMENT);
 		
 		sourcePane.setFont(Application.get().getSettingsManager().get(FontSettings.class).asFont());
     }
@@ -140,4 +151,20 @@ public class DocPresenter implements Presenter<DocView> {
 	public void paste() {
 		sourcePane.getEditorPane().paste();
 	}
+
+
+    private class ActionContextUpdater implements Doc.InsertionPointListener, Doc.StateListener {
+        @Override
+        public void update(InsertionPoint insertionPoint) {
+//            actionContext.put(ActionContextKeys.ACTIVE_DOC, doc);
+//            actionContext.commit();
+        }
+
+        @Override
+        public void modified(Doc doc) {
+            actionContext.put(ActionContextKeys.ACTIVE_DOC, doc);
+            actionContext.commit();
+        }
+    };
+    private ActionContextUpdater ACTION_CONTEXT_UPDATER = new ActionContextUpdater();
 }

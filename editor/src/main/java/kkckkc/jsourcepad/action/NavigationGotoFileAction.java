@@ -4,13 +4,13 @@ import java.awt.event.ActionEvent;
 
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.ui.dialog.navigation.QuickNavigationDialog;
+import kkckkc.jsourcepad.util.action.BaseAction;
 
-public class NavigationGotoFileAction extends AbstractEditorAction {
+public class NavigationGotoFileAction extends BaseAction {
 
 	private Window window;
 
 	public NavigationGotoFileAction(Window w) {
-		super(w);
 		this.window = w;
 	}
 	

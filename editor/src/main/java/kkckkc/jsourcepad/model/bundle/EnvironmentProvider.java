@@ -12,6 +12,9 @@ import kkckkc.syntaxpane.model.Interval;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import kkckkc.jsourcepad.action.ActionContextKeys;
+import kkckkc.jsourcepad.ui.ProjectPresenter;
+import kkckkc.jsourcepad.util.action.ActionManager;
 
 public class EnvironmentProvider {
 	public static Map<String, String> getEnvironment(Window window, BundleItemSupplier bundleItemSupplier) {
@@ -60,7 +63,8 @@ public class EnvironmentProvider {
 		paths.add(new File(System.getProperty("supportPath") + "/" + System.getProperty("os.name") + "/bin"));
 
 		List<File> files = Lists.newArrayList();
-		if (window.getFocusedComponent() == Window.FocusedComponentType.PROJECT) {
+        ActionManager actionManager = window.getActionManager();
+        if (actionManager.getActionContext().get(ActionContextKeys.FOCUSED_COMPONENT) instanceof ProjectPresenter) {
 			files = window.getProject().getSelectedFiles();
 		} else {
 			if (activeDoc.getFile() != null) {

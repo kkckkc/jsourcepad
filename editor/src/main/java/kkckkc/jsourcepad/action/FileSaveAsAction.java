@@ -7,17 +7,18 @@ import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.ui.dialog.filechooser.FileChooserCallback;
 import kkckkc.jsourcepad.ui.dialog.filechooser.FileSaveDialog;
+import kkckkc.jsourcepad.util.action.ActionContext;
+import kkckkc.jsourcepad.util.action.BaseAction;
 
-public class FileSaveAsAction extends AbstractEditorAction {
+public class FileSaveAsAction extends BaseAction {
 
 	private FileSaveDialog fileSaveDialog;
+    private final Window window;
 
 	public FileSaveAsAction(Window window, FileSaveDialog fileSaveDialog) {
-		super(window);
-		
-		subscribe(Event.DOC_SELECTION);
-
+		this.window = window;
 		this.fileSaveDialog = fileSaveDialog;
+        setActionStateRules(ActionStateRules.HAS_ACTIVE_DOC);
 	}
 
 	@Override
@@ -34,12 +35,6 @@ public class FileSaveAsAction extends AbstractEditorAction {
 			}
 			
 		}, true);
-	}
-
-	@Override
-	public boolean shouldBeEnabled(Object source) {
-		Doc doc = window.getDocList().getActiveDoc();
-		return doc != null;
 	}
 
 }

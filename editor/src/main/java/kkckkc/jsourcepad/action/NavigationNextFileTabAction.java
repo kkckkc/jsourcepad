@@ -3,11 +3,13 @@ package kkckkc.jsourcepad.action;
 import java.awt.event.ActionEvent;
 
 import kkckkc.jsourcepad.model.Window;
+import kkckkc.jsourcepad.util.action.BaseAction;
 
-public class NavigationNextFileTabAction extends AbstractEditorAction {
+public class NavigationNextFileTabAction extends BaseAction {
+    private final Window window;
 
 	public NavigationNextFileTabAction(Window w) {
-		super(w);
+		this.window = w;
 	}
 	
 	@Override

@@ -163,7 +163,14 @@ public class ActionGroup extends AbstractAction implements List<Action> {
 	    }
     }
 
-
-
-	
+    public void setActionContext(ActionContext actionContext) {
+        for (Object o : items) {
+            if (o == null) continue;
+            if (o instanceof ActionGroup) {
+                ((ActionGroup) o).setActionContext(actionContext);
+            } else if (o instanceof BaseAction) {
+                ((BaseAction) o).setActionContext(actionContext);
+            }
+        }
+    }
 }

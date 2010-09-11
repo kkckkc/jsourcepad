@@ -4,17 +4,18 @@ import java.awt.event.ActionEvent;
 
 import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.Window;
+import kkckkc.jsourcepad.util.action.ActionContext;
+import kkckkc.jsourcepad.util.action.BaseAction;
 
-public class FileSaveAction extends AbstractEditorAction {
+public class FileSaveAction extends BaseAction {
 
 	private FileSaveAsAction fileSaveAsAction;
+    private final Window window;
 
 	public FileSaveAction(Window window, FileSaveAsAction fileSaveAsAction) {
-		super(window);
-		
-		subscribe(Event.DOC_SELECTION, Event.DOC_MODIFICATION);
-		
+		this.window = window;
 		this.fileSaveAsAction = fileSaveAsAction;
+        setActionStateRules(ActionStateRules.HAS_ACTIVE_DOC, ActionStateRules.DOC_IS_MODIFIED);
 	}
 
 	@Override
@@ -24,12 +25,6 @@ public class FileSaveAction extends AbstractEditorAction {
 		} else {
 			window.getDocList().getActiveDoc().save();
 		}
-	}
-
-	@Override
-	public boolean shouldBeEnabled(Object source) {
-		Doc doc = window.getDocList().getActiveDoc();
-		return doc != null && (! doc.isBackedByFile() || doc.isModified());
 	}
 
 }

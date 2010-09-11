@@ -4,12 +4,14 @@ import java.awt.event.ActionEvent;
 
 import kkckkc.jsourcepad.model.Buffer;
 import kkckkc.jsourcepad.model.Window;
+import kkckkc.jsourcepad.util.action.BaseAction;
 import kkckkc.syntaxpane.model.Interval;
 
-public class TextShiftRightAction extends AbstractEditorAction {
+public class TextShiftRightAction extends BaseAction {
+    private final Window window;
 
 	public TextShiftRightAction(Window window) {
-		super(window);
+		this.window = window;
 	}
 	
 	@Override

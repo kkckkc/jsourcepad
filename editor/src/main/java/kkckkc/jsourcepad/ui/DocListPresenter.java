@@ -77,10 +77,6 @@ public class DocListPresenter implements Presenter<DocListView>, DocList.Listene
 		JPopupMenu jpm = new MenuFactory().buildPopup(actionGroup, null);
 		
 		PopupUtils.bind(jpm, tabbedPane, false);
-
-		
-		WindowPresenter windowPresenter = docList.getWindow().getPresenter(WindowPresenter.class);
-		windowPresenter.bindFocus(docListView.getTabbedPane(), Window.FocusedComponentType.DOCUMENT);
 		
     }	
 	

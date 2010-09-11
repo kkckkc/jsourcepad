@@ -18,11 +18,14 @@ import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.collect.Lists;
+import kkckkc.jsourcepad.action.ActionContextKeys;
+import kkckkc.jsourcepad.util.action.ActionContext;
 
 public class ProjectPresenter implements Presenter<ProjectView>, Project.FileChangeListener {
 
 	private ProjectView view;
 	private Window window;
+    private ActionContext actionContext;
 
 	@Autowired
     public void setView(ProjectView view) {
@@ -43,15 +46,23 @@ public class ProjectPresenter implements Presenter<ProjectView>, Project.FileCha
 			public void valueChanged(TreeSelectionEvent e) {
 				TreePath[] selectionPaths = ((JTree) view).getSelectionPaths();
 				List<File> paths = Lists.newArrayList();
-				for (TreePath tp : selectionPaths) {
-					paths.add((File) tp.getLastPathComponent());
-				}
+                if (selectionPaths != null) {
+                    for (TreePath tp : selectionPaths) {
+                        paths.add((File) tp.getLastPathComponent());
+                    }
+                }
 				window.getProject().setSelectedFiles(paths);
+
+                actionContext.put(ActionContextKeys.SELECTION, paths.toArray());
+                actionContext.commit();
 			}
 		});
-		
-		WindowPresenter windowPresenter = window.getPresenter(WindowPresenter.class);
-		windowPresenter.bindFocus((JComponent) view, Window.FocusedComponentType.PROJECT);
+
+        actionContext = new ActionContext();
+        actionContext.put(ActionContextKeys.FOCUSED_COMPONENT, this);
+        actionContext.commit();
+
+        ActionContext.set(view.getJComponent(), actionContext);
 	}
 
 	@Override

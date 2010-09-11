@@ -25,8 +25,6 @@ public class WindowImpl extends AbstractMessageBus implements Window, MessageBus
 	// Collaborators
 	private ActionManager actionManager;
 
-	private FocusedComponentType focusedComponent;
-
 	private ScriptEngine scriptEngine;
 	
 	public ScriptEngine getScriptEngine() {
@@ -76,17 +74,6 @@ public class WindowImpl extends AbstractMessageBus implements Window, MessageBus
 	public BeanFactory getBeanFactory() {
 	    return container;
     }
-
-	@Override
-    public FocusedComponentType getFocusedComponent() {
-	    return focusedComponent;
-    }
-
-	@Override
-    public void setFocusedComponent(FocusedComponentType focusedComponent) {
-	    this.focusedComponent = focusedComponent;
-    }
-
 
 	public MacroEngine getMacroEngine() {
 		return container.getBean(MacroEngine.class);

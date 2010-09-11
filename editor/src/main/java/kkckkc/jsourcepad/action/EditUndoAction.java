@@ -5,11 +5,13 @@ import java.awt.event.ActionEvent;
 import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.ui.DocPresenter;
+import kkckkc.jsourcepad.util.action.BaseAction;
 
-public class EditUndoAction extends AbstractEditorAction {
+public class EditUndoAction extends BaseAction {
+    private final Window window;
 
 	public EditUndoAction(Window window) {
-		super(window);
+		this.window = window;
 	}
 	
 	@Override

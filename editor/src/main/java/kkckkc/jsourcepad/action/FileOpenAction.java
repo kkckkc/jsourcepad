@@ -6,14 +6,16 @@ import java.io.File;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.ui.dialog.filechooser.FileChooserCallback;
 import kkckkc.jsourcepad.ui.dialog.filechooser.FileOpenDialog;
+import kkckkc.jsourcepad.util.action.BaseAction;
 
 
 
-public class FileOpenAction extends AbstractEditorAction {
+public class FileOpenAction extends BaseAction {
 	private FileOpenDialog fileOpenDialog;
+    private final Window window;
 
 	public FileOpenAction(Window window, FileOpenDialog fileOpenDialog) {
-		super(window);
+		this.window = window;
 		this.fileOpenDialog = fileOpenDialog;
 	}
 	

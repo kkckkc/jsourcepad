@@ -9,7 +9,6 @@ import java.io.FileFilter;
 import java.util.Arrays;
 import java.util.Comparator;
 
-import javax.annotation.PostConstruct;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -20,13 +19,17 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.EventListenerList;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
+import kkckkc.jsourcepad.action.ActionContextKeys;
 
 import kkckkc.jsourcepad.model.DocList;
 import kkckkc.jsourcepad.model.Project;
 import kkckkc.jsourcepad.model.Window;
+import kkckkc.jsourcepad.util.action.ActionContext;
 import kkckkc.jsourcepad.util.action.ActionGroup;
 import kkckkc.jsourcepad.util.action.MenuFactory;
 import kkckkc.jsourcepad.util.ui.PopupUtils;
@@ -53,12 +56,11 @@ public class ProjectViewImpl extends JTree implements ProjectView, MouseListener
 		setCellRenderer(new FileTreeCellRenderer());
         setShowsRootHandles(true);
 
-		addMouseListener(this);
-
+        addMouseListener(this);
+ 
 		ActionGroup actionGroup = window.getActionManager().getActionGroup("project-context-menu");
 		JPopupMenu jpm = new MenuFactory().buildPopup(actionGroup, null);
 		PopupUtils.bind(jpm, this, false);
-
     }
 
     @Override
@@ -68,26 +70,36 @@ public class ProjectViewImpl extends JTree implements ProjectView, MouseListener
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		int selRow = getRowForLocation(e.getX(), e.getY());
+        if (e.getClickCount() != 2) return;
+
+        int selRow = getRowForLocation(e.getX(), e.getY());
+		if (selRow == -1) return;
 		TreePath selPath = getPathForLocation(e.getX(), e.getY());
-		if (selRow != -1) {
-			if (e.getClickCount() == 2) {
-				File f = (File) selPath.getLastPathComponent();
-				if (f.isFile()) {
-					docList.open(f);
-				}
-			}
+
+    	File f = (File) selPath.getLastPathComponent();
+        if (f.isFile()) {
+            docList.open(f);
 		}
 	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+        if (e.getButton() == 3) {
+            int selRow = getRowForLocation(e.getX(), e.getY());
+            if (selRow == -1) {
+                setSelectionRows(new int[] {});
+            } else {
+                setSelectionRow(selRow);
+            }
+            return;
+        }
+    }
 
 	@Override
 	public void mouseEntered(MouseEvent e) { }
 
 	@Override
 	public void mouseExited(MouseEvent e) { }
-
-	@Override
-	public void mousePressed(MouseEvent e) { }
 
 	@Override
 	public void mouseReleased(MouseEvent e) { }

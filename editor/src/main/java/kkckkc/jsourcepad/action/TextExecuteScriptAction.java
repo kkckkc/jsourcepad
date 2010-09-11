@@ -6,12 +6,14 @@ import javax.script.ScriptException;
 
 import kkckkc.jsourcepad.model.Buffer;
 import kkckkc.jsourcepad.model.Window;
+import kkckkc.jsourcepad.util.action.BaseAction;
 import kkckkc.syntaxpane.model.Interval;
 
-public class TextExecuteScriptAction extends AbstractEditorAction {
+public class TextExecuteScriptAction extends BaseAction {
+    private final Window window;
 
 	public TextExecuteScriptAction(Window window) {
-		super(window);
+		this.window = window;
 	}
 	
 	@Override
