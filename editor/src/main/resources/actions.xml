@@ -15,15 +15,16 @@
 				<ref local="action-file-open" />
 				<null />
 								
+				<ref local="action-window-close" />
 				<ref local="action-tab-close" />
 				<ref local="action-file-save" />
 				<ref local="action-file-save-as" />
+				<ref local="action-file-save-all" />
 				<null />
 
 				<ref local="action-window-new" />
-				<ref local="action-window-close" />
-				<null />
-				
+                <null />
+
 				<ref local="action-window-exit" />
 			</list>
 		</property>
@@ -129,6 +130,7 @@
 	<bean id="action-file-open" parent="action" class="kkckkc.jsourcepad.action.FileOpenAction" autowire="constructor"/>
 	<bean id="action-file-save" parent="action" class="kkckkc.jsourcepad.action.FileSaveAction" autowire="constructor"/>
 	<bean id="action-file-save-as" parent="action" class="kkckkc.jsourcepad.action.FileSaveAsAction" autowire="constructor"/>
+	<bean id="action-file-save-all" parent="action" class="kkckkc.jsourcepad.action.FileSaveAllAction" autowire="constructor"/>
 
 	<bean id="action-file-test" parent="action" class="kkckkc.jsourcepad.action.TestAction" autowire="constructor"/>
 	
