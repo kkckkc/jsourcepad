@@ -35,6 +35,7 @@
 				<null />
 
 				<ref local="action-window-new" />
+				<ref local="action-file-reveal-in-project" />
 			</list>
 		</property>
 	</bean>

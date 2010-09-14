@@ -1,5 +1,7 @@
 package kkckkc.jsourcepad.ui;
 
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.MouseEvent;
@@ -7,7 +9,9 @@ import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -117,6 +121,28 @@ public class ProjectViewImpl extends JTree implements ProjectView, MouseListener
 	@Override
     public void refresh() {
 		getModel().refresh();
+    }
+
+    @Override
+    public void revealFile(File file) {
+        File root = (File) getModel().getRoot();
+        if (file.toString().startsWith(root.toString())) {
+            List<File> path = Lists.newArrayList();
+            while (! file.equals(root) && file != null) {
+                path.add(file);
+                file = file.getParentFile();
+            }
+
+            path.add(root);
+
+            Collections.reverse(path);
+            File[] pathArray = path.toArray(new File[] {});
+
+            TreePath tp = new TreePath(pathArray);
+            expandPath(tp);
+            scrollPathToVisible(tp);
+            setSelectionPath(tp);
+        }
     }
 
 	

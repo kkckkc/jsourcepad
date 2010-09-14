@@ -26,6 +26,7 @@
                 <null />
 
 				<ref local="action-window-exit" />
+				<ref local="action-file-reveal-in-project" />
 			</list>
 		</property>
 	</bean>
@@ -131,6 +132,7 @@
 	<bean id="action-file-save" parent="action" class="kkckkc.jsourcepad.action.FileSaveAction" autowire="constructor"/>
 	<bean id="action-file-save-as" parent="action" class="kkckkc.jsourcepad.action.FileSaveAsAction" autowire="constructor"/>
 	<bean id="action-file-save-all" parent="action" class="kkckkc.jsourcepad.action.FileSaveAllAction" autowire="constructor"/>
+	<bean id="action-file-reveal-in-project" parent="action" class="kkckkc.jsourcepad.action.FileRevealInProjectAction" autowire="constructor"/>
 
 	<bean id="action-file-test" parent="action" class="kkckkc.jsourcepad.action.TestAction" autowire="constructor"/>
 	

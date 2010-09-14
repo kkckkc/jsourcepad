@@ -82,4 +82,8 @@ public class ProjectPresenter implements Presenter<ProjectView>, Project.FileCha
 	public JComponent getJComponent() {
 	    return view.getJComponent();
     }
+
+    public void revealFile(File file) {
+        view.revealFile(file);
+    }
 }

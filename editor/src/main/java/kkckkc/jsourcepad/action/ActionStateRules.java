@@ -32,6 +32,13 @@ public class ActionStateRules {
         }
     };
 
+    public static ActionStateRule DOC_BACKED_BY_FILE = new ActionStateRule() {
+        @Override
+        public boolean shouldBeEnabled(ActionContext actionContext) {
+            return actionContext.get(ActionContextKeys.ACTIVE_DOC).isBackedByFile();
+        }
+    };
+
     public static ActionStateRule HAS_ACTIVE_FIND = new ActionStateRule() {
         @Override
         public boolean shouldBeEnabled(ActionContext actionContext) {

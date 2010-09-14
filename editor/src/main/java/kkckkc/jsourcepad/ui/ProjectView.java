@@ -16,4 +16,6 @@ public interface ProjectView extends View {
 
 	JComponent getJComponent();
 
+    void revealFile(File file);
+
 }
