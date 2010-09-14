@@ -12,6 +12,7 @@ public class TextShiftLeftAction extends BaseAction {
 
 	public TextShiftLeftAction(Window window) {
 		this.window = window;
+        setActionStateRules(ActionStateRules.HAS_ACTIVE_DOC);
 	}
 	
 	@Override

@@ -21,6 +21,8 @@ public class EditFindAction extends BaseAction {
     public void actionPerformed(ActionEvent e) {
 		FindDialog dialog = window.getPresenter(FindDialog.class);
 		dialog.show();
+
+        actionManager.updateActionState();
     }
 
 }

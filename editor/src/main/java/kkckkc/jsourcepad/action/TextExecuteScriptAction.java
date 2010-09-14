@@ -14,6 +14,7 @@ public class TextExecuteScriptAction extends BaseAction {
 
 	public TextExecuteScriptAction(Window window) {
 		this.window = window;
+        setActionStateRules(ActionStateRules.HAS_ACTIVE_DOC);
 	}
 	
 	@Override

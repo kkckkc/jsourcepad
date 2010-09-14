@@ -23,6 +23,7 @@ public class TextExecuteLineInsertingResultAction extends BaseAction {
 	public TextExecuteLineInsertingResultAction(Window window, WindowManager wm) {
 		this.window = window;
 		this.wm = wm;
+        setActionStateRules(ActionStateRules.HAS_ACTIVE_DOC);
 	}
 	
 	@Override

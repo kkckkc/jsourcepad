@@ -43,9 +43,13 @@ public class LanguageView extends JLabel implements DocList.Listener, Buffer.Buf
     }
 
 	@Override
-    public void stateModified(Buffer buffer) {
+    public void languageModified(Buffer buffer) {
 		Language l = buffer.getLanguage();
 		setEnabled(true);
 		setText(l.getName());
+    }
+
+    @Override
+    public void selectionModified(Buffer buffer) {
     }
 }

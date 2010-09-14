@@ -16,7 +16,8 @@ import kkckkc.syntaxpane.style.Style;
 
 public interface Buffer {
 	public interface BufferStateListener {
-		public void stateModified(Buffer buffer);
+		public void languageModified(Buffer buffer);
+        public void selectionModified(Buffer buffer);
 	}
 	
 	// Structural relations

@@ -12,6 +12,7 @@ public class TextIndentLineAction extends BaseAction {
 
 	public TextIndentLineAction(Window window) {
 		this.window = window;
+        setActionStateRules(ActionStateRules.HAS_ACTIVE_DOC);
 	}
 	
 	@Override

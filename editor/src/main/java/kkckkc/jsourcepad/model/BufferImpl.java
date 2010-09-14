@@ -84,12 +84,14 @@ public class BufferImpl implements Buffer {
             @Override
 			public void stateChanged(ChangeEvent e) {
 				if (caret.getDot() == caret.getMark()) {
+                    selection = null;
 					if (insertionPoint == null || insertionPoint.getPosition() != caret.getDot() || selection != null) {
 						insertionPoint = new InsertionPoint(caret.getDot(), document.getScopeForPosition(caret.getDot()), document.getLineManager());
 						postInsertionPointUpdate();
 					}
 				} else {
 					selection = new Interval(caret.getDot(), caret.getMark());
+                	window.topic(Buffer.BufferStateListener.class).post().selectionModified(BufferImpl.this);
 				}
 			}
 		});
@@ -192,7 +194,7 @@ public class BufferImpl implements Buffer {
 			postInsertionPointUpdate();
 		}
 		
-		window.topic(Buffer.BufferStateListener.class).post().stateModified(this);
+		window.topic(Buffer.BufferStateListener.class).post().languageModified(this);
 	}
 	
     @Override
@@ -265,11 +267,10 @@ public class BufferImpl implements Buffer {
 
 	private void postInsertionPointUpdate() {
         window.topic(InsertionPointListener.class).post().update(getInsertionPoint());
+    	window.topic(Buffer.BufferStateListener.class).post().selectionModified(this);
 
 		characterPairsHandler.highlight();
 	}
-
-	
 
 	private void indent(Line current) {
 		if (current == null) return;

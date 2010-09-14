@@ -69,6 +69,8 @@ public class ActionManager implements BeanFactoryAware, InitializingBean {
 
                     Window w = Application.get().getWindowManager().getWindow(c);
 
+                    if (w == null) return;
+
                     ActionManager actionManager = w.getActionManager();
 
                     ActionContext ac = ActionContext.get(c);
@@ -77,5 +79,11 @@ public class ActionManager implements BeanFactoryAware, InitializingBean {
                 }
             }
         });
+    }
+
+    public void updateActionState() {
+        for (ActionGroup ag : actionGroups.values()) {
+            ag.updateActionState();
+        }
     }
 }

@@ -12,6 +12,7 @@ public class EditCopyAction extends BaseAction{
 
 	public EditCopyAction(Window window) {
 		this.window = window;
+        setActionStateRules(ActionStateRules.HAS_ACTIVE_DOC, ActionStateRules.TEXT_SELECTED);
 	}
 	
 	@Override

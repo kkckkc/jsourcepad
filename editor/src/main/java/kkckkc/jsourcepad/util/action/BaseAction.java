@@ -14,11 +14,17 @@ public abstract class BaseAction extends AbstractAction implements BeanNameAware
     private String action;
     protected ActionContext actionContext;
     private ActionStateRule[] rules;
+    protected ActionManager actionManager;
 
     @Autowired
 	public void setProperties(Properties props) {
 		this.props = props;
 	}
+
+    @Autowired
+    public void setActionManager(ActionManager actionManager) {
+        this.actionManager = actionManager;
+    }
 
     protected void setActionStateRules(ActionStateRule... rules) {
         this.rules = rules;
@@ -62,10 +68,10 @@ public abstract class BaseAction extends AbstractAction implements BeanNameAware
         
         this.actionContext.addListener(this);
 
-        updateEnabledState();
+        updateActionState();
     }
 
-    public void updateEnabledState() {
+    public void updateActionState() {
         boolean shouldBeEnabled = shouldBeEnabled();
         setEnabled(shouldBeEnabled);
     }
@@ -73,15 +79,14 @@ public abstract class BaseAction extends AbstractAction implements BeanNameAware
     public boolean shouldBeEnabled() {
         if (rules == null) return true;
 
-        boolean result = true;
         for (ActionStateRule rule : rules) {
-            result &= rule.shouldBeEnabled(actionContext);
+            if (! rule.shouldBeEnabled(actionContext)) return false;
         }
-        return result;
+        return true;
     }
 
     @Override
     public void actionContextUpdated(ActionContext actionContext) {
-        updateEnabledState();
+        updateActionState();
     }
 }

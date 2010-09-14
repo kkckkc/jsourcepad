@@ -16,7 +16,7 @@ public class EditFindPreviousAction extends BaseAction {
 
 	public EditFindPreviousAction(Window window) {
 		this.window = window;
-        setActionStateRules(ActionStateRules.HAS_ACTIVE_DOC);
+        setActionStateRules(ActionStateRules.HAS_ACTIVE_DOC, ActionStateRules.HAS_ACTIVE_FIND);
 	}
 	
 	@Override

@@ -12,7 +12,7 @@ public class EditFindNextAction extends BaseAction {
 
 	public EditFindNextAction(Window window) {
 		this.window = window;
-        setActionStateRules(ActionStateRules.HAS_ACTIVE_DOC);
+        setActionStateRules(ActionStateRules.HAS_ACTIVE_DOC, ActionStateRules.HAS_ACTIVE_FIND);
 	}
 	
 	@Override

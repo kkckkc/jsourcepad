@@ -173,4 +173,15 @@ public class ActionGroup extends AbstractAction implements List<Action> {
             }
         }
     }
+
+    public void updateActionState() {
+        for (Object o : items) {
+            if (o == null) continue;
+            if (o instanceof ActionGroup) {
+                ((ActionGroup) o).updateActionState();
+            } else if (o instanceof BaseAction) {
+                ((BaseAction) o).updateActionState();
+            }
+        }
+    }
 }

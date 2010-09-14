@@ -12,6 +12,7 @@ public class NavigationGotoSymbolAction extends BaseAction {
 
 	public NavigationGotoSymbolAction(Window w) {
 		this.window = w;
+        setActionStateRules(ActionStateRules.HAS_ACTIVE_DOC);
 	}
 	
 	//TODO: Implement this

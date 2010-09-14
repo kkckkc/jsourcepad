@@ -12,6 +12,7 @@ import kkckkc.jsourcepad.action.ActionContextKeys;
 import kkckkc.jsourcepad.action.text.IndentAction;
 import kkckkc.jsourcepad.action.text.TabAction;
 import kkckkc.jsourcepad.model.Application;
+import kkckkc.jsourcepad.model.Buffer;
 import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.FontSettings;
 import kkckkc.jsourcepad.model.InsertionPoint;
@@ -63,6 +64,7 @@ public class DocPresenter implements Presenter<DocView> {
 
         doc.getDocList().getWindow().topic(Doc.InsertionPointListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, ACTION_CONTEXT_UPDATER);
         doc.getDocList().getWindow().topic(Doc.StateListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, ACTION_CONTEXT_UPDATER);
+        doc.getDocList().getWindow().topic(Buffer.BufferStateListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, ACTION_CONTEXT_UPDATER);
 
  		doc.getActiveBuffer().bind(sourcePane.getEditorPane());
 
@@ -153,7 +155,7 @@ public class DocPresenter implements Presenter<DocView> {
 	}
 
 
-    private class ActionContextUpdater implements Doc.InsertionPointListener, Doc.StateListener {
+    private class ActionContextUpdater implements Doc.InsertionPointListener, Doc.StateListener, Buffer.BufferStateListener {
         @Override
         public void update(InsertionPoint insertionPoint) {
 //            actionContext.put(ActionContextKeys.ACTIVE_DOC, doc);
@@ -163,6 +165,20 @@ public class DocPresenter implements Presenter<DocView> {
         @Override
         public void modified(Doc doc) {
             actionContext.put(ActionContextKeys.ACTIVE_DOC, doc);
+            actionContext.commit();
+        }
+
+        @Override
+        public void languageModified(Buffer buffer) {
+        }
+
+        @Override
+        public void selectionModified(Buffer buffer) {
+            if (buffer.getSelection() == null) {
+                actionContext.remove(ActionContextKeys.SELECTION);
+            } else {
+                actionContext.put(ActionContextKeys.SELECTION, new Object[] { buffer.getSelection() });
+            }
             actionContext.commit();
         }
     };

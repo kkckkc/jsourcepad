@@ -10,6 +10,7 @@ public class NavigationPreviousFileTabAction extends BaseAction {
 
 	public NavigationPreviousFileTabAction(Window w) {
 		this.window = w;
+        setActionStateRules(ActionStateRules.HAS_ACTIVE_DOC);
 	}
 	
 	@Override
