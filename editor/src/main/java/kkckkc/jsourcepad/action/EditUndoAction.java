@@ -12,6 +12,7 @@ public class EditUndoAction extends BaseAction {
 
 	public EditUndoAction(Window window) {
 		this.window = window;
+        setActionStateRules(ActionStateRules.HAS_ACTIVE_DOC, ActionStateRules.CAN_UNDO);
 	}
 	
 	@Override

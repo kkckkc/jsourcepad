@@ -119,7 +119,7 @@ public class DocImpl extends AbstractMessageBus implements Doc, ScopeRoot {
 	@Override
 	public void activate() {
 		InsertionPoint ip = this.buffer.getInsertionPoint();
-		window.topic(InsertionPointListener.class).post().update(ip);
+		window.topic(Buffer.InsertionPointListener.class).post().update(ip);
 	}
 
 	@Override

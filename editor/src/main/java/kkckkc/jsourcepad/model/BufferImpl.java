@@ -19,7 +19,6 @@ import javax.swing.text.Caret;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.Highlighter.HighlightPainter;
 
-import kkckkc.jsourcepad.model.Doc.InsertionPointListener;
 import kkckkc.jsourcepad.model.Doc.StateListener;
 import kkckkc.jsourcepad.model.Finder.Options;
 import kkckkc.jsourcepad.model.bundle.BundleManager;
@@ -91,7 +90,7 @@ public class BufferImpl implements Buffer {
 					}
 				} else {
 					selection = new Interval(caret.getDot(), caret.getMark());
-                	window.topic(Buffer.BufferStateListener.class).post().selectionModified(BufferImpl.this);
+                	window.topic(Buffer.SelectionListener.class).post().selectionModified(BufferImpl.this);
 				}
 			}
 		});
@@ -194,7 +193,7 @@ public class BufferImpl implements Buffer {
 			postInsertionPointUpdate();
 		}
 		
-		window.topic(Buffer.BufferStateListener.class).post().languageModified(this);
+		window.topic(Buffer.LanguageListener.class).post().languageModified(this);
 	}
 	
     @Override
@@ -266,8 +265,8 @@ public class BufferImpl implements Buffer {
     }
 
 	private void postInsertionPointUpdate() {
-        window.topic(InsertionPointListener.class).post().update(getInsertionPoint());
-    	window.topic(Buffer.BufferStateListener.class).post().selectionModified(this);
+        window.topic(Buffer.InsertionPointListener.class).post().update(getInsertionPoint());
+    	window.topic(Buffer.SelectionListener.class).post().selectionModified(this);
 
 		characterPairsHandler.highlight();
 	}
@@ -408,10 +407,11 @@ public class BufferImpl implements Buffer {
 					int newHash = getText(getCompleteDocument()).hashCode();
 					if (newHash == unmodifiedHash) {
 						modified = false;
-						window.topic(StateListener.class).post().modified(getDoc());
 					}
 				}
-				
+
+                window.topic(StateListener.class).post().modified(getDoc());
+
 			// Else, this modification will tag the buffer as modified
 			} else {
 				

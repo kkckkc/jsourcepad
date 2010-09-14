@@ -92,6 +92,10 @@ public class ActionContext {
         }
     }
 
+    public void update() {
+        commit();
+    }
+
 
     public interface Listener {
         public <T> void actionContextUpdated(ActionContext actionContext);

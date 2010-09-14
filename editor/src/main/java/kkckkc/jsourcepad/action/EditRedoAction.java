@@ -12,6 +12,7 @@ public class EditRedoAction extends BaseAction {
 
 	public EditRedoAction(Window window) {
 		this.window = window;
+        setActionStateRules(ActionStateRules.HAS_ACTIVE_DOC, ActionStateRules.CAN_REDO);
 	}
 	
 	@Override

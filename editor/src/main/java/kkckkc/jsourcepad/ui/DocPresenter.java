@@ -62,9 +62,8 @@ public class DocPresenter implements Presenter<DocView> {
         
         ActionContext.set(sourcePane, actionContext);
 
-        doc.getDocList().getWindow().topic(Doc.InsertionPointListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, ACTION_CONTEXT_UPDATER);
+        doc.getDocList().getWindow().topic(Buffer.SelectionListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, ACTION_CONTEXT_UPDATER);
         doc.getDocList().getWindow().topic(Doc.StateListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, ACTION_CONTEXT_UPDATER);
-        doc.getDocList().getWindow().topic(Buffer.BufferStateListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, ACTION_CONTEXT_UPDATER);
 
  		doc.getActiveBuffer().bind(sourcePane.getEditorPane());
 
@@ -104,6 +103,14 @@ public class DocPresenter implements Presenter<DocView> {
 	public String getTitle() {
 		return doc.getTitle();
 	}
+
+    public boolean canUndo() {
+        return undoManager.canUndo();
+    }
+
+    public boolean canRedo() {
+        return undoManager.canRedo();
+    }
 
 
 	
@@ -155,21 +162,10 @@ public class DocPresenter implements Presenter<DocView> {
 	}
 
 
-    private class ActionContextUpdater implements Doc.InsertionPointListener, Doc.StateListener, Buffer.BufferStateListener {
-        @Override
-        public void update(InsertionPoint insertionPoint) {
-//            actionContext.put(ActionContextKeys.ACTIVE_DOC, doc);
-//            actionContext.commit();
-        }
-
+    private class ActionContextUpdater implements Doc.StateListener, Buffer.SelectionListener {
         @Override
         public void modified(Doc doc) {
-            actionContext.put(ActionContextKeys.ACTIVE_DOC, doc);
-            actionContext.commit();
-        }
-
-        @Override
-        public void languageModified(Buffer buffer) {
+            actionContext.update();
         }
 
         @Override

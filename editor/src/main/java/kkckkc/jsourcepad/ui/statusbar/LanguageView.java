@@ -12,14 +12,14 @@ import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
 import kkckkc.jsourcepad.util.ui.PopupUtils;
 import kkckkc.syntaxpane.parse.grammar.Language;
 
-public class LanguageView extends JLabel implements DocList.Listener, Buffer.BufferStateListener {
+public class LanguageView extends JLabel implements DocList.Listener, Buffer.LanguageListener {
 
 	public LanguageView(Window window) {
 		setText("--");
 		setEnabled(false);
 		
 		window.topic(DocList.Listener.class).subscribe(DispatchStrategy.ASYNC_EVENT, this);
-		window.topic(Buffer.BufferStateListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, this);
+		window.topic(Buffer.LanguageListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, this);
 		
 		MenuFactory menuFactory = new MenuFactory();
 		JPopupMenu jpm = menuFactory.buildPopup(window.getActionManager().getActionGroup("language-menu"), null);
@@ -47,9 +47,5 @@ public class LanguageView extends JLabel implements DocList.Listener, Buffer.Buf
 		Language l = buffer.getLanguage();
 		setEnabled(true);
 		setText(l.getName());
-    }
-
-    @Override
-    public void selectionModified(Buffer buffer) {
     }
 }

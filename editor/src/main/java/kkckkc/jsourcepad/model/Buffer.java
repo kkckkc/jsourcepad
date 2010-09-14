@@ -15,8 +15,15 @@ import kkckkc.syntaxpane.parse.grammar.Language;
 import kkckkc.syntaxpane.style.Style;
 
 public interface Buffer {
-	public interface BufferStateListener {
+	public interface InsertionPointListener {
+		public void update(InsertionPoint insertionPoint);
+	}
+
+    public interface LanguageListener {
 		public void languageModified(Buffer buffer);
+    }
+
+    public interface SelectionListener {
         public void selectionModified(Buffer buffer);
 	}
 	

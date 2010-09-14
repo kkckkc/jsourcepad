@@ -7,15 +7,9 @@ import kkckkc.jsourcepad.util.messagebus.MessageBus;
 
 
 public interface Doc extends MessageBus {
-    // TODO: Move to buffer
-	public interface InsertionPointListener {
-		public void update(InsertionPoint insertionPoint);
-	}
-	
 	public interface StateListener {
 		public void modified(Doc doc);
 	}
-
 	
 	public DocList getDocList();
 

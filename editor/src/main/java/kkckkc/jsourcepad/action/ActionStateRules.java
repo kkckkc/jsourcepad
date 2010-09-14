@@ -3,6 +3,7 @@ package kkckkc.jsourcepad.action;
 
 import java.io.File;
 import kkckkc.jsourcepad.model.Doc;
+import kkckkc.jsourcepad.ui.DocPresenter;
 import kkckkc.jsourcepad.util.action.ActionContext;
 import kkckkc.jsourcepad.util.action.ActionStateRule;
 import kkckkc.syntaxpane.model.Interval;
@@ -46,4 +47,23 @@ public class ActionStateRules {
             return doc != null && (! doc.isBackedByFile() || doc.isModified());
         }
     };
+
+    public static ActionStateRule CAN_UNDO = new ActionStateRule() {
+        @Override
+        public boolean shouldBeEnabled(ActionContext actionContext) {
+            Doc d = actionContext.get(ActionContextKeys.ACTIVE_DOC);
+            DocPresenter dp = d.getPresenter(DocPresenter.class);
+    		return dp.canUndo();
+        }
+    };
+
+    public static ActionStateRule CAN_REDO = new ActionStateRule() {
+        @Override
+        public boolean shouldBeEnabled(ActionContext actionContext) {
+            Doc d = actionContext.get(ActionContextKeys.ACTIVE_DOC);
+            DocPresenter dp = d.getPresenter(DocPresenter.class);
+    		return dp.canRedo();
+        }
+    };
+
 }

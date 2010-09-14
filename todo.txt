@@ -1,6 +1,5 @@
 [x]ÊEnable/disable actions
-[ ] Rework some listeners into PropertyChangeEvent
-[ ]ÊEnable/disable undo/redo
+[x]ÊEnable/disable undo/redo
 [x]ÊDouble exit actions
 [x] Test to remove lazy actions and see if it improves performance
 [X] Fold indicator alignment on OSX
