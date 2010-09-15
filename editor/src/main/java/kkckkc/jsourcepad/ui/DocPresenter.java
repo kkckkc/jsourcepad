@@ -2,9 +2,11 @@ package kkckkc.jsourcepad.ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.annotation.PostConstruct;
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.KeyStroke;
 
 import kkckkc.jsourcepad.Presenter;
@@ -15,10 +17,8 @@ import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Buffer;
 import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.FontSettings;
-import kkckkc.jsourcepad.model.InsertionPoint;
 import kkckkc.jsourcepad.model.StyleSettings;
 import kkckkc.jsourcepad.model.TabSettings;
-import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.SettingsManager.Listener;
 import kkckkc.jsourcepad.model.SettingsManager.Setting;
 import kkckkc.jsourcepad.util.action.ActionContext;
@@ -98,6 +98,9 @@ public class DocPresenter implements Presenter<DocView> {
 		sourcePane.getEditorPane().requestFocus();
 		
 		sourcePane.setFont(Application.get().getSettingsManager().get(FontSettings.class).asFont());
+
+        wrapClipboardAction("copy", sourcePane);
+        wrapClipboardAction("cut", sourcePane);
     }
 	
 	public String getTitle() {
@@ -110,6 +113,48 @@ public class DocPresenter implements Presenter<DocView> {
 
     public boolean canRedo() {
         return undoManager.canRedo();
+    }
+
+    private void wrapClipboardAction(String action, ScrollableSourcePane sourcePane) {
+        final Action a = sourcePane.getEditorPane().getActionMap().get(action);
+
+        sourcePane.getEditorPane().getActionMap().put(action, new Action() {
+            @Override
+            public Object getValue(String key) {
+                return a.getValue(key);
+            }
+
+            @Override
+            public void putValue(String key, Object value) {
+                a.putValue(key, value);
+            }
+
+            @Override
+            public void setEnabled(boolean b) {
+                a.setEnabled(b);
+            }
+
+            @Override
+            public boolean isEnabled() {
+                return a.isEnabled();
+            }
+
+            @Override
+            public void addPropertyChangeListener(PropertyChangeListener listener) {
+                a.addPropertyChangeListener(listener);
+            }
+
+            @Override
+            public void removePropertyChangeListener(PropertyChangeListener listener) {
+                a.removePropertyChangeListener(listener);
+            }
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                a.actionPerformed(e);
+                Application.get().getClipboardManager().register();
+            }
+        });
     }
 
 
@@ -154,7 +199,7 @@ public class DocPresenter implements Presenter<DocView> {
 	}
 	
 	public void copy() {
-		sourcePane.getEditorPane().copy();
+ 		sourcePane.getEditorPane().copy();
 	}
 	
 	public void paste() {
