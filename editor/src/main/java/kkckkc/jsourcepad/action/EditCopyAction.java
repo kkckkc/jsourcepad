@@ -1,6 +1,7 @@
 package kkckkc.jsourcepad.action;
 
 import java.awt.event.ActionEvent;
+import kkckkc.jsourcepad.model.Application;
 
 import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.Window;
@@ -20,6 +21,8 @@ public class EditCopyAction extends BaseAction{
 		Doc d = window.getDocList().getActiveDoc();
 		DocPresenter dp = d.getPresenter(DocPresenter.class);
 		dp.copy();
+
+        Application.get().getClipboardManager().register();
     }
 
 }

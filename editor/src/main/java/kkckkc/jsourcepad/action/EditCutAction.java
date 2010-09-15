@@ -1,6 +1,7 @@
 package kkckkc.jsourcepad.action;
 
 import java.awt.event.ActionEvent;
+import kkckkc.jsourcepad.model.Application;
 
 import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.Window;
@@ -19,6 +20,8 @@ public class EditCutAction extends BaseAction {
 		Doc d = window.getDocList().getActiveDoc();
 		DocPresenter dp = d.getPresenter(DocPresenter.class);
 		dp.cut();
+
+        Application.get().getClipboardManager().register();
     }
 
 }

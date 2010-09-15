@@ -127,4 +127,8 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
     public BeanFactory getBeanFactory() {
 	    return this.beanFactory;
     }
+
+    public ClipboardManager getClipboardManager() {
+        return beanFactory.getBean(ClipboardManager.class);
+    }
 }	

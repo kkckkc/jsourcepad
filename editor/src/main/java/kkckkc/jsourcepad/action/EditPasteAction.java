@@ -12,6 +12,7 @@ public class EditPasteAction extends BaseAction {
 
 	public EditPasteAction(Window window) {
 		this.window = window;
+        setActionStateRules(ActionStateRules.HAS_ACTIVE_DOC);
 	}
 	
 	@Override

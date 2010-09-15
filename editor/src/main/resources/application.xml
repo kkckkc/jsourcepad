@@ -23,6 +23,7 @@
 	
 	<bean id="styleParser" class="kkckkc.syntaxpane.parse.grammar.textmate.TextmateStyleParser" />
 
+    <bean id="clipboardManager" class="kkckkc.jsourcepad.model.ClipboardManager" />
 
 	<bean id="httpServer" class="kkckkc.jsourcepad.http.HttpServerFactoryBean" />
 </beans>
