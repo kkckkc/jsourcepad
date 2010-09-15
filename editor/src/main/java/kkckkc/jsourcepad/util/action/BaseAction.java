@@ -3,6 +3,7 @@ package kkckkc.jsourcepad.util.action;
 import java.awt.event.ActionEvent;
 import java.util.Properties;
 import javax.swing.AbstractAction;
+import javax.swing.KeyStroke;
 import kkckkc.jsourcepad.util.action.ActionContext.Key;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.BeanNameAware;
@@ -15,6 +16,7 @@ public abstract class BaseAction extends AbstractAction implements BeanNameAware
     protected ActionContext actionContext;
     private ActionStateRule[] rules;
     protected ActionManager actionManager;
+    private AcceleratorManager acceleratorManager;
 
     @Autowired
 	public void setProperties(Properties props) {
@@ -24,6 +26,11 @@ public abstract class BaseAction extends AbstractAction implements BeanNameAware
     @Autowired
     public void setActionManager(ActionManager actionManager) {
         this.actionManager = actionManager;
+    }
+
+    @Autowired
+    public void setAcceleratorManager(AcceleratorManager acceleratorManager) {
+        this.acceleratorManager = acceleratorManager;
     }
 
     protected void setActionStateRules(ActionStateRule... rules) {
@@ -39,11 +46,12 @@ public abstract class BaseAction extends AbstractAction implements BeanNameAware
 			putValue(NAME, action);
 		}
 
-		value = props.getProperty(action + ".Accelerator");
-		if (value != null) {
-			putValue(ACCELERATOR_KEY, KeyStrokeUtils.getKeyStroke(value));
-			setEnabled(true);
-		}
+        KeyStroke ks = acceleratorManager.getKeyStroke(action);
+        if (ks != null) {
+			putValue(ACCELERATOR_KEY, ks);
+        }
+
+        setEnabled(true);
 	}
 
     @Override

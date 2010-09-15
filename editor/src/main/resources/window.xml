@@ -22,6 +22,8 @@
 		<property name="location" value="classpath:/actions.properties" />
 	</bean>
 
+    <bean id="acceleratorManager" class="kkckkc.jsourcepad.util.action.DefaultAcceleratorManager" />
+
 	<import resource="actions.xml" />
 
 

@@ -4,3 +4,4 @@
 [x] Test to remove lazy actions and see if it improves performance
 [X] Fold indicator alignment on OSX
 [X] Line numbers alignment on OSX
+[Ê]ÊRegister clipboard operations even when using keyboard shortcuts
