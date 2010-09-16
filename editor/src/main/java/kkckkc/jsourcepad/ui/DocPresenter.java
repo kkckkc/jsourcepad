@@ -18,6 +18,7 @@ import kkckkc.jsourcepad.action.text.TabAction;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Buffer;
 import kkckkc.jsourcepad.model.Doc;
+import kkckkc.jsourcepad.model.EditModeSettings;
 import kkckkc.jsourcepad.model.FontSettings;
 import kkckkc.jsourcepad.model.StyleSettings;
 import kkckkc.jsourcepad.model.TabSettings;
@@ -176,6 +177,7 @@ public class DocPresenter implements Presenter<DocView> {
 			settingUpdated(Application.get().getSettingsManager().get(TabSettings.class));
 			settingUpdated(Application.get().getSettingsManager().get(StyleSettings.class));
 			settingUpdated(Application.get().getSettingsManager().get(FontSettings.class));
+			settingUpdated(Application.get().getSettingsManager().get(EditModeSettings.class));
 	    }
 
 	    @Override
@@ -189,6 +191,9 @@ public class DocPresenter implements Presenter<DocView> {
 	        } else if (settings instanceof FontSettings) {
 	        	FontSettings fontSettings = (FontSettings) settings;
 	        	view.getComponent().setFont(fontSettings.asFont());
+	        } else if (settings instanceof EditModeSettings) {
+	        	EditModeSettings editModeSettings = (EditModeSettings) settings;
+	        	view.getComponent().setOverwriteMode(editModeSettings.isOverwriteMode());
 	        }
 
 	        view.redraw();

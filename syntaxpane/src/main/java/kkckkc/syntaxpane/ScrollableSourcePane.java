@@ -25,7 +25,7 @@ import kkckkc.syntaxpane.util.Wiring;
 
 
 public class ScrollableSourcePane extends JPanel {
-	private JEditorPane editorPane;
+	private SourceJEditorPane editorPane;
 	private JScrollPane scrollPane;
 	
 	private StyleScheme styleScheme;
@@ -75,7 +75,11 @@ public class ScrollableSourcePane extends JPanel {
 	public Color getBackground() {
 		return origBackground;
 	}
-	
+
+    public void setOverwriteMode(boolean overwriteMode) {
+        editorPane.setOverwriteMode(overwriteMode);
+    }
+
 	public void setStyleScheme(StyleScheme styleScheme) {
 		boolean styleSchemeChanged = this.styleScheme != null;
 		this.styleScheme = styleScheme;
@@ -128,6 +132,7 @@ public class ScrollableSourcePane extends JPanel {
 	
 	private final class SourceJEditorPane extends JEditorPane {
 		public static final int FOLD_MARGIN = 120;
+        private boolean overwriteMode;
 		
 	    @Override
 	    public void paint(Graphics graphics) {
@@ -146,5 +151,19 @@ public class ScrollableSourcePane extends JPanel {
 
 	    	super.paint(graphics);
 	    }
+
+        private void setOverwriteMode(boolean overwriteMode) {
+            this.overwriteMode = overwriteMode;
+        }
+
+        public void replaceSelection(String content) {
+            if (isEditable() && overwriteMode && getSelectionStart() == getSelectionEnd()) {
+                int pos = getCaretPosition();
+                int lastPos = Math.min(getDocument().getLength(), pos+content.length());
+                select(pos, lastPos);
+            }
+            super.replaceSelection(content);
+        }
+
     }
 }

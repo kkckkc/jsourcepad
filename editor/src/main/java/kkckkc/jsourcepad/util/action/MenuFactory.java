@@ -32,36 +32,6 @@ public class MenuFactory {
 				}
 			}
 		}
-/*		jp.addPopupMenuListener(new PopupMenuListener() {
-			@Override
-			public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
-				for (JMenuItem jmi : items) {
-					Action a = jmi.getAction();
-					if (a instanceof LazyAction) {
-						((LazyAction) a).init();
-						((LazyAction) a).activate(jmi);
-					}
-				}
-			}
-			
-			@Override
-			public void popupMenuWillBecomeInvisible(PopupMenuEvent e) { 
-				for (Action a : actionGroup) {
-					if (a instanceof LazyAction) {
-						((LazyAction) a).deactivate();
-					}
-				}
-			}
-			
-			@Override
-			public void popupMenuCanceled(PopupMenuEvent e) { 
-				for (Action a : actionGroup) {
-					if (a instanceof LazyAction) {
-						((LazyAction) a).deactivate();
-					}
-				}
-			}
-		}); */
 		return jp;
 	}
 
@@ -72,7 +42,9 @@ public class MenuFactory {
 			} else if (a instanceof ActionGroup) {
 				items.add(jMenu.add(buildMenu((String) a.getValue(AbstractAction.NAME), (ActionGroup) a, itemBuilder, lazy)));
 			} else {
-				if (itemBuilder == null) {
+                if (a instanceof Presenter.Menu) {
+                    items.add(jMenu.add(((Presenter.Menu) a).getMenuItem()));
+                } else if (itemBuilder == null) {
 					items.add(jMenu.add(a));
 				} else {
 					items.add(jMenu.add(itemBuilder.build(a)));
@@ -100,31 +72,14 @@ public class MenuFactory {
 			@Override
 			public void menuSelected(MenuEvent e) {
 				loadIfRequired();
-				/*for (JMenuItem jmi : items) {
-					Action a = jmi.getAction();
-					if (a instanceof LazyAction) {
-						((LazyAction) a).init();
-						((LazyAction) a).activate(jmi);
-					}
-				}*/
 			}
 			
 			@Override
 			public void menuDeselected(MenuEvent e) { 
-				/*for (Action a : actionGroup) {
-					if (a instanceof LazyAction) {
-						((LazyAction) a).deactivate();
-					}
-				}*/
 			}
 			
 			@Override
 			public void menuCanceled(MenuEvent e) { 
-				/*for (Action a : actionGroup) {
-					if (a instanceof LazyAction) {
-						((LazyAction) a).deactivate();
-					}
-				}*/
 			}
 		});
 		return jMenu;
