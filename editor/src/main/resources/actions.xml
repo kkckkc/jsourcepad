@@ -56,6 +56,21 @@
 
                 <null />
                 <bean parent="action-group">
+					<constructor-arg><value>Select</value></constructor-arg>
+					<property name="items">
+						<list>
+							<ref local="action-edit-select-word" />
+							<ref local="action-edit-select-line" />
+							<ref local="action-edit-select-paragraph" />
+                            <!-- Enclosing brackets -->
+                            <!-- Scope -->
+							<ref local="action-edit-select-all" />
+						</list>
+					</property>
+				</bean>
+
+                <null />
+                <bean parent="action-group">
 					<constructor-arg><value>Find</value></constructor-arg>
 					<property name="items">
 						<list>
@@ -172,9 +187,26 @@
 
 	<bean id="action-edit-mode-overwrite-mode" parent="action" class="kkckkc.jsourcepad.action.EditModeOverwriteModeAction" autowire="constructor"/>
 
+    <bean id="action-edit-select-word" parent="action" class="kkckkc.jsourcepad.action.EditorAction" autowire="constructor">
+        <property name="action" value="select-word" />
+    </bean>
+
+    <bean id="action-edit-select-line" parent="action" class="kkckkc.jsourcepad.action.EditorAction" autowire="constructor">
+        <property name="action" value="select-line" />
+    </bean>
+
+    <bean id="action-edit-select-paragraph" parent="action" class="kkckkc.jsourcepad.action.EditorAction" autowire="constructor">
+        <property name="action" value="select-paragraph" />
+    </bean>
+
+    <bean id="action-edit-select-all" parent="action" class="kkckkc.jsourcepad.action.EditorAction" autowire="constructor">
+        <property name="action" value="select-all" />
+    </bean>
+
     <bean id="action-edit-find-find" parent="action" class="kkckkc.jsourcepad.action.EditFindAction" autowire="constructor"/>
 	<bean id="action-edit-find-next" parent="action" class="kkckkc.jsourcepad.action.EditFindNextAction" autowire="constructor"/>
 	<bean id="action-edit-find-previous" parent="action" class="kkckkc.jsourcepad.action.EditFindPreviousAction" autowire="constructor"/>
+
 
 	<bean id="action-view-fullscreen" parent="action" class="kkckkc.jsourcepad.action.ViewFullscreenAction" autowire="constructor"/>
 
