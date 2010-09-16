@@ -11,7 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class ClipboardManager {
-    public static final int HISTORY_SIZE = 100;
+    public static final int HISTORY_SIZE = 20;
 
     LinkedList<Transferable> history = new LinkedList<Transferable>();
 

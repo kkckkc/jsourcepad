@@ -5,3 +5,4 @@
 [x] Fold indicator alignment on OSX
 [x] Line numbers alignment on OSX
 [x]ÊRegister clipboard operations even when using keyboard shortcuts
+[Ê]ÊAdd persistence mechanism. Store find history and clipboard history

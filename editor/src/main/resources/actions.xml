@@ -42,6 +42,7 @@
 				<ref local="action-edit-copy" />
 				<ref local="action-edit-paste" />
 				<ref local="action-edit-paste-previous" />
+				<ref local="action-edit-paste-from-history" />
 
                 <null />
                 <bean parent="action-group">
@@ -157,6 +158,7 @@
 	<bean id="action-edit-copy" parent="action" class="kkckkc.jsourcepad.action.EditCopyAction" autowire="constructor"/>
 	<bean id="action-edit-paste" parent="action" class="kkckkc.jsourcepad.action.EditPasteAction" autowire="constructor"/>
 	<bean id="action-edit-paste-previous" parent="action" class="kkckkc.jsourcepad.action.EditPastePreviousAction" autowire="constructor"/>
+	<bean id="action-edit-paste-from-history" parent="action" class="kkckkc.jsourcepad.action.EditPasteFromHistoryAction" autowire="constructor"/>
 	<bean id="action-edit-find-find" parent="action" class="kkckkc.jsourcepad.action.EditFindAction" autowire="constructor"/>
 	<bean id="action-edit-find-next" parent="action" class="kkckkc.jsourcepad.action.EditFindNextAction" autowire="constructor"/>
 	<bean id="action-edit-find-previous" parent="action" class="kkckkc.jsourcepad.action.EditFindPreviousAction" autowire="constructor"/>

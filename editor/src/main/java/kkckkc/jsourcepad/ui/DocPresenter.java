@@ -1,5 +1,6 @@
 package kkckkc.jsourcepad.ui;
 
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeListener;
@@ -7,6 +8,7 @@ import java.beans.PropertyChangeListener;
 import javax.annotation.PostConstruct;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 
 import kkckkc.jsourcepad.Presenter;
@@ -155,6 +157,14 @@ public class DocPresenter implements Presenter<DocView> {
                 Application.get().getClipboardManager().register();
             }
         });
+    }
+
+    public JComponent getComponent() {
+        return this.sourcePane;
+    }
+
+    public Point getInsertionPointLocation() {
+        return this.sourcePane.getEditorPane().getCaret().getMagicCaretPosition();
     }
 
 
