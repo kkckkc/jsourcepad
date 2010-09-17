@@ -62,7 +62,7 @@
 							<ref local="action-edit-select-word" />
 							<ref local="action-edit-select-line" />
 							<ref local="action-edit-select-paragraph" />
-                            <!-- Enclosing brackets -->
+                            <ref local="action-edit-select-enclosing-bracket" />
                             <!-- Scope -->
 							<ref local="action-edit-select-all" />
 						</list>
@@ -202,6 +202,7 @@
     <bean id="action-edit-select-all" parent="action" class="kkckkc.jsourcepad.action.EditorAction" autowire="constructor">
         <property name="action" value="select-all" />
     </bean>
+    <bean id="action-edit-select-enclosing-bracket" parent="action" class="kkckkc.jsourcepad.action.EditSelectEnclosingBracketsAction" autowire="constructor" />
 
     <bean id="action-edit-find-find" parent="action" class="kkckkc.jsourcepad.action.EditFindAction" autowire="constructor"/>
 	<bean id="action-edit-find-next" parent="action" class="kkckkc.jsourcepad.action.EditFindNextAction" autowire="constructor"/>
