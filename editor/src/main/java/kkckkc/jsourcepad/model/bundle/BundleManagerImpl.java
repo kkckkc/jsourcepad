@@ -1,18 +1,9 @@
 package kkckkc.jsourcepad.model.bundle;
 
-import java.awt.event.KeyEvent;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.swing.KeyStroke;
-
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import kkckkc.jsourcepad.action.bundle.BundleAction;
+import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.util.PerformanceLogger;
 import kkckkc.jsourcepad.util.action.ActionGroup;
 import kkckkc.syntaxpane.model.Scope;
@@ -21,8 +12,10 @@ import kkckkc.syntaxpane.style.ScopeSelectorManager;
 import kkckkc.syntaxpane.util.plist.GeneralPListReader;
 import kkckkc.syntaxpane.util.plist.PListReader;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import javax.swing.*;
+import java.awt.event.KeyEvent;
+import java.io.*;
+import java.util.*;
 
 public class BundleManagerImpl implements BundleManager {
 
@@ -77,23 +70,29 @@ public class BundleManagerImpl implements BundleManager {
 	
 	private synchronized void loadBundlesIfNeeded() {
 		if (bundles != null) return;
-		reload();
+		reload(new CachingPListReader(true));
     }
 
-	public void reload() {
+    public void reload() {
+        reload(new CachingPListReader(false));
+    }
+
+	public void reload(CachingPListReader r) {
 	    bundles = Maps.newHashMap();
 		List<Bundle> bundleList = Lists.newArrayList();
 		bundles.put(null, bundleList);
 
 		PerformanceLogger.get().enter(this, "reload.load");
 
-		File[] bundles = new File(bundleDir).listFiles();
+		File[] bundles = new File(bundleDir).listFiles(new FileFilter() {
+            public boolean accept(File pathname) {
+                return ! pathname.isDirectory();
+            }
+        });
 		Arrays.sort(bundles);
 	    for (File bundleDir : bundles) {
-	    	if (! bundleDir.isDirectory()) continue;
-	    	
 	    	try {
-	    		bundleList.add(buildFromDirectory(bundleDir));
+	    		bundleList.add(buildFromDirectory(r, bundleDir));
 	    	} catch (Exception e) {
 	    		e.printStackTrace();
 	    	}
@@ -116,13 +115,13 @@ public class BundleManagerImpl implements BundleManager {
 	    }
 	    
 	    PerformanceLogger.get().exit();
+
+        r.close();
     }
 
 
 	
-	private Bundle buildFromDirectory(File dir) {
-		PListReader r = new GeneralPListReader();
-    	
+	private Bundle buildFromDirectory(PListReader r, File dir) {
 		try {
 	    	File bundleFile = new File(dir, "info.plist");
 			Map m = (Map) r.read(bundleFile); 
@@ -277,6 +276,41 @@ public class BundleManagerImpl implements BundleManager {
 	            return t.getActivator().getScopeSelector();
             }
 	    });
+    }
+
+
+
+    static class CachingPListReader implements PListReader, Serializable {
+        private Map<String, Object> cache;
+        private transient PListReader delegate;
+
+        public CachingPListReader(boolean loadFromDisk) {
+            if (loadFromDisk) {
+                cache = (Map<String, Object>) Application.get().getPersistenceManager().load("bundle.cache");
+                if (cache == null) {
+                    cache = Maps.newHashMap();
+                }
+            } else {
+                cache = Maps.newHashMap();
+            }
+        }
+
+        @Override
+        public Object read(File file) throws IOException {
+            if (delegate == null) delegate = new GeneralPListReader();
+
+            String key = file.toString();
+            if (cache.containsKey(key)) return cache.get(key);
+
+            Object o = delegate.read(file);
+            cache.put(key, o);
+            return o;
+        }
+
+        public void close() {
+            Application.get().getPersistenceManager().save("bundle.cache", cache);
+            cache.clear();
+        }
     }
 
 }

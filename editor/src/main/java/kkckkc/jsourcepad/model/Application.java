@@ -1,9 +1,5 @@
 package kkckkc.jsourcepad.model;
 
-import java.io.File;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import kkckkc.jsourcepad.ScopeRoot;
 import kkckkc.jsourcepad.model.bundle.BundleManager;
 import kkckkc.jsourcepad.theme.DefaultTheme;
@@ -15,10 +11,13 @@ import kkckkc.jsourcepad.util.messagebus.MessageBus;
 import kkckkc.syntaxpane.parse.grammar.LanguageManager;
 import kkckkc.syntaxpane.style.StyleParser;
 import kkckkc.syntaxpane.style.StyleScheme;
-
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+
+import java.io.File;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 
@@ -121,6 +120,10 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
 
 	public Theme getTheme() {
 		return theme;   
+    }
+
+    public PersistenceManager getPersistenceManager() {
+        return beanFactory.getBean(PersistenceManager.class);
     }
 
 	@Override

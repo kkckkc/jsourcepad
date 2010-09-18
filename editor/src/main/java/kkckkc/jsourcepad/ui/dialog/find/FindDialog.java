@@ -155,11 +155,12 @@ public class FindDialog implements Dialog<FindDialogView> {
     }
 
     private void registerHistory(String settingsKey, JComboBox field) {
-        SettingsManager settingsManager = Application.get().getSettingsManager();
+        PersistenceManager pm = Application.get().getPersistenceManager();
 
-        FindHistory history = settingsManager.get(FindHistory.class);
+        FindHistory history = pm.load(FindHistory.class);
+        if (history == null) history = new FindHistory();
         history.addEntry(settingsKey, (String) field.getSelectedItem());
-        settingsManager.update(history);
+        pm.save(FindHistory.class, history);
 
         if (history.getHistory(settingsKey) != null) {
             field.removeAllItems();

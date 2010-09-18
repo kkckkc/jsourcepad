@@ -12,7 +12,8 @@
 	</bean>
 	
 	<bean id="settingsManager" class="kkckkc.jsourcepad.model.SettingsManagerImpl" />
-	
+	<bean id="persistenceManager" class="kkckkc.jsourcepad.model.PersistenceManagerImpl" />
+
 	<bean id="languageManager" class="kkckkc.syntaxpane.parse.grammar.LanguageManager">
 		<property name="provider">
 			<bean class="kkckkc.syntaxpane.parse.grammar.textmate.TextmateLanguageProvider">
