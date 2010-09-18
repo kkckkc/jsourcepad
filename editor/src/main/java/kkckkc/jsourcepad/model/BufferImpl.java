@@ -48,6 +48,7 @@ public class BufferImpl implements Buffer {
 	// Helper
 	private DocumentStateListener documentStateListener;
 	private AnchorManager anchorManager;
+    private CompletionManager completionManager;
 
 	// Restricted editing
 	private ChangeListener restrictedChangeListener;
@@ -57,7 +58,8 @@ public class BufferImpl implements Buffer {
     // Search and replace
     private Finder finder;
 
-	public BufferImpl(SourceDocument d, Doc doc, Window window) {
+
+    public BufferImpl(SourceDocument d, Doc doc, Window window) {
 		this.window = window;
 	    this.document = d;
 	    
@@ -68,12 +70,15 @@ public class BufferImpl implements Buffer {
 	    
 		document.addDocumentListener(documentStateListener);
 		document.addDocumentListener(anchorManager);
+
+        this.completionManager = new CompletionManager(this);
     }
 
 	@Override
 	public void bind(JTextComponent jtc) {
 		jtc.setDocument(document);
 	    this.caret = jtc.getCaret();
+        this.caret.addChangeListener(completionManager);
 	    this.textComponent = jtc;
 	    
 	    this.caret.addChangeListener(new ChangeListener() {
@@ -608,5 +613,9 @@ public class BufferImpl implements Buffer {
 	@Override
     public ActionMap getActionMap() {
 	    return textComponent.getActionMap();
+    }
+
+    public CompletionManager getCompletionManager() {
+        return this.completionManager;
     }
 }

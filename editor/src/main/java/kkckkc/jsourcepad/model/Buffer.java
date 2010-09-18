@@ -63,6 +63,8 @@ public interface Buffer {
 	public void indent(Interval interval);
 	public void shift(Interval interval, int length);
 
+    public CompletionManager getCompletionManager();
+
 	// Restricted editing
 	public void beginRestrictedEditing(RestrictedEditor restrictedEditor);
 	public void endRestrictedEditing();

@@ -91,7 +91,16 @@
 						</list>
 					</property>
 				</bean>
-			</list>
+                <bean parent="action-group">
+                    <constructor-arg><value>Completion</value></constructor-arg>
+                    <property name="items">
+                        <list>
+                            <ref local="action-edit-completion-next" />
+                            <ref local="action-edit-completion-previous" />
+                        </list>
+                    </property>
+                </bean>
+            </list>
 		</property>
 	</bean>
 
@@ -225,6 +234,8 @@
     <bean id="action-edit-find-use-selection-for-replace" parent="action" class="kkckkc.jsourcepad.action.EditFindUseSelectionForReplaceAction" autowire="constructor"/>
     <bean id="action-edit-find-jump-to-selection" parent="action" class="kkckkc.jsourcepad.action.EditFindJumpToSelectionAction" autowire="constructor"/>
 
+    <bean id="action-edit-completion-next" parent="action" class="kkckkc.jsourcepad.action.EditCompletionNextAction" autowire="constructor"/>
+    <bean id="action-edit-completion-previous" parent="action" class="kkckkc.jsourcepad.action.EditCompletionPreviousAction" autowire="constructor"/>
 
 	<bean id="action-view-fullscreen" parent="action" class="kkckkc.jsourcepad.action.ViewFullscreenAction" autowire="constructor"/>
 
