@@ -1,23 +1,20 @@
 package kkckkc.jsourcepad.ui.dialog.find;
 
-import java.awt.Dialog.ModalityType;
-import java.awt.EventQueue;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import javax.annotation.PostConstruct;
-import javax.swing.JComboBox;
 import kkckkc.jsourcepad.Dialog;
-import kkckkc.jsourcepad.model.Application;
-import kkckkc.jsourcepad.model.Buffer;
-import kkckkc.jsourcepad.model.FindHistory;
-import kkckkc.jsourcepad.model.Finder;
-import kkckkc.jsourcepad.model.SettingsManager;
+import kkckkc.jsourcepad.model.*;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.syntaxpane.model.Interval;
 import kkckkc.syntaxpane.model.LineManager;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.annotation.PostConstruct;
+import javax.swing.*;
+import java.awt.Dialog.ModalityType;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 public class FindDialog implements Dialog<FindDialogView> {
 
@@ -44,6 +41,13 @@ public class FindDialog implements Dialog<FindDialogView> {
         view.getFindField().requestFocusInWindow();
 
         final Buffer buffer = window.getDocList().getActiveDoc().getActiveBuffer();
+
+        Finder finder = buffer.getFinder();
+        if (finder != null) {
+            view.getFindField().setSelectedItem(finder.getSearchFor() == null ? "" : finder.getSearchFor());
+            view.getReplaceField().setSelectedItem(finder.getReplacement() == null ? "" : finder.getReplacement());
+        }
+
         final Interval scope = getScope(buffer, buffer.getSelection());
 
         if (scope == null && buffer.getSelection() != null) {
@@ -128,7 +132,10 @@ public class FindDialog implements Dialog<FindDialogView> {
 
     private void replace(Buffer buffer) {
         registerHistory("replace", view.getReplaceField());
-        buffer.getFinder().replace((String) view.getReplaceField().getSelectedItem());
+        
+        Finder finder = buffer.getFinder();
+        finder.setReplacement((String) view.getReplaceField().getSelectedItem());
+        finder.replace();
     }
 
     private void replaceAll(Buffer buffer, Interval scope) {
@@ -139,13 +146,10 @@ public class FindDialog implements Dialog<FindDialogView> {
         registerHistory("find", view.getFindField());
         registerHistory("replace", view.getReplaceField());
 
-        int position = scope == null ? 0 : scope.getStart();
 
-        Interval i = null;
-        while ((i = finder.forward(position)) != null) {
-            position = i.getEnd();
-            finder.replace((String) view.getReplaceField().getSelectedItem());
-        }
+        finder.setReplacement((String) view.getReplaceField().getSelectedItem());
+
+        finder.replaceAll(scope);
 
         close();
     }
@@ -157,7 +161,7 @@ public class FindDialog implements Dialog<FindDialogView> {
         history.addEntry(settingsKey, (String) field.getSelectedItem());
         settingsManager.update(history);
 
-        if (history != null && history.getHistory(settingsKey) != null) {
+        if (history.getHistory(settingsKey) != null) {
             field.removeAllItems();
             for (String value : history.getHistory(settingsKey)) {
                 field.addItem(value);

@@ -1,21 +1,19 @@
 package kkckkc.jsourcepad.model;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-
-import javax.swing.ActionMap;
-import javax.swing.event.DocumentEvent;
-import javax.swing.text.JTextComponent;
-import javax.swing.text.Keymap;
-
 import kkckkc.syntaxpane.model.Interval;
 import kkckkc.syntaxpane.model.LineManager;
-import kkckkc.syntaxpane.model.SourceDocument;
 import kkckkc.syntaxpane.parse.grammar.Language;
 import kkckkc.syntaxpane.style.Style;
 
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.text.JTextComponent;
+import javax.swing.text.Keymap;
+import java.io.BufferedReader;
+import java.io.IOException;
+
 public interface Buffer {
-	public interface InsertionPointListener {
+    public interface InsertionPointListener {
 		public void update(InsertionPoint insertionPoint);
 	}
 
@@ -47,6 +45,7 @@ public interface Buffer {
 	public Interval getSelectionOrCurrentLine();
 	public Interval getCompleteDocument();
 	public int getLength();
+    public void scrollTo(int position);
 
 	// Text manipulation
 	public String getText(Interval interval);

@@ -1,13 +1,10 @@
 package kkckkc.jsourcepad.action;
 
-import java.awt.event.ActionEvent;
-
-import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.Window;
-import kkckkc.jsourcepad.ui.DocPresenter;
 import kkckkc.jsourcepad.ui.dialog.find.FindDialog;
-import kkckkc.jsourcepad.ui.dialog.find.FindDialogView;
 import kkckkc.jsourcepad.util.action.BaseAction;
+
+import java.awt.event.ActionEvent;
 
 public class EditFindAction extends BaseAction {
     private final Window window;

@@ -1,14 +1,18 @@
 package kkckkc.jsourcepad.model;
 
-import java.awt.Graphics;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import kkckkc.jsourcepad.model.Doc.StateListener;
+import kkckkc.jsourcepad.model.Finder.Options;
+import kkckkc.jsourcepad.model.bundle.BundleManager;
+import kkckkc.jsourcepad.model.bundle.PrefKeys;
+import kkckkc.syntaxpane.model.Interval;
+import kkckkc.syntaxpane.model.LineManager;
+import kkckkc.syntaxpane.model.LineManager.Line;
+import kkckkc.syntaxpane.model.SourceDocument;
+import kkckkc.syntaxpane.parse.grammar.Language;
+import kkckkc.syntaxpane.regex.JoniPatternFactory;
+import kkckkc.syntaxpane.style.Style;
 
-import javax.swing.ActionMap;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
@@ -16,20 +20,13 @@ import javax.swing.event.DocumentListener;
 import javax.swing.plaf.TextUI;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Caret;
-import javax.swing.text.JTextComponent;
 import javax.swing.text.Highlighter.HighlightPainter;
-
-import kkckkc.jsourcepad.model.Doc.StateListener;
-import kkckkc.jsourcepad.model.Finder.Options;
-import kkckkc.jsourcepad.model.bundle.BundleManager;
-import kkckkc.jsourcepad.model.bundle.PrefKeys;
-import kkckkc.syntaxpane.model.Interval;
-import kkckkc.syntaxpane.model.LineManager;
-import kkckkc.syntaxpane.model.SourceDocument;
-import kkckkc.syntaxpane.model.LineManager.Line;
-import kkckkc.syntaxpane.parse.grammar.Language;
-import kkckkc.syntaxpane.regex.JoniPatternFactory;
-import kkckkc.syntaxpane.style.Style;
+import javax.swing.text.JTextComponent;
+import java.awt.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class BufferImpl implements Buffer {
 	// State
@@ -228,7 +225,7 @@ public class BufferImpl implements Buffer {
 		
 		try {
 			int offset = 0;
-			String line = null;
+			String line;
 			while ((line = br.readLine()) != null) {
 				document.insertString(offset, line + "\n", null);
 				offset += line.length() + 1;
@@ -467,7 +464,18 @@ public class BufferImpl implements Buffer {
 	    return document.getLength();
     }
 
-	@Override
+    @Override
+    public void scrollTo(int position) {
+        try {
+            Rectangle re = this.textComponent.modelToView(position);
+            re.translate(0, this.textComponent.getVisibleRect().height / 2);
+            this.textComponent.scrollRectToVisible(re);
+        } catch (BadLocationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public String getCurrentLine() {
 		Line line = document.getLineManager().getLineByPosition(caret.getDot());
 		if (line == null) return "";

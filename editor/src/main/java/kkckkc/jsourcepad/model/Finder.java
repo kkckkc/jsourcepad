@@ -1,10 +1,11 @@
 package kkckkc.jsourcepad.model;
 
 import com.google.common.collect.Lists;
+import kkckkc.syntaxpane.model.Interval;
+
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import kkckkc.syntaxpane.model.Interval;
 
 public class Finder {
     private final Buffer buffer;
@@ -12,6 +13,7 @@ public class Finder {
     private final Interval scope;
     private final Options options;
     private final String searchFor;
+    private String replacement;
 
     public Finder(Buffer buffer, Interval scope, String searchFor, Options options) {
         this.buffer = buffer;
@@ -26,6 +28,14 @@ public class Finder {
         if (! options.isRegexp()) searchFor = Pattern.quote(searchFor);
 
         return Pattern.compile(searchFor, options.isCaseSensitive() ? Pattern.CASE_INSENSITIVE : 0);
+    }
+
+    public String getReplacement() {
+        return replacement;
+    }
+
+    public void setReplacement(String replacement) {
+        this.replacement = replacement;
     }
 
     public Interval forward(int position) {
@@ -46,7 +56,7 @@ public class Finder {
         return i;
     }
 
-    public void replace(String replacement) {
+    public void replace() {
         Interval selectionInterval = buffer.getSelection();
         String selection = buffer.getText(selectionInterval);
 
@@ -111,6 +121,19 @@ public class Finder {
         if (! matches.isEmpty()) return matches.get(matches.size() - 1);
 
         return null;
+    }
+
+    public void replaceAll(Interval scope) {
+        int position = scope == null ? 0 : scope.getStart();
+        int end = scope == null ? 0 : Integer.MAX_VALUE;
+
+        Interval i;
+        while ((i = forward(position)) != null) {
+            if (i.getStart() >= end) return;
+            
+            position = i.getEnd();
+            replace();
+        }
     }
 
     public static class Options {
