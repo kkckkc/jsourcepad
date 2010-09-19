@@ -1,6 +1,6 @@
 package kkckkc.jsourcepad.util.messagebus;
 
-import java.awt.EventQueue;
+import java.awt.*;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -18,13 +18,14 @@ public interface DispatchStrategy {
     	}
     };
 	public static final DispatchStrategy ASYNC = new DispatchStrategy() {
-    	public final Executor EXECUTOR = new ThreadPoolExecutor(2, 4,
-                0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
-    	
     	public void execute(Runnable runnable) {
-    		EXECUTOR.execute(runnable);
+    		__EXECUTOR.execute(runnable);
     	}
     };
+
+    public static final Executor __EXECUTOR = new ThreadPoolExecutor(2, 4,
+            0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
+
 
 	public void execute(Runnable runnable);
 }

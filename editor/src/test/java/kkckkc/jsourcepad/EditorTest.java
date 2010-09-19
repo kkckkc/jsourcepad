@@ -1,23 +1,80 @@
 package kkckkc.jsourcepad;
 
-import java.io.IOException;
-
-import junit.framework.TestCase;
 import kkckkc.jsourcepad.model.Application;
+import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.WindowManager;
+import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
+import org.junit.After;
+import org.junit.Before;
 
-public class EditorTest extends TestCase {
+import java.awt.*;
+import java.io.File;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
-	public void testSimple() throws IOException, InterruptedException {
-		Bootstrap.main(null);
-		
+public class EditorTest {
+
+    public static boolean initialized = false;
+    private Window w;
+
+    public static void init() throws InterruptedException {
+        if (initialized) return;
+
+        Bootstrap b = new Bootstrap();
+
+        Thread mainThread = new Thread(b);
+        mainThread.start();
+
+
 		Application app = Application.get();
-		WindowManager wm = app.getWindowManager();
-		while (wm.getWindows().isEmpty()) {
-			Thread.sleep(200);
-		}
-		
-		System.out.println(Application.get());
-	}
+        waitForEvents();
+
+        initialized = true;
+    }
+
+    private static void waitForEvents() throws InterruptedException {
+        final CountDownLatch cdl = new CountDownLatch(2);
+
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                cdl.countDown();
+            }
+        });
+
+        DispatchStrategy.__EXECUTOR.execute(new Runnable() {
+            public void run() {
+                cdl.countDown();
+            }
+        });
+
+        cdl.await(10, TimeUnit.SECONDS);
+    }
+
+    public static void pause() {
+        try {
+            Thread.sleep(5 * 60 * 1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();  
+        }
+    }
+
+    @Before
+    public void initialize() throws InterruptedException {
+        init();
+
+        Application app = Application.get();
+        WindowManager wm = app.getWindowManager();
+        w = wm.newWindow(new File("."));
+        waitForEvents();
+    }
+    
+    @After
+    public void tearDown() {
+        Application app = Application.get();
+        WindowManager wm = app.getWindowManager();
+        wm.closeWindow(w);
+    }
+
+
 	
 }
