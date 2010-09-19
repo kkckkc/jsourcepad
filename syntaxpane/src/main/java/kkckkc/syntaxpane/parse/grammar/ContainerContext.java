@@ -1,13 +1,13 @@
 package kkckkc.syntaxpane.parse.grammar;
 
-import java.util.Map;
-
 import kkckkc.syntaxpane.model.Scope;
 import kkckkc.syntaxpane.parse.grammar.SubPatternContext.Where;
 import kkckkc.syntaxpane.regex.Matcher;
 import kkckkc.syntaxpane.regex.Pattern;
 import kkckkc.syntaxpane.regex.PatternFactory;
 import kkckkc.syntaxpane.util.StringUtils;
+
+import java.util.Map;
 
 public class ContainerContext extends MatchableContext {
 	protected Pattern beginPattern;
@@ -64,7 +64,7 @@ public class ContainerContext extends MatchableContext {
 		}
 		
 		if (endPattern != null && endPattern.pattern().indexOf("@start") >= 0) {
-			for (int i = 0; i <= matcher.groupCount(); i++) {
+			for (int i = 0; i < matcher.groupCount(); i++) {
 				s.addAttribute(i + "@start", matcher.group(i));
 			}
 		}

@@ -1,29 +1,17 @@
 package kkckkc.syntaxpane.parse.grammar.textmate;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-
-import kkckkc.syntaxpane.parse.grammar.ContainerContext;
-import kkckkc.syntaxpane.parse.grammar.Context;
-import kkckkc.syntaxpane.parse.grammar.ContextList;
-import kkckkc.syntaxpane.parse.grammar.Language;
-import kkckkc.syntaxpane.parse.grammar.ReferenceContext;
-import kkckkc.syntaxpane.parse.grammar.RootContext;
-import kkckkc.syntaxpane.parse.grammar.SimpleContext;
-import kkckkc.syntaxpane.parse.grammar.SubPatternContext;
+import kkckkc.syntaxpane.parse.grammar.*;
 import kkckkc.syntaxpane.parse.grammar.util.DefaultPatternSupplier;
 import kkckkc.syntaxpane.regex.JoniPatternFactory;
 import kkckkc.syntaxpane.regex.PatternFactory;
 import kkckkc.syntaxpane.util.plist.GeneralPListReader;
-import kkckkc.syntaxpane.util.plist.PListFormatter;
 import kkckkc.syntaxpane.util.plist.PListReader;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.*;
+import java.util.regex.Pattern;
 
 public class TextmateLanguageParser {
 	private static final Comparator<SubPatternContext> SUBPATTERN_COMPARATOR = new Comparator<SubPatternContext>() {
@@ -62,6 +50,7 @@ public class TextmateLanguageParser {
 				fileTypePattern.append("(.*\\." + s + ")|");
 			}
 			fileTypePattern.setLength(fileTypePattern.length() - 1);
+
 			l.setFileNamePattern(new DefaultPatternSupplier(fileTypePattern.toString(), factory));
 		}
 		

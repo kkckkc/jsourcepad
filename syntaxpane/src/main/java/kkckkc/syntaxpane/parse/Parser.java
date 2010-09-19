@@ -1,12 +1,6 @@
 package kkckkc.syntaxpane.parse;
 
-import java.util.List;
-
-import kkckkc.syntaxpane.model.FoldManager;
-import kkckkc.syntaxpane.model.Interval;
-import kkckkc.syntaxpane.model.LineManager;
-import kkckkc.syntaxpane.model.MutableLineManager;
-import kkckkc.syntaxpane.model.Scope;
+import kkckkc.syntaxpane.model.*;
 import kkckkc.syntaxpane.model.LineManager.Line;
 import kkckkc.syntaxpane.parse.grammar.ContainerContext;
 import kkckkc.syntaxpane.parse.grammar.Context;
@@ -14,6 +8,8 @@ import kkckkc.syntaxpane.parse.grammar.Language;
 import kkckkc.syntaxpane.parse.grammar.MatchableContext;
 import kkckkc.syntaxpane.regex.Matcher;
 import kkckkc.syntaxpane.util.Pair;
+
+import java.util.List;
 
 
 public class Parser {
@@ -151,6 +147,14 @@ public class Parser {
 
 				if (matcherIdx == rootMatcherIdx || (child != null && child.isEndParent())) {
 					// End current context, pop context stack and move position
+
+                    // If start and end match are at the same place, we will enter an
+                    // infinite loop. Abort, by moving cursor one step ahead
+                    if (matcher.start() == matcher.end()) {
+                        iterator.setPosition(position + 1);
+                        continue;
+                    }
+                    
 					position = ((ContainerContext) def).close(scope, matcher);
 					scope = scope.getParent();
 					newContextToParse = true;

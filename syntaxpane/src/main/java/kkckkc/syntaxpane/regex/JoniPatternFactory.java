@@ -1,15 +1,15 @@
 package kkckkc.syntaxpane.regex;
 
-import static org.joni.constants.MetaChar.INEFFECTIVE_META_CHAR;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import org.joni.Option;
 import org.joni.Regex;
 import org.joni.Region;
 import org.joni.Syntax;
 import org.joni.Syntax.MetaCharTable;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import static org.joni.constants.MetaChar.INEFFECTIVE_META_CHAR;
 
 public class JoniPatternFactory implements PatternFactory {
 
@@ -169,12 +169,12 @@ public class JoniPatternFactory implements PatternFactory {
 
 		@Override
         public int groupCount() {
-	        return region.numRegs;
+	        return region.beg.length;
         }
 
 		@Override
         public boolean matches() {
-	        return find();
+	        return find() && start() == 0 && end() == chars.length;
         }
 
 		@Override
