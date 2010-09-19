@@ -1,6 +1,7 @@
 package kkckkc.jsourcepad.model;
 
 import kkckkc.jsourcepad.util.ApplicationFolder;
+import kkckkc.jsourcepad.util.PerformanceLogger;
 
 import java.io.*;
 
@@ -34,6 +35,7 @@ public class PersistenceManagerImpl implements PersistenceManager {
 
     @Override
     public Object load(String key) {
+        PerformanceLogger.get().enter(this, "load");
         try {
             ObjectInputStream oos = new ObjectInputStream(new BufferedInputStream(new FileInputStream(getFile(key))));
             Object o = oos.readObject();
@@ -44,6 +46,8 @@ public class PersistenceManagerImpl implements PersistenceManager {
             return null;
         } catch (ClassNotFoundException e) {
             return null;
+        } finally {
+            PerformanceLogger.get().exit();
         }
     }
 

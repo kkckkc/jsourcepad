@@ -3,12 +3,9 @@ package kkckkc.jsourcepad.util.action;
 import com.google.common.collect.Maps;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
-import kkckkc.jsourcepad.util.PerformanceLogger;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.ListableBeanFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,13 +13,17 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Map;
 
-public class ActionManager implements BeanFactoryAware, InitializingBean {
+public class ActionManager implements BeanFactoryAware {
     private Map<String, ActionGroup> actionGroups = Maps.newHashMap();
     private BeanFactory beanFactory;
     private ActionContext actionContext;
    
 	public ActionGroup getActionGroup(String id) {
- 		return actionGroups.get("action-group-" + id);
+ 		ActionGroup ag = actionGroups.get("action-group-" + id);
+        if (ag != null) return ag;
+
+        actionGroups.put("action-group-" + id, beanFactory.getBean("action-group-" + id, ActionGroup.class));
+        return getActionGroup(id);
 	}
 
 	public ActionGroup createActionGroup(String id) {
@@ -49,15 +50,6 @@ public class ActionManager implements BeanFactoryAware, InitializingBean {
     }
 
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        PerformanceLogger.get().enter(this, "loadActions");
-        for (String actionGroupName : ((ListableBeanFactory) beanFactory).getBeanNamesForType(ActionGroup.class)) {
-            ActionGroup ag = beanFactory.getBean(actionGroupName, ActionGroup.class);
-            actionGroups.put(actionGroupName, ag);
-        }
-        PerformanceLogger.get().exit();
-    }
 
     static {
         KeyboardFocusManager focusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();

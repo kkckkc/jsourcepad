@@ -72,11 +72,11 @@ public class Bootstrap implements Runnable {
                 
         		KeyboardFocusManager focusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
         		focusManager.addKeyEventDispatcher(new GlobalKeyEventDispatcher(bundleManager));
+
+                PerformanceLogger.get().exit();
             }
         });
 
         HttpServer server = Application.get().getHttpServer();
-
-        PerformanceLogger.get().exit();
 	}
 }
