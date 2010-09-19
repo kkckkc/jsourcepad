@@ -1,35 +1,30 @@
 
 package kkckkc.jsourcepad.action;
 
-import java.awt.Point;
-import java.awt.datatransfer.Transferable;
-import java.awt.event.ActionEvent;
-import java.util.Collections;
-import java.util.List;
-import javax.swing.AbstractAction;
-import javax.swing.JComponent;
-import javax.swing.JPopupMenu;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Buffer;
 import kkckkc.jsourcepad.model.ClipboardManager;
 import kkckkc.jsourcepad.model.Doc;
-import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.ui.DocPresenter;
 import kkckkc.jsourcepad.util.action.ActionGroup;
 import kkckkc.jsourcepad.util.action.BaseAction;
 import kkckkc.jsourcepad.util.action.MenuFactory;
 
-public class EditPasteFromHistoryAction extends BaseAction {
-    private final Window window;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.datatransfer.Transferable;
+import java.awt.event.ActionEvent;
+import java.util.Collections;
+import java.util.List;
 
-	public EditPasteFromHistoryAction(Window window) {
-		this.window = window;
+public class EditPasteFromHistoryAction extends BaseAction {
+	public EditPasteFromHistoryAction() {
         setActionStateRules(ActionStateRules.HAS_ACTIVE_DOC);
 	}
 
 	@Override
     public void actionPerformed(ActionEvent e) {
-		Doc d = window.getDocList().getActiveDoc();
+        Doc d = actionContext.get(ActionContextKeys.ACTIVE_DOC);
 
         ClipboardManager cm = Application.get().getClipboardManager();
 

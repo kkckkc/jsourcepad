@@ -1,22 +1,20 @@
 package kkckkc.jsourcepad.action;
 
 import kkckkc.jsourcepad.model.Buffer;
-import kkckkc.jsourcepad.model.Window;
+import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.util.action.BaseAction;
 
 import java.awt.event.ActionEvent;
 
 public class EditFindReplaceAllInSelectionAction extends BaseAction {
-    private final Window window;
-
-	public EditFindReplaceAllInSelectionAction(Window window) {
-		this.window = window;
+	public EditFindReplaceAllInSelectionAction() {
         setActionStateRules(ActionStateRules.HAS_ACTIVE_DOC, ActionStateRules.HAS_ACTIVE_FIND, ActionStateRules.TEXT_SELECTED);
 	}
 
     @Override
     public void actionPerformed(ActionEvent e) {
-		Buffer buffer = window.getDocList().getActiveDoc().getActiveBuffer();
+        Doc d = actionContext.get(ActionContextKeys.ACTIVE_DOC);
+		Buffer buffer = d.getActiveBuffer();
 
         buffer.getFinder().replaceAll(buffer.getSelection());
     }

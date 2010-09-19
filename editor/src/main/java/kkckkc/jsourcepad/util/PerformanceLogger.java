@@ -1,13 +1,12 @@
 package kkckkc.jsourcepad.util;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 public class PerformanceLogger {
 	private static final PerformanceLogger INSTANCE = new PerformanceLogger();
@@ -61,7 +60,7 @@ public class PerformanceLogger {
         }
 
 		public void exit() {
-	        accumulatedTime = (System.nanoTime() - start);
+	        accumulatedTime += (System.nanoTime() - start);
 	        count++;
         }
 		

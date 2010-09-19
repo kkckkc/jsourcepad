@@ -1,19 +1,20 @@
 package kkckkc.jsourcepad.util.action;
 
 import com.google.common.collect.Maps;
-import java.awt.KeyboardFocusManager;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.Map;
-import javax.swing.JComponent;
-import javax.swing.JRootPane;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
+import kkckkc.jsourcepad.util.PerformanceLogger;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.ListableBeanFactory;
+
+import javax.swing.*;
+import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.Map;
 
 public class ActionManager implements BeanFactoryAware, InitializingBean {
     private Map<String, ActionGroup> actionGroups = Maps.newHashMap();
@@ -37,7 +38,7 @@ public class ActionManager implements BeanFactoryAware, InitializingBean {
         if (this.actionContext == actionContext) return;
 
         this.actionContext = actionContext;
-        
+
         for (ActionGroup ag : actionGroups.values()) {
             ag.setActionContext(actionContext);
         }
@@ -50,10 +51,12 @@ public class ActionManager implements BeanFactoryAware, InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
+        PerformanceLogger.get().enter(this, "loadActions");
         for (String actionGroupName : ((ListableBeanFactory) beanFactory).getBeanNamesForType(ActionGroup.class)) {
             ActionGroup ag = beanFactory.getBean(actionGroupName, ActionGroup.class);
             actionGroups.put(actionGroupName, ag);
         }
+        PerformanceLogger.get().exit();
     }
 
     static {

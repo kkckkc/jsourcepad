@@ -1,27 +1,21 @@
 package kkckkc.jsourcepad.action;
 
-import java.awt.event.ActionEvent;
 import kkckkc.jsourcepad.model.Buffer;
-
 import kkckkc.jsourcepad.model.Doc;
-import kkckkc.jsourcepad.model.Window;
-import kkckkc.jsourcepad.ui.DocPresenter;
-import kkckkc.jsourcepad.ui.dialog.find.FindDialog;
-import kkckkc.jsourcepad.ui.dialog.find.FindDialogView;
 import kkckkc.jsourcepad.util.action.BaseAction;
 import kkckkc.syntaxpane.model.Interval;
 
-public class EditFindPreviousAction extends BaseAction {
-    private final Window window;
+import java.awt.event.ActionEvent;
 
-	public EditFindPreviousAction(Window window) {
-		this.window = window;
+public class EditFindPreviousAction extends BaseAction {
+	public EditFindPreviousAction() {
         setActionStateRules(ActionStateRules.HAS_ACTIVE_DOC, ActionStateRules.HAS_ACTIVE_FIND);
 	}
 	
 	@Override
     public void actionPerformed(ActionEvent e) {
-		Buffer buffer = window.getDocList().getActiveDoc().getActiveBuffer();
+        Doc d = actionContext.get(ActionContextKeys.ACTIVE_DOC);
+        Buffer buffer = d.getActiveBuffer();
 
         int position = buffer.getInsertionPoint().getPosition();
         Interval selection = buffer.getSelection();

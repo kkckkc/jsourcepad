@@ -1,19 +1,17 @@
 
 package kkckkc.jsourcepad.action;
 
-import java.awt.event.ActionEvent;
-import javax.swing.Action;
 import kkckkc.jsourcepad.model.Buffer;
 import kkckkc.jsourcepad.model.Doc;
-import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.util.action.BaseAction;
 
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+
 public class EditorAction extends BaseAction {
-    private final Window window;
     private String action;
 
-	public EditorAction(Window window) {
-		this.window = window;
+	public EditorAction() {
         setActionStateRules(ActionStateRules.HAS_ACTIVE_DOC);
 	}
 
@@ -23,7 +21,7 @@ public class EditorAction extends BaseAction {
 
 	@Override
     public void actionPerformed(ActionEvent e) {
-		Doc d = window.getDocList().getActiveDoc();
+        Doc d = actionContext.get(ActionContextKeys.ACTIVE_DOC);
 		Buffer buffer = d.getActiveBuffer();
 
         Action a = buffer.getActionMap().get(this.action);

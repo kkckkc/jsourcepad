@@ -1,6 +1,9 @@
 package kkckkc.jsourcepad.action;
 
-import kkckkc.jsourcepad.model.*;
+import kkckkc.jsourcepad.model.Application;
+import kkckkc.jsourcepad.model.Buffer;
+import kkckkc.jsourcepad.model.Doc;
+import kkckkc.jsourcepad.model.InsertionPoint;
 import kkckkc.jsourcepad.model.bundle.PrefKeys;
 import kkckkc.jsourcepad.util.action.BaseAction;
 import kkckkc.syntaxpane.model.Interval;
@@ -9,16 +12,13 @@ import java.awt.event.ActionEvent;
 import java.util.List;
 
 public class EditSelectEnclosingBracketsAction extends BaseAction {
-    private final Window window;
-
-	public EditSelectEnclosingBracketsAction(Window window) {
-		this.window = window;
+	public EditSelectEnclosingBracketsAction() {
         setActionStateRules(ActionStateRules.HAS_ACTIVE_DOC);
 	}
 
 	@Override
     public void actionPerformed(ActionEvent e) {
-		Doc d = window.getDocList().getActiveDoc();
+        Doc d = actionContext.get(ActionContextKeys.ACTIVE_DOC);
 		Buffer buffer = d.getActiveBuffer();
 
         InsertionPoint insertionPoint = buffer.getInsertionPoint();

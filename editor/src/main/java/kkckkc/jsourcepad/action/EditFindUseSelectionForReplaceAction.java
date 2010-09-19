@@ -1,23 +1,21 @@
 package kkckkc.jsourcepad.action;
 
 import kkckkc.jsourcepad.model.Buffer;
+import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.Finder;
-import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.util.action.BaseAction;
 
 import java.awt.event.ActionEvent;
 
 public class EditFindUseSelectionForReplaceAction extends BaseAction {
-    private final Window window;
-
-	public EditFindUseSelectionForReplaceAction(Window window) {
-		this.window = window;
+	public EditFindUseSelectionForReplaceAction() {
         setActionStateRules(ActionStateRules.HAS_ACTIVE_DOC);
 	}
 
     @Override
     public void actionPerformed(ActionEvent e) {
-		Buffer buffer = window.getDocList().getActiveDoc().getActiveBuffer();
+        Doc d = actionContext.get(ActionContextKeys.ACTIVE_DOC);
+		Buffer buffer = d.getActiveBuffer();
 
         String replacementText = "";
         if (buffer.getSelection() != null) {

@@ -6,7 +6,7 @@
     default-autowire="constructor" default-lazy-init="false">
 
     <bean id="action-group" class="kkckkc.jsourcepad.util.action.ActionGroup" abstract="true" scope="prototype" />
-    <bean id="action" class="kkckkc.jsourcepad.util.action.BaneAction" abstract="true" scope="prototype" />
+    <bean id="action" class="kkckkc.jsourcepad.util.action.BaseAction" abstract="true" scope="prototype" />
 
 	<bean id="action-group-file-menu" parent="action-group">
 		<property name="items">

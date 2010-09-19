@@ -1,22 +1,21 @@
 package kkckkc.jsourcepad.action;
 
-import java.awt.event.ActionEvent;
-import java.util.Map;
-
-import javax.swing.AbstractAction;
-import javax.swing.JComponent;
-
+import com.google.common.collect.Maps;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
+import kkckkc.jsourcepad.util.PerformanceLogger;
 import kkckkc.jsourcepad.util.action.ActionGroup;
 import kkckkc.syntaxpane.parse.grammar.Language;
 
-import com.google.common.collect.Maps;
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.util.Map;
 
 
 public class LanguageActionGroup extends ActionGroup {
 
 	public LanguageActionGroup(Application application) {
+        PerformanceLogger.get().enter(this, "constructor");
 		Map<String, ActionGroup> keyedActionGroups = Maps.newLinkedHashMap();
 		for (char c : "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray()) {
 			ActionGroup ag = new ActionGroup(Character.toString(c));
@@ -35,6 +34,7 @@ public class LanguageActionGroup extends ActionGroup {
 				add(entry.getValue());
 			}
 		}
+        PerformanceLogger.get().exit();
 	}
 
 	

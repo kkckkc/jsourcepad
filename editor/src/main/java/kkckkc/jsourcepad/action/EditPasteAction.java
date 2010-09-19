@@ -1,23 +1,19 @@
 package kkckkc.jsourcepad.action;
 
-import java.awt.event.ActionEvent;
-
 import kkckkc.jsourcepad.model.Doc;
-import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.ui.DocPresenter;
 import kkckkc.jsourcepad.util.action.BaseAction;
 
-public class EditPasteAction extends BaseAction {
-    private final Window window;
+import java.awt.event.ActionEvent;
 
-	public EditPasteAction(Window window) {
-		this.window = window;
+public class EditPasteAction extends BaseAction {
+	public EditPasteAction() {
         setActionStateRules(ActionStateRules.HAS_ACTIVE_DOC);
 	}
 	
 	@Override
     public void actionPerformed(ActionEvent e) {
-		Doc d = window.getDocList().getActiveDoc();
+        Doc d = actionContext.get(ActionContextKeys.ACTIVE_DOC);
 		DocPresenter dp = d.getPresenter(DocPresenter.class);
 		dp.paste();
     }
