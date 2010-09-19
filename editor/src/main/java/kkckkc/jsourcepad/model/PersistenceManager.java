@@ -1,7 +1,6 @@
 package kkckkc.jsourcepad.model;
 
 public interface PersistenceManager {
-    public void saveAndDiscard(String key, Object object);
     public void save(String key, Object object);
     public <T> void save(Class<T> key, T object);
 

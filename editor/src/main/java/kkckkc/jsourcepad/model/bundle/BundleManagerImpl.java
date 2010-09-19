@@ -86,7 +86,7 @@ public class BundleManagerImpl implements BundleManager {
 
 		File[] bundles = new File(bundleDir).listFiles(new FileFilter() {
             public boolean accept(File pathname) {
-                return ! pathname.isDirectory();
+                return pathname.isDirectory();
             }
         });
 		Arrays.sort(bundles);

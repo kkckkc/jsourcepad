@@ -180,8 +180,6 @@
 	<bean id="action-file-save-all" parent="action" class="kkckkc.jsourcepad.action.FileSaveAllAction" autowire="constructor"/>
 	<bean id="action-file-reveal-in-project" parent="action" class="kkckkc.jsourcepad.action.FileRevealInProjectAction" autowire="constructor"/>
 
-	<bean id="action-file-test" parent="action" class="kkckkc.jsourcepad.action.TestAction" autowire="constructor"/>
-	
 	<bean id="action-navigation-goto-file" parent="action" class="kkckkc.jsourcepad.action.NavigationGotoFileAction" autowire="constructor"/>
 	<bean id="action-navigation-goto-symbol" parent="action" class="kkckkc.jsourcepad.action.NavigationGotoSymbolAction" autowire="constructor"/>
 	<bean id="action-navigation-next-file-tab" parent="action" class="kkckkc.jsourcepad.action.NavigationNextFileTabAction" autowire="constructor"/>
