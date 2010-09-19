@@ -1,37 +1,19 @@
 package kkckkc.jsourcepad;
 
-import java.awt.EventQueue;
-import java.awt.KeyEventDispatcher;
-import java.awt.KeyboardFocusManager;
-import java.awt.MouseInfo;
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Collection;
-
-import javax.script.ScriptException;
-import javax.swing.JComponent;
-import javax.swing.JPopupMenu;
-import javax.swing.SwingWorker;
-
+import com.sun.net.httpserver.HttpServer;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
-import kkckkc.jsourcepad.model.bundle.BundleItemSupplier;
 import kkckkc.jsourcepad.model.bundle.BundleManager;
 import kkckkc.jsourcepad.ui.ApplicationController;
 import kkckkc.jsourcepad.util.PerformanceLogger;
-import kkckkc.jsourcepad.util.action.ActionGroup;
-import kkckkc.jsourcepad.util.action.MenuFactory;
-import kkckkc.jsourcepad.util.ui.PopupUtils;
-import kkckkc.syntaxpane.model.Scope;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sun.net.httpserver.HttpServer;
+import javax.script.ScriptException;
+import java.awt.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 
 
@@ -65,20 +47,6 @@ public class Bootstrap implements Runnable {
 
 	
 	public Bootstrap() {
-		SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
-            protected Void doInBackground() throws Exception {
-                PerformanceLogger.get().enter(this, "bundleManager");
-
-        		BundleManager bm = Application.get().getBundleManager();
-        		bm.getBundles();
-
-                PerformanceLogger.get().exit();
-
-	            return null;
-            }
-		};
-		worker.execute();
-		
 		ApplicationController c = Application.get().getApplicationController();
 	}
 	
