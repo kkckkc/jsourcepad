@@ -67,7 +67,7 @@ public class Bootstrap implements Runnable {
                 } catch (IOException e) {
 	                throw new RuntimeException(e);
                 }
-                
+
                 final BundleManager bundleManager = Application.get().getBundleManager();
                 
         		KeyboardFocusManager focusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();

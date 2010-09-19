@@ -1,21 +1,16 @@
 package kkckkc.jsourcepad.model;
 
-import java.awt.Container;
-import java.io.File;
-import java.util.Collection;
-import java.util.Map;
-
-import javax.swing.JFrame;
-
-import kkckkc.jsourcepad.theme.Theme;
+import com.google.common.collect.Maps;
 import kkckkc.jsourcepad.ui.WindowPresenter;
 import kkckkc.jsourcepad.util.BeanFactoryLoader;
 import kkckkc.jsourcepad.util.ui.ComponentUtils;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
-import com.google.common.collect.Maps;
+import java.awt.*;
+import java.io.File;
+import java.util.Collection;
+import java.util.Map;
 
 
 
@@ -44,12 +39,11 @@ public class WindowManagerImpl implements WindowManager {
 
 	@Override
 	public Window newWindow(File projectDir) {
-
-		DefaultListableBeanFactory container = 
+		DefaultListableBeanFactory container =
 			beanFactoryLoader.load(BeanFactoryLoader.WINDOW, app);
-		
+
 		container.registerSingleton("projectDir", new ProjectRoot(projectDir));
-		
+
 		Window window = container.getBean("window", Window.class);
 		Container frame = getContainer(window);
 

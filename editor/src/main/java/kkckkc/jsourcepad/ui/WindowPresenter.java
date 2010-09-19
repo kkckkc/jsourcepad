@@ -1,16 +1,5 @@
 package kkckkc.jsourcepad.ui;
 
-import java.awt.Container;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowFocusListener;
-
-import javax.annotation.PostConstruct;
-import javax.swing.Action;
-import javax.swing.JFrame;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-
 import kkckkc.jsourcepad.Presenter;
 import kkckkc.jsourcepad.action.bundle.BundleAction;
 import kkckkc.jsourcepad.action.bundle.BundleJMenuItem;
@@ -21,8 +10,14 @@ import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.bundle.BundleManager;
 import kkckkc.jsourcepad.util.action.MenuFactory;
 import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
-
 import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.annotation.PostConstruct;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 
 
 public class WindowPresenter implements Presenter<WindowView>, DocList.Listener {
@@ -59,8 +54,7 @@ public class WindowPresenter implements Presenter<WindowView>, DocList.Listener 
 				Application.get().getWindowManager().closeWindow(window);
 			}
 		});
-		frame.setVisible(true);
-		
+
 		frame.addWindowFocusListener(new WindowFocusListener() {
 			public void windowLostFocus(WindowEvent e) {
 				window.topic(Window.FocusListener.class).post().focusLost(window);
@@ -72,7 +66,6 @@ public class WindowPresenter implements Presenter<WindowView>, DocList.Listener 
 		});
 		
 		JMenuBar mb = windowView.getMenubar();
-		
 		MenuFactory menuFactory = new MenuFactory();
 
 		mb.add(menuFactory.buildMenu("File", window.getActionManager().getActionGroup("file-menu"), null, false));
@@ -86,8 +79,8 @@ public class WindowPresenter implements Presenter<WindowView>, DocList.Listener 
 			}
 		}, true));
 
-		
 		window.topic(DocList.Listener.class).subscribe(DispatchStrategy.ASYNC_EVENT, this);
+        frame.setVisible(true);
     }
 	
 	

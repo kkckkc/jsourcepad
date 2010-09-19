@@ -1,29 +1,25 @@
 package kkckkc.jsourcepad.util;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import org.springframework.beans.factory.BeanDefinitionStoreException;
-
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
-import org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor;
-import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-
 import kkckkc.jsourcepad.ScopeRoot;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.theme.Theme;
 import kkckkc.syntaxpane.util.DomUtil;
-import org.springframework.beans.factory.xml.DefaultDocumentLoader;
+import org.springframework.beans.factory.BeanDefinitionStoreException;
+import org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
+import org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.DocumentLoader;
+import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.w3c.dom.Document;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 
 public class BeanFactoryLoader {
     private static final FastDocumentLoader FAST_DOCUMENT_LOADER = new FastDocumentLoader();
@@ -80,6 +76,7 @@ public class BeanFactoryLoader {
 			container = new DefaultListableBeanFactory(parent.getBeanFactory());
 		}
 
+        container.setAllowEagerClassLoading(false);
 		
 		AutowiredAnnotationBeanPostProcessor a = new AutowiredAnnotationBeanPostProcessor();
 		a.setBeanFactory(container);
