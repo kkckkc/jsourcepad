@@ -1,35 +1,24 @@
 package kkckkc.jsourcepad.ui;
 
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.beans.PropertyChangeListener;
-
-import javax.annotation.PostConstruct;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JComponent;
-import javax.swing.KeyStroke;
-
 import kkckkc.jsourcepad.Presenter;
 import kkckkc.jsourcepad.action.ActionContextKeys;
 import kkckkc.jsourcepad.action.text.IndentAction;
 import kkckkc.jsourcepad.action.text.TabAction;
-import kkckkc.jsourcepad.model.Application;
-import kkckkc.jsourcepad.model.Buffer;
-import kkckkc.jsourcepad.model.Doc;
-import kkckkc.jsourcepad.model.EditModeSettings;
-import kkckkc.jsourcepad.model.FontSettings;
-import kkckkc.jsourcepad.model.StyleSettings;
-import kkckkc.jsourcepad.model.TabSettings;
+import kkckkc.jsourcepad.model.*;
 import kkckkc.jsourcepad.model.SettingsManager.Listener;
 import kkckkc.jsourcepad.model.SettingsManager.Setting;
 import kkckkc.jsourcepad.util.action.ActionContext;
 import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
 import kkckkc.jsourcepad.util.ui.CompoundUndoManager;
 import kkckkc.syntaxpane.ScrollableSourcePane;
-
 import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.annotation.PostConstruct;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeListener;
 
 public class DocPresenter implements Presenter<DocView> {
 	private ScrollableSourcePane sourcePane;
@@ -178,6 +167,7 @@ public class DocPresenter implements Presenter<DocView> {
 			settingUpdated(Application.get().getSettingsManager().get(StyleSettings.class));
 			settingUpdated(Application.get().getSettingsManager().get(FontSettings.class));
 			settingUpdated(Application.get().getSettingsManager().get(EditModeSettings.class));
+            settingUpdated(Application.get().getSettingsManager().get(GutterSettings.class));
 	    }
 
 	    @Override
@@ -194,7 +184,12 @@ public class DocPresenter implements Presenter<DocView> {
 	        } else if (settings instanceof EditModeSettings) {
 	        	EditModeSettings editModeSettings = (EditModeSettings) settings;
 	        	view.getComponent().setOverwriteMode(editModeSettings.isOverwriteMode());
+	        } else if (settings instanceof GutterSettings) {
+	        	GutterSettings gutterSettings = (GutterSettings) settings;
+	        	view.getComponent().setFoldings(gutterSettings.isFoldings());
+                view.getComponent().setLineNumbers(gutterSettings.isLineNumbers());
 	        }
+
 
 	        view.redraw();
 	    }

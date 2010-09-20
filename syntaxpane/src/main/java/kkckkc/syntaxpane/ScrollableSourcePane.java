@@ -1,26 +1,17 @@
 package kkckkc.syntaxpane;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
-
-import javax.swing.JEditorPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-
 import kkckkc.syntaxpane.model.SourceDocument;
 import kkckkc.syntaxpane.parse.grammar.Language;
 import kkckkc.syntaxpane.parse.grammar.LanguageManager;
 import kkckkc.syntaxpane.style.StyleScheme;
-import kkckkc.syntaxpane.util.EnvironmentUtils;
 import kkckkc.syntaxpane.util.Wiring;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 
 
 
@@ -33,8 +24,12 @@ public class ScrollableSourcePane extends JPanel {
 	private LineNumberMargin lineNumberPane;
 	private FoldMargin foldMargin;
 	private Color origBackground;
-	
-	public ScrollableSourcePane(LanguageManager languageManager) {
+
+    private boolean lineNumbers;
+    private boolean foldings;
+    private JPanel rowHeaderPane;
+
+    public ScrollableSourcePane(LanguageManager languageManager) {
 		super(new BorderLayout());
 		
 		editorKit = new SourceEditorKit(this, languageManager);
@@ -51,11 +46,17 @@ public class ScrollableSourcePane extends JPanel {
 		
 		scrollPane = new JScrollPane(editorPane);
 		
-		JPanel rowHeaderPane = new JPanel();
+		rowHeaderPane = new JPanel();
 		rowHeaderPane.setLayout(new BorderLayout());
-		rowHeaderPane.add(lineNumberPane, BorderLayout.WEST);
-		rowHeaderPane.add(foldMargin, BorderLayout.EAST);
-		
+/*
+        if (lineNumbers) {
+		    rowHeaderPane.add(lineNumberPane, BorderLayout.WEST);
+        }
+        if (foldings) {
+		    rowHeaderPane.add(foldMargin, BorderLayout.EAST);
+        }
+*/
+
 		scrollPane.setRowHeaderView(rowHeaderPane);
 		scrollPane.setViewportBorder(null);
 
@@ -68,7 +69,35 @@ public class ScrollableSourcePane extends JPanel {
 		add(scrollPane, BorderLayout.CENTER);
 	}
 
-	public JScrollPane getScrollPane() {
+    public boolean isLineNumbers() {
+        return lineNumbers;
+    }
+
+    public void setLineNumbers(boolean lineNumbers) {
+        if (this.lineNumbers == lineNumbers) return;
+        this.lineNumbers = lineNumbers;
+        if (this.lineNumbers) {
+            this.rowHeaderPane.add(lineNumberPane, BorderLayout.WEST);
+        } else {
+            this.rowHeaderPane.remove(lineNumberPane);
+        }
+    }
+
+    public boolean isFoldings() {
+        return foldings;
+    }
+
+    public void setFoldings(boolean foldings) {
+        if (this.foldings == foldings) return;
+        this.foldings = foldings;
+        if (this.foldings) {
+            this.rowHeaderPane.add(foldMargin, BorderLayout.EAST);
+        } else {
+            this.rowHeaderPane.remove(foldMargin);
+        }
+    }
+
+    public JScrollPane getScrollPane() {
 		return scrollPane;
 	}
 	
