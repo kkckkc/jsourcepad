@@ -1,18 +1,11 @@
 package kkckkc.jsourcepad.util.action;
 
-import java.util.List;
+import com.google.common.collect.Lists;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
+import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
-
-import com.google.common.collect.Lists;
+import java.util.List;
 
 public class MenuFactory {
 	public JPopupMenu buildPopup(final ActionGroup actionGroup, ItemBuilder itemBuilder) {
@@ -52,37 +45,40 @@ public class MenuFactory {
 			}
 		}	
 	}
-	
-	public JMenu buildMenu(String name, final ActionGroup actionGroup, final ItemBuilder itemBuilder, final boolean lazy) {
-		final List<JMenuItem> items = Lists.newArrayList();
 
+    public void buildMenu(final JMenu jMenu, final ActionGroup actionGroup, final ItemBuilder itemBuilder, final boolean lazy) {
+        final List<JMenuItem> items = Lists.newArrayList();
+
+        if (! lazy) {
+            loadMenu(items, actionGroup, jMenu, itemBuilder, lazy);
+        }
+
+        jMenu.addMenuListener(new MenuListener() {
+            private void loadIfRequired() {
+                if (items.size() == 0) {
+                    loadMenu(items, actionGroup, jMenu, itemBuilder, lazy);
+                }
+            }
+
+            @Override
+            public void menuSelected(MenuEvent e) {
+                loadIfRequired();
+            }
+
+            @Override
+            public void menuDeselected(MenuEvent e) {
+            }
+
+            @Override
+            public void menuCanceled(MenuEvent e) {
+            }
+        });
+    }
+
+	public JMenu buildMenu(String name, final ActionGroup actionGroup, final ItemBuilder itemBuilder, final boolean lazy) {
 		final JMenu jMenu = new JMenu(name);
-		
-		if (! lazy) {
-			loadMenu(items, actionGroup, jMenu, itemBuilder, lazy);
-		}
-		
-		jMenu.addMenuListener(new MenuListener() {
-			private void loadIfRequired() {
-				if (items.size() == 0) {
-					loadMenu(items, actionGroup, jMenu, itemBuilder, lazy);
-				}
-			}
-			
-			@Override
-			public void menuSelected(MenuEvent e) {
-				loadIfRequired();
-			}
-			
-			@Override
-			public void menuDeselected(MenuEvent e) { 
-			}
-			
-			@Override
-			public void menuCanceled(MenuEvent e) { 
-			}
-		});
-		return jMenu;
+        buildMenu(jMenu, actionGroup, itemBuilder, lazy);
+        return jMenu;
 	}
 	
 	

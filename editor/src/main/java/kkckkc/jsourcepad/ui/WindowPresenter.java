@@ -67,32 +67,39 @@ public class WindowPresenter implements Presenter<WindowView>, DocList.Listener 
 		
 		final JMenuBar mb = windowView.getMenubar();
 
+        final JMenu fileMenu = new JMenu("File");
+        final JMenu editMenu = new JMenu("Edit");
+        final JMenu viewMenu = new JMenu("View");
+        final JMenu textMenu = new JMenu("Text");
+        final JMenu navigationMenu = new JMenu("Navigation");
+        final JMenu bundleMenu = new JMenu("Bundles");
+
+        mb.add(fileMenu);
+        mb.add(editMenu);
+        mb.add(viewMenu);
+        mb.add(textMenu);
+        mb.add(navigationMenu);
+        mb.add(bundleMenu);
+
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 MenuFactory menuFactory = new MenuFactory();
 
-                JMenu fileMenu = menuFactory.buildMenu("File", window.getActionManager().getActionGroup("file-menu"), null, false);
-                JMenu editMenu = menuFactory.buildMenu("Edit", window.getActionManager().getActionGroup("edit-menu"), null, false);
-                JMenu viewMenu = menuFactory.buildMenu("View", window.getActionManager().getActionGroup("view-menu"), null, false);
-                JMenu textMenu = menuFactory.buildMenu("Text", window.getActionManager().getActionGroup("text-menu"), null, false);
-                JMenu navigationMenu = menuFactory.buildMenu("Navigation", window.getActionManager().getActionGroup("navigation-menu"), null, false);
-                JMenu bundleMenu = menuFactory.buildMenu("Bundles", bundleManager.getBundleActionGroup(), new MenuFactory.ItemBuilder() {
+                menuFactory.buildMenu(fileMenu, window.getActionManager().getActionGroup("file-menu"), null, false);
+                menuFactory.buildMenu(editMenu, window.getActionManager().getActionGroup("edit-menu"), null, false);
+                menuFactory.buildMenu(viewMenu, window.getActionManager().getActionGroup("view-menu"), null, false);
+                menuFactory.buildMenu(textMenu, window.getActionManager().getActionGroup("text-menu"), null, false);
+                menuFactory.buildMenu(navigationMenu, window.getActionManager().getActionGroup("navigation-menu"), null, false);
+                menuFactory.buildMenu(bundleMenu, bundleManager.getBundleActionGroup(), new MenuFactory.ItemBuilder() {
                     public JMenuItem build(Action action) {
                         return new BundleJMenuItem((BundleAction) action);
                     }
                 }, true);
-
-                mb.add(fileMenu);
-                mb.add(editMenu);
-                mb.add(viewMenu);
-                mb.add(textMenu);
-                mb.add(navigationMenu);
-                mb.add(bundleMenu);
-
-                window.topic(DocList.Listener.class).subscribe(DispatchStrategy.ASYNC_EVENT, WindowPresenter.this);
-                frame.setVisible(true);
             }
         });
+
+        window.topic(DocList.Listener.class).subscribe(DispatchStrategy.ASYNC_EVENT, WindowPresenter.this);
+        frame.setVisible(true);
     }
 	
 	
