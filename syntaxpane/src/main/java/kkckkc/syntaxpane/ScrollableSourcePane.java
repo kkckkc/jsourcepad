@@ -29,6 +29,7 @@ public class ScrollableSourcePane extends JPanel {
     private boolean foldings;
     private JPanel rowHeaderPane;
     private boolean showInvisibles;
+    private int wrapColumn;
 
     public ScrollableSourcePane(LanguageManager languageManager) {
 		super(new BorderLayout());
@@ -170,8 +171,17 @@ public class ScrollableSourcePane extends JPanel {
         return showInvisibles;
     }
 
+    public void setWrapColumn(int wrapColumn) {
+        if (this.wrapColumn == wrapColumn) return;
+        this.wrapColumn = wrapColumn;
+        repaint();
+    }
+
+    public int getWrapColumn() {
+        return wrapColumn;
+    }
+
     private final class SourceJEditorPane extends JEditorPane {
-		public static final int FOLD_MARGIN = 120;
         private boolean overwriteMode;
 		
 	    @Override
@@ -184,10 +194,10 @@ public class ScrollableSourcePane extends JPanel {
 	    	
 	    	graphics2d.setColor(getStyleScheme().getRightMargin().getBackground());
 	    	
-	    	graphics2d.fillRect(FOLD_MARGIN * wm, clip.y, clip.width, clip.height);
+	    	graphics2d.fillRect(getWrapColumn() * wm, clip.y, clip.width, clip.height);
 	    	
 	    	graphics2d.setColor(getStyleScheme().getRightMargin().getColor());
-	    	graphics2d.drawLine(FOLD_MARGIN * wm, clip.y, FOLD_MARGIN * wm, clip.y + clip.height);
+	    	graphics2d.drawLine(getWrapColumn() * wm, clip.y, getWrapColumn() * wm, clip.y + clip.height);
 
 	    	super.paint(graphics);
 	    }
