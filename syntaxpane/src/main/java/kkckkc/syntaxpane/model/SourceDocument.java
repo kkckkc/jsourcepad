@@ -1,15 +1,14 @@
 package kkckkc.syntaxpane.model;
 
-import javax.swing.event.DocumentEvent;
-import javax.swing.text.PlainDocument;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import kkckkc.syntaxpane.model.FoldManager.FoldListener;
+import kkckkc.syntaxpane.model.MutableFoldManager.FoldListener;
 import kkckkc.syntaxpane.parse.ContentCharProvider;
 import kkckkc.syntaxpane.parse.Parser;
 import kkckkc.syntaxpane.parse.grammar.Language;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.event.DocumentEvent;
+import javax.swing.text.PlainDocument;
 
 
 
@@ -20,11 +19,11 @@ public class SourceDocument extends PlainDocument {
 
 	private Parser parser;
 	private MutableLineManager lineManager;
-	private FoldManager foldManager;
+	private MutableFoldManager foldManager;
 	
 	public SourceDocument() {
 		this.lineManager = new MutableLineManager(new ContentCharProvider(getContent()));
-		this.foldManager = new FoldManager(this.lineManager);
+		this.foldManager = new MutableFoldManager(this.lineManager);
 
 		putProperty(PlainDocument.tabSizeAttribute, 4);
 	}
@@ -66,7 +65,7 @@ public class SourceDocument extends PlainDocument {
 		return this.lineManager;
 	}
 
-	public FoldManager getFoldManager() {
+	public MutableFoldManager getFoldManager() {
 		return foldManager;
 	}
 

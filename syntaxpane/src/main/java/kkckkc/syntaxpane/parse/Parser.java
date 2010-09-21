@@ -17,9 +17,9 @@ public class Parser {
 	
 	private MutableLineManager lineManager;
 	private Language language;
-	private FoldManager foldManager;
+	private MutableFoldManager foldManager;
 	
-	public Parser(Language language, MutableLineManager lineManager, FoldManager foldManager) {
+	public Parser(Language language, MutableLineManager lineManager, MutableFoldManager foldManager) {
 		this.language = language;
 		this.lineManager = lineManager;
 		this.foldManager = foldManager;

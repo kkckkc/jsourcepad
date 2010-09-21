@@ -4,6 +4,7 @@ import kkckkc.jsourcepad.model.Doc.StateListener;
 import kkckkc.jsourcepad.model.Finder.Options;
 import kkckkc.jsourcepad.model.bundle.BundleManager;
 import kkckkc.jsourcepad.model.bundle.PrefKeys;
+import kkckkc.syntaxpane.model.FoldManager;
 import kkckkc.syntaxpane.model.Interval;
 import kkckkc.syntaxpane.model.LineManager;
 import kkckkc.syntaxpane.model.LineManager.Line;
@@ -610,7 +611,12 @@ public class BufferImpl implements Buffer {
 		return document.getLineManager();
 	}
 
-	@Override
+    @Override
+    public FoldManager getFoldManager() {
+        return document.getFoldManager();
+    }
+
+    @Override
     public ActionMap getActionMap() {
 	    return textComponent.getActionMap();
     }

@@ -1,9 +1,9 @@
 package kkckkc.syntaxpane.model;
 
+import kkckkc.syntaxpane.parse.CharProvider;
+
 import java.util.Iterator;
 import java.util.TreeSet;
-
-import kkckkc.syntaxpane.parse.CharProvider;
 
 public abstract class LineManager {
 	protected CharProvider charProvider;

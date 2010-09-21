@@ -63,7 +63,7 @@ public class SourceView extends FoldablePlainView {
 		
 		x = draw(graphics2d, x, y, start, end, segment, this, line, line.getScope().getRoot());
 		
-		FoldManager.State s = doc.getFoldManager().getFoldState(line.getIdx()); 
+		FoldManager.State s = doc.getFoldManager().getFoldState(line.getIdx());
 		if (s == FoldManager.State.FOLDED_FIRST_LINE) {
 			x = draw(editorKit.getSourcePane().getStyleScheme().getTextStyle(), graphics,
 					x + 10, y, new Segment(new char[] { '.', '.', '.' }, 0, 3),

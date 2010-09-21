@@ -144,7 +144,9 @@
                 <ref local="action-view-show-hide-invisibles" />
 
                 <null />
+				<ref local="action-view-fold-current-block" />
 
+                <null />
 				<ref local="action-view-fullscreen" />
 			</list>
 		</property>
@@ -277,6 +279,9 @@
     <bean id="action-view-wrap-column-40" parent="action" class="kkckkc.jsourcepad.action.ViewWrapColumnAction">
         <property name="column" value="40" />
     </bean>
+
+    <bean id="action-view-fold-current-block" parent="action" class="kkckkc.jsourcepad.action.ViewFoldCurrentBlockAction" autowire="constructor"/>
+
 
 	<bean id="action-view-fullscreen" parent="action" class="kkckkc.jsourcepad.action.ViewFullscreenAction" autowire="constructor"/>
 

@@ -1,27 +1,19 @@
 package kkckkc.syntaxpane;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
+import kkckkc.syntaxpane.model.FoldManager;
+import kkckkc.syntaxpane.model.LineManager;
+import kkckkc.syntaxpane.model.LineManager.Line;
+import kkckkc.syntaxpane.model.MutableFoldManager.FoldListener;
+import kkckkc.syntaxpane.model.SourceDocument;
+import kkckkc.syntaxpane.util.Wiring;
+
+import javax.swing.*;
+import javax.swing.text.Element;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
-import javax.swing.JComponent;
-import javax.swing.JEditorPane;
-import javax.swing.text.Element;
-
-import kkckkc.syntaxpane.model.FoldManager;
-import kkckkc.syntaxpane.model.LineManager;
-import kkckkc.syntaxpane.model.SourceDocument;
-import kkckkc.syntaxpane.model.FoldManager.FoldListener;
-import kkckkc.syntaxpane.model.LineManager.Line;
-import kkckkc.syntaxpane.util.Wiring;
 
 
 
@@ -55,7 +47,7 @@ public class FoldMargin extends JComponent implements PropertyChangeListener {
 				Element el = document.getDefaultRootElement();
 				int index = el.getElementIndex(editorPane.getCaretPosition());
 
-				FoldManager.State s = document.getFoldManager().getFoldState(index); 
+				FoldManager.State s = document.getFoldManager().getFoldState(index);
 				if (s == FoldManager.State.FOLDED_SECOND_LINE_AND_REST) {
 					editorPane.setCaretPosition(Math.max(0, position - 1));
 				}
@@ -93,7 +85,7 @@ public class FoldMargin extends JComponent implements PropertyChangeListener {
 		if (startLine != null && endLine != null) {
 			LineManager lineManager = document.getLineManager();
 			do {
-				FoldManager.State s = document.getFoldManager().getFoldState(startLine.getIdx()); 
+				FoldManager.State s = document.getFoldManager().getFoldState(startLine.getIdx());
 				if (s == FoldManager.State.FOLDABLE || s == FoldManager.State.FOLDED_FIRST_LINE) {
 					g.setColor(getForeground());
 

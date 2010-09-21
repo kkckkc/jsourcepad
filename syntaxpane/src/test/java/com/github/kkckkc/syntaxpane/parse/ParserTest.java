@@ -1,15 +1,7 @@
 package com.github.kkckkc.syntaxpane.parse;
 
-import static kkckkc.syntaxpane.parse.grammar.builder.ContextBuilder.containerContext;
-import static kkckkc.syntaxpane.parse.grammar.builder.ContextBuilder.referenceContext;
-import static kkckkc.syntaxpane.parse.grammar.builder.ContextBuilder.rootContext;
-import static kkckkc.syntaxpane.parse.grammar.builder.ContextBuilder.simpleContext;
-
-import java.io.IOException;
-
-
 import junit.framework.TestCase;
-import kkckkc.syntaxpane.model.FoldManager;
+import kkckkc.syntaxpane.model.MutableFoldManager;
 import kkckkc.syntaxpane.model.MutableLineManager;
 import kkckkc.syntaxpane.parse.CharProvider;
 import kkckkc.syntaxpane.parse.Parser;
@@ -18,6 +10,10 @@ import kkckkc.syntaxpane.parse.grammar.Language;
 import kkckkc.syntaxpane.parse.grammar.LanguageManager;
 import kkckkc.syntaxpane.regex.NamedPatternFactory;
 import kkckkc.syntaxpane.regex.Pattern;
+
+import java.io.IOException;
+
+import static kkckkc.syntaxpane.parse.grammar.builder.ContextBuilder.*;
 
 public class ParserTest extends TestCase {
 	
@@ -67,7 +63,7 @@ public class ParserTest extends TestCase {
 			String input = FileUtils.readFile(BASE + parser + "/" + f[0]);
 			CharProvider pro = new CharProvider.StringBuffer(input);
 			MutableLineManager lineManager = new MutableLineManager(pro);
-			Parser p = new Parser(l, lineManager, new FoldManager(lineManager));
+			Parser p = new Parser(l, lineManager, new MutableFoldManager(lineManager));
 			p.parse(0, pro.getLength(), ChangeEvent.ADD);
 			
 			StringBuffer b = new StringBuffer();
@@ -96,7 +92,7 @@ public class ParserTest extends TestCase {
 	
 		CharProvider pro = new CharProvider.StringBuffer(b); 
 		MutableLineManager lineManager = new MutableLineManager(pro);
-		Parser p = new Parser(l, lineManager, new FoldManager(lineManager));
+		Parser p = new Parser(l, lineManager, new MutableFoldManager(lineManager));
 
 		p.parse(0, pro.getLength(), ChangeEvent.ADD);
 
@@ -125,7 +121,7 @@ public class ParserTest extends TestCase {
 	
 		CharProvider pro = new CharProvider.StringBuffer(b); 
 		MutableLineManager lineManager = new MutableLineManager(pro);
-		Parser p = new Parser(l, lineManager, new FoldManager(lineManager));
+		Parser p = new Parser(l, lineManager, new MutableFoldManager(lineManager));
 
 		p.parse(0, pro.getLength(), ChangeEvent.ADD);
 		int len = pro.getLength();
@@ -155,7 +151,7 @@ public class ParserTest extends TestCase {
 	
 		CharProvider pro = new CharProvider.StringBuffer(b); 
 		MutableLineManager lineManager = new MutableLineManager(pro);
-		Parser p = new Parser(l, lineManager, new FoldManager(lineManager));
+		Parser p = new Parser(l, lineManager, new MutableFoldManager(lineManager));
 
 		p.parse(0, pro.getLength(), ChangeEvent.ADD);
 		int len = pro.getLength();
@@ -190,7 +186,7 @@ public class ParserTest extends TestCase {
 	
 		CharProvider pro = new CharProvider.StringBuffer(b); 
 		MutableLineManager lineManager = new MutableLineManager(pro);
-		Parser p = new Parser(l, lineManager, new FoldManager(lineManager));
+		Parser p = new Parser(l, lineManager, new MutableFoldManager(lineManager));
 
 		p.parse(0, pro.getLength(), ChangeEvent.ADD);
 
@@ -218,7 +214,7 @@ public class ParserTest extends TestCase {
 		
 		CharProvider pro = new CharProvider.StringBuffer(b); 
 		MutableLineManager lineManager = new MutableLineManager(pro);
-		Parser p = new Parser(l, lineManager, new FoldManager(lineManager));
+		Parser p = new Parser(l, lineManager, new MutableFoldManager(lineManager));
 
 		p.parse(0, pro.getLength(), ChangeEvent.ADD);
 
@@ -246,7 +242,7 @@ public class ParserTest extends TestCase {
 		
 		CharProvider pro = new CharProvider.StringBuffer(b); 
 		MutableLineManager lineManager = new MutableLineManager(pro);
-		Parser p = new Parser(l, lineManager, new FoldManager(lineManager));
+		Parser p = new Parser(l, lineManager, new MutableFoldManager(lineManager));
 
 		p.parse(0, pro.getLength(), ChangeEvent.ADD);
 
@@ -278,7 +274,7 @@ public class ParserTest extends TestCase {
 		
 		CharProvider pro = new CharProvider.StringBuffer(b); 
 		MutableLineManager lineManager = new MutableLineManager(pro);
-		Parser p = new Parser(l, lineManager, new FoldManager(lineManager));
+		Parser p = new Parser(l, lineManager, new MutableFoldManager(lineManager));
 
 		p.parse(0, pro.getLength(), ChangeEvent.ADD);
 

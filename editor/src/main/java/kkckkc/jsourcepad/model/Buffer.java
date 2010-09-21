@@ -1,5 +1,6 @@
 package kkckkc.jsourcepad.model;
 
+import kkckkc.syntaxpane.model.FoldManager;
 import kkckkc.syntaxpane.model.Interval;
 import kkckkc.syntaxpane.model.LineManager;
 import kkckkc.syntaxpane.parse.grammar.Language;
@@ -87,6 +88,8 @@ public interface Buffer {
 	public enum Direction { Forward, Backward }
 
 	public LineManager getLineManager();
+    public FoldManager getFoldManager();
+    
 	public ActionMap getActionMap();
 
     public Finder getFinder();

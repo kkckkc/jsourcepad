@@ -1,26 +1,18 @@
 package kkckkc.syntaxpane;
 
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import kkckkc.syntaxpane.model.FoldManager;
+import kkckkc.syntaxpane.model.LineManager.Line;
+import kkckkc.syntaxpane.model.MutableFoldManager;
+import kkckkc.syntaxpane.model.MutableFoldManager.FoldListener;
+import kkckkc.syntaxpane.model.SourceDocument;
+import kkckkc.syntaxpane.util.Wiring;
 
-import javax.swing.JComponent;
-import javax.swing.JEditorPane;
+import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-
-import kkckkc.syntaxpane.model.FoldManager;
-import kkckkc.syntaxpane.model.SourceDocument;
-import kkckkc.syntaxpane.model.FoldManager.FoldListener;
-import kkckkc.syntaxpane.model.LineManager.Line;
-import kkckkc.syntaxpane.util.Wiring;
+import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 
 
@@ -92,10 +84,10 @@ public class LineNumberMargin extends JComponent implements PropertyChangeListen
 		Line endLine = document.getLineManager().getLineByPosition(endPos);
 		
 		if (startLine != null && endLine != null) {
-			FoldManager foldManager = document.getFoldManager();
+			MutableFoldManager foldManager = document.getFoldManager();
 			int max = foldManager.getVisibleLineCount();
 			do {
-				FoldManager.State s = document.getFoldManager().getFoldState(startLine.getIdx()); 
+				FoldManager.State s = document.getFoldManager().getFoldState(startLine.getIdx());
 				if (s != FoldManager.State.FOLDED_SECOND_LINE_AND_REST) {
 					String lineNumber = String.valueOf(startLine.getIdx() + 1);
 					int stringWidth = fontMetrics.stringWidth(lineNumber);
