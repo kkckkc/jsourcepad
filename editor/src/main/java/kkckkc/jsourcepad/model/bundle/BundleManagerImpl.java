@@ -283,8 +283,10 @@ public class BundleManagerImpl implements BundleManager {
     static class CachingPListReader implements PListReader, Serializable {
         private Map<String, Object> cache;
         private transient PListReader delegate;
+        private boolean loadFromDisk;
 
         public CachingPListReader(boolean loadFromDisk) {
+            this.loadFromDisk = loadFromDisk;
             if (loadFromDisk) {
                 cache = (Map<String, Object>) Application.get().getPersistenceManager().load("bundle.cache");
                 if (cache == null) {
@@ -308,7 +310,8 @@ public class BundleManagerImpl implements BundleManager {
         }
 
         public void close() {
-            Application.get().getPersistenceManager().save("bundle.cache", cache);
+            if (! loadFromDisk)
+                Application.get().getPersistenceManager().save("bundle.cache", cache);
             cache.clear();
         }
     }
