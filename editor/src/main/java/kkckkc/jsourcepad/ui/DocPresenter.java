@@ -177,7 +177,8 @@ public class DocPresenter implements Presenter<DocView> {
 	        	view.updateTabSize(tabSettings.getTabSize());
 	        } else if (settings instanceof StyleSettings) {
 	        	StyleSettings styleSettings = (StyleSettings) settings;
-	        	view.setStyleScheme(Application.get().getStyleScheme(styleSettings));
+	        	view.getComponent().setStyleScheme(Application.get().getStyleScheme(styleSettings));
+                view.getComponent().setShowInvisibles(styleSettings.isShowInvisibles());
 	        } else if (settings instanceof FontSettings) {
 	        	FontSettings fontSettings = (FontSettings) settings;
 	        	view.getComponent().setFont(fontSettings.asFont());

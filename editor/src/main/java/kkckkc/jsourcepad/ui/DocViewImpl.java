@@ -1,12 +1,10 @@
 package kkckkc.jsourcepad.ui;
 
-import java.awt.Font;
-
-import javax.swing.text.PlainDocument;
-
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.syntaxpane.ScrollableSourcePane;
-import kkckkc.syntaxpane.style.StyleScheme;
+
+import javax.swing.text.PlainDocument;
+import java.awt.*;
 
 public class DocViewImpl implements DocView {
 
@@ -37,11 +35,6 @@ public class DocViewImpl implements DocView {
 		Font f = sourcePane.getFont();
 		f = f.deriveFont(f.getStyle());
 		sourcePane.getEditorPane().setFont(f);
-    }
-
-	@Override
-    public void setStyleScheme(StyleScheme styleScheme) {
-		sourcePane.setStyleScheme(styleScheme);
     }
 
 }

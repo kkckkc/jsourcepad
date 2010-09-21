@@ -28,6 +28,7 @@ public class ScrollableSourcePane extends JPanel {
     private boolean lineNumbers;
     private boolean foldings;
     private JPanel rowHeaderPane;
+    private boolean showInvisibles;
 
     public ScrollableSourcePane(LanguageManager languageManager) {
 		super(new BorderLayout());
@@ -158,8 +159,18 @@ public class ScrollableSourcePane extends JPanel {
 	public void read(File f) throws IOException {
 		editorPane.read(new FileReader(f), f);
 	}
-	
-	private final class SourceJEditorPane extends JEditorPane {
+    
+    public void setShowInvisibles(boolean showInvisibles) {
+        if (this.showInvisibles == showInvisibles) return;
+        this.showInvisibles = showInvisibles;
+        repaint();
+    }
+
+    public boolean isShowInvisibles() {
+        return showInvisibles;
+    }
+
+    private final class SourceJEditorPane extends JEditorPane {
 		public static final int FOLD_MARGIN = 120;
         private boolean overwriteMode;
 		

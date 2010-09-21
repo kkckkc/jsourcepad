@@ -1,25 +1,15 @@
 package kkckkc.syntaxpane;
 
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.Shape;
-
-import javax.swing.event.DocumentEvent;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Element;
-import javax.swing.text.Segment;
-import javax.swing.text.TabExpander;
-import javax.swing.text.Utilities;
-import javax.swing.text.ViewFactory;
-
 import kkckkc.syntaxpane.model.FoldManager;
+import kkckkc.syntaxpane.model.LineManager.Line;
 import kkckkc.syntaxpane.model.Scope;
 import kkckkc.syntaxpane.model.SourceDocument;
-import kkckkc.syntaxpane.model.LineManager.Line;
 import kkckkc.syntaxpane.style.ScopeSelectorManager;
 import kkckkc.syntaxpane.style.TextStyle;
+
+import javax.swing.event.DocumentEvent;
+import javax.swing.text.*;
+import java.awt.*;
 
 
 
@@ -80,7 +70,8 @@ public class SourceView extends FoldablePlainView {
 					this);
 		}
 
-		drawHiddenText(segment, p0, p1, graphics2d, origX, y);
+        if (sourcePane.isShowInvisibles())
+		    drawHiddenText(segment, p0, p1, graphics2d, origX, y);
 
 		return x;
 	}
