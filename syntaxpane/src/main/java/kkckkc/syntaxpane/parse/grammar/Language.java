@@ -1,12 +1,11 @@
 package kkckkc.syntaxpane.parse.grammar;
 
+import com.google.common.base.Supplier;
+import kkckkc.syntaxpane.regex.Pattern;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-
-import kkckkc.syntaxpane.regex.Pattern;
-
-import com.google.common.base.Supplier;
 
 
 
@@ -39,7 +38,7 @@ public class Language implements Comparable<Language> {
 	
 	public boolean matches(String firstLine, File file) {
 		if (firstLinePattern != null && firstLinePattern.get().matcher(firstLine).matches()) return true;
-		if (fileNamePattern != null && fileNamePattern.get().matcher(file.getName()).matches()) return true;
+		if (fileNamePattern != null && fileNamePattern.get().matcher(file.getName()).matchesAll()) return true;
 		
 		return false;
 	}

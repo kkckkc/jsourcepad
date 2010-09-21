@@ -73,6 +73,11 @@ public class NamedPatternFactory implements PatternFactory {
 	        return namedMatcher.matches();
         }
 
+        @Override
+        public boolean matchesAll() {
+            return namedMatcher.matches();
+        }
+
 		@Override
         public int start() {
 	        return namedMatcher.start();

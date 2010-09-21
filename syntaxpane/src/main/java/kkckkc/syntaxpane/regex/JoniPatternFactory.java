@@ -172,9 +172,14 @@ public class JoniPatternFactory implements PatternFactory {
 	        return region.beg.length;
         }
 
+        @Override
+        public boolean matchesAll() {
+            return find() && start() == 0 && end() == chars.length;
+        }
+
 		@Override
         public boolean matches() {
-	        return find() && start() == 0 && end() == chars.length;
+	        return find();
         }
 
 		@Override

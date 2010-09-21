@@ -4,6 +4,8 @@ public interface Matcher {
 
 	boolean matches();
 
+    boolean matchesAll();
+
 	int start();
 
 	boolean find(int position);

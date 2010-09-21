@@ -1,23 +1,29 @@
 package kkckkc.syntaxpane.parse;
 
-import java.util.Iterator;
-
 import kkckkc.syntaxpane.regex.Matcher;
+
+import java.util.BitSet;
+import java.util.Iterator;
 
 public class MatcherCollectionIterator implements Iterator<Integer> {
 	private Matcher[] matchers = null;
 	private boolean[] matchState = null;
-	
+	private BitSet ignored;
 	private IteratorPointer pointer = new IteratorPointer();
 	
 	public MatcherCollectionIterator(Matcher[] matchers) {
 		this.matchers = matchers;
+        this.ignored = new BitSet(matchers.length);
 	}
 	
 	public void setPosition(int position) {
 		pointer.reposition(position);
 	}
-	
+
+    public void ignore() {
+        this.ignored.set(pointer.getMatcher());
+    }
+
 	@Override
 	public boolean hasNext() {
 		if (matchState == null) init();
@@ -26,7 +32,10 @@ public class MatcherCollectionIterator implements Iterator<Integer> {
 		int match = -1;
 		for (int i = 0; i < matchers.length; i++) {
 			if (matchers[i] == null) continue;
-			
+
+            // If this is ignored
+            if (ignored.get(i)) continue;
+
 			// If matcher doesn't find any more matches in string
 			if (! matchState[i]) continue;
 
@@ -53,7 +62,9 @@ public class MatcherCollectionIterator implements Iterator<Integer> {
 		
 		// Update iterator state
 		pointer.update(match);
-		
+
+        ignored.clear();
+
 		return true;
 	}
 

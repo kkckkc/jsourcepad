@@ -149,9 +149,9 @@ public class Parser {
 					// End current context, pop context stack and move position
 
                     // If start and end match are at the same place, we will enter an
-                    // infinite loop. Abort, by moving cursor one step ahead
-                    if (matcher.start() == matcher.end()) {
-                        iterator.setPosition(position + 1);
+                    // infinite loop.
+                    if (def instanceof ContainerContext && scope.getStart() == matcher.end()) {
+                        iterator.ignore();
                         continue;
                     }
                     
