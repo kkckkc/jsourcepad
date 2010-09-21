@@ -3,9 +3,7 @@ package kkckkc.jsourcepad.ui;
 import kkckkc.jsourcepad.Presenter;
 import kkckkc.jsourcepad.action.bundle.BundleAction;
 import kkckkc.jsourcepad.action.bundle.BundleJMenuItem;
-import kkckkc.jsourcepad.model.Application;
-import kkckkc.jsourcepad.model.Doc;
-import kkckkc.jsourcepad.model.DocList;
+import kkckkc.jsourcepad.model.*;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.bundle.BundleManager;
 import kkckkc.jsourcepad.util.action.MenuFactory;
@@ -100,6 +98,13 @@ public class WindowPresenter implements Presenter<WindowView>, DocList.Listener 
 
         window.topic(DocList.Listener.class).subscribe(DispatchStrategy.ASYNC_EVENT, WindowPresenter.this);
         frame.setVisible(true);
+
+        final Application app = Application.get();
+        app.getSettingsManager().subscribe(WindowSettings.class, new SettingsManager.Listener<WindowSettings>() {
+            public void settingUpdated(WindowSettings settings) {
+                windowView.setShowProjectDrawer(settings.isShowProjectDrawer());
+            }
+        }, false, app, window);
     }
 	
 	

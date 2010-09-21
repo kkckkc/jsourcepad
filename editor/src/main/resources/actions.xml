@@ -126,7 +126,15 @@
 					</property>
 				</bean>
 
+                <ref local="action-view-show-hide-project-drawer" />
+
 				<null />
+
+                <!-- Wrap Column -->
+                <!-- Hide Invisibles -->
+
+                <null />
+
 				<ref local="action-view-fullscreen" />
 			</list>
 		</property>
@@ -246,6 +254,8 @@
 
     <bean id="action-view-gutter-foldings" parent="action" class="kkckkc.jsourcepad.action.ViewGutterFoldingsAction" autowire="constructor"/>
     <bean id="action-view-gutter-line-numbers" parent="action" class="kkckkc.jsourcepad.action.ViewGutterLineNumbersAction" autowire="constructor"/>
+
+    <bean id="action-view-show-hide-project-drawer" parent="action" class="kkckkc.jsourcepad.action.ViewShowHideProjectDrawerAction" autowire="constructor"/>
 
 	<bean id="action-view-fullscreen" parent="action" class="kkckkc.jsourcepad.action.ViewFullscreenAction" autowire="constructor"/>
 
