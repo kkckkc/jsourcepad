@@ -172,6 +172,8 @@
 						<list>
                             <ref local="action-text-convert-to-uppercase" />
                             <ref local="action-text-convert-to-lowercase" />
+                            <ref local="action-text-convert-to-titlecase" />
+                            <ref local="action-text-convert-to-opposite-case" />
 						</list>
 					</property>
 				</bean>
@@ -317,6 +319,8 @@
 
     <bean id="action-text-convert-to-uppercase" parent="action" class="kkckkc.jsourcepad.action.TextConvertToUppercaseAction" autowire="constructor"/>
     <bean id="action-text-convert-to-lowercase" parent="action" class="kkckkc.jsourcepad.action.TextConvertToLowercaseAction" autowire="constructor"/>
+    <bean id="action-text-convert-to-titlecase" parent="action" class="kkckkc.jsourcepad.action.TextConvertToTitlecaseAction" autowire="constructor"/>
+    <bean id="action-text-convert-to-opposite-case" parent="action" class="kkckkc.jsourcepad.action.TextConvertToOppositeCaseAction" autowire="constructor"/>
 
 
 	<bean id="action-window-new" parent="action" class="kkckkc.jsourcepad.action.WindowNewAction" autowire="constructor"/>
