@@ -116,10 +116,19 @@ public class BufferImpl implements Buffer {
 
 	@Override
     public void replaceText(Interval interval, String s, Anchor[] anchors) {
+        boolean reselect = false;
+        if (interval.equals(getSelection())) {
+            reselect = true;
+        }
+
 		adjustAnchorList(interval.getStart(), anchors);
 		
 		try {
 			document.replace(interval.getStart(), interval.getLength(), s, null);
+            if (reselect) {
+                Interval newSelection = Interval.createWithLength(interval.getStart(), s.length());
+                setSelection(newSelection);
+            }
 		} catch (BadLocationException e) {
 			throw new RuntimeException(e);
 		}
