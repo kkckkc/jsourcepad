@@ -174,6 +174,11 @@
                             <ref local="action-text-convert-to-lowercase" />
                             <ref local="action-text-convert-to-titlecase" />
                             <ref local="action-text-convert-to-opposite-case" />
+                            <null />
+                            <ref local="action-text-convert-spaces-to-tabs" />
+                            <ref local="action-text-convert-tabs-to-spaces" />
+                            <null />
+                            <ref local="action-text-convert-transpose" />
 						</list>
 					</property>
 				</bean>
@@ -321,6 +326,10 @@
     <bean id="action-text-convert-to-lowercase" parent="action" class="kkckkc.jsourcepad.action.TextConvertToLowercaseAction" autowire="constructor"/>
     <bean id="action-text-convert-to-titlecase" parent="action" class="kkckkc.jsourcepad.action.TextConvertToTitlecaseAction" autowire="constructor"/>
     <bean id="action-text-convert-to-opposite-case" parent="action" class="kkckkc.jsourcepad.action.TextConvertToOppositeCaseAction" autowire="constructor"/>
+    <bean id="action-text-convert-spaces-to-tabs" parent="action" class="kkckkc.jsourcepad.action.TextConvertSpacesToTabsAction" autowire="constructor"/>
+    <bean id="action-text-convert-tabs-to-spaces" parent="action" class="kkckkc.jsourcepad.action.TextConvertTabsToSpacesAction" autowire="constructor"/>
+    <bean id="action-text-convert-transpose" parent="action" class="kkckkc.jsourcepad.action.TextConvertTransposeAction" autowire="constructor"/>
+
 
 
 	<bean id="action-window-new" parent="action" class="kkckkc.jsourcepad.action.WindowNewAction" autowire="constructor"/>
