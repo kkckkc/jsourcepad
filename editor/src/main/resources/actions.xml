@@ -166,6 +166,15 @@
 						</list>
 					</property>
 				</bean>
+                <bean parent="action-group">
+					<constructor-arg><value>Convert</value></constructor-arg>
+					<property name="items">
+						<list>
+                            <ref local="action-text-convert-to-uppercase" />
+                            <ref local="action-text-convert-to-lowercase" />
+						</list>
+					</property>
+				</bean>
                 <null />
 
 
@@ -305,6 +314,9 @@
     <bean id="action-text-align-center" parent="action" class="kkckkc.jsourcepad.action.TextAlignCenterAction" autowire="constructor"/>
     <bean id="action-text-align-right" parent="action" class="kkckkc.jsourcepad.action.TextAlignRightAction" autowire="constructor"/>
     <bean id="action-text-align-justified" parent="action" class="kkckkc.jsourcepad.action.TextAlignJustifiedAction" autowire="constructor"/>
+
+    <bean id="action-text-convert-to-uppercase" parent="action" class="kkckkc.jsourcepad.action.TextConvertToUppercaseAction" autowire="constructor"/>
+    <bean id="action-text-convert-to-lowercase" parent="action" class="kkckkc.jsourcepad.action.TextConvertToLowercaseAction" autowire="constructor"/>
 
 
 	<bean id="action-window-new" parent="action" class="kkckkc.jsourcepad.action.WindowNewAction" autowire="constructor"/>
