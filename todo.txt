@@ -9,3 +9,4 @@
 [ ]ÊWindow/project specific settings - for instance for overwrite mode and tab size
 [ ] Freehanded editing
 [ ] Implement proper completion
+[ ] Rework FoldManager and support fold level actions

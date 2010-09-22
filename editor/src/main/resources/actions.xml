@@ -152,6 +152,34 @@
 		</property>
 	</bean>
 
+	<bean id="action-group-text-menu" parent="action-group">
+		<property name="items">
+			<list>
+                <bean parent="action-group">
+					<constructor-arg><value>Align</value></constructor-arg>
+					<property name="items">
+						<list>
+                            <ref local="action-text-align-left" />
+                            <ref local="action-text-align-center" />
+                            <ref local="action-text-align-right" />
+                            <ref local="action-text-align-justified" />
+						</list>
+					</property>
+				</bean>
+                <null />
+
+
+				<ref local="action-text-shift-left" />
+				<ref local="action-text-shift-right" />
+				<ref local="action-text-indent-line" />
+				<null />
+
+				<ref local="action-text-execute-line-inserting-result" />
+				<ref local="action-text-execute-script" />
+			</list>
+		</property>
+	</bean>
+
 	<bean id="action-group-navigation-menu" parent="action-group">
 		<property name="items">
 			<list>
@@ -163,19 +191,6 @@
 		</property>
 	</bean>
 
-	<bean id="action-group-text-menu" parent="action-group">
-		<property name="items">
-			<list>
-				<ref local="action-text-shift-left" />
-				<ref local="action-text-shift-right" />
-				<ref local="action-text-indent-line" />
-				<null />
-
-				<ref local="action-text-execute-line-inserting-result" />
-				<ref local="action-text-execute-script" />
-			</list>
-		</property>
-	</bean>
 
 	<bean id="action-group-tab-context-menu" parent="action-group">
 		<property name="items">
@@ -213,12 +228,6 @@
 	<bean id="action-navigation-goto-symbol" parent="action" class="kkckkc.jsourcepad.action.NavigationGotoSymbolAction" autowire="constructor"/>
 	<bean id="action-navigation-next-file-tab" parent="action" class="kkckkc.jsourcepad.action.NavigationNextFileTabAction" autowire="constructor"/>
 	<bean id="action-navigation-previous-file-tab" parent="action" class="kkckkc.jsourcepad.action.NavigationPreviousFileTabAction" autowire="constructor"/>
-
-	<bean id="action-text-shift-left" parent="action" class="kkckkc.jsourcepad.action.TextShiftLeftAction" autowire="constructor"/>
-	<bean id="action-text-shift-right" parent="action" class="kkckkc.jsourcepad.action.TextShiftRightAction" autowire="constructor"/>
-	<bean id="action-text-indent-line" parent="action" class="kkckkc.jsourcepad.action.TextIndentLineAction" autowire="constructor"/>
-	<bean id="action-text-execute-line-inserting-result" parent="action" class="kkckkc.jsourcepad.action.TextExecuteLineInsertingResultAction" autowire="constructor"/>
-	<bean id="action-text-execute-script" parent="action" class="kkckkc.jsourcepad.action.TextExecuteScriptAction" autowire="constructor"/>
 
 	<bean id="action-edit-undo" parent="action" class="kkckkc.jsourcepad.action.EditUndoAction" autowire="constructor"/>
 	<bean id="action-edit-redo" parent="action" class="kkckkc.jsourcepad.action.EditRedoAction" autowire="constructor"/>
@@ -284,6 +293,19 @@
 
 
 	<bean id="action-view-fullscreen" parent="action" class="kkckkc.jsourcepad.action.ViewFullscreenAction" autowire="constructor"/>
+
+
+
+    <bean id="action-text-shift-left" parent="action" class="kkckkc.jsourcepad.action.TextShiftLeftAction" autowire="constructor"/>
+    <bean id="action-text-shift-right" parent="action" class="kkckkc.jsourcepad.action.TextShiftRightAction" autowire="constructor"/>
+    <bean id="action-text-indent-line" parent="action" class="kkckkc.jsourcepad.action.TextIndentLineAction" autowire="constructor"/>
+    <bean id="action-text-execute-line-inserting-result" parent="action" class="kkckkc.jsourcepad.action.TextExecuteLineInsertingResultAction" autowire="constructor"/>
+    <bean id="action-text-execute-script" parent="action" class="kkckkc.jsourcepad.action.TextExecuteScriptAction" autowire="constructor"/>
+    <bean id="action-text-align-left" parent="action" class="kkckkc.jsourcepad.action.TextAlignLeftAction" autowire="constructor"/>
+    <bean id="action-text-align-center" parent="action" class="kkckkc.jsourcepad.action.TextAlignCenterAction" autowire="constructor"/>
+    <bean id="action-text-align-right" parent="action" class="kkckkc.jsourcepad.action.TextAlignRightAction" autowire="constructor"/>
+    <bean id="action-text-align-justified" parent="action" class="kkckkc.jsourcepad.action.TextAlignJustifiedAction" autowire="constructor"/>
+
 
 	<bean id="action-window-new" parent="action" class="kkckkc.jsourcepad.action.WindowNewAction" autowire="constructor"/>
 	<bean id="action-window-close" parent="action" class="kkckkc.jsourcepad.action.WindowCloseAction" autowire="constructor"/>
