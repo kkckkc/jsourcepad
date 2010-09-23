@@ -4,6 +4,7 @@ import kkckkc.jsourcepad.model.Doc.StateListener;
 import kkckkc.jsourcepad.model.Finder.Options;
 import kkckkc.jsourcepad.model.bundle.BundleManager;
 import kkckkc.jsourcepad.model.bundle.PrefKeys;
+import kkckkc.jsourcepad.util.StringUtils;
 import kkckkc.syntaxpane.model.FoldManager;
 import kkckkc.syntaxpane.model.Interval;
 import kkckkc.syntaxpane.model.LineManager;
@@ -169,8 +170,31 @@ public class BufferImpl implements Buffer {
 		return new Interval(line.getStart(), line.getEnd());
 	}
 
-	
-	@Override
+    @Override
+    public Interval getSelectionOrCurrentParagraph() {
+        if (selection != null && ! selection.isEmpty()) return selection;
+
+        LineManager lm = document.getLineManager();
+
+        Line line = lm.getLineByPosition(caret.getDot());
+        Line endLine = line;
+        while (endLine != null && ! StringUtils.isWhitespace(endLine.getCharSequence())) {
+            endLine = lm.getNext(endLine);
+        }
+        
+        Line startLine = line;
+        while (startLine != null && ! StringUtils.isWhitespace(startLine.getCharSequence())) {
+            startLine = lm.getPrevious(startLine);
+        }
+
+        int start = startLine == null ? 0 : startLine.getEnd() + 1;
+        int end = endLine == null ? document.getLength() : endLine.getStart() - 1;
+
+        return new Interval(start, end);
+    }
+
+
+    @Override
 	public void setSelection(Interval selection) {
 		this.selection = selection;
 		this.caret.setDot(selection.getStart());

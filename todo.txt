@@ -10,3 +10,6 @@
 [ ] Freehanded editing
 [ ] Implement proper completion
 [ ] Rework FoldManager and support fold level actions
+[ ] Text > Move Selection
+[ ] Text > Edit Each Line in Selection
+[ ] Buffer.replaceText - one undo operation

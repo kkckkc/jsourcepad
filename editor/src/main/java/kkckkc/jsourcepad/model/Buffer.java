@@ -44,6 +44,7 @@ public interface Buffer {
 	public Interval getSelection();
 	public void setSelection(Interval interval);
 	public Interval getSelectionOrCurrentLine();
+    public Interval getSelectionOrCurrentParagraph();
 	public Interval getCompleteDocument();
 	public int getLength();
     public void scrollTo(int position);

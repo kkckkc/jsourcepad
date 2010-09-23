@@ -1,14 +1,12 @@
 package kkckkc.jsourcepad.util.action;
 
-import java.awt.event.ActionEvent;
-import java.util.Properties;
-import javax.swing.AbstractAction;
-import javax.swing.KeyStroke;
-import kkckkc.jsourcepad.util.action.ActionContext.Key;
-import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.util.Properties;
 
 public abstract class BaseAction extends AbstractAction implements BeanNameAware, InitializingBean, ActionContext.Listener {
     private Properties props;
@@ -82,6 +80,10 @@ public abstract class BaseAction extends AbstractAction implements BeanNameAware
     public void updateActionState() {
         boolean shouldBeEnabled = shouldBeEnabled();
         setEnabled(shouldBeEnabled);
+        actionContextUpdated();
+    }
+
+    protected void actionContextUpdated() {
     }
 
     public boolean shouldBeEnabled() {
