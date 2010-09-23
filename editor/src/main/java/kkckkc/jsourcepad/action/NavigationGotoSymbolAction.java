@@ -1,10 +1,10 @@
 package kkckkc.jsourcepad.action;
 
-import java.awt.event.ActionEvent;
-
 import kkckkc.jsourcepad.model.Window;
-import kkckkc.jsourcepad.ui.dialog.navigation.QuickNavigationDialog;
+import kkckkc.jsourcepad.ui.dialog.navigation.SymbolNavigationDialog;
 import kkckkc.jsourcepad.util.action.BaseAction;
+
+import java.awt.event.ActionEvent;
 
 public class NavigationGotoSymbolAction extends BaseAction {
 
@@ -14,11 +14,12 @@ public class NavigationGotoSymbolAction extends BaseAction {
 		this.window = w;
         setActionStateRules(ActionStateRules.HAS_ACTIVE_DOC);
 	}
-	
-	//TODO: Implement this
+
+
+    
 	@Override
     public void actionPerformed(ActionEvent e) {
-		QuickNavigationDialog dialog = window.getPresenter(QuickNavigationDialog.class);
+		SymbolNavigationDialog dialog = window.getPresenter(SymbolNavigationDialog.class);
 		dialog.show();
     }
 

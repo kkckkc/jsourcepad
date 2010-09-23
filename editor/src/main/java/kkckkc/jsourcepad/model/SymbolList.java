@@ -1,17 +1,20 @@
 package kkckkc.jsourcepad.model;
 
-import java.util.List;
-
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
-
+import com.google.common.collect.Ordering;
 import kkckkc.jsourcepad.model.bundle.BundleManager;
 import kkckkc.jsourcepad.model.bundle.PrefKeys;
+import kkckkc.jsourcepad.util.QueryUtils;
 import kkckkc.jsourcepad.util.SedUtils;
 import kkckkc.syntaxpane.model.LineManager;
-import kkckkc.syntaxpane.model.Scope;
-import kkckkc.syntaxpane.model.SourceDocument;
 import kkckkc.syntaxpane.model.LineManager.Line;
+import kkckkc.syntaxpane.model.Scope;
 import kkckkc.syntaxpane.util.Pair;
+
+import java.util.Collections;
+import java.util.List;
 
 public class SymbolList {
 	private Buffer buffer;
@@ -53,5 +56,32 @@ public class SymbolList {
         		visit(l, sc, symbolList);
         	}
 		}
-    }	
+    }
+
+    public List<Pair<String, Integer>> getSymbols(final String query) {
+        List<Pair<String, Integer>> all = getSymbols();
+        List<Pair<String, Integer>> dest = Lists.newArrayList();
+
+        Predicate<String> predicate = QueryUtils.makePredicate(query);
+
+        for (Pair<String, Integer> p : all) {
+            if (predicate.apply(p.getFirst())) dest.add(p);
+        }
+
+        Ordering<Pair<String, Integer>> scoringOrdering = Ordering.natural().onResultOf(
+                new Function<Pair<String, Integer>, Integer>() {
+                    public Integer apply(Pair<String, Integer> p) {
+                        int score = 0;
+
+                        // Score by matching characters, matches late in string decreases score
+                        score -= QueryUtils.getScorePenalty(p.getFirst(), query);
+
+                        return score;
+                    }
+                }).reverse();
+
+        Collections.sort(dest, scoringOrdering);
+
+        return dest;
+    }
 }

@@ -1,28 +1,22 @@
 package kkckkc.jsourcepad.model;
 
-import java.io.File;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.PostConstruct;
-
-import kkckkc.jsourcepad.util.DefaultFileMonitor;
-import kkckkc.jsourcepad.util.FileMonitor;
-import kkckkc.jsourcepad.util.PerformanceLogger;
-import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
-
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
+import kkckkc.jsourcepad.util.DefaultFileMonitor;
+import kkckkc.jsourcepad.util.FileMonitor;
+import kkckkc.jsourcepad.util.PerformanceLogger;
+import kkckkc.jsourcepad.util.QueryUtils;
+import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
+
+import javax.annotation.PostConstruct;
+import java.io.File;
+import java.util.*;
 
 public class ProjectImpl implements Project, DocList.Listener, Window.FocusListener, FileMonitor.Listener {
 	private static final int MAX_ENTRIES = 20;
@@ -82,26 +76,10 @@ public class ProjectImpl implements Project, DocList.Listener, Window.FocusListe
 		
 		List<File> dest = Lists.newArrayList();
 		
-		Predicate<File> predicate = new Predicate<File>() {
-            public boolean apply(File from) {
-        		String name = from.getName();
-
-        		int i = 0;
-        		for (char c : query.toCharArray()) {
-        			boolean found = false;
-					for (; i < name.length(); i++) {
-						found = name.charAt(i) == c;
-						if (found) break;
-					}
-					if (! found) return false;
-        		}
-				
-				return true;
-            }
-		};
+		Predicate<String> predicate = QueryUtils.makePredicate(query);
 		
 		for (File f : cache) {
-			if (predicate.apply(f)) dest.add(f);
+			if (predicate.apply(f.getName())) dest.add(f);
 		}
 		
 		Ordering<File> scoringOrdering = Ordering.natural().onResultOf(
@@ -113,16 +91,7 @@ public class ProjectImpl implements Project, DocList.Listener, Window.FocusListe
                     	score -= StringUtils.countOccurrencesOf(from.getPath(), File.separator);
                     	
                     	// Score by matching characters, matches late in string decreases score
-                    	String name = from.getName();
-                		int i = 0;
-                		for (char c : query.toCharArray()) {
-        					for (; i < name.length(); i++) {
-        						if (name.charAt(i) == c) {
-        							score -= i;
-        							break;
-        						}
-        					}
-                		}
+                        score -= QueryUtils.getScorePenalty(from.getName(), query);
                     	
                 		// Increase score by looking a LRU
                 		Long l = lru.get(from);
