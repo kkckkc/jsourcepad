@@ -190,9 +190,9 @@
 				<ref local="action-text-indent-line" />
 				<null />
 
-                <ref local="action-reformat-paragraph" />
-                <ref local="action-reformat-and-justify" />
-                <ref local="action-unwrap-selection" />
+                <ref local="action-text-reformat-paragraph" />
+                <ref local="action-text-reformat-and-justify" />
+                <ref local="action-text-unwrap-selection" />
                 <null />
 
 				<ref local="action-text-execute-line-inserting-result" />
@@ -335,9 +335,9 @@
     <bean id="action-text-convert-tabs-to-spaces" parent="action" class="kkckkc.jsourcepad.action.TextConvertTabsToSpacesAction" autowire="constructor"/>
     <bean id="action-text-convert-transpose" parent="action" class="kkckkc.jsourcepad.action.TextConvertTransposeAction" autowire="constructor"/>
 
-    <bean id="action-reformat-paragraph" parent="action" class="kkckkc.jsourcepad.action.TextReformatParagraphAction" autowire="constructor"/>
-    <bean id="action-reformat-and-justify" parent="action" class="kkckkc.jsourcepad.action.TextReformatAndJustifyAction" autowire="constructor"/>
-    <bean id="action-unwrap-selection" parent="action" class="kkckkc.jsourcepad.action.TextUnwrapSelectionAction" autowire="constructor"/>
+    <bean id="action-text-reformat-paragraph" parent="action" class="kkckkc.jsourcepad.action.TextReformatParagraphAction" autowire="constructor"/>
+    <bean id="action-text-reformat-and-justify" parent="action" class="kkckkc.jsourcepad.action.TextReformatAndJustifyAction" autowire="constructor"/>
+    <bean id="action-text-unwrap-selection" parent="action" class="kkckkc.jsourcepad.action.TextUnwrapSelectionAction" autowire="constructor"/>
 
 
 	<bean id="action-window-new" parent="action" class="kkckkc.jsourcepad.action.WindowNewAction" autowire="constructor"/>

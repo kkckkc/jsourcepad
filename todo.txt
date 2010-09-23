@@ -6,9 +6,11 @@
 [x] Line numbers alignment on OSX
 [x]ÊRegister clipboard operations even when using keyboard shortcuts
 [x]ÊAdd persistence mechanism. Store find history and clipboard history
+
 [ ]ÊWindow/project specific settings - for instance for overwrite mode and tab size
 [ ] Freehanded editing
 [ ] Implement proper completion
+[ ] Bookmarks
 [ ] Rework FoldManager and support fold level actions
 [ ] Text > Move Selection
 [ ] Text > Edit Each Line in Selection
