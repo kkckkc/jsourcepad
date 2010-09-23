@@ -206,6 +206,7 @@
 			<list>
 				<ref local="action-navigation-next-file-tab" />
 				<ref local="action-navigation-previous-file-tab" />
+                <ref local="action-navigation-goto-header-source" />
 				<ref local="action-navigation-goto-file" />
 				<ref local="action-navigation-goto-symbol" />
 			</list>
@@ -244,11 +245,6 @@
 	<bean id="action-file-save-as" parent="action" class="kkckkc.jsourcepad.action.FileSaveAsAction" autowire="constructor"/>
 	<bean id="action-file-save-all" parent="action" class="kkckkc.jsourcepad.action.FileSaveAllAction" autowire="constructor"/>
 	<bean id="action-file-reveal-in-project" parent="action" class="kkckkc.jsourcepad.action.FileRevealInProjectAction" autowire="constructor"/>
-
-	<bean id="action-navigation-goto-file" parent="action" class="kkckkc.jsourcepad.action.NavigationGotoFileAction" autowire="constructor"/>
-	<bean id="action-navigation-goto-symbol" parent="action" class="kkckkc.jsourcepad.action.NavigationGotoSymbolAction" autowire="constructor"/>
-	<bean id="action-navigation-next-file-tab" parent="action" class="kkckkc.jsourcepad.action.NavigationNextFileTabAction" autowire="constructor"/>
-	<bean id="action-navigation-previous-file-tab" parent="action" class="kkckkc.jsourcepad.action.NavigationPreviousFileTabAction" autowire="constructor"/>
 
 	<bean id="action-edit-undo" parent="action" class="kkckkc.jsourcepad.action.EditUndoAction" autowire="constructor"/>
 	<bean id="action-edit-redo" parent="action" class="kkckkc.jsourcepad.action.EditRedoAction" autowire="constructor"/>
@@ -338,6 +334,13 @@
     <bean id="action-text-reformat-paragraph" parent="action" class="kkckkc.jsourcepad.action.TextReformatParagraphAction" autowire="constructor"/>
     <bean id="action-text-reformat-and-justify" parent="action" class="kkckkc.jsourcepad.action.TextReformatAndJustifyAction" autowire="constructor"/>
     <bean id="action-text-unwrap-selection" parent="action" class="kkckkc.jsourcepad.action.TextUnwrapSelectionAction" autowire="constructor"/>
+
+
+    <bean id="action-navigation-goto-file" parent="action" class="kkckkc.jsourcepad.action.NavigationGotoFileAction" autowire="constructor"/>
+    <bean id="action-navigation-goto-symbol" parent="action" class="kkckkc.jsourcepad.action.NavigationGotoSymbolAction" autowire="constructor"/>
+    <bean id="action-navigation-goto-header-source" parent="action" class="kkckkc.jsourcepad.action.NavigationGotoHeaderSourceAction" autowire="constructor"/>
+    <bean id="action-navigation-next-file-tab" parent="action" class="kkckkc.jsourcepad.action.NavigationNextFileTabAction" autowire="constructor"/>
+    <bean id="action-navigation-previous-file-tab" parent="action" class="kkckkc.jsourcepad.action.NavigationPreviousFileTabAction" autowire="constructor"/>
 
 
 	<bean id="action-window-new" parent="action" class="kkckkc.jsourcepad.action.WindowNewAction" autowire="constructor"/>
