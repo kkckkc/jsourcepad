@@ -1,11 +1,11 @@
 
 package kkckkc.jsourcepad.util.action;
 
-import java.awt.Event;
-import java.awt.Toolkit;
-import java.util.Properties;
-import javax.swing.KeyStroke;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.Properties;
 
 public class DefaultAcceleratorManager implements AcceleratorManager {
 
@@ -23,7 +23,7 @@ public class DefaultAcceleratorManager implements AcceleratorManager {
         return parseKeyStroke(value);
     }
 
-    private KeyStroke parseKeyStroke(String value) {
+    public KeyStroke parseKeyStroke(String value) {
 		if (Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() == Event.CTRL_MASK) {
 			value = value.replaceAll("valt", "alt");
 			value = value.replaceAll("vctrl", "meta");

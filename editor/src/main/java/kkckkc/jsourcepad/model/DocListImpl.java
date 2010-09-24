@@ -1,16 +1,13 @@
 package kkckkc.jsourcepad.model;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-
-import kkckkc.jsourcepad.theme.Theme;
+import com.google.common.collect.Lists;
 import kkckkc.jsourcepad.util.BeanFactoryLoader;
-
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.google.common.collect.Lists;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
 public class DocListImpl implements DocList {
 
@@ -102,7 +99,18 @@ public class DocListImpl implements DocList {
 		}
 	}
 
-	@Override
+    @Override
+    public void setActive(Doc doc) {
+        int idx = 0;
+        for (Doc d : docs) {
+            if (d == doc) break;
+            idx++;
+        }
+
+        setActive(idx);
+    }
+
+    @Override
 	public void close(Doc doc) {
 		int i = 0;
 		for (Doc b : docs) {

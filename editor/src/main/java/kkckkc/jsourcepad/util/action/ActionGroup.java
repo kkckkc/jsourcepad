@@ -1,22 +1,21 @@
 package kkckkc.jsourcepad.util.action;
 
+import com.google.common.collect.Lists;
+
+import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
+import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-
-import com.google.common.collect.Lists;
-
 public class ActionGroup extends AbstractAction implements List<Action> {
 	private static final long serialVersionUID = 1L;
 
-	private List<Action> items = Lists.newArrayList();
-	
+	protected List<Action> items = Lists.newArrayList();
+	protected List<WeakReference<JComponent>> derivedComponents = Lists.newArrayList();
+
 	public ActionGroup() { 	
 	}
 	
@@ -183,5 +182,9 @@ public class ActionGroup extends AbstractAction implements List<Action> {
                 ((BaseAction) o).updateActionState();
             }
         }
+    }
+
+    public void registerDerivedComponent(JComponent component) {
+        derivedComponents.add(new WeakReference<JComponent>(component));
     }
 }

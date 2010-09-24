@@ -209,6 +209,8 @@
                 <ref local="action-navigation-goto-header-source" />
 				<ref local="action-navigation-goto-file" />
 				<ref local="action-navigation-goto-symbol" />
+
+                <bean id="action-group-go-to-tabs" class="kkckkc.jsourcepad.action.NavigationGoToTabsActionGroup" />
 			</list>
 		</property>
 	</bean>

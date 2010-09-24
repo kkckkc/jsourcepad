@@ -1,20 +1,19 @@
 package kkckkc.jsourcepad.model;
 
+import kkckkc.jsourcepad.ScopeRoot;
+import kkckkc.jsourcepad.model.bundle.MacroEngine;
+import kkckkc.jsourcepad.util.action.AcceleratorManager;
+import kkckkc.jsourcepad.util.action.ActionManager;
+import kkckkc.jsourcepad.util.messagebus.AbstractMessageBus;
+import kkckkc.jsourcepad.util.messagebus.MessageBus;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.script.Bindings;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-import javax.swing.JFrame;
-
-import kkckkc.jsourcepad.ScopeRoot;
-import kkckkc.jsourcepad.model.bundle.MacroEngine;
-import kkckkc.jsourcepad.util.action.ActionManager;
-import kkckkc.jsourcepad.util.messagebus.AbstractMessageBus;
-import kkckkc.jsourcepad.util.messagebus.MessageBus;
-
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 
 
@@ -71,7 +70,12 @@ public class WindowImpl extends AbstractMessageBus implements Window, MessageBus
 		return actionManager;
 	}
 
-	public BeanFactory getBeanFactory() {
+    @Override
+    public AcceleratorManager getAcceleratorManager() {
+        return container.getBean(AcceleratorManager.class);
+    }
+
+    public BeanFactory getBeanFactory() {
 	    return container;
     }
 

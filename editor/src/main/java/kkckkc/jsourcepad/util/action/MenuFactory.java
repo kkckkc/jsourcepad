@@ -16,7 +16,7 @@ public class MenuFactory {
 			if (a == null) {
 				jp.addSeparator();
 			} else if (a instanceof ActionGroup) {
-				items.add(jp.add(buildMenu((String) a.getValue(AbstractAction.NAME), (ActionGroup) a, itemBuilder, true)));
+				items.add(jp.add(buildMenu((String) a.getValue(AbstractAction.NAME), (ActionGroup) a, itemBuilder, false)));
 			} else {
 				if (itemBuilder == null) {
 					items.add(jp.add(a));
@@ -28,7 +28,7 @@ public class MenuFactory {
 		return jp;
 	}
 
-	private void loadMenu(List<JMenuItem> items, ActionGroup actionGroup, JMenu jMenu, ItemBuilder itemBuilder, boolean lazy) {
+	public void loadMenu(List<JMenuItem> items, ActionGroup actionGroup, JMenu jMenu, ItemBuilder itemBuilder, boolean lazy) {
 		for (Action a : actionGroup) {
 			if (a == null) {
 				jMenu.addSeparator();
@@ -51,28 +51,32 @@ public class MenuFactory {
 
         if (! lazy) {
             loadMenu(items, actionGroup, jMenu, itemBuilder, lazy);
+        } else {
+
+            jMenu.addMenuListener(new MenuListener() {
+                private void loadIfRequired() {
+                    if (items.size() == 0) {
+                        loadMenu(items, actionGroup, jMenu, itemBuilder, lazy);
+                    }
+                }
+
+                @Override
+                public void menuSelected(MenuEvent e) {
+                    loadIfRequired();
+                }
+
+                @Override
+                public void menuDeselected(MenuEvent e) {
+                }
+
+                @Override
+                public void menuCanceled(MenuEvent e) {
+                }
+            });
+
         }
 
-        jMenu.addMenuListener(new MenuListener() {
-            private void loadIfRequired() {
-                if (items.size() == 0) {
-                    loadMenu(items, actionGroup, jMenu, itemBuilder, lazy);
-                }
-            }
-
-            @Override
-            public void menuSelected(MenuEvent e) {
-                loadIfRequired();
-            }
-
-            @Override
-            public void menuDeselected(MenuEvent e) {
-            }
-
-            @Override
-            public void menuCanceled(MenuEvent e) {
-            }
-        });
+        actionGroup.registerDerivedComponent(jMenu);
     }
 
 	public JMenu buildMenu(String name, final ActionGroup actionGroup, final ItemBuilder itemBuilder, final boolean lazy) {

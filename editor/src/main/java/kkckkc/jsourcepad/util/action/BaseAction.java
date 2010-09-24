@@ -14,7 +14,7 @@ public abstract class BaseAction extends AbstractAction implements BeanNameAware
     protected ActionContext actionContext;
     private ActionStateRule[] rules;
     protected ActionManager actionManager;
-    private AcceleratorManager acceleratorManager;
+    protected AcceleratorManager acceleratorManager;
 
     @Autowired
 	public void setProperties(Properties props) {
