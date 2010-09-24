@@ -1,14 +1,14 @@
 package kkckkc.jsourcepad.model;
 
+import kkckkc.jsourcepad.util.messagebus.MessageBus;
+
 import java.io.File;
 import java.io.IOException;
-
-import kkckkc.jsourcepad.util.messagebus.MessageBus;
 
 
 public interface Doc extends MessageBus {
 	public interface StateListener {
-		public void modified(Doc doc);
+		public void modified(Doc doc, boolean newState, boolean oldState);
 	}
 	
 	public DocList getDocList();

@@ -221,7 +221,8 @@ public class DocPresenter implements Presenter<DocView> {
 
     private class ActionContextUpdater implements Doc.StateListener, Buffer.SelectionListener {
         @Override
-        public void modified(Doc doc) {
+        public void modified(Doc doc, boolean newState, boolean oldState) {
+            // TODO: Why is this needed. Why do we need to change the state for all document modifications
             actionContext.update();
         }
 

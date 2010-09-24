@@ -14,7 +14,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.lang.ref.WeakReference;
 
-public class NavigationGoToTabsActionGroup extends ActionGroup implements DocList.Listener {
+public class NavigationGoToTabsActionGroup extends ActionGroup implements DocList.Listener, Doc.StateListener {
     private Window window;
 
     @Autowired
@@ -23,6 +23,7 @@ public class NavigationGoToTabsActionGroup extends ActionGroup implements DocLis
 
         this.window = window;
         window.topic(DocList.Listener.class).subscribe(DispatchStrategy.ASYNC_EVENT, this);
+        window.topic(Doc.StateListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, this);
     }
 
     @Override
@@ -69,14 +70,31 @@ public class NavigationGoToTabsActionGroup extends ActionGroup implements DocLis
     @Override
     public void selected(int index, Doc doc) {
     }
-    
-    
+
+    @Override
+    public void modified(Doc doc, boolean newState, boolean oldState) {
+        if (newState != oldState) {
+            for (Action a : items) {
+                GoToTabAction gta = (GoToTabAction) a;
+                if (gta.getDoc() == doc) {
+                    gta.putValue(NAME, doc.getTitle());
+                }
+            }
+            updateDerivedComponents();
+        }
+    }
+
+
     public class GoToTabAction extends BaseAction {
         private Doc doc;
 
         public GoToTabAction(Doc doc) {
             this.doc = doc;
             putValue(NAME, doc.getTitle());
+        }
+
+        public Doc getDoc() {
+            return doc;
         }
 
         @Override

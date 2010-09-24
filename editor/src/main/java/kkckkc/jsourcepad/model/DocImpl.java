@@ -1,20 +1,15 @@
 package kkckkc.jsourcepad.model;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-
 import kkckkc.jsourcepad.ScopeRoot;
 import kkckkc.jsourcepad.util.messagebus.AbstractMessageBus;
 import kkckkc.syntaxpane.model.SourceDocument;
 import kkckkc.syntaxpane.parse.grammar.Language;
 import kkckkc.syntaxpane.parse.grammar.LanguageManager;
-
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.*;
 
 
 public class DocImpl extends AbstractMessageBus implements Doc, ScopeRoot {
@@ -73,7 +68,7 @@ public class DocImpl extends AbstractMessageBus implements Doc, ScopeRoot {
 			throw new RuntimeException(e);
 		}
 		getActiveBuffer().clearModified();
-		window.topic(Doc.StateListener.class).post().modified(this);
+		window.topic(Doc.StateListener.class).post().modified(this, true, false);
 	}
 
 	@Override
@@ -90,7 +85,7 @@ public class DocImpl extends AbstractMessageBus implements Doc, ScopeRoot {
 		this.backingFile = file;
 		
 		window.topic(Project.FileChangeListener.class).post().created(file);
-		window.topic(Doc.StateListener.class).post().modified(this);
+		window.topic(Doc.StateListener.class).post().modified(this, true, false);
 	}
 
 	@Override

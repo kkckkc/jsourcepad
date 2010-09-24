@@ -1,29 +1,24 @@
 package kkckkc.jsourcepad.ui;
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-
-import javax.annotation.PostConstruct;
-import javax.swing.JComponent;
-import javax.swing.JPopupMenu;
-import javax.swing.JTabbedPane;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
 import kkckkc.jsourcepad.Presenter;
 import kkckkc.jsourcepad.action.ActionContextKeys;
 import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.DocList;
-import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.util.action.ActionContext;
 import kkckkc.jsourcepad.util.action.ActionGroup;
 import kkckkc.jsourcepad.util.action.ActionManager;
 import kkckkc.jsourcepad.util.action.MenuFactory;
 import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
 import kkckkc.jsourcepad.util.ui.PopupUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.annotation.PostConstruct;
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 public class DocListPresenter implements Presenter<DocListView>, DocList.Listener, Doc.StateListener {
 
@@ -107,7 +102,8 @@ public class DocListPresenter implements Presenter<DocListView>, DocList.Listene
 	}
 
 	@Override
-	public void modified(Doc doc) {
+	public void modified(Doc doc, boolean newState, boolean oldState) {
+        if (newState == oldState) return;
 		tabbedPane.setTitleAt(doc.getDocList().getActive(), doc.getTitle());
 	}
 

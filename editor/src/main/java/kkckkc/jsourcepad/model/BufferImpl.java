@@ -432,7 +432,9 @@ public class BufferImpl implements Buffer {
 		
 		private void modify() {
 			if (disabled) return;
-			
+
+            boolean oldState = modified;
+
 			// If document is already modified, check if it is modified
 			// back to the original document
 			if (modified) {
@@ -446,13 +448,13 @@ public class BufferImpl implements Buffer {
 					}
 				}
 
-                window.topic(StateListener.class).post().modified(getDoc());
+                window.topic(StateListener.class).post().modified(getDoc(), modified, oldState);
 
 			// Else, this modification will tag the buffer as modified
 			} else {
 				
 				modified = true;
-				window.topic(StateListener.class).post().modified(getDoc());
+				window.topic(StateListener.class).post().modified(getDoc(), modified, oldState);
 			}
 		}
 	}
