@@ -506,14 +506,22 @@ public class BufferImpl implements Buffer {
     }
 
     @Override
-    public void scrollTo(int position) {
+    public void scrollTo(int position, ScrollAlignment scrollAlignment) {
         try {
             Rectangle re = this.textComponent.modelToView(position);
-            re.translate(0, this.textComponent.getVisibleRect().height / 2);
-            this.textComponent.scrollRectToVisible(re);
+            if (scrollAlignment == ScrollAlignment.MIDDLE)
+                re.translate(0, this.textComponent.getVisibleRect().height / 2);
+            JViewport jvp = (JViewport) this.textComponent.getParent();
+            jvp.setViewPosition(re.getLocation());
         } catch (BadLocationException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public int getTopLeftPosition() {
+        Point location = this.textComponent.getVisibleRect().getLocation();
+        return this.textComponent.viewToModel(location);  
     }
 
     @Override

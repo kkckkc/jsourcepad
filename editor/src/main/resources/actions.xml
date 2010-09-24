@@ -211,6 +211,20 @@
 				<ref local="action-navigation-goto-symbol" />
 
                 <bean id="action-group-go-to-tabs" class="kkckkc.jsourcepad.action.NavigationGoToTabsActionGroup" />
+
+                <null />
+
+                <bean parent="action-group">
+					<constructor-arg><value>Scroll</value></constructor-arg>
+					<property name="items">
+						<list>
+                            <ref local="action-scroll-line-up" />
+                            <ref local="action-scroll-line-down" />
+                            <ref local="action-scroll-column-left" />
+                            <ref local="action-scroll-column-right" />
+						</list>
+					</property>
+				</bean>
 			</list>
 		</property>
 	</bean>
@@ -344,6 +358,22 @@
     <bean id="action-navigation-next-file-tab" parent="action" class="kkckkc.jsourcepad.action.NavigationNextFileTabAction" autowire="constructor"/>
     <bean id="action-navigation-previous-file-tab" parent="action" class="kkckkc.jsourcepad.action.NavigationPreviousFileTabAction" autowire="constructor"/>
 
+    <bean id="action-scroll-line-up" parent="action" class="kkckkc.jsourcepad.action.NavigationScrollAction">
+        <constructor-arg index="0" value="-1" />
+        <constructor-arg index="1" value="true" />
+    </bean>
+    <bean id="action-scroll-line-down" parent="action" class="kkckkc.jsourcepad.action.NavigationScrollAction">
+        <constructor-arg index="0" value="1" />
+        <constructor-arg index="1" value="true" />
+    </bean>
+    <bean id="action-scroll-column-left" parent="action" class="kkckkc.jsourcepad.action.NavigationScrollAction">
+        <constructor-arg index="0" value="-1" />
+        <constructor-arg index="1" value="false" />
+    </bean>
+    <bean id="action-scroll-column-right" parent="action" class="kkckkc.jsourcepad.action.NavigationScrollAction">
+        <constructor-arg index="0" value="1" />
+        <constructor-arg index="1" value="false" />
+    </bean>
 
 	<bean id="action-window-new" parent="action" class="kkckkc.jsourcepad.action.WindowNewAction" autowire="constructor"/>
 	<bean id="action-window-close" parent="action" class="kkckkc.jsourcepad.action.WindowCloseAction" autowire="constructor"/>

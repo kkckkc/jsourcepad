@@ -15,7 +15,7 @@ public class EditFindJumpToSelectionAction extends BaseAction {
     public void actionPerformed(ActionEvent e) {
         Doc d = actionContext.get(ActionContextKeys.ACTIVE_DOC);
         Buffer buffer = d.getActiveBuffer();
-        buffer.scrollTo(buffer.getSelection().getStart());
+        buffer.scrollTo(buffer.getSelection().getStart(), Buffer.ScrollAlignment.MIDDLE);
     }
 
 }

@@ -47,7 +47,10 @@ public interface Buffer {
     public Interval getSelectionOrCurrentParagraph();
 	public Interval getCompleteDocument();
 	public int getLength();
-    public void scrollTo(int position);
+
+    public enum ScrollAlignment { TOP, MIDDLE }
+    public void scrollTo(int position, ScrollAlignment scrollAlignment);
+    public int getTopLeftPosition();
 
 	// Text manipulation
 	public String getText(Interval interval);
