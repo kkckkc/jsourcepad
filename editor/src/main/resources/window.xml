@@ -51,4 +51,8 @@
 
 	<bean id="projectPresenter" class="kkckkc.jsourcepad.ui.ProjectPresenter" />
 	<bean id="projectView" class="kkckkc.jsourcepad.ui.ProjectViewImpl" />
+
+    <bean id="gotoLineDialogView" class="kkckkc.jsourcepad.ui.dialog.gotoline.GotoLineDialogViewimpl" autowire="constructor" />
+    <bean id="gotoLineDialog" class="kkckkc.jsourcepad.ui.dialog.gotoline.GotoLineDialog" />
+
 </beans>

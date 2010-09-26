@@ -11,15 +11,18 @@
 
 package kkckkc.jsourcepad.ui.dialog.gotoline;
 
+import javax.swing.*;
+
 /**
  *
  * @author magnus
  */
-public class GotoLineDialogViewimpl extends javax.swing.JDialog {
+public class GotoLineDialogViewimpl extends javax.swing.JDialog implements GotoLineDialogView {
 
     /** Creates new form GotoLineDialogViewimpl */
-    public GotoLineDialogViewimpl(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
+    public GotoLineDialogViewimpl(java.awt.Frame parent) {
+        super(parent, true);
+        setLocationRelativeTo(parent);
         initComponents();
     }
 
@@ -75,7 +78,7 @@ public class GotoLineDialogViewimpl extends javax.swing.JDialog {
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                GotoLineDialogViewimpl dialog = new GotoLineDialogViewimpl(new javax.swing.JFrame(), true);
+                GotoLineDialogViewimpl dialog = new GotoLineDialogViewimpl(new javax.swing.JFrame());
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     public void windowClosing(java.awt.event.WindowEvent e) {
                         System.exit(0);
@@ -92,4 +95,18 @@ public class GotoLineDialogViewimpl extends javax.swing.JDialog {
     private javax.swing.JButton okButton;
     // End of variables declaration//GEN-END:variables
 
+    @Override
+    public JTextField getLineNumberField() {
+        return lineNumberField;
+    }
+
+    @Override
+    public JButton getOKButton() {
+        return okButton;
+    }
+
+    @Override
+    public JDialog getJDialog() {
+        return this;
+    }
 }

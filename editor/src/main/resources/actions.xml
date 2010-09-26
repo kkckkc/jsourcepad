@@ -225,6 +225,7 @@
 						</list>
 					</property>
 				</bean>
+                <ref local="action-navigation-goto-line" />
 			</list>
 		</property>
 	</bean>
@@ -357,6 +358,7 @@
     <bean id="action-navigation-goto-header-source" parent="action" class="kkckkc.jsourcepad.action.NavigationGotoHeaderSourceAction" autowire="constructor"/>
     <bean id="action-navigation-next-file-tab" parent="action" class="kkckkc.jsourcepad.action.NavigationNextFileTabAction" autowire="constructor"/>
     <bean id="action-navigation-previous-file-tab" parent="action" class="kkckkc.jsourcepad.action.NavigationPreviousFileTabAction" autowire="constructor"/>
+    <bean id="action-navigation-goto-line" parent="action" class="kkckkc.jsourcepad.action.NavigationGotoLineAction" autowire="constructor"/>
 
     <bean id="action-scroll-line-up" parent="action" class="kkckkc.jsourcepad.action.NavigationScrollAction">
         <constructor-arg index="0" value="-1" />
