@@ -16,7 +16,8 @@ import java.util.Map;
 
 public class WindowManagerImpl implements WindowManager {
 	private Map<Container, Window> openWindows = Maps.newHashMap();
-	
+	private int lastId = 0;
+
 	// Collaborators
 	private Application app;
 	private BeanFactoryLoader beanFactoryLoader;
@@ -31,8 +32,16 @@ public class WindowManagerImpl implements WindowManager {
 	    this.beanFactoryLoader = beanFactoryLoader;
     }
 
-	
-	@Override
+
+    @Override
+    public Window getWindow(int id) {
+        for (Window window : openWindows.values()) {
+            if (window.getId() == id) return window;
+        }
+        return null;
+    }
+
+    @Override
 	public Window getWindow(Container c) {
 		return openWindows.get(ComponentUtils.getToplevelAncestor(c));
 	}
@@ -45,6 +54,8 @@ public class WindowManagerImpl implements WindowManager {
 		container.registerSingleton("projectDir", new ProjectRoot(projectDir));
 
 		Window window = container.getBean("window", Window.class);
+        window.setId(++lastId);
+
 		Container frame = getContainer(window);
 
 		container.registerSingleton("frame", frame);

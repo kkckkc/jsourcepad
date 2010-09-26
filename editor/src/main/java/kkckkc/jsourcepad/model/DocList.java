@@ -3,6 +3,7 @@ package kkckkc.jsourcepad.model;
 import java.io.File;
 
 public interface DocList {
+
     public interface Listener {
 		public void created(Doc doc);
 		public void selected(int index, Doc doc);
@@ -18,6 +19,7 @@ public interface DocList {
 	public Window getWindow();
 	
 	public int getActive();
+    public int getIndex(Doc doc);
 	public void setActive(int selectedIndex);
     public void setActive(Doc doc);
 	public Doc getActiveDoc();

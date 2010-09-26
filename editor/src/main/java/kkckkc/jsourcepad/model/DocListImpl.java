@@ -81,7 +81,17 @@ public class DocListImpl implements DocList {
 		return activeIndex;
 	}
 
-	@Override
+    @Override
+    public int getIndex(Doc doc) {
+        int i = 0;
+        for (Doc d : docs) {
+            if (d == doc) return i;
+            i++;
+        }
+        return -1;
+    }
+
+    @Override
 	public Doc getActiveDoc() {
 		if (docs.isEmpty()) return null;
 		return docs.get(activeIndex);

@@ -1,6 +1,7 @@
 package kkckkc.jsourcepad;
 
 import com.sun.net.httpserver.HttpServer;
+import kkckkc.jsourcepad.http.PreviewServer;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.bundle.BundleManager;
@@ -78,5 +79,6 @@ public class Bootstrap implements Runnable {
         });
 
         HttpServer server = Application.get().getHttpServer();
+        PreviewServer ps = Application.get().getBeanFactory().getBean(PreviewServer.class);
 	}
 }

@@ -27,4 +27,6 @@
     <bean id="clipboardManager" class="kkckkc.jsourcepad.model.ClipboardManager" />
 
 	<bean id="httpServer" class="kkckkc.jsourcepad.http.HttpServerFactoryBean" />
+
+    <bean id="previewServer" class="kkckkc.jsourcepad.http.PreviewServer" lazy-init="false" />
 </beans>

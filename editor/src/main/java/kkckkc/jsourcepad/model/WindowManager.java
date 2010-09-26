@@ -1,10 +1,8 @@
 package kkckkc.jsourcepad.model;
 
-import java.awt.Container;
+import java.awt.*;
 import java.io.File;
 import java.util.Collection;
-
-import kkckkc.jsourcepad.ui.WindowPresenter;
 
 
 public interface WindowManager {
@@ -12,7 +10,9 @@ public interface WindowManager {
 		void created(Window window);
 		void destroyed(Window window);
 	}
-	
+
+    public Window getWindow(int id);
+
 	public Window getWindow(Container jframe);
 	
 	public Window newWindow(File baseDir);

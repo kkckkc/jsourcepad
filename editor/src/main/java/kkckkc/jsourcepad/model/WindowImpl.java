@@ -19,6 +19,7 @@ import javax.script.ScriptEngineManager;
 
 public class WindowImpl extends AbstractMessageBus implements Window, MessageBus, ScopeRoot {
 
+    private int id;
 	private BeanFactory container;
 
 	// Collaborators
@@ -39,8 +40,16 @@ public class WindowImpl extends AbstractMessageBus implements Window, MessageBus
 		
 		return scriptEngine;
 	}
-	
-	@Autowired
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Autowired
 	public void setActionManager(ActionManager actionManager) {
 	    this.actionManager = actionManager;
     }

@@ -11,6 +11,8 @@ import javax.script.ScriptEngine;
 
 
 public interface Window extends MessageBus, ScopeRoot {
+    public void setId(int id);
+    public int getId();
 
     public interface FocusListener {
 		public void focusGained(Window window);
