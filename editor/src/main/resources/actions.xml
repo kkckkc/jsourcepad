@@ -233,6 +233,9 @@
     <bean id="action-group-window-menu" parent="action-group">
         <property name="items">
             <list>
+                <ref local="action-window-minimize" />
+                <ref local="action-window-zoom" />
+                <null />
                 <ref local="action-window-show-web-preview" />
             </list>
         </property>
@@ -390,6 +393,8 @@
 	<bean id="action-window-exit" parent="action" class="kkckkc.jsourcepad.action.WindowExitAction" autowire="constructor"/>
 
     <bean id="action-window-show-web-preview" parent="action" class="kkckkc.jsourcepad.action.WindowShowWebPreviewAction" autowire="constructor"/>
+    <bean id="action-window-minimize" parent="action" class="kkckkc.jsourcepad.action.WindowMinimizeAction" autowire="constructor"/>
+    <bean id="action-window-zoom" parent="action" class="kkckkc.jsourcepad.action.WindowZoomAction" autowire="constructor"/>
 
 	<bean id="action-tab-close" parent="action" class="kkckkc.jsourcepad.action.TabCloseAction" autowire="constructor" />
 	<bean id="action-tab-close-all" parent="action" class="kkckkc.jsourcepad.action.TabCloseAllAction" autowire="constructor" />

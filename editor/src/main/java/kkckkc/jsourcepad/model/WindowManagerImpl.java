@@ -7,6 +7,7 @@ import kkckkc.jsourcepad.util.ui.ComponentUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
+import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.util.Collection;
@@ -79,4 +80,20 @@ public class WindowManagerImpl implements WindowManager {
 	public Container getContainer(Window window) {
 		return window.getPresenter(WindowPresenter.class).getContainer();
 	}
+
+    @Override
+    public void minimize(Window window) {
+        JFrame c = (JFrame) getContainer(window);
+        c.setState(JFrame.ICONIFIED);
+    }
+
+    @Override
+    public void maximize(Window window) {
+        JFrame c = (JFrame) getContainer(window);
+        if (c.getState() == JFrame.MAXIMIZED_BOTH) {
+            c.setState(JFrame.NORMAL);
+        } else {
+            c.setState(JFrame.MAXIMIZED_BOTH);
+        }
+    }
 }
