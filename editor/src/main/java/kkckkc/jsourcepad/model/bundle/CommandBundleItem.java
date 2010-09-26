@@ -1,33 +1,23 @@
 package kkckkc.jsourcepad.model.bundle;
 
-import java.awt.Desktop;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.StringReader;
-import java.io.Writer;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-
-import javax.swing.JOptionPane;
-import javax.swing.text.BadLocationException;
-
+import com.sun.net.httpserver.*;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Buffer;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.WindowManager;
-import kkckkc.jsourcepad.util.io.UISupportCallback;
 import kkckkc.jsourcepad.util.io.ScriptExecutor;
 import kkckkc.jsourcepad.util.io.ScriptExecutor.Execution;
+import kkckkc.jsourcepad.util.io.UISupportCallback;
 import kkckkc.syntaxpane.model.Interval;
 
-import com.sun.net.httpserver.Headers;
-import com.sun.net.httpserver.HttpContext;
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
+import javax.swing.*;
+import javax.swing.text.BadLocationException;
+import java.awt.*;
+import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 @SuppressWarnings("restriction")
 public class CommandBundleItem implements BundleItem {
@@ -135,7 +125,7 @@ public class CommandBundleItem implements BundleItem {
 		@Override
         public void start(final ScriptExecutor scriptExecutor, final String input, final Map<String, String> environment)
                 throws IOException, URISyntaxException {
-			String path = "/" + System.currentTimeMillis(); 
+			String path = "/command/" + System.currentTimeMillis(); 
 			
 			final HttpServer server = Application.get().getHttpServer();
 			final HttpContext context = server.createContext(path);

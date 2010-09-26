@@ -71,6 +71,7 @@ public class WindowPresenter implements Presenter<WindowView>, DocList.Listener 
         final JMenu textMenu = new JMenu("Text");
         final JMenu navigationMenu = new JMenu("Navigation");
         final JMenu bundleMenu = new JMenu("Bundles");
+        final JMenu windowMenu = new JMenu("Window");
 
         mb.add(fileMenu);
         mb.add(editMenu);
@@ -78,6 +79,7 @@ public class WindowPresenter implements Presenter<WindowView>, DocList.Listener 
         mb.add(textMenu);
         mb.add(navigationMenu);
         mb.add(bundleMenu);
+        mb.add(windowMenu);
 
         EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -93,6 +95,7 @@ public class WindowPresenter implements Presenter<WindowView>, DocList.Listener 
                         return new BundleJMenuItem((BundleAction) action);
                     }
                 }, true);
+                menuFactory.buildMenu(windowMenu, window.getActionManager().getActionGroup("window-menu"), null, false);
             }
         });
 
