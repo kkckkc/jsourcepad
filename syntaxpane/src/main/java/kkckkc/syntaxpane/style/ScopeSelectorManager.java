@@ -1,13 +1,12 @@
 package kkckkc.syntaxpane.style;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 import kkckkc.syntaxpane.model.Scope;
+import kkckkc.syntaxpane.util.Pair;
 
+import java.util.*;
 
 
 public class ScopeSelectorManager {
@@ -58,7 +57,7 @@ public class ScopeSelectorManager {
 	public <T> Collection<T> getAllMatches(Scope scope, List<T> items, ScopeSelectorExtractor<T> scopeSelectorExtractor) {
 		int depth = calcDepth(scope);
 		
-		TreeMap<Match, T> currentMatches = new TreeMap<Match, T>();
+		List<Pair<Match, T>> currentMatches = Lists.newArrayListWithCapacity(items.size());
 		
 		for (T t : items) {
 			ScopeSelector selector = scopeSelectorExtractor.getScopeSelector(t);
@@ -71,10 +70,20 @@ public class ScopeSelectorManager {
 			}
 
 			if (! m.isMatch()) continue;
-			
-			currentMatches.put(m, t);
+
+			currentMatches.add(new Pair<Match, T>(m, t));
 		}
-		
-		return currentMatches.values();
+
+        Collections.sort(currentMatches, new Comparator<Pair<Match, T>>() {
+            public int compare(Pair<Match, T> o1, Pair<Match, T> o2) {
+                return o1.getFirst().compareTo(o2.getFirst());
+            }
+        });
+
+		return Collections2.transform(currentMatches, new Function<Pair<Match, T>, T>() {
+            public T apply(Pair<Match, T> pair) {
+                return pair.getSecond();
+            }
+        });
     }
 }

@@ -1,20 +1,19 @@
 package kkckkc.jsourcepad.model.bundle;
 
-import java.io.File;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import kkckkc.jsourcepad.model.Doc;
-import kkckkc.jsourcepad.model.Window;
-import kkckkc.syntaxpane.model.Interval;
-
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import kkckkc.jsourcepad.action.ActionContextKeys;
+import kkckkc.jsourcepad.model.Doc;
+import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.ui.ProjectPresenter;
 import kkckkc.jsourcepad.util.action.ActionManager;
+import kkckkc.syntaxpane.model.Interval;
+
+import java.io.File;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public class EnvironmentProvider {
 	public static Map<String, String> getEnvironment(Window window, BundleItemSupplier bundleItemSupplier) {
@@ -27,7 +26,7 @@ public class EnvironmentProvider {
 			environment.put("TM_LINE_INDEX", Integer.toString(activeDoc.getActiveBuffer().getInsertionPoint().getLineIndex()));
 			environment.put("TM_LINE_NUMBER", Integer.toString(activeDoc.getActiveBuffer().getInsertionPoint().getLineNumber() + 1));
 			
-			environment.put("TM_CURRENT_LINE", activeDoc.getActiveBuffer().getCurrentLine());
+			environment.put("TM_CURRENT_LINE", activeDoc.getActiveBuffer().getText(activeDoc.getActiveBuffer().getCurrentLine()));
 			
 			String s = activeDoc.getActiveBuffer().getCurrentWord();
 			if (s != null) {
@@ -58,9 +57,11 @@ public class EnvironmentProvider {
 			paths.add(new File(bundleItemSupplier.getFile().getParentFile().getParentFile(), "Support/bin"));
 		}
 		
-		environment.put("TM_SUPPORT_PATH", System.getProperty("supportPath"));
-		paths.add(new File(System.getProperty("supportPath") + "/bin"));
-		paths.add(new File(System.getProperty("supportPath") + "/" + System.getProperty("os.name") + "/bin"));
+        if (System.getProperty("supportPath") != null) {
+    		environment.put("TM_SUPPORT_PATH", System.getProperty("supportPath"));
+            paths.add(new File(System.getProperty("supportPath") + "/bin"));
+            paths.add(new File(System.getProperty("supportPath") + "/" + System.getProperty("os.name") + "/bin"));
+        }
 
 		List<File> files = Lists.newArrayList();
         ActionManager actionManager = window.getActionManager();
@@ -89,8 +90,9 @@ public class EnvironmentProvider {
 		environment.put("TM_TAB_SIZE", Integer.toString(activeDoc.getTabManager().getTabSize()));
 
 		// Build path
-		environment.put("PATH", 
-				Joiner.on(File.pathSeparator).join(System.getenv("PATH"), paths));
+		environment.put("PATH",
+                System.getenv("PATH") + File.pathSeparator +
+				    Joiner.on(File.pathSeparator).join(paths));
 		
 	    return environment;
     }

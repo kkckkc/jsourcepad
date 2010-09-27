@@ -30,13 +30,16 @@ public class CommandBundleItem implements BundleItem {
 	private static final String INPUT_NONE = "none";
 	private static final String INPUT_DOCUMENT = "document";
 	private static final String INPUT_SELECTION = "selection";
-	
+    private static final String INPUT_CHARACTER = "character";
+    private static final String INPUT_LINE = "line";
+
 	private String output;
 	private String command;
 	private String input;
 	private String fallbackInput;
 	private BundleItemSupplier bundleItemSupplier;
-	
+	private Interval virtualSelection;
+
 	public CommandBundleItem(BundleItemSupplier bundleItemSupplier, String command, String input, String fallbackInput, String output) {
 		this.bundleItemSupplier = bundleItemSupplier;
 		this.command = command;
@@ -63,9 +66,11 @@ public class CommandBundleItem implements BundleItem {
 		ScriptExecutor scriptExecutor = new ScriptExecutor(command, Application.get().getThreadPool());
 
 		WindowManager wm = Application.get().getWindowManager();
-		
+
+        String inputText = getInput(window);
+
 		ExecutionMethod executionMethod = createExecutionMethod(window, wm);
-		executionMethod.start(scriptExecutor, getInput(window), EnvironmentProvider.getEnvironment(window, bundleItemSupplier));
+		executionMethod.start(scriptExecutor, inputText, EnvironmentProvider.getEnvironment(window, bundleItemSupplier));
 	}
 
 	private ExecutionMethod createExecutionMethod(Window window, WindowManager wm) {
@@ -73,7 +78,7 @@ public class CommandBundleItem implements BundleItem {
 	    if (OUTPUT_SHOW_AS_HTML.equals(output)) {
 	    	outputMethod = new HtmlExectuionMethod(window, wm);
 	    } else {
-	    	outputMethod = new DefaultExecutionMethod(output, window, wm);
+	    	outputMethod = new DefaultExecutionMethod(output, virtualSelection, window, wm);
 	    }
 	    return outputMethod;
     }
@@ -82,7 +87,7 @@ public class CommandBundleItem implements BundleItem {
 		String text;
 		if (! INPUT_NONE.equals(input)) {
 			text = getTextForInput(input, window);
-			if (text == null) {
+			if (text == null || "".equals(text)) {
 				text = getTextForInput(fallbackInput == null ? INPUT_DOCUMENT : fallbackInput, window);
 			}
 			
@@ -102,6 +107,13 @@ public class CommandBundleItem implements BundleItem {
 			return buffer.getText(buffer.getSelection());
 		} else if (INPUT_DOCUMENT.equals(type)) {
 			return buffer.getText(buffer.getCompleteDocument());
+        } else if (INPUT_CHARACTER.equals(type)) {
+            Interval iv = Interval.createWithLength(buffer.getInsertionPoint().getPosition(), 1);
+            virtualSelection = iv;
+            return buffer.getText(iv);
+        } else if (INPUT_LINE.equals(type)) {
+            virtualSelection = buffer.getCurrentLine();
+            return buffer.getText(virtualSelection);
 		} else if (type == null) {
 			return null;
 		} else {
@@ -172,15 +184,17 @@ public class CommandBundleItem implements BundleItem {
 		private String output;
 		private Window window;
 		private WindowManager wm;
-		
-		public DefaultExecutionMethod(String output, Window window, WindowManager wm) {
+        private Interval virtualSelection;
+
+        public DefaultExecutionMethod(String output, Interval virtualSelection, Window window, WindowManager wm) {
 			this.output = output;
+            this.virtualSelection = virtualSelection;
 			this.window = window;
 			this.wm = wm;
 		}
 		
 		@Override
-        public void start(ScriptExecutor scriptExecutor, String input, Map<String, String> environment) throws IOException {
+        public void start(ScriptExecutor scriptExecutor, final String input, Map<String, String> environment) throws IOException {
 	        scriptExecutor.execute(new UISupportCallback(wm.getContainer(window)) {
                 public void onAfterSuccess(final Execution execution) {
                     String s = execution.getStdout();
@@ -191,9 +205,13 @@ public class CommandBundleItem implements BundleItem {
         			} else if (OUTPUT_REPLACE_SELECTED_TEXT.equals(output)) {
         				Buffer buffer = window.getDocList().getActiveDoc().getActiveBuffer();
         				Interval selection = buffer.getSelection();
-        				if (selection == null || selection.isEmpty()) {
-        					selection = new Interval(0, buffer.getLength());
-        				}
+                        if (selection == null || selection.isEmpty()) {
+                            if (virtualSelection != null) {
+                                selection = virtualSelection;
+                            } else {
+                                selection = new Interval(0, buffer.getLength());
+                            }
+                        }
         				buffer.replaceText(selection, s, null);
         			} else if (OUTPUT_DISCARD.equals(output)) {
         				// Do nothing

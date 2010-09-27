@@ -1,10 +1,9 @@
 package kkckkc.jsourcepad.model.bundle;
 
-import java.awt.event.KeyEvent;
-
-import javax.swing.KeyStroke;
-
 import kkckkc.syntaxpane.style.ScopeSelector;
+
+import javax.swing.*;
+import java.awt.event.KeyEvent;
 
 
 public class Activator {
@@ -22,17 +21,11 @@ public class Activator {
 	public String getTabTrigger() {
 	    return tabTrigger;
     }
-//	
-//	public KeyStroke getKeyStroke() {
-//	    return keyStroke;
-//    }
 	
 	public String toString() {
         String acceleratorText = "";
         if (keyStroke != null) {
         	acceleratorText += "(";
-        	
-//        	acceleratorText += keyStroke;
         	
             int modifiers = keyStroke.getModifiers();
             if (modifiers > 0) {
@@ -74,7 +67,7 @@ public class Activator {
 				}
 			}
 		}
-		
+
 		return 
 			(keyStroke.getModifiers() & 0xF) == (ks.getModifiers() & 0xF) && 
 			keyCode != 0 && 

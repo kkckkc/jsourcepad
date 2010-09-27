@@ -45,6 +45,7 @@ public interface Buffer {
 	public void setSelection(Interval interval);
 	public Interval getSelectionOrCurrentLine();
     public Interval getSelectionOrCurrentParagraph();
+    public Interval getCurrentLine();
 	public Interval getCompleteDocument();
 	public int getLength();
 
@@ -62,7 +63,6 @@ public interface Buffer {
 	
 	public Highlight highlight(Interval interval, HighlightType type, Style style, boolean isTransient);
 	
-	public String getCurrentLine();
 	public String getCurrentWord();
 
 	public void indent(Interval interval);

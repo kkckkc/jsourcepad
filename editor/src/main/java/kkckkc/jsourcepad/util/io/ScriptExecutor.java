@@ -1,22 +1,11 @@
 package kkckkc.jsourcepad.util.io;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.Writer;
+import com.google.common.io.CharStreams;
+
+import java.io.*;
 import java.util.Collections;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
 
 public class ScriptExecutor {
 	private static final int DELAY_BEFORE_DELAY_EVENT = 500;
@@ -77,11 +66,11 @@ public class ScriptExecutor {
             }
 		});
 		
-		Writer stdin = new OutputStreamWriter(p.getOutputStream());
+		Writer stdin = new OutputStreamWriter(p.getOutputStream(), "utf-8");
 		
 		char[] b = new char[8192];  
 		int read;  
-		while ((read = execution.input.read(b)) != -1) {  
+		while ((read = execution.input.read(b)) != -1) {
 			stdin.write(b, 0, read);  
 		}  
 		stdin.flush();
@@ -107,7 +96,9 @@ public class ScriptExecutor {
 		execution.tempScriptFile.setExecutable(true);
 
 		Files.write(execution.tempScriptFile, script);
-			
+
+        System.out.println("environment: " + environment);
+
 		ProcessBuilder pb = new ProcessBuilder("bash", "-c", execution.tempScriptFile.getPath());
 		pb.environment().putAll(environment);
 		
@@ -194,18 +185,12 @@ public class ScriptExecutor {
 		}
 
 		public void run() {
-			try {
-				InputStreamReader isr = new InputStreamReader(is);
-				BufferedReader br = new BufferedReader(isr);
-				String line = null;
-				while ((line = br.readLine()) != null) {
-					w.write(line);
-					w.write("\n");
-				}
-			} catch (IOException ioe) {
-	        	throw new RuntimeException(ioe);
-			}
-		}
+            try {
+                CharStreams.copy(new InputStreamReader(is, "utf-8"), w);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
 	}
 
 	public static Reader noInput() {

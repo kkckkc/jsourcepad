@@ -1,14 +1,12 @@
 package kkckkc.jsourcepad.util.io;
 
-import java.awt.Container;
-import java.awt.EventQueue;
-
-import javax.swing.JOptionPane;
-
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.ui.dialog.ProgressDialog;
 import kkckkc.jsourcepad.util.io.ScriptExecutor.Callback;
 import kkckkc.jsourcepad.util.io.ScriptExecutor.Execution;
+
+import javax.swing.*;
+import java.awt.*;
 
 public class UISupportCallback implements Callback {
 	private ProgressDialog dialog;
@@ -58,6 +56,7 @@ public class UISupportCallback implements Callback {
 				onAfterDone();
 
 				// TODO: Add details
+                System.out.println(execution.getStderr());
 				JOptionPane.showMessageDialog(parent, "Execution Failed...");
 			}
 		});

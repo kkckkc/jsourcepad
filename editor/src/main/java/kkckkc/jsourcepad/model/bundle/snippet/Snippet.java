@@ -1,6 +1,22 @@
 package kkckkc.jsourcepad.model.bundle.snippet;
 
-import java.awt.EventQueue;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import kkckkc.jsourcepad.model.*;
+import kkckkc.jsourcepad.model.Window;
+import kkckkc.jsourcepad.model.bundle.BundleItemSupplier;
+import kkckkc.jsourcepad.model.bundle.EnvironmentProvider;
+import kkckkc.jsourcepad.model.bundle.snippet.SnippetParser.*;
+import kkckkc.jsourcepad.util.io.ScriptExecutor;
+import kkckkc.jsourcepad.util.io.ScriptExecutor.Execution;
+import kkckkc.jsourcepad.util.io.UISupportCallback;
+import kkckkc.syntaxpane.model.Interval;
+import kkckkc.syntaxpane.util.Pair;
+
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.text.Keymap;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.io.StringReader;
@@ -9,33 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.KeyStroke;
-import javax.swing.event.DocumentEvent;
-import javax.swing.text.Keymap;
-
-import kkckkc.jsourcepad.model.Anchor;
-import kkckkc.jsourcepad.model.Application;
-import kkckkc.jsourcepad.model.Buffer;
-import kkckkc.jsourcepad.model.Window;
-import kkckkc.jsourcepad.model.WindowManager;
-import kkckkc.jsourcepad.model.bundle.BundleItemSupplier;
-import kkckkc.jsourcepad.model.bundle.EnvironmentProvider;
-import kkckkc.jsourcepad.model.bundle.snippet.SnippetParser.Literal;
-import kkckkc.jsourcepad.model.bundle.snippet.SnippetParser.Node;
-import kkckkc.jsourcepad.model.bundle.snippet.SnippetParser.NodeVisitor;
-import kkckkc.jsourcepad.model.bundle.snippet.SnippetParser.Script;
-import kkckkc.jsourcepad.model.bundle.snippet.SnippetParser.Variable;
-import kkckkc.jsourcepad.util.io.ScriptExecutor;
-import kkckkc.jsourcepad.util.io.UISupportCallback;
-import kkckkc.jsourcepad.util.io.ScriptExecutor.Execution;
-import kkckkc.syntaxpane.model.Interval;
-import kkckkc.syntaxpane.util.Pair;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 public class Snippet {
 	
@@ -73,7 +62,7 @@ public class Snippet {
 		String str = b.toString();
 		int firstLineLength = str.indexOf('\n');
 		
-		String currentLine = buffer.getCurrentLine();
+		String currentLine = buffer.getText(buffer.getCurrentLine());
 		
 		int position = buffer.getInsertionPoint().getPosition();
 		buffer.insertText(position, str, getAnchors());

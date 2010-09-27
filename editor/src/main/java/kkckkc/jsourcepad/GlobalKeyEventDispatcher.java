@@ -1,22 +1,19 @@
 package kkckkc.jsourcepad;
 
-import java.awt.EventQueue;
-import java.awt.KeyEventDispatcher;
-import java.awt.MouseInfo;
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.util.Collection;
-import javax.swing.JComponent;
-import javax.swing.JPopupMenu;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.bundle.BundleItemSupplier;
 import kkckkc.jsourcepad.model.bundle.BundleManager;
 import kkckkc.jsourcepad.util.action.ActionGroup;
+import kkckkc.jsourcepad.util.action.DelegatingAction;
 import kkckkc.jsourcepad.util.action.MenuFactory;
-import kkckkc.jsourcepad.util.ui.PopupUtils;
 import kkckkc.syntaxpane.model.Scope;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.util.Collection;
 
 public class GlobalKeyEventDispatcher implements KeyEventDispatcher {
 
@@ -46,12 +43,26 @@ public class GlobalKeyEventDispatcher implements KeyEventDispatcher {
         if (window.getDocList().getActiveDoc() == null) {
             return false;
         }
+
         Scope scope = window.getDocList().getActiveDoc().getActiveBuffer().getInsertionPoint().getScope();
         Collection<BundleItemSupplier> items = bundleManager.getItemsForShortcut(e, scope);
+
         if (!items.isEmpty()) {
             final ActionGroup tempActionGroup = new ActionGroup();
+
+            int i = 1;
             for (BundleItemSupplier r : items) {
-                tempActionGroup.add(r.getAction());
+                if (r == null) {
+                    tempActionGroup.add(null);
+                } else {
+                    if (i < 10) {
+                        tempActionGroup.add(new DelegatingAction(r.getAction(),
+                                KeyStroke.getKeyStroke(Integer.toString(i).charAt(0))));
+                    } else {
+                        tempActionGroup.add(r.getAction());
+                    }
+                    i++;
+                }
             }
             if (tempActionGroup.size() > 1) {
                 EventQueue.invokeLater(new Runnable() {

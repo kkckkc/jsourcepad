@@ -1,5 +1,6 @@
 package kkckkc.jsourcepad.model.bundle;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import kkckkc.jsourcepad.action.bundle.BundleAction;
@@ -9,6 +10,7 @@ import kkckkc.jsourcepad.util.action.ActionGroup;
 import kkckkc.syntaxpane.model.Scope;
 import kkckkc.syntaxpane.style.ScopeSelector;
 import kkckkc.syntaxpane.style.ScopeSelectorManager;
+import kkckkc.syntaxpane.util.Pair;
 import kkckkc.syntaxpane.util.plist.GeneralPListReader;
 import kkckkc.syntaxpane.util.plist.PListReader;
 
@@ -64,11 +66,28 @@ public class BundleManagerImpl implements BundleManager {
 	
 	private void buildMenu(ActionGroup ag, List<Bundle> list) {
 	    for (Bundle b : list) {
-	    	ag.add(b.getMenu());
+            ActionGroup bm = new ActionGroup(b.getName());
+            ag.add(bm);
+            createMenu(bm, b.getMenu());
 	    }
     }
-	
-	private synchronized void loadBundlesIfNeeded() {
+
+    private void createMenu(ActionGroup ag, List<Object> items) {
+        for (Object o : items) {
+            if (o == null) {
+                ag.add(null);
+            } else if (o instanceof BundleItemSupplier) {
+                ag.add(new BundleAction((BundleItemSupplier) o));
+            } else {
+                Pair<String, List<Object>> pair = (Pair<String, List<Object>>) o;
+                ActionGroup sub = new ActionGroup(pair.getFirst());
+                createMenu(sub, pair.getSecond());
+                ag.add(sub);
+            }
+        }
+    }
+
+    private synchronized void loadBundlesIfNeeded() {
 		if (bundles != null) return;
 		reload(new CachingPListReader(true));
     }
@@ -146,7 +165,7 @@ public class BundleManagerImpl implements BundleManager {
 	    	loadPreferences(new File(dir, "Preferences"), r, preferences);
 
 	    	
-	    	ActionGroup root = new ActionGroup(name); 
+            List<Object> root = Lists.newArrayList();
 	    	buildMenu(root, items, uuidToItem, submenus);
 
 			return new Bundle(name, root, preferences, Lists.newArrayList(uuidToItem.values()));
@@ -155,19 +174,19 @@ public class BundleManagerImpl implements BundleManager {
         } 
 	}
 	
-	private void buildMenu(ActionGroup group, List items, Map<String, BundleItemSupplier> uuidToItem, Map submenus) {
+	private void buildMenu(List<Object> root, List items, Map<String, BundleItemSupplier> uuidToItem, Map submenus) {
 		if (items == null) return;
     	for (String s : (List<String>) items) {
     		BundleItemSupplier ref = uuidToItem.get(s);
     		Map submenu = (Map) submenus.get(s);
     		if (ref != null) {
-    			group.add(new BundleAction(ref));
+                root.add(ref);
     		} else if (submenu != null) {
-    			ActionGroup sub = new ActionGroup((String) submenu.get("name"));
-    			buildMenu(sub, (List) submenu.get("items"), uuidToItem, submenus);
-    			group.add(sub);
+                Pair<String, List<Object>> sub = new Pair<String, List<Object>>((String) submenu.get("name"), Lists.<Object>newArrayList());
+    			buildMenu(sub.getSecond(), (List) submenu.get("items"), uuidToItem, submenus);
+    			root.add(sub);
     		} else if (s.startsWith("-----")) {
-    			group.add(null);
+                root.add(null);
     		}
     	}
     }
@@ -233,18 +252,13 @@ public class BundleManagerImpl implements BundleManager {
 	
 
 	@Override
-    public Collection<BundleItemSupplier> getItemsForShortcut(KeyEvent ks, Scope scope) {
-		List<BundleItemSupplier> dest = Lists.newArrayList();
-	    for (Map.Entry<String, List<Bundle>> e : bundles.entrySet()) {
-	    	for (Bundle b : e.getValue()) {
-	    		for (BundleItemSupplier ref : b.getItems()) {
-	    			if (ref.getActivator().matches(ks)) {
-	    				dest.add(ref);
-	    			}
-	    		}
-	    	}
-	    }
-	    
+    public Collection<BundleItemSupplier> getItemsForShortcut(final KeyEvent ks, Scope scope) {
+        List<BundleItemSupplier> dest = findBundleItems(new Predicate<BundleItemSupplier>() {
+            public boolean apply(BundleItemSupplier bundleItemSupplier) {
+                return bundleItemSupplier.getActivator().matches(ks);
+            }
+        });
+
 	    if (dest.isEmpty()) return dest;
 	    
 	    ScopeSelectorManager scopeSelector = new ScopeSelectorManager();
@@ -256,17 +270,12 @@ public class BundleManagerImpl implements BundleManager {
     }
 
 	@Override
-    public Collection<BundleItemSupplier> getItemsForTabTrigger(String trigger, Scope scope) {
-		List<BundleItemSupplier> dest = Lists.newArrayList();
-	    for (Map.Entry<String, List<Bundle>> e : bundles.entrySet()) {
-	    	for (Bundle b : e.getValue()) {
-	    		for (BundleItemSupplier ref : b.getItems()) {
-	    			if (ref.getActivator().matches(trigger)) {
-	    				dest.add(ref);
-	    			}
-	    		}
-	    	}
-	    }
+    public Collection<BundleItemSupplier> getItemsForTabTrigger(final String trigger, Scope scope) {
+		List<BundleItemSupplier> dest = findBundleItems(new Predicate<BundleItemSupplier>() {
+            public boolean apply(BundleItemSupplier bundleItemSupplier) {
+                return bundleItemSupplier.getActivator().matches(trigger);
+            }
+        });
 	    
 	    if (dest.isEmpty()) return dest;
 	    
@@ -278,6 +287,33 @@ public class BundleManagerImpl implements BundleManager {
 	    });
     }
 
+
+    private List<BundleItemSupplier> findBundleItems(Predicate<BundleItemSupplier> predicate) {
+        List<BundleItemSupplier> dest = Lists.newArrayList();
+	    for (Map.Entry<String, List<Bundle>> e : bundles.entrySet()) {
+	    	for (Bundle b : e.getValue()) {
+                findInMenu(dest, b.getMenu(), predicate);
+	    	}
+	    }
+
+        return dest;
+    }
+
+    private void findInMenu(List<BundleItemSupplier> dest, List<Object> menu, Predicate<BundleItemSupplier> predicate) {
+        for (Object o : menu) {
+            if (o == null) {
+
+            } else if (o instanceof BundleItemSupplier) {
+                BundleItemSupplier bis = (BundleItemSupplier) o;
+                if (predicate.apply(bis)) {
+                    dest.add(bis);
+                }
+            } else {
+                Pair<String, List<Object>> pair = (Pair<String, List<Object>>) o;
+                findInMenu(dest, pair.getSecond(), predicate);
+            }
+        }
+    }
 
 
     static class CachingPListReader implements PListReader, Serializable {

@@ -17,3 +17,4 @@
 [ ] Buffer.replaceText - one undo operation
 [ ] Bundle menu
 [ ] Window menu
+[ ] Replacement for keystrokes that are impossible on non-us keyboards

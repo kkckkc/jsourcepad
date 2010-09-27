@@ -525,15 +525,15 @@ public class BufferImpl implements Buffer {
     }
 
     @Override
-    public String getCurrentLine() {
+    public Interval getCurrentLine() {
 		Line line = document.getLineManager().getLineByPosition(caret.getDot());
-		if (line == null) return "";
-	    return line.getCharSequence().toString();
+		if (line == null) return null;
+        return new Interval(line.getStart(), line.getEnd());
     }
 
 	@Override
     public String getCurrentWord() {
-		String line = getCurrentLine();
+		String line = getText(getCurrentLine());
 		int index = getInsertionPoint().getLineIndex();
 		
 		Pattern p = Pattern.compile("\\W(\\w*)\\W");

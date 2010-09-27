@@ -1,16 +1,5 @@
 package kkckkc.jsourcepad.action.text;
 
-import java.awt.Component;
-import java.awt.EventQueue;
-import java.awt.MouseInfo;
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.util.Collection;
-
-import javax.swing.AbstractAction;
-import javax.swing.JPopupMenu;
-import javax.swing.text.BadLocationException;
-
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.InsertionPoint;
@@ -18,9 +7,13 @@ import kkckkc.jsourcepad.model.bundle.BundleItemSupplier;
 import kkckkc.jsourcepad.model.bundle.snippet.SnippetUtils;
 import kkckkc.jsourcepad.util.action.ActionGroup;
 import kkckkc.jsourcepad.util.action.MenuFactory;
-import kkckkc.jsourcepad.util.ui.PopupUtils;
 import kkckkc.syntaxpane.model.Interval;
 import kkckkc.syntaxpane.model.Scope;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.util.Collection;
 
 public final class TabAction extends AbstractAction {
     private final Doc doc;
@@ -32,7 +25,7 @@ public final class TabAction extends AbstractAction {
     public void actionPerformed(final ActionEvent e) {
     	InsertionPoint ip = doc.getActiveBuffer().getInsertionPoint();
     	
-    	String s = doc.getActiveBuffer().getCurrentLine(); 
+    	String s = doc.getActiveBuffer().getText(doc.getActiveBuffer().getCurrentLine()); 
     	
     	String token = SnippetUtils.getSnippet(s);
     	

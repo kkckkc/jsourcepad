@@ -1,8 +1,8 @@
 package kkckkc.jsourcepad.http;
 
+import com.google.common.io.Files;
 import com.sun.net.httpserver.*;
 import kkckkc.jsourcepad.model.*;
-import kkckkc.jsourcepad.util.io.Files;
 import org.springframework.beans.factory.annotation.Autowired;
 import sun.net.www.MimeEntry;
 import sun.net.www.MimeTable;
@@ -74,7 +74,7 @@ public class PreviewServer {
 
                         responseHeaders.set("Content-Type", getMimeEncoding(f));
                         exchange.sendResponseHeaders(200, 0);
-                        
+
                         Files.copy(f, responseBody);
                         responseBody.flush();
                         responseBody.close();

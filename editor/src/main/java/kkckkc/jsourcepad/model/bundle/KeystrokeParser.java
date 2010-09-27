@@ -1,11 +1,15 @@
 package kkckkc.jsourcepad.model.bundle;
 
+import javax.swing.*;
 import java.awt.event.KeyEvent;
-
-import javax.swing.KeyStroke;
 
 public class KeystrokeParser {
 	public static KeyStroke parse(String s) {
+        // TODO: Formalize this hack
+        if ("@&".equals(s)) {
+            s = "$@6";
+        }
+
 		int modifiers = 0;
 		char[] c = s.toCharArray();
 		if (c.length > 1) {

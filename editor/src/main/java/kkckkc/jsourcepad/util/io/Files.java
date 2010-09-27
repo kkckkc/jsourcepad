@@ -1,6 +1,8 @@
 package kkckkc.jsourcepad.util.io;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Files {
 	public static File newTempFile(String prefix, String suffix) throws IOException {
@@ -14,14 +16,4 @@ public class Files {
 	    fw.write(cs.toString());
 	    fw.close();		
 	}
-
-    public static void copy(File f, OutputStream out) throws IOException {
-        byte[] buffer = new byte[8192];
-        BufferedInputStream fis = new BufferedInputStream(new FileInputStream(f));
-
-        int size = -1;
-        while ((size = fis.read(buffer)) != -1) {
-            out.write(buffer, 0, size);
-        }
-    }
 }
