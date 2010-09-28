@@ -257,13 +257,14 @@ public class BundleManagerImpl implements BundleManager {
             public boolean apply(BundleItemSupplier bundleItemSupplier) {
                 return bundleItemSupplier.getActivator().matches(ks);
             }
-        });
+        }, true);
 
 	    if (dest.isEmpty()) return dest;
 	    
 	    ScopeSelectorManager scopeSelector = new ScopeSelectorManager();
-	    return scopeSelector.getAllMatches(scope, dest, new ScopeSelectorManager.ScopeSelectorExtractor<BundleItemSupplier>() {
+	    return scopeSelector.getBestMatches(scope, dest, new ScopeSelectorManager.ScopeSelectorExtractor<BundleItemSupplier>() {
             public ScopeSelector getScopeSelector(BundleItemSupplier t) {
+                if (t == null) return null;
 	            return t.getActivator().getScopeSelector();
             }
 	    });
@@ -275,7 +276,7 @@ public class BundleManagerImpl implements BundleManager {
             public boolean apply(BundleItemSupplier bundleItemSupplier) {
                 return bundleItemSupplier.getActivator().matches(trigger);
             }
-        });
+        }, false);
 	    
 	    if (dest.isEmpty()) return dest;
 	    
@@ -288,21 +289,24 @@ public class BundleManagerImpl implements BundleManager {
     }
 
 
-    private List<BundleItemSupplier> findBundleItems(Predicate<BundleItemSupplier> predicate) {
+    private List<BundleItemSupplier> findBundleItems(Predicate<BundleItemSupplier> predicate, boolean delimit) {
         List<BundleItemSupplier> dest = Lists.newArrayList();
 	    for (Map.Entry<String, List<Bundle>> e : bundles.entrySet()) {
 	    	for (Bundle b : e.getValue()) {
-                findInMenu(dest, b.getMenu(), predicate);
+                int size = dest.size();
+                findInMenu(dest, b.getMenu(), predicate, delimit);
+                if (delimit && size != dest.size()) dest.add(null);
 	    	}
 	    }
 
         return dest;
     }
 
-    private void findInMenu(List<BundleItemSupplier> dest, List<Object> menu, Predicate<BundleItemSupplier> predicate) {
+    private void findInMenu(List<BundleItemSupplier> dest, List<Object> menu, Predicate<BundleItemSupplier> predicate,
+                            boolean delimit) {
         for (Object o : menu) {
             if (o == null) {
-
+                dest.add(null);
             } else if (o instanceof BundleItemSupplier) {
                 BundleItemSupplier bis = (BundleItemSupplier) o;
                 if (predicate.apply(bis)) {
@@ -310,7 +314,9 @@ public class BundleManagerImpl implements BundleManager {
                 }
             } else {
                 Pair<String, List<Object>> pair = (Pair<String, List<Object>>) o;
-                findInMenu(dest, pair.getSecond(), predicate);
+                int size = dest.size();
+                findInMenu(dest, pair.getSecond(), predicate, delimit);
+                if (delimit && size != dest.size()) dest.add(null);
             }
         }
     }

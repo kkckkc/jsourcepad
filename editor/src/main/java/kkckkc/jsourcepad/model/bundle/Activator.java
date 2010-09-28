@@ -54,7 +54,7 @@ public class Activator {
 
 	public boolean matches(KeyEvent ks) {
 		if (keyStroke == null) return false;
-		
+
 		char keyChar = ks.getKeyChar();
 		int keyCode = ks.getKeyCode();
 
@@ -72,7 +72,8 @@ public class Activator {
 			(keyStroke.getModifiers() & 0xF) == (ks.getModifiers() & 0xF) && 
 			keyCode != 0 && 
 			(keyStroke.getKeyCode() == keyCode || 
-					(keyChar != KeyEvent.CHAR_UNDEFINED && Character.toLowerCase(keyStroke.getKeyChar()) == keyChar));
+					(keyChar != KeyEvent.CHAR_UNDEFINED && Character.toLowerCase(keyStroke.getKeyChar()) == keyChar) ||
+                    (KeyEvent.getKeyText(keyCode).charAt(0) == keyStroke.getKeyChar()));
     }
 
 	public ScopeSelector getScopeSelector() {

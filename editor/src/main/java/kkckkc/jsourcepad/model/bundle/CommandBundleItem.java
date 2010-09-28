@@ -5,6 +5,7 @@ import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Buffer;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.WindowManager;
+import kkckkc.jsourcepad.model.bundle.snippet.Snippet;
 import kkckkc.jsourcepad.util.io.ScriptExecutor;
 import kkckkc.jsourcepad.util.io.ScriptExecutor.Execution;
 import kkckkc.jsourcepad.util.io.UISupportCallback;
@@ -26,12 +27,15 @@ public class CommandBundleItem implements BundleItem {
 	private static final String OUTPUT_DISCARD = "discard";
 	private static final String OUTPUT_REPLACE_SELECTED_TEXT = "replaceSelectedText";
 	private static final String OUTPUT_SHOW_AS_TOOLTIP = "showAsTooltip";
+	private static final String OUTPUT_INSERT_AS_SNIPPET = "insertAsSnippet";
+	private static final String OUTPUT_AFTER_SELECTED_TEXT = "afterSelectedText";
 
 	private static final String INPUT_NONE = "none";
 	private static final String INPUT_DOCUMENT = "document";
 	private static final String INPUT_SELECTION = "selection";
     private static final String INPUT_CHARACTER = "character";
     private static final String INPUT_LINE = "line";
+    private static final String INPUT_WORD = "word";
 
 	private String output;
 	private String command;
@@ -69,6 +73,8 @@ public class CommandBundleItem implements BundleItem {
 
         String inputText = getInput(window);
 
+        if (inputText == null) return;
+
 		ExecutionMethod executionMethod = createExecutionMethod(window, wm);
 		executionMethod.start(scriptExecutor, inputText, EnvironmentProvider.getEnvironment(window, bundleItemSupplier));
 	}
@@ -90,10 +96,6 @@ public class CommandBundleItem implements BundleItem {
 			if (text == null || "".equals(text)) {
 				text = getTextForInput(fallbackInput == null ? INPUT_DOCUMENT : fallbackInput, window);
 			}
-			
-			if (text == null) {
-				throw new RuntimeException("No input");
-			}
 		} else {
 			text = "";
 		}
@@ -102,6 +104,8 @@ public class CommandBundleItem implements BundleItem {
     }
 
 	private String getTextForInput(String type, Window window) throws BadLocationException {
+        virtualSelection = null;
+
 		Buffer buffer = window.getDocList().getActiveDoc().getActiveBuffer();
 		if (INPUT_SELECTION.equals(type)) {
 			return buffer.getText(buffer.getSelection());
@@ -109,10 +113,15 @@ public class CommandBundleItem implements BundleItem {
 			return buffer.getText(buffer.getCompleteDocument());
         } else if (INPUT_CHARACTER.equals(type)) {
             Interval iv = Interval.createWithLength(buffer.getInsertionPoint().getPosition(), 1);
+            if (iv.getEnd() >= buffer.getLength()) return null;
+            
             virtualSelection = iv;
             return buffer.getText(iv);
         } else if (INPUT_LINE.equals(type)) {
             virtualSelection = buffer.getCurrentLine();
+            return buffer.getText(virtualSelection);
+        } else if (INPUT_WORD.equals(type)) {
+            virtualSelection = buffer.getCurrentWord();
             return buffer.getText(virtualSelection);
 		} else if (type == null) {
 			return null;
@@ -212,10 +221,41 @@ public class CommandBundleItem implements BundleItem {
                                 selection = new Interval(0, buffer.getLength());
                             }
                         }
+
         				buffer.replaceText(selection, s, null);
+                    } else if (OUTPUT_AFTER_SELECTED_TEXT.equals(output)) {
+                        Buffer buffer = window.getDocList().getActiveDoc().getActiveBuffer();
+                        Interval selection = buffer.getSelection();
+                        if (selection == null || selection.isEmpty()) {
+                            if (virtualSelection != null) {
+                                selection = virtualSelection;
+                            } else {
+                                selection = new Interval(0, buffer.getLength());
+                            }
+                        }
+
+                        buffer.insertText(selection.getEnd(), s, null);
+
         			} else if (OUTPUT_DISCARD.equals(output)) {
         				// Do nothing
-        				
+
+                    } else if (OUTPUT_INSERT_AS_SNIPPET.equals(output)) {
+                        Buffer b = window.getDocList().getActiveDoc().getActiveBuffer();
+
+                        Interval selection = b.getSelection();
+                        if (selection == null || selection.isEmpty()) {
+                            if (virtualSelection != null) {
+                                selection = virtualSelection;
+                            } else {
+                                selection = new Interval(0, b.getLength());
+                            }
+                        }
+
+                        b.remove(selection);
+
+                        Snippet snippet = new Snippet(s, null);
+                        snippet.insert(window, b);
+
         			} else {
         				throw new RuntimeException("Unsupported output " + output);
         			}

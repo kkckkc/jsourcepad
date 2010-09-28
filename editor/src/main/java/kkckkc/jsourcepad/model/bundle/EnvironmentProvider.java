@@ -28,7 +28,7 @@ public class EnvironmentProvider {
 			
 			environment.put("TM_CURRENT_LINE", activeDoc.getActiveBuffer().getText(activeDoc.getActiveBuffer().getCurrentLine()));
 			
-			String s = activeDoc.getActiveBuffer().getCurrentWord();
+			String s = activeDoc.getActiveBuffer().getText(activeDoc.getActiveBuffer().getCurrentWord());
 			if (s != null) {
 				environment.put("TM_CURRENT_WORD", s);
 			}
@@ -61,6 +61,9 @@ public class EnvironmentProvider {
     		environment.put("TM_SUPPORT_PATH", System.getProperty("supportPath"));
             paths.add(new File(System.getProperty("supportPath") + "/bin"));
             paths.add(new File(System.getProperty("supportPath") + "/" + System.getProperty("os.name") + "/bin"));
+
+            // TODO: This is a hack. Add binary with proper error message
+            environment.put("DIALOG", "/Applications/Installed/TextMate.app/Contents/PlugIns/Dialog2.tmplugin/Contents/Resources/tm_dialog2");
         }
 
 		List<File> files = Lists.newArrayList();

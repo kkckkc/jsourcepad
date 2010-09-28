@@ -54,6 +54,51 @@ public class ScopeSelectorManager {
 		public ScopeSelector getScopeSelector(T t);
     }
 
+    public <T> Collection<T> getBestMatches(Scope scope, List<T> items, ScopeSelectorExtractor<T> scopeSelectorExtractor) {
+        int depth = calcDepth(scope);
+
+        List<Pair<Match, T>> currentMatches = Lists.newArrayListWithCapacity(items.size());
+
+        Match bestMatch = null;
+
+        for (T t : items) {
+            ScopeSelector selector = scopeSelectorExtractor.getScopeSelector(t);
+
+            Match m;
+            if (selector == null) {
+                m = Match.MATCH;
+            } else {
+                m = selector.matches(scope, depth);
+            }
+
+            if (! m.isMatch()) continue;
+
+            if (bestMatch == null || m.compareTo(bestMatch) > 0) bestMatch = m;
+
+            currentMatches.add(new Pair<Match, T>(m, t));
+        }
+
+        Object lastObject = null;
+        List<T> dest = Lists.newArrayList();
+        for (Pair<Match, T> pair : currentMatches) {
+            if (pair.getSecond() == lastObject) continue;
+
+            if (pair.getSecond() == null) {
+                dest.add(null);
+                lastObject = pair.getSecond();
+            } else if (pair.getFirst().compareTo(bestMatch) == 0) {
+                dest.add(pair.getSecond());
+                lastObject = pair.getSecond();
+            }
+        }
+
+        if (! dest.isEmpty() && dest.get(dest.size() - 1) == null) {
+            dest.remove(dest.size() - 1);
+        }
+
+        return dest;
+    }
+
 	public <T> Collection<T> getAllMatches(Scope scope, List<T> items, ScopeSelectorExtractor<T> scopeSelectorExtractor) {
 		int depth = calcDepth(scope);
 		

@@ -11,9 +11,7 @@
 
 package kkckkc.jsourcepad.ui.dialog;
 
-import java.awt.event.WindowListener;
-
-import javax.swing.JDialog;
+import javax.swing.*;
 
 /**
  *
@@ -22,8 +20,8 @@ import javax.swing.JDialog;
 public class ProgressDialogViewImpl extends javax.swing.JDialog implements ProgressDialogView {
 
     /** Creates new form ProgressDialog */
-    public ProgressDialogViewImpl(java.awt.Frame parent, ModalityType modal) {
-        super(parent, modal);
+    public ProgressDialogViewImpl(java.awt.Frame parent) {
+        super(parent, ModalityType.DOCUMENT_MODAL);
 		setLocationRelativeTo(parent);
         initComponents();
     }
@@ -39,9 +37,9 @@ public class ProgressDialogViewImpl extends javax.swing.JDialog implements Progr
 
     public void close() {
         setVisible(false);
-        for (WindowListener wl : getWindowListeners()) {
-            wl.windowClosed(null);
-        }
+/*        for (WindowListener wl : getWindowListeners()) {
+            wl.windowClosed(new WindowE);
+        } */
         dispose();
     }
 

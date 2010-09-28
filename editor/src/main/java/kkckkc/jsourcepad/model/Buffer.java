@@ -42,13 +42,15 @@ public interface Buffer {
 	// Positions and intervals
 	public InsertionPoint getInsertionPoint();
 	public Interval getSelection();
-	public void setSelection(Interval interval);
 	public Interval getSelectionOrCurrentLine();
     public Interval getSelectionOrCurrentParagraph();
     public Interval getCurrentLine();
 	public Interval getCompleteDocument();
-	public int getLength();
+    public Interval getCurrentWord();
 
+    public void setSelection(Interval interval);
+    public int getLength();
+    
     public enum ScrollAlignment { TOP, MIDDLE }
     public void scrollTo(int position, ScrollAlignment scrollAlignment);
     public int getTopLeftPosition();
@@ -62,8 +64,6 @@ public interface Buffer {
 
 	
 	public Highlight highlight(Interval interval, HighlightType type, Style style, boolean isTransient);
-	
-	public String getCurrentWord();
 
 	public void indent(Interval interval);
 	public void shift(Interval interval, int length);

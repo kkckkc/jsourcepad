@@ -1,12 +1,12 @@
 package kkckkc.jsourcepad.model.bundle;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Map;
-
 import kkckkc.jsourcepad.model.bundle.snippet.SnippetBundleItem;
 import kkckkc.syntaxpane.util.plist.GeneralPListReader;
 import kkckkc.syntaxpane.util.plist.PListFormatter;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Map;
 
 
 public class BundleItemFactory {
@@ -29,7 +29,8 @@ public class BundleItemFactory {
 	private static BundleItem getCommand(BundleItemSupplier bundleItemSupplier, File file) throws IOException {
 		GeneralPListReader gpl = new GeneralPListReader();
 		Map m = (Map) gpl.read(file);
-		
+
+        System.out.println(bundleItemSupplier.getFile());
 		System.out.println(new PListFormatter().format(m));
 		
 	    return CommandBundleItem.create(bundleItemSupplier, m);

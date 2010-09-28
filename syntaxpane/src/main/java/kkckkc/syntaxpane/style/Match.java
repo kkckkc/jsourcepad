@@ -23,6 +23,8 @@ public class Match implements Comparable<Match> {
 	}
 
 	public int compareTo(Match o) {
+        if (o == this) return 0;
+        
 		if (! o.isMatch()) return 1;
 		if (! isMatch()) return -1;
 		

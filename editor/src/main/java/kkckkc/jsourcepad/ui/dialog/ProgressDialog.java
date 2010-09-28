@@ -1,14 +1,13 @@
 package kkckkc.jsourcepad.ui.dialog;
 
-import java.awt.Container;
+import kkckkc.jsourcepad.Dialog;
+import kkckkc.jsourcepad.util.io.ScriptExecutor.Execution;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-
-import kkckkc.jsourcepad.Dialog;
-import kkckkc.jsourcepad.util.io.ScriptExecutor.Execution;
-
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class ProgressDialog implements Dialog<ProgressDialogView> {
 
@@ -25,7 +24,6 @@ public class ProgressDialog implements Dialog<ProgressDialogView> {
 	    view.getJDialog().addWindowListener(new WindowAdapter() {
 			public void windowClosed(WindowEvent e) {
 				execution.cancel();
-				close();
 			}
 		});
 
