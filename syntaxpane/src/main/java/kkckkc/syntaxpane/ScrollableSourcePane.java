@@ -50,14 +50,6 @@ public class ScrollableSourcePane extends JPanel {
 		
 		rowHeaderPane = new JPanel();
 		rowHeaderPane.setLayout(new BorderLayout());
-/*
-        if (lineNumbers) {
-		    rowHeaderPane.add(lineNumberPane, BorderLayout.WEST);
-        }
-        if (foldings) {
-		    rowHeaderPane.add(foldMargin, BorderLayout.EAST);
-        }
-*/
 
 		scrollPane.setRowHeaderView(rowHeaderPane);
 		scrollPane.setViewportBorder(null);
@@ -66,8 +58,6 @@ public class ScrollableSourcePane extends JPanel {
 		setBackground(Color.WHITE);
 		setForeground(Color.BLACK);
 
-//		editorPane.setBorder(new EmptyBorder(0, 0, 0, 0));
-		
 		add(scrollPane, BorderLayout.CENTER);
 	}
 
@@ -114,9 +104,9 @@ public class ScrollableSourcePane extends JPanel {
 	public void setStyleScheme(StyleScheme styleScheme) {
 		boolean styleSchemeChanged = this.styleScheme != null;
 		this.styleScheme = styleScheme;
-		
-		setBackground(this.styleScheme.getTextStyle().getBackground());
-		setForeground(this.styleScheme.getTextStyle().getColor());
+
+        setBackground(this.styleScheme.getTextStyle().getBackground());
+        setForeground(this.styleScheme.getTextStyle().getColor());
 		
 		editorPane.setCaretColor(this.styleScheme.getCaretColor());
 		
@@ -191,7 +181,10 @@ public class ScrollableSourcePane extends JPanel {
 	    	int wm = graphics.getFontMetrics().charWidth('m');
 	    	
 	    	Rectangle clip = graphics.getClipBounds();
-	    	
+
+            graphics2d.setColor(getStyleScheme().getTextStyle().getBackground());
+            graphics2d.fillRect(clip.x, clip.y, clip.width, clip.height);
+
 	    	graphics2d.setColor(getStyleScheme().getRightMargin().getBackground());
 	    	
 	    	graphics2d.fillRect(getWrapColumn() * wm, clip.y, clip.width, clip.height);

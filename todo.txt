@@ -18,6 +18,8 @@
 [ ] Bundle menu
 [ ] Window menu
 [ ] Replacement for keystrokes that are impossible on non-us keyboards
+[ ] Joni replaceAll
+[ ]ÊHome button
 
 HTML bundle
 [ ] Embedded javascript syntax colors
@@ -26,4 +28,3 @@ HTML bundle
 [ ] persistent includes
 [ ] movie, fieldset etc, i.e. same tabstop in wrong order
 
-[ ] Joni replaceAll

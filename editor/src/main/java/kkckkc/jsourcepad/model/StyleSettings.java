@@ -44,7 +44,7 @@ public class StyleSettings implements Setting {
 
     @Override
     public StyleSettings getDefault() {
-	    return new StyleSettings(ApplicationFolder.get("Shared/Themes/Mac Classic.tmTheme").toString(), true, 78);
+	    return new StyleSettings(ApplicationFolder.get("Shared/Themes/Twilight.tmTheme").toString(), true, 78);
     }
 
 }
