@@ -58,12 +58,16 @@ public class Snippet {
 		for (SnippetParser.Node node : nodes) {
 			node.accept(new CompilingVisitor(window, b, tabStops));
 		}
-		
+
 		String str = b.toString();
 		int firstLineLength = str.indexOf('\n');
 		
 		String currentLine = buffer.getText(buffer.getCurrentLine());
-		
+
+        if (buffer.getSelection() != null) {
+            buffer.remove(buffer.getSelection());
+        }
+
 		int position = buffer.getInsertionPoint().getPosition();
 		buffer.insertText(position, str, getAnchors());
 		
@@ -76,7 +80,7 @@ public class Snippet {
 		
 		buffer.beginRestrictedEditing(new SnippetRestrictedEditor());
 		this.changeTrackingEnabled = true;
-		
+
 		currentTabStop = -1;
 		SnippetConstituent nextConstituent = findNextTabStop();
 		if (nextConstituent != null) {
@@ -174,7 +178,7 @@ public class Snippet {
 
 	    	for (Node n : variable.children()) {
 	    		n.accept(this);
-	    	}	                
+	    	}
 
 	        if (variable.isTabStop()) {
 	        	int tabStopId = Integer.parseInt(variable.getName());
@@ -185,7 +189,7 @@ public class Snippet {
 	        		b.append(environment.get(Integer.toString(tabStopId)));
 	        	}
     	        Anchor end = new Anchor(b.length(), Anchor.Bias.RIGHT);
-	        	
+
 	        	constituents.add(new SnippetConstituent(
 	        			variable,
 	        			new Pair<Anchor, Anchor>(start, end),

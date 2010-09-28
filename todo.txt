@@ -18,6 +18,12 @@
 [ ] Bundle menu
 [ ] Window menu
 [ ] Replacement for keystrokes that are impossible on non-us keyboards
+
+HTML bundle
 [ ] Embedded javascript syntax colors
 [ ] beforeRunningCommand
 [ ] Wrap Each Selected Line in Open/Close Tag
+[ ] persistent includes
+[ ] movie, fieldset etc, i.e. same tabstop in wrong order
+
+[ ] Joni replaceAll

@@ -1,14 +1,13 @@
 package kkckkc.jsourcepad.model;
 
+import kkckkc.jsourcepad.model.Anchor.Bias;
+
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.WeakHashMap;
-
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-
-import kkckkc.jsourcepad.model.Anchor.Bias;
 
 public class AnchorManager implements DocumentListener {
 	private Set<Anchor> anchors = Collections.newSetFromMap(new WeakHashMap<Anchor, Boolean>());
@@ -33,7 +32,7 @@ public class AnchorManager implements DocumentListener {
 		int delta = e.getLength();
 	    for (Anchor a : anchors) {
 	    	if (a == null) continue;
-	    	
+
 	    	if (a.getPosition() >= offset) {
 	    		if (! (a.getBias() == Anchor.Bias.LEFT && a.getPosition() == offset)) { 
 	    			a.move(delta);

@@ -306,7 +306,7 @@ public class BundleManagerImpl implements BundleManager {
                             boolean delimit) {
         for (Object o : menu) {
             if (o == null) {
-                dest.add(null);
+                if (delimit) dest.add(null);
             } else if (o instanceof BundleItemSupplier) {
                 BundleItemSupplier bis = (BundleItemSupplier) o;
                 if (predicate.apply(bis)) {

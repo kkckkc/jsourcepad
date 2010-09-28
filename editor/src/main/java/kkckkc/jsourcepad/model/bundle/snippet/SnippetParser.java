@@ -1,16 +1,15 @@
 package kkckkc.jsourcepad.model.bundle.snippet;
 
+import com.google.common.collect.Lists;
+import kkckkc.syntaxpane.regex.NamedPatternFactory;
+import kkckkc.syntaxpane.regex.PatternFactory;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import kkckkc.syntaxpane.regex.NamedPatternFactory;
-import kkckkc.syntaxpane.regex.PatternFactory;
-
-import com.google.common.collect.Lists;
 
 
 class SnippetParser {
@@ -23,33 +22,52 @@ class SnippetParser {
 	private static Pattern TRANSFORMATION_PATTERN = Pattern.compile("^([0-9A-Z_]+)/(.*)/(.*)/(.*)$"); 
 	
 	public Collection<Node> parse(String s) {
-		List<Node> dest = Lists.newArrayList();
-		
-		int prev = 0;
-		int tokenIdx = indexOf(s, 0, DOLLAR_SIGN, BACK_TICK);
-		while (tokenIdx >= 0) {
-			if (tokenIdx != 0) {
-				dest.add(new Literal(s.substring(prev, tokenIdx)));
-			}
-			
-			if (s.charAt(tokenIdx) == DOLLAR_SIGN) {
-				prev = parseExpression(s, tokenIdx, dest);
-			} else {
-				prev = parseScript(s, tokenIdx, dest);
-			}
-			tokenIdx = indexOf(s, prev, DOLLAR_SIGN, BACK_TICK);
-		}
-		
-		String str = s.substring(prev);
-		if (! "".equals(str)) {
-			dest.add(new Literal(str));
-		}
-		
+        List<Node> dest = doParse(s);
+
+        boolean endVarFound = false;
+        for (Node n : dest) {
+            if (n instanceof Variable) {
+                Variable v = (Variable) n;
+                if ("0".equals(v.getName())) {
+                    endVarFound = true;
+                }
+            }
+        }
+
+        if (! endVarFound) {
+            dest.add(new Variable("0"));
+        }
+
 		return dest;
 	}
-	
-	
-	private int parseScript(String s, int idx, List<Node> dest) {
+
+    private List<Node> doParse(String s) {
+        List<Node> dest = Lists.newArrayList();
+
+        int prev = 0;
+        int tokenIdx = indexOf(s, 0, DOLLAR_SIGN, BACK_TICK);
+        while (tokenIdx >= 0) {
+            if (tokenIdx != 0) {
+                dest.add(new Literal(s.substring(prev, tokenIdx)));
+            }
+
+            if (s.charAt(tokenIdx) == DOLLAR_SIGN) {
+                prev = parseExpression(s, tokenIdx, dest);
+            } else {
+                prev = parseScript(s, tokenIdx, dest);
+            }
+            tokenIdx = indexOf(s, prev, DOLLAR_SIGN, BACK_TICK);
+        }
+
+        String str = s.substring(prev);
+        if (! "".equals(str)) {
+            dest.add(new Literal(str));
+        }
+        return dest;
+    }
+
+
+    private int parseScript(String s, int idx, List<Node> dest) {
 		int end = s.indexOf(BACK_TICK, idx + 1);
 		if (end == -1) {
 			throw new RuntimeException("Unbalanced backticks");
@@ -86,7 +104,7 @@ class SnippetParser {
 		Matcher transMatcher = TRANSFORMATION_PATTERN.matcher(def);
 		
 		if (defMatcher.matches()) {
-			dest.add(new Variable(defMatcher.group(1), parse(defMatcher.group(2))));
+			dest.add(new Variable(defMatcher.group(1), doParse(defMatcher.group(2))));
 		} else if (transMatcher.matches()) {
 			dest.add(new Variable(
 					transMatcher.group(1), transMatcher.group(2), 
@@ -100,16 +118,27 @@ class SnippetParser {
 
 	private int parseSimpleExpression(String s, int idx, List<Node> dest) {
 		int end = idx + 1;
+		while (end < s.length() &&
+				(Character.isLetter(s.charAt(end)) ||
+				 Character.isDigit(s.charAt(end)) ||
+				 s.charAt(end) == '_')) {
+			end++;
+		}
+
+		dest.add(new Variable(s.substring(idx + 1, end)));
+
+		return end;
+/*		int end = idx + 1;
 		while (end < s.length() && 
-				! Character.isLetter(s.charAt(end)) && 
-				! Character.isDigit(s.charAt(end)) && 
+				! Character.isLetter(s.charAt(end)) &&
+				! Character.isDigit(s.charAt(end)) &&
 				s.charAt(end) != '_') {
 			end++;
 		}
 		
 		dest.add(new Variable(s.substring(idx + 1, end + 1)));
 		
-		return end + 1;
+		return end + 1; */
     }
 
 	
