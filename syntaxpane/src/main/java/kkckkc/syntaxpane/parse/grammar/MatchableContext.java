@@ -1,12 +1,12 @@
 package kkckkc.syntaxpane.parse.grammar;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
-
 import kkckkc.syntaxpane.model.Scope;
 import kkckkc.syntaxpane.parse.grammar.SubPatternContext.Where;
 import kkckkc.syntaxpane.regex.Matcher;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
  
 public abstract class MatchableContext extends CompoundContext {
 	public static final Context[] EMPTY_CHILDREN = new Context[] {};
@@ -142,6 +142,8 @@ public abstract class MatchableContext extends CompoundContext {
 
 			if (c instanceof ContainerContext && ((ContainerContext) c).beginPattern == null) {
 				((ContainerContext) c).unnest(dest);
+            } else if (c instanceof RootContext) {
+                ((RootContext) c).unnest(dest);
 			} else {
 				dest.add(c);
 			}

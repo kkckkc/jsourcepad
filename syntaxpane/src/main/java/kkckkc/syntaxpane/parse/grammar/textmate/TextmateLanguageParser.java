@@ -147,7 +147,12 @@ public class TextmateLanguageParser {
 	    ContainerContext cc = new ContainerContext(factory);
 		cc.setId((String) entry.get("name")); 
 		cc.setName((String) entry.get("name"));
-		
+		if (entry.containsKey("disabled")) {
+            cc.setDisabled(true);
+        } else {
+            cc.setDisabled(false);
+        }
+
 		if (entry.containsKey("begin")) 
 			cc.setBegin(factory.create((String) entry.get("begin")));
 		if (entry.containsKey("end")) 
@@ -188,15 +193,26 @@ public class TextmateLanguageParser {
 			contexts.addAll(dest);
 		}
 
-		
-		
-//		System.out.println(contexts);
-		
+        if (entry.containsKey("captures")) {
+            List<SubPatternContext> dest = new ArrayList<SubPatternContext>();
+            for (Map.Entry e : ((Map<?, ?>) entry.get("captures")).entrySet()) {
+                SubPatternContext spc = new SubPatternContext();
+                spc.setSubPattern((String) e.getKey());
+                spc.setWhere(SubPatternContext.Where.START);
+                spc.setId((String) ((Map) e.getValue()).get("name"));
+                dest.add(spc);
+
+                spc = new SubPatternContext();
+                spc.setSubPattern((String) e.getKey());
+                spc.setWhere(SubPatternContext.Where.END);
+                spc.setId((String) ((Map) e.getValue()).get("name"));
+                dest.add(spc);
+            }
+            Collections.sort(dest, SUBPATTERN_COMPARATOR);
+            contexts.addAll(dest);
+        }
+
 		cc.setChildReferences(contexts.toArray(new Context[] {}));
-		
-//		cc.setStyleInside(true);
-		
-		
 		
 	    return cc;
     }

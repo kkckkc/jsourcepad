@@ -28,9 +28,11 @@ public class TextmateStyleParser implements kkckkc.syntaxpane.style.StyleParser 
 				
 				String scope = (String) style.get("scope");
 				if (scope == null) continue;
-				
+
+                Color fg = color(styleSettings, "foreground");
+                if (fg == null) fg = color(global, "foreground");
 				selectors.put(ScopeSelector.parse(scope), new StyleBean(
-							color(styleSettings, "foreground"), null,
+							fg, null,
 							isStyle(styleSettings, "bold"),
 							isStyle(styleSettings, "italic"),
 							isStyle(styleSettings, "underline")));

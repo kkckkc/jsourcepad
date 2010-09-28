@@ -98,7 +98,7 @@ public class Parser {
 			newContextToParse = false;
 			
 			MatchableContext def = (MatchableContext) scope.getContext();
- 			
+
 			// Resolve contexts 
 			int i = 0;
 			Context[] children = def.getUnnestedChildren();

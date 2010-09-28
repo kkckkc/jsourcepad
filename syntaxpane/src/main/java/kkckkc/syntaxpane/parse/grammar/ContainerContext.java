@@ -18,8 +18,9 @@ public class ContainerContext extends MatchableContext {
 
 	protected String previousEndPattern = "";
 	private PatternFactory factory;
-	
-	public ContainerContext(PatternFactory factory) {
+    private boolean disabled;
+
+    public ContainerContext(PatternFactory factory) {
 		this.factory = factory;
 		this.beginPattern = factory.create("$^");
 	}
@@ -102,7 +103,14 @@ public class ContainerContext extends MatchableContext {
 	}
 
 	public Matcher getMatcher(CharSequence s) {
-		return beginPattern.matcher(s);
+        if (disabled) {
+            return factory.create("a$b").matcher(s);
+        } else {
+		    return beginPattern.matcher(s);
+        }
 	}
-	
+
+    public void setDisabled(boolean b) {
+        this.disabled = b;
+    }
 }

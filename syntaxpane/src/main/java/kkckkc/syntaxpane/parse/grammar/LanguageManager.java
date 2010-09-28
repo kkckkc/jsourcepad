@@ -31,7 +31,6 @@ public class LanguageManager {
 				if (l == null) {
 					System.out.println("Cannot find language with id " + langId);
 					return null;
-//					throw new NoSuchElementException("Cannot find language with id " + langId);
 				}
 			}
 			
@@ -39,26 +38,24 @@ public class LanguageManager {
 			if (c == null) {
 				System.out.println("Couldn't find " + ref + " in language " + l);
 				return null;
-//				throw new NoSuchElementException("Couldn't find " + ref + " in language " + l);
 			}
 
 			return c;
 		} else if (ref.indexOf(':') >= 0) {
 			String langId = ref.substring(0, ref.indexOf(':'));
 			ref = ref.substring(ref.indexOf(':') + 1);
-			
+
 			Language l = getLanguage(langId);
 			if (l == null) {
 				System.out.println("Cannot find language with id " + langId);
 				return null;
-//				throw new NoSuchElementException("Cannot find language with id " + langId);
 			}
 			
 			Context c = l.find(ref);
+
 			if (c == null) {
 				System.out.println("Couldn't find " + ref + " in language " + l);
 				return null;
-//				throw new NoSuchElementException("Couldn't find " + ref + " in language " + l);
 			}
 			
 			if (c.getLanguage() == null) {
@@ -75,7 +72,6 @@ public class LanguageManager {
 				}
 				System.out.println("Cannot find " + ref + ", in " + ctx.getLanguage());
 				return null;
-//				throw new NoSuchElementException("Cannot find " + ref + ", in " + ctx.getLanguage());
 			}
 			return c;
 		}

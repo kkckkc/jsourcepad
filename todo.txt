@@ -22,7 +22,7 @@
 [ ]ÊHome button
 
 HTML bundle
-[ ] Embedded javascript syntax colors
+[x] Embedded javascript syntax colors
 [ ] beforeRunningCommand
 [ ] Wrap Each Selected Line in Open/Close Tag
 [ ] persistent includes
