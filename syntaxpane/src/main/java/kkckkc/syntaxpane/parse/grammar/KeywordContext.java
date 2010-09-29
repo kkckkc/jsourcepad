@@ -1,7 +1,6 @@
 package kkckkc.syntaxpane.parse.grammar;
 
 import kkckkc.syntaxpane.regex.Matcher;
-import kkckkc.syntaxpane.regex.NamedPatternFactory;
 import kkckkc.syntaxpane.regex.Pattern;
 import kkckkc.syntaxpane.regex.PatternFactory;
 

@@ -202,8 +202,31 @@ public class JoniPatternFactory implements PatternFactory {
 
 		@Override
         public String replaceAll(String replacement) {
-            // TODO: Implement this method
-            throw new UnsupportedOperationException();
+            StringBuilder b = new StringBuilder();
+
+            int pos = 0;
+            while (find(pos)) {
+                int start = start();
+                int end = end();
+
+                if (start > pos) {
+                    b.append(new String(chars, pos, start - pos));
+                }
+
+                String currentReplacement = replacement;
+                for (int i = 0; i < groupCount(); i++) {
+                    currentReplacement = currentReplacement.replaceAll("\\$" + i, group(i));
+                }
+                b.append(currentReplacement);
+
+                pos = end;
+            }
+
+            if (pos < chars.length) {
+                b.append(new String(chars, pos, chars.length - pos));
+            }
+
+            return b.toString();
         }
 		
 	}

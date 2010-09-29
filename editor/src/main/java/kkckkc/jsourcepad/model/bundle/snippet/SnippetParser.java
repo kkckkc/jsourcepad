@@ -1,7 +1,7 @@
 package kkckkc.jsourcepad.model.bundle.snippet;
 
 import com.google.common.collect.Lists;
-import kkckkc.syntaxpane.regex.NamedPatternFactory;
+import kkckkc.syntaxpane.regex.JoniPatternFactory;
 import kkckkc.syntaxpane.regex.PatternFactory;
 
 import java.util.Collection;
@@ -266,7 +266,7 @@ class SnippetParser {
         }
 
 		private String transform(String s) {
-			PatternFactory pf = new NamedPatternFactory();
+			PatternFactory pf = new JoniPatternFactory();
 			kkckkc.syntaxpane.regex.Pattern p = pf.create(regexp);
 			return p.matcher(s).replaceAll(format);
         }
