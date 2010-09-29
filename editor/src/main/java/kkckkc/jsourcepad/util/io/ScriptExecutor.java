@@ -1,6 +1,8 @@
 package kkckkc.jsourcepad.util.io;
 
+import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
+import com.google.common.io.Files;
 
 import java.io.*;
 import java.util.Collections;
@@ -92,10 +94,10 @@ public class ScriptExecutor {
 	
 
 	private ProcessBuilder getProcess(Execution execution, Map<String, String> environment) throws IOException {
-		execution.tempScriptFile = Files.newTempFile("jsourcepad", ".sh");
+		execution.tempScriptFile = FileUtils.newTempFile("jsourcepad", ".sh");
 		execution.tempScriptFile.setExecutable(true);
 
-		Files.write(execution.tempScriptFile, script);
+        Files.write(script, execution.tempScriptFile, Charsets.UTF_8);
 
         System.out.println("environment: " + environment);
 

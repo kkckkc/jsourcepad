@@ -14,12 +14,13 @@
 [ ] Rework FoldManager and support fold level actions
 [ ] Text > Move Selection
 [ ] Text > Edit Each Line in Selection
-[ ] Buffer.replaceText - one undo operation
+[x] Buffer.replaceText - one undo operation
 [ ] Bundle menu
 [ ] Window menu
 [ ] Replacement for keystrokes that are impossible on non-us keyboards
-[ ] Joni replaceAll
+[ ] Joni replaceAll, removed NamedPatternFactory
 [ ]ÊHome button
+[ ] Templates
 
 HTML bundle
 [x] Embedded javascript syntax colors

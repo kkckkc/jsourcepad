@@ -9,7 +9,6 @@ import kkckkc.jsourcepad.model.SettingsManager.Listener;
 import kkckkc.jsourcepad.model.SettingsManager.Setting;
 import kkckkc.jsourcepad.util.action.ActionContext;
 import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
-import kkckkc.jsourcepad.util.ui.CompoundUndoManager;
 import kkckkc.syntaxpane.ScrollableSourcePane;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -27,7 +26,6 @@ public class DocPresenter implements Presenter<DocView> {
 	
 	// Collaborators
 	private DocView view;
-	private CompoundUndoManager undoManager;
 
 	@Autowired
     public void setView(DocView view) {
@@ -63,22 +61,6 @@ public class DocPresenter implements Presenter<DocView> {
 		
 		app.getSettingsManager().subscribe(new SettingsListener(), false, app, doc);
 
-		undoManager = new CompoundUndoManager(sourcePane.getEditorPane());
-		sourcePane.getEditorPane().getKeymap().addActionForKeyStroke(
-				KeyStroke.getKeyStroke("ctrl Z"),
-				new AbstractAction() {
-                    public void actionPerformed(ActionEvent e) {
-	                    undo();
-                    }
-				});
-		sourcePane.getEditorPane().getKeymap().addActionForKeyStroke(
-				KeyStroke.getKeyStroke("ctrl Y"),
-				new AbstractAction() {
-                    public void actionPerformed(ActionEvent e) {
-                    	redo();
-                    }
-				});
-		
 		sourcePane.getEditorPane().getKeymap().addActionForKeyStroke(
 				KeyStroke.getKeyStroke((char) KeyEvent.VK_ENTER), new IndentAction(doc));
 
@@ -98,14 +80,6 @@ public class DocPresenter implements Presenter<DocView> {
 	public String getTitle() {
 		return doc.getTitle();
 	}
-
-    public boolean canUndo() {
-        return undoManager.canUndo();
-    }
-
-    public boolean canRedo() {
-        return undoManager.canRedo();
-    }
 
     private void wrapClipboardAction(String action, ScrollableSourcePane sourcePane) {
         final Action a = sourcePane.getEditorPane().getActionMap().get(action);
@@ -198,14 +172,6 @@ public class DocPresenter implements Presenter<DocView> {
     }
 
 
-	public void undo() {
-		if (undoManager.canUndo()) undoManager.undo();
-    }
-
-	public void redo() {
-		if (undoManager.canRedo()) undoManager.redo();
-	}
-	
 	public void cut() {
 		sourcePane.getEditorPane().cut();
 	}

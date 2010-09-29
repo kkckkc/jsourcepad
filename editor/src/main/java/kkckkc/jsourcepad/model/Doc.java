@@ -31,5 +31,4 @@ public interface Doc extends MessageBus {
 	public TabManager getTabManager();
 	
 	public <T> T getPresenter(Class<? extends T> clazz);
-
 }

@@ -132,7 +132,8 @@ public class DocImpl extends AbstractMessageBus implements Doc, ScopeRoot {
 	    return container.getBean(clazz);
     }
 
-	@Override
+
+    @Override
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
 	    this.container = beanFactory;
     }

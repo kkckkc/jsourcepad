@@ -1,12 +1,12 @@
 
 package kkckkc.jsourcepad.action;
 
-import java.io.File;
 import kkckkc.jsourcepad.model.Doc;
-import kkckkc.jsourcepad.ui.DocPresenter;
 import kkckkc.jsourcepad.util.action.ActionContext;
 import kkckkc.jsourcepad.util.action.ActionStateRule;
 import kkckkc.syntaxpane.model.Interval;
+
+import java.io.File;
 
 public class ActionStateRules {
     public static ActionStateRule FILE_SELECTED = new ActionStateRule() {
@@ -59,8 +59,7 @@ public class ActionStateRules {
         @Override
         public boolean shouldBeEnabled(ActionContext actionContext) {
             Doc d = actionContext.get(ActionContextKeys.ACTIVE_DOC);
-            DocPresenter dp = d.getPresenter(DocPresenter.class);
-    		return dp.canUndo();
+    		return d.getActiveBuffer().canUndo();
         }
     };
 
@@ -68,8 +67,7 @@ public class ActionStateRules {
         @Override
         public boolean shouldBeEnabled(ActionContext actionContext) {
             Doc d = actionContext.get(ActionContextKeys.ACTIVE_DOC);
-            DocPresenter dp = d.getPresenter(DocPresenter.class);
-    		return dp.canRedo();
+    		return d.getActiveBuffer().canRedo();
         }
     };
 

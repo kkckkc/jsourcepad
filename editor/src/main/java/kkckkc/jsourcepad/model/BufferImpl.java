@@ -5,6 +5,7 @@ import kkckkc.jsourcepad.model.Finder.Options;
 import kkckkc.jsourcepad.model.bundle.BundleManager;
 import kkckkc.jsourcepad.model.bundle.PrefKeys;
 import kkckkc.jsourcepad.util.StringUtils;
+import kkckkc.jsourcepad.util.ui.CompoundUndoManager;
 import kkckkc.syntaxpane.model.FoldManager;
 import kkckkc.syntaxpane.model.Interval;
 import kkckkc.syntaxpane.model.LineManager;
@@ -59,6 +60,7 @@ public class BufferImpl implements Buffer {
 
     // Search and replace
     private Finder finder;
+    private CompoundUndoManager undoManager;
 
 
     public BufferImpl(SourceDocument d, Doc doc, Window window) {
@@ -101,7 +103,9 @@ public class BufferImpl implements Buffer {
 
 	    characterPairsHandler = new CharacterPairsHandler(this, anchorManager);
 	    document.setDocumentFilter(characterPairsHandler);
-	    
+
+        undoManager = new CompoundUndoManager(jtc);
+        
 		postInsertionPointUpdate();
 	}
 
@@ -125,10 +129,15 @@ public class BufferImpl implements Buffer {
 		adjustAnchorList(interval.getStart(), anchors);
 		
 		try {
-			document.replace(interval.getStart(), interval.getLength(), s, null);
-            if (reselect) {
-                Interval newSelection = Interval.createWithLength(interval.getStart(), s.length());
-                setSelection(newSelection);
+            undoManager.beginCompoundOperation();
+            try {
+			    document.replace(interval.getStart(), interval.getLength(), s, null);
+                if (reselect) {
+                    Interval newSelection = Interval.createWithLength(interval.getStart(), s.length());
+                    setSelection(newSelection);
+                }
+            } finally {
+                undoManager.endCompoundOperation();
             }
 		} catch (BadLocationException e) {
 			throw new RuntimeException(e);
@@ -667,5 +676,25 @@ public class BufferImpl implements Buffer {
 
     public CompletionManager getCompletionManager() {
         return this.completionManager;
+    }
+
+    @Override
+    public void undo() {
+        undoManager.undo();
+    }
+
+    @Override
+    public void redo() {
+        undoManager.redo();
+    }
+
+    @Override
+    public boolean canUndo() {
+        return undoManager.canUndo();
+    }
+
+    @Override
+    public boolean canRedo() {
+        return undoManager.canRedo();
     }
 }
