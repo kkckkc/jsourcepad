@@ -1,7 +1,7 @@
 package kkckkc.jsourcepad.model.bundle.snippet;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+import com.google.common.collect.Maps;
 import kkckkc.jsourcepad.model.*;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.bundle.BundleItemSupplier;
@@ -23,7 +23,6 @@ import java.io.StringReader;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 public class Snippet {
@@ -52,13 +51,23 @@ public class Snippet {
 		this.constituents = Lists.newArrayList();
 		this.environment = EnvironmentProvider.getEnvironment(window, bundleItemSupplier);
 		
-		final Set<Integer> tabStops = Sets.newHashSet();
-		final StringBuilder b = new StringBuilder();
-		
-		for (SnippetParser.Node node : nodes) {
-			node.accept(new CompilingVisitor(window, b, tabStops));
-		}
+        Map<Integer, Variable> primaryVariables = Maps.newHashMap();
+        Map<Integer, String> variableDefaults = Maps.newHashMap();
+
+        // We need to compile twice as defaults may not be defined for the first occurence
+        // of a certain variable
         
+        StringBuilder b = new StringBuilder();
+		for (SnippetParser.Node node : nodes) {
+			node.accept(new CompilingVisitor(window, b, primaryVariables, variableDefaults));
+		}
+
+        b = new StringBuilder();
+        constituents.clear();
+		for (SnippetParser.Node node : nodes) {
+			node.accept(new CompilingVisitor(window, b, primaryVariables, variableDefaults));
+		}
+
 		String str = b.toString();
 		int firstLineLength = str.indexOf('\n');
 		
@@ -99,7 +108,7 @@ public class Snippet {
 			anchors.add(c.getBounds().getFirst());
 			anchors.add(c.getBounds().getSecond());
 		}
-	    return anchors.toArray(new Anchor[] {});
+	    return anchors.toArray(new Anchor[anchors.size()]);
     }
 
 	private SnippetConstituent findWithTabStopId(int id, int increment) {
@@ -154,12 +163,14 @@ public class Snippet {
 	class CompilingVisitor implements NodeVisitor {
 	    private final Window window;
 	    private final StringBuilder b;
-	    private final Set<Integer> tabStops;
+        private Map<Integer, String> variableDefaults;
+        private Map<Integer, Variable> primaryVariables;
 
-	    private CompilingVisitor(Window window, StringBuilder b, Set<Integer> tabStops) {
+        private CompilingVisitor(Window window, StringBuilder b, Map<Integer, Variable> primaryVariables, Map<Integer, String> variableDefaults) {
 		    this.window = window;
 		    this.b = b;
-		    this.tabStops = tabStops;
+		    this.primaryVariables = primaryVariables;
+            this.variableDefaults = variableDefaults;
 	    }
 
 	    @Override
@@ -182,20 +193,40 @@ public class Snippet {
 	        if (variable.isTabStop()) {
 	        	int tabStopId = Integer.parseInt(variable.getName());
 
-	        	if (! tabStops.contains(tabStopId)) {
-	        		environment.put(Integer.toString(tabStopId), b.substring(start.getPosition()));
-	        	} else {
-	        		b.append(environment.get(Integer.toString(tabStopId)));
-	        	}
-    	        Anchor end = new Anchor(b.length(), Anchor.Bias.RIGHT);
+                // This is a copy variable if it is not defined as the primary for this tab stop
+                boolean isCopyVar = primaryVariables.get(tabStopId) != variable;
 
+                // If we don't have a default yet, try to establish one
+	        	if (! variableDefaults.containsKey(tabStopId)) {
+
+                    String value = b.substring(start.getPosition());
+
+                    // Do we have a value or not
+                    if (! "".equals(value)) {
+                        // If we do, record it and assume this is the primary variable
+	        		    variableDefaults.put(tabStopId, value);
+                        primaryVariables.put(tabStopId, variable);
+                    } else {
+
+                        // If we don't but still haven't assigned a primary, assume this is the primary for now
+                        if (! primaryVariables.containsKey(tabStopId)) {
+                            primaryVariables.put(tabStopId, variable);
+                        }
+                    }
+
+                // If this is a copy var, just use any defaults recorded for the primary instance
+	        	} else if (isCopyVar) {
+                    String s = variableDefaults.get(tabStopId);
+	        		b.append(s == null ? "" : s);
+	        	}
+
+    	        Anchor end = new Anchor(b.length(), Anchor.Bias.RIGHT);
 	        	constituents.add(new SnippetConstituent(
 	        			variable,
 	        			new Pair<Anchor, Anchor>(start, end),
 	        			tabStopId,
-	        			tabStops.contains(tabStopId)
+	        		    isCopyVar
 	        	));
-	        	tabStops.add(tabStopId);
 	        }
 	    }
 
@@ -292,20 +323,19 @@ public class Snippet {
 		}
 	}
 	
-	
 	class SnippetRestrictedEditor implements Buffer.RestrictedEditor {
 		private static final String SHIFT_TAB = "shift TAB";
 		private static final String TAB = "TAB";
-		
+
 		private Keymap keymap;
-		
+
 		private Action tabAction;
 		private Action shiftTabAction;
-		
+
 		@Override
 	    public void init(Keymap keymap) {
 		    this.keymap = keymap;
-		    
+
 		    // Save
 		    tabAction = keymap.getAction(KeyStroke.getKeyStroke(TAB));
 		    shiftTabAction = keymap.getAction(KeyStroke.getKeyStroke(SHIFT_TAB));
@@ -313,7 +343,7 @@ public class Snippet {
 		    // Remove
 	    	keymap.removeKeyStrokeBinding(KeyStroke.getKeyStroke(TAB));
 	    	keymap.removeKeyStrokeBinding(KeyStroke.getKeyStroke(SHIFT_TAB));
-		    
+
 		    // Install new actions
 	    	keymap.addActionForKeyStroke(KeyStroke.getKeyStroke(TAB), new AbstractAction() {
                 public void actionPerformed(ActionEvent e) {
@@ -344,36 +374,37 @@ public class Snippet {
 
 		private void destroy() {
 	    	buffer.endRestrictedEditing();
-	    	
+
 	    	keymap.removeKeyStrokeBinding(KeyStroke.getKeyStroke(TAB));
 	    	keymap.removeKeyStrokeBinding(KeyStroke.getKeyStroke(SHIFT_TAB));
-	    	
+
 	    	keymap.addActionForKeyStroke(KeyStroke.getKeyStroke(TAB), tabAction);
 	    	if (shiftTabAction != null) {
 	    		keymap.addActionForKeyStroke(KeyStroke.getKeyStroke(SHIFT_TAB), shiftTabAction);
 	    	}
         }
 
-		
+
 		@Override
 	    public void caretPositionChanged(int position) {
+            if (! changeTrackingEnabled) return;
 		    if (isOutsideOfAnchor(position)) {
 		    	destroy();
-		    	return;
 		    }
 	    }
 
 		@Override
 	    public void textChanged(final DocumentEvent de) {
 			if (! changeTrackingEnabled) return;
-			
-		    if (isOutsideOfAnchor(de.getOffset() + de.getLength())) {
+
+            int position = de.getOffset();
+		    if (isOutsideOfAnchor(position)) {
 		    	destroy();
 		    	return;
 		    }
 
 		    Interval changeInterval = new Interval(de.getOffset(), de.getOffset() + de.getLength());
-		    
+
 			for (final SnippetConstituent c : constituents) {
 				Pair<Anchor, Anchor> pair = c.getBounds();
 		    	if (c.getBoundsAsInterval().overlaps(changeInterval)) {

@@ -54,8 +54,8 @@ public class BufferImpl implements Buffer {
     private CompletionManager completionManager;
 
 	// Restricted editing
-	private ChangeListener restrictedChangeListener;
-	private DocumentListener restrictedDocumentListener;
+    private RestrictedEditor restrictedEditor;
+
 	private CharacterPairsHandler characterPairsHandler;
 
     // Search and replace
@@ -67,13 +67,10 @@ public class BufferImpl implements Buffer {
 		this.window = window;
 	    this.document = d;
 	    
-	    this.doc = doc;
-	    
-	    this.documentStateListener = new DocumentStateListener();
+	    this.doc = doc;    
+
+        this.documentStateListener = new DocumentStateListener();
 		this.anchorManager = new AnchorManager();
-	    
-		document.addDocumentListener(documentStateListener);
-		document.addDocumentListener(anchorManager);
 
         this.completionManager = new CompletionManager(this);
     }
@@ -83,6 +80,33 @@ public class BufferImpl implements Buffer {
 		jtc.setDocument(document);
 	    this.caret = jtc.getCaret();
         this.caret.addChangeListener(completionManager);
+        this.caret.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                if (restrictedEditor != null) restrictedEditor.caretPositionChanged(caret.getDot());
+            }
+        });
+
+
+		document.addDocumentListener(new DocumentListener() {
+            @Override
+			public void removeUpdate(DocumentEvent e) {
+				if (restrictedEditor != null) restrictedEditor.textChanged(e);
+			}
+
+            @Override
+			public void insertUpdate(DocumentEvent e) {
+				if (restrictedEditor != null) restrictedEditor.textChanged(e);
+			}
+
+            @Override
+			public void changedUpdate(DocumentEvent e) {
+			}
+		});
+
+		document.addDocumentListener(documentStateListener);
+		document.addDocumentListener(anchorManager);
+
 	    this.textComponent = jtc;
 	    
 	    this.caret.addChangeListener(new ChangeListener() {
@@ -471,43 +495,13 @@ public class BufferImpl implements Buffer {
 	@Override
     public void beginRestrictedEditing(final RestrictedEditor restrictedEditor) {
 		restrictedEditor.init(textComponent.getKeymap());
-		
-		restrictedChangeListener = new ChangeListener() {
-            @Override
-			public void stateChanged(ChangeEvent e) {
-				restrictedEditor.caretPositionChanged(caret.getDot());
-			}
-		};
-		
-		restrictedDocumentListener = new DocumentListener() {
-            @Override
-			public void removeUpdate(DocumentEvent e) {
-				restrictedEditor.textChanged(e);
-			}
-			
-            @Override
-			public void insertUpdate(DocumentEvent e) {
-				restrictedEditor.textChanged(e);
-			}
-			
-            @Override
-			public void changedUpdate(DocumentEvent e) {
-			}
-		};
-		
-		this.caret.addChangeListener(restrictedChangeListener);
-		
-		this.document.addDocumentListener(restrictedDocumentListener);
+		this.restrictedEditor = restrictedEditor;
 	}
 
 	@Override
 	public void endRestrictedEditing() {
-		this.caret.removeChangeListener(restrictedChangeListener);
-		this.document.removeDocumentListener(restrictedDocumentListener);
-		
-		restrictedChangeListener = null;
-		restrictedDocumentListener = null;
-	}
+        restrictedEditor = null;
+    }
 
 	@Override
     public int getLength() {

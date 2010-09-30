@@ -21,11 +21,12 @@
 [-] Joni replaceAll, removed NamedPatternFactory, check body
 [ ]ÊHome button
 [ ] Templates
+[ ] Snippet moving backwards, shift tab. See for instance movie
 
 HTML bundle
 [x] Embedded javascript syntax colors
 [ ] beforeRunningCommand
 [ ] Wrap Each Selected Line in Open/Close Tag
 [ ] persistent includes
-[ ] movie, fieldset etc, i.e. same tabstop in wrong order
+[x] movie, fieldset etc, i.e. same tabstop in wrong order
 
