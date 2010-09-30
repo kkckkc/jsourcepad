@@ -58,7 +58,7 @@ public class Snippet {
 		for (SnippetParser.Node node : nodes) {
 			node.accept(new CompilingVisitor(window, b, tabStops));
 		}
-
+        
 		String str = b.toString();
 		int firstLineLength = str.indexOf('\n');
 		
@@ -150,8 +150,7 @@ public class Snippet {
 			return findWithTabStopId(currentTabStop - 1, DECREMENT);
 		}
 	}
-	
-	
+
 	class CompilingVisitor implements NodeVisitor {
 	    private final Window window;
 	    private final StringBuilder b;
