@@ -217,6 +217,10 @@ public class Snippet {
                 // If this is a copy var, just use any defaults recorded for the primary instance
 	        	} else if (isCopyVar) {
                     String s = variableDefaults.get(tabStopId);
+
+                    // Just in case, remove any other value specified
+                    b.setLength(start.getPosition());
+
 	        		b.append(s == null ? "" : s);
 	        	}
 

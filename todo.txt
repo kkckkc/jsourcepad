@@ -26,7 +26,7 @@
 HTML bundle
 [x] Embedded javascript syntax colors
 [ ] beforeRunningCommand
-[ ] Wrap Each Selected Line in Open/Close Tag
+[x] Wrap Each Selected Line in Open/Close Tag
 [ ] persistent includes
 [x] movie, fieldset etc, i.e. same tabstop in wrong order
 
