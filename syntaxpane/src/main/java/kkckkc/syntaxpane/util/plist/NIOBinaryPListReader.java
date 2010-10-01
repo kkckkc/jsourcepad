@@ -17,7 +17,7 @@ public class NIOBinaryPListReader {
 	public Object read(byte[] bytes) throws IOException {
 		ByteBuffer buffer = ByteBuffer.wrap(bytes);
 
-		int length = (int) buffer.remaining();
+		int length = buffer.remaining();
 		
 		String s = readAsciiString(buffer, 0, 6);
 		if (! "bplist".equals(s)) {
@@ -100,7 +100,7 @@ public class NIOBinaryPListReader {
 			dest = (dest << 8) | b;
 		}
 
-		return new Integer(dest);
+		return dest;
 	}
 
 	private String readUnicodeString(int data, ByteBuffer raf) throws IOException {

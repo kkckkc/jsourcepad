@@ -19,7 +19,7 @@ public class TextmateStyleParser implements kkckkc.syntaxpane.style.StyleParser 
 	    GeneralPListReader p = new GeneralPListReader();
         try {
         	final List<?> settings = PListUtils.get(p.read(file), List.class, "settings"); 
-			final Map<?, ?> global = PListUtils.get(settings, Map.class, (Integer) 0, "settings");
+			final Map<?, ?> global = PListUtils.get(settings, Map.class, 0, "settings");
 			
 			final Map<ScopeSelector, TextStyle> selectors = new HashMap<ScopeSelector, TextStyle>();
 			for (int i = 1; i < settings.size(); i++) {

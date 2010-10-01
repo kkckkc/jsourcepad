@@ -1,6 +1,10 @@
 package kkckkc.jsourcepad.theme;
 
-import java.awt.Component;
+import kkckkc.jsourcepad.ui.dialog.filechooser.FileChooserCallback;
+import kkckkc.jsourcepad.ui.dialog.filechooser.FileChooserView;
+
+import javax.swing.*;
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -8,11 +12,6 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
-import javax.swing.SwingWorker;
-
-import kkckkc.jsourcepad.ui.dialog.filechooser.FileChooserCallback;
-import kkckkc.jsourcepad.ui.dialog.filechooser.FileChooserView;
 
 public class GtkFileChooserView implements FileChooserView {
 
@@ -116,7 +115,7 @@ public class GtkFileChooserView implements FileChooserView {
 		peerField.setAccessible(true);
 		Class<?> xWindowPeerClass = Class.forName("sun.awt.X11.XWindowPeer");
 		Method getWindowMethod = xWindowPeerClass.getMethod("getWindow", new Class[0]);
-		long windowId = ((Long) getWindowMethod.invoke(peerField.get(parent), new Object[0])).longValue();
+		long windowId = (Long) getWindowMethod.invoke(peerField.get(parent), new Object[0]);
 		return windowId;
 	}	
 	

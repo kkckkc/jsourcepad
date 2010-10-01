@@ -179,7 +179,7 @@ class SnippetParser {
 		
 		@Override
         public Collection<Node> children() {
-	        return Collections.<Node>emptyList();
+	        return Collections.emptyList();
         }
 
 		@Override
@@ -197,7 +197,7 @@ class SnippetParser {
 
 		@Override
         public Collection<Node> children() {
-	        return Collections.<Node>emptyList();
+	        return Collections.emptyList();
         }
 
 		@Override
@@ -218,7 +218,7 @@ class SnippetParser {
 		private String format;
 		private String options;
 
-		private Collection<Node> children = Collections.<Node>emptyList();
+		private Collection<Node> children = Collections.emptyList();
 
 		public Variable(String name) {
 	        this.name = name;

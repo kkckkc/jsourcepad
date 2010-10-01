@@ -88,7 +88,7 @@ public class GtkSourceViewLanguageParser {
 	        List<Context> supportingContexts = new ArrayList<Context>();
 	        for (Context cr : parseChildren(getChildren(definitions, "context"))) {
 	        	if (languageId.equals(cr.getId())) {
-	        		language.setRootContext((Context) cr);
+	        		language.setRootContext(cr);
 	        	} else {
 	        		supportingContexts.add(cr);
 	        	}

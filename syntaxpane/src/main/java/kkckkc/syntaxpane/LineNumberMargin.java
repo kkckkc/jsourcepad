@@ -104,7 +104,7 @@ public class LineNumberMargin extends JComponent implements PropertyChangeListen
 			setPreferredWidth(foldManager.getLineCount());
 		} else {
 			int stringWidth = fontMetrics.stringWidth("1");
-			g.drawString("1", getSize().width - stringWidth - MARGIN, 1 * fontHeight);
+			g.drawString("1", getSize().width - stringWidth - MARGIN, fontHeight);
 		}
 	}
  

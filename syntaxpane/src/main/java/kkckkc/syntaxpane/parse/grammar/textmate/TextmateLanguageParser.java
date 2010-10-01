@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 public class TextmateLanguageParser {
 	private static final Comparator<SubPatternContext> SUBPATTERN_COMPARATOR = new Comparator<SubPatternContext>() {
         public int compare(SubPatternContext object1, SubPatternContext object2) {
-	        return new Integer(object1.getSubPatternIdx()).compareTo(new Integer(object2.getSubPatternIdx()));
+	        return new Integer(object1.getSubPatternIdx()).compareTo(object2.getSubPatternIdx());
         }
 	};
 	private File file;

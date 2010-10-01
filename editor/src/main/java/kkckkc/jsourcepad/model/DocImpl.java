@@ -99,7 +99,7 @@ public class DocImpl extends AbstractMessageBus implements Doc, ScopeRoot {
 		br.read(buffer);
 		br.reset();
 		
-		Language language = languageManager.getLanguage(new String(buffer), (File) file);
+		Language language = languageManager.getLanguage(new String(buffer), file);
 		
 		this.buffer.setText(language, br);
 	}

@@ -78,7 +78,7 @@ public class DocListPresenter implements Presenter<DocListView>, DocList.Listene
                 int tabIndex = tabbedPane.indexAtLocation((int) e.getPoint().getX(), (int) e.getPoint().getY());
 
                 ActionContext a = actionManager.getActionContext().subContext();
-                a.put(ActionContextKeys.TAB_INDEX, new Integer(tabIndex));
+                a.put(ActionContextKeys.TAB_INDEX, tabIndex);
                 a.commit();
                 actionGroup.setActionContext(a);
             }

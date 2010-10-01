@@ -102,11 +102,11 @@ public class FoldMargin extends JComponent implements PropertyChangeListener {
 	}
 
 	private void paintUnfoldedFoldMark(Graphics g, int yo) {
-		g.fillPolygon(new int[] { 0, 6, 3 }, new int[] { yo + 0, yo + 0, yo + 6 }, 3);
+		g.fillPolygon(new int[] { 0, 6, 3 }, new int[] { yo, yo, yo + 6 }, 3);
 	}
 
 	private void paintFoldedFoldMark(Graphics g, int yo) {
-		g.fillPolygon(new int[] { 0, 6, 0 }, new int[] { yo + 0, yo + 3, yo + 6 }, 3);
+		g.fillPolygon(new int[] { 0, 6, 0 }, new int[] { yo, yo + 3, yo + 6 }, 3);
 	}
 
 	@Override

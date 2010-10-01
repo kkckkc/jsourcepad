@@ -67,26 +67,25 @@ public class MutableLineManager extends LineManager {
 
 
 	private void renumber(Line startLine, int idx, int position, int length) {
-		Iterator<Line> it = lines.tailSet(startLine, true).iterator();
-		while (it.hasNext()) {
-			Line l = it.next();
-			if (length >= 0) {
-				if (l.start >= position) {
-					l.start += length;
-				}
-			} else {
-				if (l.start > position) {
-					l.start += length;
-				}
-			}
-			l.end += length;
-			
-			l.start = Math.max(l.start, 0);
-			l.end = Math.max(l.end, 0);
-			
-			l.idx = idx;
-			idx++;
-		}
+        for (Line line : lines.tailSet(startLine, true)) {
+            Line l = line;
+            if (length >= 0) {
+                if (l.start >= position) {
+                    l.start += length;
+                }
+            } else {
+                if (l.start > position) {
+                    l.start += length;
+                }
+            }
+            l.end += length;
+
+            l.start = Math.max(l.start, 0);
+            l.end = Math.max(l.end, 0);
+
+            l.idx = idx;
+            idx++;
+        }
 	}
 	
 	

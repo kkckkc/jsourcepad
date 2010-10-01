@@ -200,6 +200,6 @@ public class ScriptExecutor {
     }
 
 	public static Map<String, String> noEnvironment() {
-	    return Collections.<String, String>emptyMap();
+	    return Collections.emptyMap();
     }
 }

@@ -1,13 +1,11 @@
 package kkckkc.jsourcepad.theme;
 
-import java.awt.Component;
-import java.awt.FileDialog;
-import java.awt.Frame;
-import java.io.File;
-import java.io.IOException;
-
 import kkckkc.jsourcepad.ui.dialog.filechooser.FileChooserCallback;
 import kkckkc.jsourcepad.ui.dialog.filechooser.FileChooserView;
+
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 
 public class AWTFileChooserView implements FileChooserView {
 
@@ -55,7 +53,7 @@ public class AWTFileChooserView implements FileChooserView {
 
 	private String canonicalize(File pwd) {
 		try {
-			return pwd.getCanonicalPath().toString();
+			return pwd.getCanonicalPath();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

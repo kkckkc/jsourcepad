@@ -206,10 +206,10 @@ public class BundleManagerImpl implements BundleManager {
 					if (m.get("scope") == null) continue;
 					
 					if (! prefs.containsKey(entry.getKey())) {
-						prefs.put((String) entry.getKey(), new HashMap<ScopeSelector, Object>());
+						prefs.put(entry.getKey(), new HashMap<ScopeSelector, Object>());
 					}
 					
-					prefs.get((String) entry.getKey()).put(
+					prefs.get(entry.getKey()).put(
 							ScopeSelector.parse((String) m.get("scope")),
 							entry.getValue()
 					);

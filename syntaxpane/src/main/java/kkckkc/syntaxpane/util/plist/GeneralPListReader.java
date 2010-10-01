@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class GeneralPListReader implements PListReader {
 
@@ -25,7 +23,7 @@ public class GeneralPListReader implements PListReader {
 	private byte[] readBytes(File file) throws FileNotFoundException, IOException {
 		FileInputStream fis = new FileInputStream(file);
 
-		byte[] dest = new byte[(int) fis.available()];
+		byte[] dest = new byte[fis.available()];
 		fis.read(dest);
 		fis.close();
 		
