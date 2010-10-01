@@ -6,7 +6,7 @@ import kkckkc.jsourcepad.model.StyleSettings;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.util.StringUtils;
 import kkckkc.jsourcepad.util.action.BaseAction;
-import kkckkc.syntaxpane.model.Interval;
+import kkckkc.syntaxpane.model.TextInterval;
 
 import java.awt.event.ActionEvent;
 import java.util.StringTokenizer;
@@ -25,8 +25,8 @@ public class TextAlignJustifiedAction extends BaseAction {
 
 		Buffer b = window.getDocList().getActiveDoc().getActiveBuffer();
 
-		Interval i = b.getSelectionOrCurrentLine();
-        String text = b.getText(i);
+		TextInterval i = b.getSelectionOrCurrentLine();
+        String text = i.getText();
 
         StringBuilder builder = new StringBuilder();
         StringTokenizer tok = new StringTokenizer(text, "\n", true);

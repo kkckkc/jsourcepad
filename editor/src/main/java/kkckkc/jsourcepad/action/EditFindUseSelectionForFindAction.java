@@ -20,11 +20,11 @@ public class EditFindUseSelectionForFindAction extends BaseAction {
         Finder finder = buffer.getFinder();
         if (finder == null) {
             buffer.newFinder(buffer.getCompleteDocument(),
-                    buffer.getText(buffer.getSelection()),
+                    buffer.getSelection().getText(),
                     new Finder.Options());
         } else {
             Finder newFinder = buffer.newFinder(buffer.getCompleteDocument(),
-                    buffer.getText(buffer.getSelection()),
+                    buffer.getSelection().getText(),
                     finder.getOptions());
             newFinder.setReplacement(finder.getReplacement());
         }

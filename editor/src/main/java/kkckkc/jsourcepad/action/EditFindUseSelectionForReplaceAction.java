@@ -19,7 +19,7 @@ public class EditFindUseSelectionForReplaceAction extends BaseAction {
 
         String replacementText = "";
         if (buffer.getSelection() != null) {
-            replacementText = buffer.getText(buffer.getSelection());
+            replacementText = buffer.getSelection().getText();
         }
 
         Finder finder = buffer.getFinder();

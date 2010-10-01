@@ -3,6 +3,7 @@ package kkckkc.jsourcepad.model;
 import kkckkc.syntaxpane.model.FoldManager;
 import kkckkc.syntaxpane.model.Interval;
 import kkckkc.syntaxpane.model.LineManager;
+import kkckkc.syntaxpane.model.TextInterval;
 import kkckkc.syntaxpane.parse.grammar.Language;
 import kkckkc.syntaxpane.style.Style;
 
@@ -41,12 +42,12 @@ public interface Buffer {
 	
 	// Positions and intervals
 	public InsertionPoint getInsertionPoint();
-	public Interval getSelection();
-	public Interval getSelectionOrCurrentLine();
-    public Interval getSelectionOrCurrentParagraph();
-    public Interval getCurrentLine();
-	public Interval getCompleteDocument();
-    public Interval getCurrentWord();
+	public TextInterval getSelection();
+	public TextInterval getSelectionOrCurrentLine();
+    public TextInterval getSelectionOrCurrentParagraph();
+    public TextInterval getCurrentLine();
+	public TextInterval getCompleteDocument();
+    public TextInterval getCurrentWord();
 
     public void setSelection(Interval interval);
     public int getLength();

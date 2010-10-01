@@ -63,7 +63,7 @@ public class PreviewServer {
                         exchange.sendResponseHeaders(200, 0);
 
                         Buffer buffer = docToServe.getActiveBuffer();
-                        String content = buffer.getText(buffer.getCompleteDocument());
+                        String content = buffer.getCompleteDocument().getText();
 
                         Writer writer = new OutputStreamWriter(responseBody);
                         writer.append(content);

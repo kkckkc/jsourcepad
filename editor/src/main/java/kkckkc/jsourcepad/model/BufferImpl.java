@@ -6,11 +6,8 @@ import kkckkc.jsourcepad.model.bundle.BundleManager;
 import kkckkc.jsourcepad.model.bundle.PrefKeys;
 import kkckkc.jsourcepad.util.StringUtils;
 import kkckkc.jsourcepad.util.ui.CompoundUndoManager;
-import kkckkc.syntaxpane.model.FoldManager;
-import kkckkc.syntaxpane.model.Interval;
-import kkckkc.syntaxpane.model.LineManager;
+import kkckkc.syntaxpane.model.*;
 import kkckkc.syntaxpane.model.LineManager.Line;
-import kkckkc.syntaxpane.model.SourceDocument;
 import kkckkc.syntaxpane.parse.grammar.Language;
 import kkckkc.syntaxpane.regex.JoniPatternFactory;
 import kkckkc.syntaxpane.style.Style;
@@ -34,7 +31,7 @@ import java.util.regex.Pattern;
 public class BufferImpl implements Buffer {
 	// State
 	private InsertionPoint insertionPoint;
-	private Interval selection;
+	private TextInterval selection;
 	private int unmodifiedLength = 0;
 	private int unmodifiedHash = 0;
 	private boolean modified = false;
@@ -119,7 +116,7 @@ public class BufferImpl implements Buffer {
 						postInsertionPointUpdate();
 					}
 				} else {
-					selection = new Interval(caret.getDot(), caret.getMark());
+					selection = new BufferTextInterval(caret.getDot(), caret.getMark());
                 	window.topic(Buffer.SelectionListener.class).post().selectionModified(BufferImpl.this);
 				}
 			}
@@ -191,20 +188,20 @@ public class BufferImpl implements Buffer {
     }
 	
 	@Override
-	public Interval getSelection() {
+	public TextInterval getSelection() {
 		return selection;
 	}
 
     @Override
-	public Interval getSelectionOrCurrentLine() {
+	public TextInterval getSelectionOrCurrentLine() {
 		if (selection != null && ! selection.isEmpty()) return selection;
 		
 		Line line = document.getLineManager().getLineByPosition(caret.getDot());
-		return new Interval(line.getStart(), line.getEnd());
+		return new BufferTextInterval(line.getStart(), line.getEnd());
 	}
 
     @Override
-    public Interval getSelectionOrCurrentParagraph() {
+    public TextInterval getSelectionOrCurrentParagraph() {
         if (selection != null && ! selection.isEmpty()) return selection;
 
         LineManager lm = document.getLineManager();
@@ -223,13 +220,13 @@ public class BufferImpl implements Buffer {
         int start = startLine == null ? 0 : startLine.getEnd() + 1;
         int end = endLine == null ? document.getLength() : endLine.getStart() - 1;
 
-        return new Interval(start, end);
+        return new BufferTextInterval(start, end);
     }
 
 
     @Override
 	public void setSelection(Interval selection) {
-		this.selection = selection;
+		this.selection = new BufferTextInterval(selection);
 		this.caret.setDot(selection.getStart());
 		if (! selection.isEmpty()) {
 			this.caret.moveDot(selection.getEnd());
@@ -237,8 +234,8 @@ public class BufferImpl implements Buffer {
 	}
 
 	@Override
-    public Interval getCompleteDocument() {
-	    return new Interval(0, document.getLength());
+    public TextInterval getCompleteDocument() {
+	    return new BufferTextInterval(0, document.getLength());
     }
 
 	@Override
@@ -528,14 +525,14 @@ public class BufferImpl implements Buffer {
     }
 
     @Override
-    public Interval getCurrentLine() {
+    public TextInterval getCurrentLine() {
 		Line line = document.getLineManager().getLineByPosition(caret.getDot());
 		if (line == null) return null;
-        return new Interval(line.getStart(), line.getEnd());
+        return new BufferTextInterval(line.getStart(), line.getEnd());
     }
 
 	@Override
-    public Interval getCurrentWord() {
+    public TextInterval getCurrentWord() {
         Interval l = getCurrentLine();
 		String line = getText(l);
 		int index = getInsertionPoint().getLineIndex();
@@ -544,7 +541,7 @@ public class BufferImpl implements Buffer {
 		Matcher matcher = p.matcher(line);
 		while (matcher.find()) {
 			if (matcher.start(2) <= index && matcher.end(2) >= index) {
-				return new Interval(l.getStart() + matcher.start(2), l.getStart() + matcher.end(2));
+				return new BufferTextInterval(l.getStart() + matcher.start(2), l.getStart() + matcher.end(2));
 			}
 		}
 		
@@ -690,5 +687,21 @@ public class BufferImpl implements Buffer {
     @Override
     public boolean canRedo() {
         return undoManager.canRedo();
+    }
+
+
+    class BufferTextInterval extends TextInterval {
+        public BufferTextInterval(int start, int end) {
+            super(start, end);
+        }
+
+        public BufferTextInterval(Interval i) {
+            super(i.getStart(), i.getEnd());
+        }
+
+        @Override
+        public String getText() {
+            return BufferImpl.this.getText(this);
+        }
     }
 }

@@ -25,7 +25,7 @@ public final class TabAction extends AbstractAction {
     public void actionPerformed(final ActionEvent e) {
     	InsertionPoint ip = doc.getActiveBuffer().getInsertionPoint();
     	
-    	String s = doc.getActiveBuffer().getText(doc.getActiveBuffer().getCurrentLine()); 
+    	String s = doc.getActiveBuffer().getCurrentLine().getText(); 
     	
     	String token = SnippetUtils.getSnippet(s);
     	

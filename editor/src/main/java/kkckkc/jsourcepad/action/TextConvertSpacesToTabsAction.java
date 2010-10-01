@@ -5,7 +5,7 @@ import kkckkc.jsourcepad.model.Buffer;
 import kkckkc.jsourcepad.model.TabSettings;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.util.action.BaseAction;
-import kkckkc.syntaxpane.model.Interval;
+import kkckkc.syntaxpane.model.TextInterval;
 
 import java.awt.event.ActionEvent;
 
@@ -23,8 +23,8 @@ public class TextConvertSpacesToTabsAction extends BaseAction {
 
 		Buffer b = window.getDocList().getActiveDoc().getActiveBuffer();
 
-		Interval i = b.getSelectionOrCurrentLine();
-        String text = b.getText(i);
+        TextInterval i = b.getSelectionOrCurrentLine();
+        String text = i.getText();
 
         StringBuilder builder = new StringBuilder();
         for (int j = 0; j < ts.getTabSize(); j++) builder.append(" ");
