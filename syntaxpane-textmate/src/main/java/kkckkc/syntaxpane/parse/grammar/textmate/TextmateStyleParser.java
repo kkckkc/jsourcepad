@@ -30,7 +30,7 @@ public class TextmateStyleParser implements kkckkc.syntaxpane.style.StyleParser 
 
                 Color fg = color(styleSettings, "foreground");
                 if (fg == null) fg = color(global, "foreground");
-				selectors.put(ScopeSelector.parse(scope), new StyleBean(
+				selectors.put(TextmateScopeSelectorParser.parse(scope), new StyleBean(
 							fg, null,
 							isStyle(styleSettings, "bold"),
 							isStyle(styleSettings, "italic"),

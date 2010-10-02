@@ -5,7 +5,6 @@ import kkckkc.syntaxpane.model.Scope;
 import java.util.*;
 
 
-// TODO: Introduce interface for this, especially for the parse part
 public class ScopeSelector {
 	private List<Rule> rules = new ArrayList<Rule>();
 	
@@ -102,34 +101,6 @@ public class ScopeSelector {
 			}
 			return -1;
 		}
-
-		public static Rule parse(String t) {
-			List<String> positiveRule = new ArrayList<String>(5);
-			List<String> negativeRule = new ArrayList<String>(5);
-
-            int positionOfMinus = t.indexOf("-");
-
-            // Parse positive rules
-            String s = positionOfMinus < 0 ? t : t.substring(0, positionOfMinus);
-			StringTokenizer tok = new StringTokenizer(s, " ");			
-			while (tok.hasMoreTokens()) {
-				String i = tok.nextToken();
-				positiveRule.add(i);
-			}
-
-            // Parse negative rules
-            if (positionOfMinus >= 0) {
-                s = t.substring(positionOfMinus + 1);
-			    tok = new StringTokenizer(s, " ");
-			    while (tok.hasMoreTokens()) {
-				    String i = tok.nextToken();
-				    negativeRule.add(i);
-			    }
-            }
-			
-			return new Rule(positiveRule.size() == 0 ? null: positiveRule, negativeRule.size() == 0 ? null : negativeRule);
-		}
-
 		
 		public String toString() {
 			StringBuilder b = new StringBuilder();
@@ -158,17 +129,7 @@ public class ScopeSelector {
 		}
 	}
 	
-	public static ScopeSelector parse(String s) {
-		ScopeSelector selector = new ScopeSelector();
-		
-		StringTokenizer tok = new StringTokenizer(s, ",");
-		while (tok.hasMoreTokens()) {
-			String t = tok.nextToken();
-			selector.addRule(Rule.parse(t));
-		}
-		
-		return selector;
-	}
+
 
 	
 	public String toString() {

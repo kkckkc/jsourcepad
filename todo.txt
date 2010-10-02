@@ -22,7 +22,7 @@
 [x]ÊHome button
 [ ] Templates
 [x] Snippet moving backwards, shift tab. See for instance movie
-[ ] ScopeSelector and Rule.parse should be moved into specific classes in either syntaxpane-gtksourceview or syntaxpane-textmate
+[x] ScopeSelector and Rule.parse should be moved into specific classes in either syntaxpane-gtksourceview or syntaxpane-textmate
 
 HTML bundle
 [x] Embedded javascript syntax colors

@@ -51,7 +51,7 @@ public class GtkSourceViewStyleParser implements kkckkc.syntaxpane.style.StylePa
 					name = language.resolveStyle(name.substring(name.indexOf(':') + 1));
 					
 					dest.put(
-							ScopeSelector.parse(name), 
+							BasicScopeSelectorParser.parse(name), 
 							new StyleBean(
 									colors.get(e.getAttribute("foreground")),
 									colors.get(e.getAttribute("background")),

@@ -8,6 +8,7 @@ import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.util.PerformanceLogger;
 import kkckkc.jsourcepad.util.action.ActionGroup;
 import kkckkc.syntaxpane.model.Scope;
+import kkckkc.syntaxpane.parse.grammar.textmate.TextmateScopeSelectorParser;
 import kkckkc.syntaxpane.style.ScopeSelector;
 import kkckkc.syntaxpane.style.ScopeSelectorManager;
 import kkckkc.utils.Pair;
@@ -210,7 +211,7 @@ public class BundleManagerImpl implements BundleManager {
 					}
 					
 					prefs.get(entry.getKey()).put(
-							ScopeSelector.parse((String) m.get("scope")),
+							TextmateScopeSelectorParser.parse((String) m.get("scope")),
 							entry.getValue()
 					);
 				}
@@ -243,7 +244,7 @@ public class BundleManagerImpl implements BundleManager {
 						new BundleItemSupplier(
 								file, (String) data.get("name"), 
 								new Activator(ks, tabTrigger, 
-									scope != null ? ScopeSelector.parse(scope) : null	
+									scope != null ? TextmateScopeSelectorParser.parse(scope) : null	
 								)));
 			} 
 		}

@@ -1,3 +1,5 @@
+package kkckkc.syntaxpane.regex;
+
 import kkckkc.syntaxpane.regex.JoniPatternFactory;
 import kkckkc.syntaxpane.regex.Matcher;
 import kkckkc.syntaxpane.regex.Pattern;

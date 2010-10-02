@@ -1,17 +1,16 @@
 package com.github.kkckkc.syntaxpane.style;
 
+import junit.framework.TestCase;
+import kkckkc.syntaxpane.model.Scope;
+import kkckkc.syntaxpane.parse.grammar.SimpleContext;
+import kkckkc.syntaxpane.style.BasicScopeSelectorParser;
+import kkckkc.syntaxpane.style.ScopeSelector;
+import kkckkc.syntaxpane.style.ScopeSelectorManager;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
-
-
-import junit.framework.TestCase;
-import kkckkc.syntaxpane.model.Scope;
-import kkckkc.syntaxpane.parse.grammar.Context;
-import kkckkc.syntaxpane.parse.grammar.SimpleContext;
-import kkckkc.syntaxpane.style.ScopeSelector;
-import kkckkc.syntaxpane.style.ScopeSelectorManager;
 
 
 public class ScopeSelectorManagerTest extends TestCase {
@@ -19,10 +18,10 @@ public class ScopeSelectorManagerTest extends TestCase {
 		ScopeSelectorManager manager = new ScopeSelectorManager();
 		Map<ScopeSelector, ScopeSelector> m = new HashMap<ScopeSelector, ScopeSelector>();
         for (ScopeSelector s1 : Arrays.asList(
-        						ScopeSelector.parse("string"), 
-        						ScopeSelector.parse("source string"), 
-        						ScopeSelector.parse("string.quoted"), 
-        						ScopeSelector.parse("source.php"))) {
+        						BasicScopeSelectorParser.parse("string"),
+        						BasicScopeSelectorParser.parse("source string"),
+        						BasicScopeSelectorParser.parse("string.quoted"),
+        						BasicScopeSelectorParser.parse("source.php"))) {
         	m.put(s1, s1);
         }
 
