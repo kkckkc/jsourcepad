@@ -1,10 +1,8 @@
 package kkckkc.jsourcepad.model.bundle;
 
 import com.sun.net.httpserver.*;
-import kkckkc.jsourcepad.model.Application;
-import kkckkc.jsourcepad.model.Buffer;
+import kkckkc.jsourcepad.model.*;
 import kkckkc.jsourcepad.model.Window;
-import kkckkc.jsourcepad.model.WindowManager;
 import kkckkc.jsourcepad.model.bundle.snippet.Snippet;
 import kkckkc.jsourcepad.util.io.ScriptExecutor;
 import kkckkc.jsourcepad.util.io.ScriptExecutor.Execution;
@@ -37,19 +35,24 @@ public class CommandBundleItem implements BundleItem {
     private static final String INPUT_LINE = "line";
     private static final String INPUT_WORD = "word";
 
+    private static final String BEFORE_SAVE_ALL = "saveModifiedFiles";
+    private static final String BEFORE_SAVE_ACTIVE = "saveActiveFile";
+
 	private String output;
 	private String command;
 	private String input;
 	private String fallbackInput;
+    private String beforeRunning;
 	private BundleItemSupplier bundleItemSupplier;
 	private Interval virtualSelection;
 
-	public CommandBundleItem(BundleItemSupplier bundleItemSupplier, String command, String input, String fallbackInput, String output) {
+    public CommandBundleItem(BundleItemSupplier bundleItemSupplier, String command, String input, String fallbackInput, String output, String beforeRunning) {
 		this.bundleItemSupplier = bundleItemSupplier;
 		this.command = command;
 		this.input = input;
 		this.fallbackInput = fallbackInput;
 		this.output = output;
+        this.beforeRunning = beforeRunning;
 	}
 	
 	public static CommandBundleItem create(BundleItemSupplier bundleItemSupplier, Map<?, ?> m) {
@@ -57,7 +60,8 @@ public class CommandBundleItem implements BundleItem {
 	    		(String) m.get("command"),
 	    		(String) m.get("input"),
 	    		(String) m.get("fallbackInput"),
-	    		(String) m.get("output"));
+	    		(String) m.get("output"),
+                (String) m.get("beforeRunningCommand"));
     }
 
 	
@@ -67,6 +71,8 @@ public class CommandBundleItem implements BundleItem {
 	
 	
 	public void execute(Window window) throws Exception {
+        beforeRunning(window);
+
 		ScriptExecutor scriptExecutor = new ScriptExecutor(command, Application.get().getThreadPool());
 
 		WindowManager wm = Application.get().getWindowManager();
@@ -79,7 +85,21 @@ public class CommandBundleItem implements BundleItem {
 		executionMethod.start(scriptExecutor, inputText, EnvironmentProvider.getEnvironment(window, bundleItemSupplier));
 	}
 
-	private ExecutionMethod createExecutionMethod(Window window, WindowManager wm) {
+    private void beforeRunning(Window window) {
+        if (beforeRunning == null) return;
+
+        if (BEFORE_SAVE_ALL.equals(beforeRunning)) {
+            for (Doc doc : window.getDocList().getDocs()) {
+                doc.save();
+            }
+        } else if (BEFORE_SAVE_ACTIVE.equals(beforeRunning)) {
+            window.getDocList().getActiveDoc().save();
+        } else {
+            throw new RuntimeException("Unsupported 'beforeRunningCommand'-value: '" + beforeRunning + "'");
+        }
+    }
+
+    private ExecutionMethod createExecutionMethod(Window window, WindowManager wm) {
 	    ExecutionMethod outputMethod;
 	    if (OUTPUT_SHOW_AS_HTML.equals(output)) {
 	    	outputMethod = new HtmlExectuionMethod(window, wm);
