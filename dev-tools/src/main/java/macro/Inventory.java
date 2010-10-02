@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import kkckkc.jsourcepad.model.bundle.MacroEngine;
-import kkckkc.syntaxpane.util.plist.GeneralPListReader;
-import kkckkc.syntaxpane.util.plist.PListFormatter;
+import kkckkc.utils.plist.GeneralPListReader;
+import kkckkc.utils.plist.PListFormatter;
 
 public class Inventory {
 	private static Map<String, String> commandset = new HashMap<String, String>();

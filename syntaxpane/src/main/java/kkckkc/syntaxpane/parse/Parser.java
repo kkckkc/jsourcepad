@@ -7,7 +7,7 @@ import kkckkc.syntaxpane.parse.grammar.Context;
 import kkckkc.syntaxpane.parse.grammar.Language;
 import kkckkc.syntaxpane.parse.grammar.MatchableContext;
 import kkckkc.syntaxpane.regex.Matcher;
-import kkckkc.syntaxpane.util.Pair;
+import kkckkc.utils.Pair;
 
 import java.util.List;
 

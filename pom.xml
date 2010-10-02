@@ -15,7 +15,11 @@
 		<module>editor-package</module>
 		<module>theme-osx</module>
 		<module>dev-tools</module>
-	</modules>
+        <module>syntaxpane-gtksourceview</module>
+        <module>syntaxpane-textmate</module>
+        <module>utils-plist</module>
+        <module>utils</module>
+    </modules>
 
 	<build>
 		<plugins>

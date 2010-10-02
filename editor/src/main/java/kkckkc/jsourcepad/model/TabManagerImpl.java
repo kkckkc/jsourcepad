@@ -1,8 +1,6 @@
 package kkckkc.jsourcepad.model;
 
-import com.google.common.base.Joiner;
-
-import kkckkc.syntaxpane.util.CharSequenceUtils;
+import kkckkc.utils.CharSequenceUtils;
 
 
 

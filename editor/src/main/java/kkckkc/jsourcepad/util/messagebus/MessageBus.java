@@ -3,7 +3,7 @@ package kkckkc.jsourcepad.util.messagebus;
 import java.lang.reflect.Method;
 import java.util.Set;
 
-import kkckkc.syntaxpane.util.Pair;
+import kkckkc.utils.Pair;
 
 public interface MessageBus {
 

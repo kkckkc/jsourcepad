@@ -1,0 +1,15 @@
+
+Mac OSX
+
+-client -Xms64m -Dtheme=kkckkc.jsourcepad.theme.OsxTheme
+-Xdock:name=JSourcePad -Dapple.awt.graphics.UseQuartz=true -d32 -XX:+UseTLAB
+-Xverify:none -noclassgc
+-Djava.util.logging.config.file=/Users/kkckkc/Documents/projects/jsourcepad/editor/src/main/resources/logging.properties
+-DsupportPath=/Applications/TextMate.app/Contents/SharedSupport/Support
+
+
+Linux / IBM JVM
+
+-Xquickstart -Xms64m -Xverify:none
+-Xgcpolicy:gencon -Xscmx64m -Xshareclasses:keep,singleJVM -Xzero
+-Xmn7m -Xminf0.1 -Xtrace:none -Dibm.stream.nio=true

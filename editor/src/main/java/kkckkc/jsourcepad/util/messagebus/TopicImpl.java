@@ -6,7 +6,7 @@ import java.lang.reflect.Proxy;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import kkckkc.syntaxpane.util.Pair;
+import kkckkc.utils.Pair;
 
 
 public class TopicImpl<T> implements Topic<T, Pair<Method, Object[]>> {

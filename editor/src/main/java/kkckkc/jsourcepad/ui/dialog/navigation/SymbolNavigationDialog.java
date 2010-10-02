@@ -2,7 +2,7 @@ package kkckkc.jsourcepad.ui.dialog.navigation;
 
 import kkckkc.jsourcepad.model.SymbolList;
 import kkckkc.syntaxpane.model.Interval;
-import kkckkc.syntaxpane.util.Pair;
+import kkckkc.utils.Pair;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;

@@ -1,6 +1,5 @@
 package kkckkc.jsourcepad.ui;
 
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import java.awt.Color;
 import java.awt.Component;
@@ -23,21 +22,17 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.EventListenerList;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
-import kkckkc.jsourcepad.action.ActionContextKeys;
 
 import kkckkc.jsourcepad.model.DocList;
 import kkckkc.jsourcepad.model.Project;
 import kkckkc.jsourcepad.model.Window;
-import kkckkc.jsourcepad.util.action.ActionContext;
 import kkckkc.jsourcepad.util.action.ActionGroup;
 import kkckkc.jsourcepad.util.action.MenuFactory;
 import kkckkc.jsourcepad.util.ui.PopupUtils;
-import kkckkc.syntaxpane.util.EnvironmentUtils;
+import kkckkc.utils.EnvironmentUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 

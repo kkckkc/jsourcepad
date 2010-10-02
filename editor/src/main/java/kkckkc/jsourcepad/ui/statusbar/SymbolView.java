@@ -6,25 +6,14 @@ import java.awt.event.MouseEvent;
 import java.util.List;
 
 import javax.swing.AbstractAction;
-import javax.swing.ButtonGroup;
 import javax.swing.JLabel;
 import javax.swing.JPopupMenu;
 
-import com.google.common.collect.Lists;
-
-import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Buffer;
 import kkckkc.jsourcepad.model.SymbolList;
 import kkckkc.jsourcepad.model.Window;
-import kkckkc.jsourcepad.model.bundle.PrefKeys;
-import kkckkc.jsourcepad.util.SedUtils;
-import kkckkc.jsourcepad.util.ui.PopupUtils;
 import kkckkc.syntaxpane.model.Interval;
-import kkckkc.syntaxpane.model.LineManager;
-import kkckkc.syntaxpane.model.Scope;
-import kkckkc.syntaxpane.model.SourceDocument;
-import kkckkc.syntaxpane.model.LineManager.Line;
-import kkckkc.syntaxpane.util.Pair;
+import kkckkc.utils.Pair;
 
 public class SymbolView extends JLabel {
 

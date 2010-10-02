@@ -11,7 +11,7 @@ import kkckkc.jsourcepad.util.SedUtils;
 import kkckkc.syntaxpane.model.LineManager;
 import kkckkc.syntaxpane.model.LineManager.Line;
 import kkckkc.syntaxpane.model.Scope;
-import kkckkc.syntaxpane.util.Pair;
+import kkckkc.utils.Pair;
 
 import java.util.Collections;
 import java.util.List;

@@ -1,11 +1,11 @@
 package kkckkc.syntaxpane.model;
 
+import kkckkc.syntaxpane.parse.CharProvider;
+import kkckkc.utils.Pair;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import kkckkc.syntaxpane.parse.CharProvider;
-import kkckkc.syntaxpane.util.Pair;
 
 public class MutableLineManager extends LineManager {
 

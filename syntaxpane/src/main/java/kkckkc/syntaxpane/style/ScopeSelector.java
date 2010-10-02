@@ -5,7 +5,7 @@ import kkckkc.syntaxpane.model.Scope;
 import java.util.*;
 
 
-
+// TODO: Introduce interface for this, especially for the parse part
 public class ScopeSelector {
 	private List<Rule> rules = new ArrayList<Rule>();
 	

@@ -8,7 +8,7 @@ import java.util.Map;
 import kkckkc.jsourcepad.model.Buffer;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.syntaxpane.model.Interval;
-import kkckkc.syntaxpane.util.Pair;
+import kkckkc.utils.Pair;
 
 public class MacroEngine {
 	public static final Map<String, MacroCommand> commands = new HashMap<String, MacroCommand>();

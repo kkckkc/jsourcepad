@@ -4,7 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import kkckkc.syntaxpane.model.Scope;
-import kkckkc.syntaxpane.util.Pair;
+import kkckkc.utils.Pair;
 
 import java.util.*;
 

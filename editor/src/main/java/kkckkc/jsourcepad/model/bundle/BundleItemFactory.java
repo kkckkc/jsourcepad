@@ -1,8 +1,8 @@
 package kkckkc.jsourcepad.model.bundle;
 
 import kkckkc.jsourcepad.model.bundle.snippet.SnippetBundleItem;
-import kkckkc.syntaxpane.util.plist.GeneralPListReader;
-import kkckkc.syntaxpane.util.plist.PListFormatter;
+import kkckkc.utils.plist.GeneralPListReader;
+import kkckkc.utils.plist.PListFormatter;
 
 import java.io.File;
 import java.io.IOException;

@@ -4,7 +4,7 @@ import kkckkc.jsourcepad.ScopeRoot;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.theme.Theme;
-import kkckkc.syntaxpane.util.DomUtil;
+import kkckkc.utils.DomUtil;
 import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
 import org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor;

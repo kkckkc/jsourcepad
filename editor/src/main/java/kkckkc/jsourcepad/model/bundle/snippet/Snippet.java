@@ -11,7 +11,7 @@ import kkckkc.jsourcepad.util.io.ScriptExecutor;
 import kkckkc.jsourcepad.util.io.ScriptExecutor.Execution;
 import kkckkc.jsourcepad.util.io.UISupportCallback;
 import kkckkc.syntaxpane.model.Interval;
-import kkckkc.syntaxpane.util.Pair;
+import kkckkc.utils.Pair;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;

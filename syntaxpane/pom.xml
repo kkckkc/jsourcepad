@@ -11,7 +11,7 @@
 	<groupId>kkckkc.jsourcepad</groupId>
 	<artifactId>jsyntaxpane</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>syntaxpane</name>
+	<name>jsyntaxpane</name>
 	<dependencies>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -43,6 +43,13 @@
 			<groupId>com.google.collections</groupId>
 			<artifactId>google-collections</artifactId>
 			<version>1.0</version>
+		</dependency>
+        <dependency>
+			<groupId>kkckkc.jsourcepad</groupId>
+			<artifactId>utils-plist</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<type>jar</type>
+			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 </project>

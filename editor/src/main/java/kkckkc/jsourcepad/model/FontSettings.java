@@ -3,7 +3,7 @@ package kkckkc.jsourcepad.model;
 import java.awt.Font;
 
 import kkckkc.jsourcepad.model.SettingsManager.Setting;
-import kkckkc.syntaxpane.util.EnvironmentUtils;
+import kkckkc.utils.EnvironmentUtils;
 
 public class FontSettings implements Setting {
 

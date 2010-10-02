@@ -2,7 +2,7 @@ package kkckkc.syntaxpane.model;
 
 import kkckkc.syntaxpane.model.LineManager.Line;
 import kkckkc.syntaxpane.regex.Pattern;
-import kkckkc.syntaxpane.util.CharSequenceUtils;
+import kkckkc.utils.CharSequenceUtils;
 
 import java.util.*;
 

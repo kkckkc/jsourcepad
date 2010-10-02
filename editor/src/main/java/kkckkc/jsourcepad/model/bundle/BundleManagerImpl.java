@@ -10,9 +10,9 @@ import kkckkc.jsourcepad.util.action.ActionGroup;
 import kkckkc.syntaxpane.model.Scope;
 import kkckkc.syntaxpane.style.ScopeSelector;
 import kkckkc.syntaxpane.style.ScopeSelectorManager;
-import kkckkc.syntaxpane.util.Pair;
-import kkckkc.syntaxpane.util.plist.GeneralPListReader;
-import kkckkc.syntaxpane.util.plist.PListReader;
+import kkckkc.utils.Pair;
+import kkckkc.utils.plist.GeneralPListReader;
+import kkckkc.utils.plist.PListReader;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
