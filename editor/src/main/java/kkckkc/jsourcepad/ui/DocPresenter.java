@@ -69,6 +69,13 @@ public class DocPresenter implements Presenter<DocView> {
 		sourcePane.getEditorPane().getKeymap().addActionForKeyStroke(
 				KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), new TabAction(doc));
 
+        sourcePane.getEditorPane().getKeymap().addActionForKeyStroke(
+                KeyStroke.getKeyStroke(KeyEvent.VK_HOME, 0),
+                sourcePane.getEditorPane().getActionMap().get("caret-begin-line"));
+        sourcePane.getEditorPane().getKeymap().addActionForKeyStroke(
+                KeyStroke.getKeyStroke(KeyEvent.VK_END, 0),
+                sourcePane.getEditorPane().getActionMap().get("caret-end-line"));
+
 		sourcePane.getEditorPane().requestFocus();
 		
 		sourcePane.setFont(Application.get().getSettingsManager().get(FontSettings.class).asFont());

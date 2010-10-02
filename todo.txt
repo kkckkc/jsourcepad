@@ -19,7 +19,7 @@
 [ ] Window menu
 [ ] Replacement for keystrokes that are impossible on non-us keyboards
 [x] Joni replaceAll, removed NamedPatternFactory, check body
-[ ]ÊHome button
+[x]ÊHome button
 [ ] Templates
 [x] Snippet moving backwards, shift tab. See for instance movie
 
