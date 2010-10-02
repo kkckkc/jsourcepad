@@ -4,7 +4,7 @@ import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Buffer;
 import kkckkc.jsourcepad.model.StyleSettings;
 import kkckkc.jsourcepad.model.Window;
-import kkckkc.jsourcepad.util.StringUtils;
+import kkckkc.jsourcepad.util.TextUtils;
 import kkckkc.jsourcepad.util.action.BaseAction;
 import kkckkc.syntaxpane.model.Interval;
 
@@ -27,11 +27,11 @@ public class TextReformatAndJustifyAction extends BaseAction {
         Interval i = b.getSelectionOrCurrentParagraph();
         String text = b.getText(i);
 
-        String[] lines = StringUtils.wrap(text, ss.getWrapColumn());
+        String[] lines = TextUtils.wrap(text, ss.getWrapColumn());
 
         StringBuilder builder = new StringBuilder();
         for (String line : lines) {
-            builder.append(StringUtils.justifyLine(line, ss.getWrapColumn())).append("\n");
+            builder.append(TextUtils.justifyLine(line, ss.getWrapColumn())).append("\n");
         }
 
         if (! text.endsWith("\n"))

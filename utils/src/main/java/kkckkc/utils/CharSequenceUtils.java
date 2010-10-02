@@ -12,4 +12,14 @@ public class CharSequenceUtils {
 		}
 		return true;
 	}
+
+    public static boolean isWhitespace(CharSequence charSequence) {
+         if (charSequence.length() == 0) return true;
+         for (int i = 0; i < charSequence.length(); i++) {
+             char c = charSequence.charAt(i);
+             if (! Character.isWhitespace(c)) return false;
+         }
+         return true;
+     }
+    
 }

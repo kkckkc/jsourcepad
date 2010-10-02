@@ -26,7 +26,7 @@ import kkckkc.syntaxpane.regex.NamedPatternFactory;
 import kkckkc.syntaxpane.regex.Pattern;
 import kkckkc.syntaxpane.regex.PatternFactory;
 import kkckkc.utils.DomUtil;
-import kkckkc.syntaxpane.util.StringUtils;
+import kkckkc.utils.StringUtils;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

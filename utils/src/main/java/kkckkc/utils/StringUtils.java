@@ -1,7 +1,8 @@
-package kkckkc.syntaxpane.util;
+package kkckkc.utils;
 
 public class StringUtils {
-	public static String replace(String s, String pattern, String replacement) {
+
+    public static String replace(String s, String pattern, String replacement) {
 		if (s.indexOf(pattern) < 0) return s;
 		
 		final StringBuilder dest = new StringBuilder(s.length() + replacement.length() * 10);
@@ -18,5 +19,13 @@ public class StringUtils {
 	}
 
 
+ 
+
+    public static String removePrefix(String s, String prefix) {
+        if (s.startsWith(prefix)) {
+            return s.substring(prefix.length());
+        }
+        return s;
+    }
 
 }

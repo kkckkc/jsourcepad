@@ -5,7 +5,7 @@ import kkckkc.syntaxpane.parse.grammar.SubPatternContext.Where;
 import kkckkc.syntaxpane.regex.Matcher;
 import kkckkc.syntaxpane.regex.Pattern;
 import kkckkc.syntaxpane.regex.PatternFactory;
-import kkckkc.syntaxpane.util.StringUtils;
+import kkckkc.utils.StringUtils;
 
 import java.util.Map;
 

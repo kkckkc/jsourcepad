@@ -4,7 +4,7 @@ import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Buffer;
 import kkckkc.jsourcepad.model.StyleSettings;
 import kkckkc.jsourcepad.model.Window;
-import kkckkc.jsourcepad.util.StringUtils;
+import kkckkc.jsourcepad.util.TextUtils;
 import kkckkc.jsourcepad.util.action.BaseAction;
 import kkckkc.syntaxpane.model.TextInterval;
 
@@ -33,7 +33,7 @@ public class TextAlignJustifiedAction extends BaseAction {
         while (tok.hasMoreTokens()) {
             String line = tok.nextToken();
             if (line.equals("\n")) builder.append(line);
-            builder.append(StringUtils.justifyLine(line, ss.getWrapColumn()));
+            builder.append(TextUtils.justifyLine(line, ss.getWrapColumn()));
         }
 
 		b.replaceText(i, builder.toString(), null);

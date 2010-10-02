@@ -4,13 +4,13 @@ import kkckkc.jsourcepad.model.Doc.StateListener;
 import kkckkc.jsourcepad.model.Finder.Options;
 import kkckkc.jsourcepad.model.bundle.BundleManager;
 import kkckkc.jsourcepad.model.bundle.PrefKeys;
-import kkckkc.jsourcepad.util.StringUtils;
 import kkckkc.jsourcepad.util.ui.CompoundUndoManager;
 import kkckkc.syntaxpane.model.*;
 import kkckkc.syntaxpane.model.LineManager.Line;
 import kkckkc.syntaxpane.parse.grammar.Language;
 import kkckkc.syntaxpane.regex.JoniPatternFactory;
 import kkckkc.syntaxpane.style.Style;
+import kkckkc.utils.CharSequenceUtils;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -208,12 +208,12 @@ public class BufferImpl implements Buffer {
 
         Line line = lm.getLineByPosition(caret.getDot());
         Line endLine = line;
-        while (endLine != null && ! StringUtils.isWhitespace(endLine.getCharSequence())) {
+        while (endLine != null && ! CharSequenceUtils.isWhitespace(endLine.getCharSequence())) {
             endLine = lm.getNext(endLine);
         }
         
         Line startLine = line;
-        while (startLine != null && ! StringUtils.isWhitespace(startLine.getCharSequence())) {
+        while (startLine != null && ! CharSequenceUtils.isWhitespace(startLine.getCharSequence())) {
             startLine = lm.getPrevious(startLine);
         }
 

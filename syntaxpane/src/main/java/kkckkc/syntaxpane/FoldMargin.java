@@ -5,7 +5,7 @@ import kkckkc.syntaxpane.model.LineManager;
 import kkckkc.syntaxpane.model.LineManager.Line;
 import kkckkc.syntaxpane.model.MutableFoldManager.FoldListener;
 import kkckkc.syntaxpane.model.SourceDocument;
-import kkckkc.utils.Wiring;
+import kkckkc.utils.swing.Wiring;
 
 import javax.swing.*;
 import javax.swing.text.Element;

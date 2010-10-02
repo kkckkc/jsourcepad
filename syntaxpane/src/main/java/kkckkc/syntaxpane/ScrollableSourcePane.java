@@ -4,7 +4,7 @@ import kkckkc.syntaxpane.model.SourceDocument;
 import kkckkc.syntaxpane.parse.grammar.Language;
 import kkckkc.syntaxpane.parse.grammar.LanguageManager;
 import kkckkc.syntaxpane.style.StyleScheme;
-import kkckkc.utils.Wiring;
+import kkckkc.utils.swing.Wiring;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,4 +1,6 @@
-package kkckkc.utils;
+package kkckkc.utils.swing;
+
+import kkckkc.utils.BeanWrapper;
 
 import java.awt.Component;
 import java.beans.PropertyChangeEvent;

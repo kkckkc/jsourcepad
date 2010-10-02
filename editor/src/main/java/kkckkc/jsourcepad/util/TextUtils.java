@@ -5,7 +5,7 @@ import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.StringTokenizer;
 
-public class StringUtils {
+public class TextUtils {
 
     public static String justifyLine(String s, int width) {
 
@@ -80,20 +80,4 @@ public class StringUtils {
         return dest.toArray(new String[] {});
     }
 
-    public static boolean isWhitespace(CharSequence charSequence) {
-        if (charSequence.length() == 0) return true;
-        for (int i = 0; i < charSequence.length(); i++) {
-            char c = charSequence.charAt(i);
-            if (! Character.isWhitespace(c)) return false;
-        }
-        return true;
-    }
-
-
-    public static String removePrefix(String s, String prefix) {
-        if (s.startsWith(prefix)) {
-            return s.substring(prefix.length());
-        }
-        return s;
-    }
 }
