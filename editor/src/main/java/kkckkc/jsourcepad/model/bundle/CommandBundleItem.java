@@ -86,7 +86,7 @@ public class CommandBundleItem implements BundleItem {
 	}
 
     private void beforeRunning(Window window) {
-        if (beforeRunning == null) return;
+        if (beforeRunning == null || "nop".equals(beforeRunning)) return;
 
         if (BEFORE_SAVE_ALL.equals(beforeRunning)) {
             for (Doc doc : window.getDocList().getDocs()) {
