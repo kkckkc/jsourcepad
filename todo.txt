@@ -18,7 +18,7 @@
 [ ] Bundle menu
 [ ] Window menu
 [ ] Replacement for keystrokes that are impossible on non-us keyboards
-[-] Joni replaceAll, removed NamedPatternFactory, check body
+[x] Joni replaceAll, removed NamedPatternFactory, check body
 [ ]ÊHome button
 [ ] Templates
 [ ] Snippet moving backwards, shift tab. See for instance movie

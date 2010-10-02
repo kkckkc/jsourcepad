@@ -213,11 +213,7 @@ public class JoniPatternFactory implements PatternFactory {
                     b.append(new String(chars, pos, start - pos));
                 }
 
-                String currentReplacement = replacement;
-                for (int i = 0; i < groupCount(); i++) {
-                    currentReplacement = currentReplacement.replaceAll("\\$" + i, group(i));
-                }
-                b.append(currentReplacement);
+                appendReplacement(replacement, b);
 
                 pos = end;
             }
@@ -228,6 +224,99 @@ public class JoniPatternFactory implements PatternFactory {
 
             return b.toString();
         }
-		
-	}
+
+        private void appendReplacement(String replacement, StringBuilder b) {
+            // Remove all conditionals
+            java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("\\(\\?([0-9]+):([^):]+)(:([^)]+))?\\)");
+            java.util.regex.Matcher m = pattern.matcher(replacement);
+
+            StringBuffer buf = new StringBuffer();
+            while (m.find()) {
+                Integer groupId = Integer.parseInt(m.group(1));
+                String value = m.group(2);
+                String alternative = m.group(4);
+                if (groupId <= groupCount()) {
+                    m.appendReplacement(buf, value);
+                } else {
+                    if (alternative != null) {
+                        m.appendReplacement(buf, alternative);
+                    } else {
+                        m.appendReplacement(buf, "");
+                    }
+                }
+            }
+            m.appendTail(buf);
+
+            replacement = buf.toString();
+
+            // Parse group references, escapes and case foldings
+            boolean inEscapeSequence = false;
+
+            char currentTransformation = 'E';
+            char[] chars = replacement.toCharArray();
+            for (int pos = 0; pos < chars.length; pos++) {
+                char c = chars[pos];
+
+                String fragment = null;
+                if (! inEscapeSequence) {
+                    if (c == '$') {
+                        pos++;
+
+                        StringBuilder num = new StringBuilder();
+                        while (pos < chars.length && Character.isDigit(chars[pos])) {
+                            num.append(chars[pos]);
+                            pos++;
+                        }
+
+                        pos--;
+
+                        fragment = group(Integer.parseInt(num.toString()));
+
+                    } else if (c == '\\') {
+                        inEscapeSequence = true;
+                    } else {
+                        fragment = Character.toString(c);
+                    }
+                } else {
+                    if (c == 'L' || c == 'U' || c == 'l' || c == 'u' || c == 'E') {
+                        currentTransformation = c;
+                    } else if (c == 'n') {
+                        fragment = "\n";
+                    } else if (c == 't') {
+                        fragment = "\t";
+                    } else {
+                        fragment = Character.toString(c);
+                    }
+
+                    inEscapeSequence = false;
+                }
+
+                if (fragment != null) {
+                    switch (currentTransformation) {
+                        case 'L':
+                            b.append(fragment.toLowerCase());
+                            break;
+                        case 'U':
+                            b.append(fragment.toUpperCase());
+                            break;
+                        case 'l':
+                            b.append(Character.toLowerCase(fragment.charAt(0)));
+                            if (fragment.length() > 1) b.append(fragment.substring(1));
+                            currentTransformation = 'E';
+                            break;
+                        case 'u':
+                            b.append(Character.toUpperCase(fragment.charAt(0)));
+                            if (fragment.length() > 1) b.append(fragment.substring(1));
+                            currentTransformation = 'E';
+                            break;
+                        default:
+                            b.append(fragment);
+                            currentTransformation = 'E';
+                    }
+                }
+            }
+
+        }
+
+    }
 }
