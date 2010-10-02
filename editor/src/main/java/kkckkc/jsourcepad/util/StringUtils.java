@@ -88,4 +88,12 @@ public class StringUtils {
         }
         return true;
     }
+
+
+    public static String removePrefix(String s, String prefix) {
+        if (s.startsWith(prefix)) {
+            return s.substring(prefix.length());
+        }
+        return s;
+    }
 }

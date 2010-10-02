@@ -1,11 +1,13 @@
 package kkckkc.jsourcepad.model.bundle;
 
+import com.google.common.base.Function;
 import com.sun.net.httpserver.*;
 import kkckkc.jsourcepad.model.*;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.bundle.snippet.Snippet;
 import kkckkc.jsourcepad.util.io.ScriptExecutor;
 import kkckkc.jsourcepad.util.io.ScriptExecutor.Execution;
+import kkckkc.jsourcepad.util.io.TransformingWriter;
 import kkckkc.jsourcepad.util.io.UISupportCallback;
 import kkckkc.syntaxpane.model.Interval;
 
@@ -192,7 +194,14 @@ public class CommandBundleItem implements BundleItem {
 	                                throw new RuntimeException(e);
                                 }
                             }
-    					}, new StringReader(input), writer, environment);
+    					}, new StringReader(input),
+                                new TransformingWriter(writer, TransformingWriter.CHUNK_BY_LINE, new Function<String, String>() {
+                                    public String apply(String s) {
+                                        s = s.replaceAll("txmt://", "http://localhost:8080/cmd/" + window.getId() + "/");
+                                        s = s.replaceAll("file://", "http://localhost:8080/files");
+                                        return s;
+                                    }
+                                }), environment);
     					
     					
     					try {

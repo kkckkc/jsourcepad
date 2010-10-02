@@ -1,14 +1,21 @@
 package kkckkc.jsourcepad.http;
 
+import com.google.common.collect.Maps;
 import com.google.common.io.Files;
 import com.sun.net.httpserver.*;
 import kkckkc.jsourcepad.model.*;
+import kkckkc.jsourcepad.util.StringUtils;
+import kkckkc.syntaxpane.model.Interval;
+import kkckkc.syntaxpane.model.LineManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import sun.net.www.MimeEntry;
 import sun.net.www.MimeTable;
 
 import javax.annotation.PostConstruct;
 import java.io.*;
+import java.net.URLDecoder;
+import java.util.Iterator;
+import java.util.Map;
 
 public class PreviewServer {
 
@@ -21,6 +28,12 @@ public class PreviewServer {
 
     @PostConstruct
     public void init() {
+        initPreview();
+        initFile();
+        initCmd();
+    }
+
+    private void initPreview() {
         final String path = "/preview";
 
         final HttpContext context = httpServer.createContext(path);
@@ -49,7 +62,7 @@ public class PreviewServer {
                         }
                         tabIdx++;
                     }
-                    
+
                     OutputStream responseBody = exchange.getResponseBody();
                     Headers responseHeaders = exchange.getResponseHeaders();
 
@@ -82,7 +95,88 @@ public class PreviewServer {
                 }
             }
         });
+    }
 
+    private void initCmd() {
+        final String path = "/cmd";
+
+        final HttpContext context = httpServer.createContext(path);
+        context.setHandler(new HttpHandler() {
+            public void handle(HttpExchange exchange) throws IOException {
+                String requestMethod = exchange.getRequestMethod();
+                if (requestMethod.equalsIgnoreCase("GET")) {
+                    String httpPath = exchange.getRequestURI().toString();
+                    httpPath = httpPath.substring(path.length() + 1);
+
+                    int windowId = getWindowId(httpPath);
+                    String path = getFilePath(httpPath);
+
+                    String cmd = path.substring(1, path.indexOf("/", 2));
+
+                    exchange.sendResponseHeaders(204, 0);
+
+                    if ("open".equals(cmd)) {
+                        Window window = Application.get().getWindowManager().getWindow(windowId);
+                        Project project = window.getProject();
+
+                        Map<String, String> params = parseQueryString(httpPath);
+
+                        String url = params.get("url");
+                        url = StringUtils.removePrefix(url, "http://localhost:8080/files");
+
+                        window.getDocList().open(new File(url));
+
+
+                        String line = params.get("line");
+                        if (line != null) {
+                            int lineIdx = Integer.parseInt(line);
+
+                            Buffer buffer = window.getDocList().getActiveDoc().getActiveBuffer();
+                            LineManager lm = buffer.getLineManager();
+
+                            Iterator<LineManager.Line> it = lm.iterator();
+                            while (it.hasNext()) {
+                                LineManager.Line l = it.next();
+                                if (l.getIdx() == (lineIdx - 1)) {
+                                    buffer.setSelection(Interval.createEmpty(l.getStart()));
+                                    break;
+                                }
+                            }
+                        }
+                    } else {
+                        throw new RuntimeException("Unsupport cmd");
+                    }
+
+                }
+            }
+        });
+    }
+
+    private void initFile() {
+        final String path = "/files";
+
+        final HttpContext context = httpServer.createContext(path);
+        context.setHandler(new HttpHandler() {
+            public void handle(HttpExchange exchange) throws IOException {
+                String requestMethod = exchange.getRequestMethod();
+                if (requestMethod.equalsIgnoreCase("GET")) {
+                    String httpPath = exchange.getRequestURI().toString();
+                    httpPath = httpPath.substring(path.length());
+
+                    OutputStream responseBody = exchange.getResponseBody();
+                    Headers responseHeaders = exchange.getResponseHeaders();
+
+                    File f = new File(httpPath);
+
+                    responseHeaders.set("Content-Type", getMimeEncoding(f));
+                    exchange.sendResponseHeaders(200, 0);
+
+                    Files.copy(f, responseBody);
+                    responseBody.flush();
+                    responseBody.close();
+                }
+            }
+        });
     }
 
     private String getFilePath(String httpPath) {
@@ -95,6 +189,26 @@ public class PreviewServer {
 
     private String getMimeEncoding(File f) {
         MimeEntry me = MimeTable.getDefaultTable().findByFileName(f.getName());
-        return me == null ? "text/html" : me.getType();
+        if (me == null) {
+            if (f.getName().endsWith(".css")) return "text/css";
+            if (f.getName().endsWith(".js")) return "text/javascript";
+            return "text/html";
+        }
+        return me.getType();
+    }
+
+    public Map<String, String> parseQueryString(String s) throws UnsupportedEncodingException {
+        Map<String, String> params = Maps.newHashMap();
+        String[] urlParts = s.split("\\?");
+        if (urlParts.length > 1) {
+            String query = urlParts[1];
+            for (String param : query.split("&")) {
+                String[] pair = param.split("=");
+                String key = URLDecoder.decode(pair[0], "UTF-8");
+                String value = URLDecoder.decode(pair[1], "UTF-8");
+                params.put(key, value);
+            }
+        }
+        return params;
     }
 }
