@@ -277,11 +277,10 @@ public class BundleManagerImpl implements BundleManager {
                 return bundleItemSupplier.getActivator().matches(trigger);
             }
         }, false);
-	    
 	    if (dest.isEmpty()) return dest;
-	    
+
 	    ScopeSelectorManager scopeSelector = new ScopeSelectorManager();
-	    return scopeSelector.getAllMatches(scope, dest, new ScopeSelectorManager.ScopeSelectorExtractor<BundleItemSupplier>() {
+	    return scopeSelector.getBestMatches(scope, dest, new ScopeSelectorManager.ScopeSelectorExtractor<BundleItemSupplier>() {
             public ScopeSelector getScopeSelector(BundleItemSupplier t) {
 	            return t.getActivator().getScopeSelector();
             }

@@ -142,7 +142,7 @@ public class JoniPatternFactory implements PatternFactory {
 			if (subPatternIdx == 0) return end();
 			if (region == null) return -1;
 			if (subPatternIdx >= region.end.length) return -1;
-	        return region.end[subPatternIdx];
+	        return region.end[subPatternIdx] == -1 ? chars.length : region.end[subPatternIdx];
         }
 
 		@Override
@@ -154,7 +154,7 @@ public class JoniPatternFactory implements PatternFactory {
         public boolean find(int position) {
 	        int i = matcher.search(position, this.chars.length, Option.NONE);
 	        region = matcher.getRegion();
-	        return i >= 0; //! (matcher.getBegin() == 0 && matcher.getEnd() == 0);
+	        return i >= 0; 
         }
 
 		@Override
@@ -164,7 +164,7 @@ public class JoniPatternFactory implements PatternFactory {
 
 		@Override
         public String group(int i) {
-	        return new String(chars, region.beg[i], region.end[i]);
+	        return new String(chars, start(i), end(i));
         }
 
 		@Override
@@ -192,7 +192,7 @@ public class JoniPatternFactory implements PatternFactory {
 			if (subPatternIdx == 0) return start();
 			if (region == null) return -1;
 			if (subPatternIdx >= region.beg.length) return -1;
-	        return region.beg[subPatternIdx];
+	        return region.beg[subPatternIdx] == -1 ? 0 : region.beg[subPatternIdx];
         }
 
 		@Override
@@ -208,6 +208,8 @@ public class JoniPatternFactory implements PatternFactory {
             while (find(pos)) {
                 int start = start();
                 int end = end();
+
+                if (start == end) break;
 
                 if (start > pos) {
                     b.append(new String(chars, pos, start - pos));
@@ -312,6 +314,7 @@ public class JoniPatternFactory implements PatternFactory {
                         default:
                             b.append(fragment);
                             currentTransformation = 'E';
+                            break;
                     }
                 }
             }

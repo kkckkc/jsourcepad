@@ -104,19 +104,28 @@ public class ScopeSelector {
 		}
 
 		public static Rule parse(String t) {
-			StringTokenizer tok = new StringTokenizer(t, " ");
-
 			List<String> positiveRule = new ArrayList<String>(5);
 			List<String> negativeRule = new ArrayList<String>(5);
-			
+
+            int positionOfMinus = t.indexOf("-");
+
+            // Parse positive rules
+            String s = positionOfMinus < 0 ? t : t.substring(0, positionOfMinus);
+			StringTokenizer tok = new StringTokenizer(s, " ");			
 			while (tok.hasMoreTokens()) {
 				String i = tok.nextToken();
-				if (i.startsWith("-")) {
-					negativeRule.add(i.substring(1));
-				} else {
-					positiveRule.add(i);
-				}
+				positiveRule.add(i);
 			}
+
+            // Parse negative rules
+            if (positionOfMinus >= 0) {
+                s = t.substring(positionOfMinus + 1);
+			    tok = new StringTokenizer(s, " ");
+			    while (tok.hasMoreTokens()) {
+				    String i = tok.nextToken();
+				    negativeRule.add(i);
+			    }
+            }
 			
 			return new Rule(positiveRule.size() == 0 ? null: positiveRule, negativeRule.size() == 0 ? null : negativeRule);
 		}
