@@ -142,7 +142,7 @@ public class JoniPatternFactory implements PatternFactory {
 			if (subPatternIdx == 0) return end();
 			if (region == null) return -1;
 			if (subPatternIdx >= region.end.length) return -1;
-	        return region.end[subPatternIdx] == -1 ? chars.length : region.end[subPatternIdx];
+	        return region.end[subPatternIdx];
         }
 
 		@Override
@@ -192,7 +192,7 @@ public class JoniPatternFactory implements PatternFactory {
 			if (subPatternIdx == 0) return start();
 			if (region == null) return -1;
 			if (subPatternIdx >= region.beg.length) return -1;
-	        return region.beg[subPatternIdx] == -1 ? 0 : region.beg[subPatternIdx];
+	        return region.beg[subPatternIdx];
         }
 
 		@Override

@@ -21,7 +21,7 @@
 [x] Joni replaceAll, removed NamedPatternFactory, check body
 [ ]ÊHome button
 [ ] Templates
-[ ] Snippet moving backwards, shift tab. See for instance movie
+[x] Snippet moving backwards, shift tab. See for instance movie
 
 HTML bundle
 [x] Embedded javascript syntax colors
