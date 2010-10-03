@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist SYSTEM "file://localhost/System/Library/DTDs/PropertyList.dtd">
+<plist version="0.9">
+<dict>
+    <key>CFBundleName</key>
+    <string>JSourcePad</string>
+    <key>CFBundleIdentifier</key>
+    <string>kkckkc.jsourcepad.Bootstrap</string>
+    <key>CFBundleVersion</key>
+    <string>100.0</string>
+    <key>CFBundleAllowMixedLocalizations</key>
+    <string>true</string>
+    <key>CFBundleExecutable</key>
+    <string>JavaApplicationStub</string>
+    <key>CFBundleDevelopmentRegion</key>
+    <string>English</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleSignature</key>
+    <string>????</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+    <key>CFBundleIconFile</key>
+    <string>icon.icns</string>
+    <key>Java</key>
+    <dict>
+        <key>WorkingDirectory</key>
+        <string>$APP_PACKAGE/Contents/Resources/Java</string>
+        <key>VMOptions</key>
+        <string>-client -Xms64m -Xdock:name=JSourcePad -d32 -XX:+UseTLAB -Xverify:none -noclassgc</string>
+        <key>MainClass</key>
+        <string>kkckkc.jsourcepad.Bootstrap</string>
+        <key>Properties</key>
+              <dict>
+                <key>theme</key>
+                <string>kkckkc.jsourcepad.theme.OsxTheme</string>
+                <key>apple.laf.useScreenMenuBar</key>
+                <string>true</string>
+                <key>apple.awt.graphics.UseQuartz</key>
+                <string>true</string>
+              </dict>
+        <key>JVMVersion</key>
+        <string>1.6+</string>
+        <key>ClassPath</key>
+        <string>@CLASSPATH@</string>
+    </dict>
+</dict>
+</plist>

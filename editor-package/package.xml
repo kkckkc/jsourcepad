@@ -1,0 +1,65 @@
+<project name="package" default="all" basedir="."
+         xmlns:rsel="antlib:org.apache.tools.ant.types.resources.selectors">
+
+    <target name="all">
+        <!-- Remove current module classpath -->
+        <restrict id="test">
+            <path path="${runtime_classpath}"/>
+            <rsel:not>
+                <rsel:name name="**/classes"/>
+            </rsel:not>
+        </restrict>
+        <pathconvert property="t" refid="test"/>
+
+        <!-- Copy to lib dir -->
+        <mkdir dir="target/package"/>
+        <mkdir dir="target/package/lib"/>
+        <copy todir="target/package/lib" flatten="true">
+            <path path="${t}"/>
+            <chainedmapper>
+                <flattenmapper/>
+                <regexpmapper from="^(.*)-([0-9]+\.?)+(.*)?\.jar$$" to="\1.jar"/>
+            </chainedmapper>
+        </copy>
+
+        <antcall target="build-mac-app" />
+    </target>
+
+    <target name="build-mac-app">
+        <mkdir dir="target/package/mac" />
+
+
+        <path id="lib-classpath">
+            <fileset dir="target/package/lib" includes="*.jar" />
+        </path>
+
+        <pathconvert property="cp" refid="lib-classpath" pathsep=":">
+            <mapper>
+                <chainedmapper>
+                <flattenmapper/>
+                <regexpmapper from="^(.*)\.jar$$" to="$JAVAROOT/\1.jar" />
+                </chainedmapper>
+            </mapper>
+        </pathconvert>
+
+
+        <copy todir="target/package/mac">
+            <fileset dir="mac" />
+             <filterset>
+                <filter token="CLASSPATH" value="${cp}"/>
+            </filterset>
+        </copy>
+
+        <copy todir="target/package/mac/JSourcePad.app/Contents/MacOS"
+              file="/System/Library/Frameworks/JavaVM.framework/Versions/Current/Resources/MacOS/JavaApplicationStub" />
+
+        <exec command="chmod +x target/package/mac/JSourcePad.app/Contents/MacOS/JavaApplicationStub" />
+
+        <copy todir="target/package/mac/JSourcePad.app/Contents/Resources/Java">
+            <fileset dir="target/package/lib" />
+        </copy>
+
+        <exec command="/Developer/Tools/SetFile -a B target/package/mac/JSourcePad.app" />
+    </target>
+
+</project>

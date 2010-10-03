@@ -1,11 +1,12 @@
 
 Mac OSX
 
--client -Xms64m -Dtheme=kkckkc.jsourcepad.theme.OsxTheme
+-client -Xms64m
 -Xdock:name=JSourcePad -Dapple.awt.graphics.UseQuartz=true -d32 -XX:+UseTLAB
 -Xverify:none -noclassgc
 -Djava.util.logging.config.file=/Users/kkckkc/Documents/projects/jsourcepad/editor/src/main/resources/logging.properties
 -DsupportPath=/Applications/TextMate.app/Contents/SharedSupport/Support
+-Dtheme=kkckkc.jsourcepad.theme.OsxTheme
 
 
 Linux / IBM JVM

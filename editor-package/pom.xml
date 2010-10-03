@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <project
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+        xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>jsourcepad</artifactId>
@@ -14,83 +14,80 @@
     <name>editor-package</name>
     <url>http://maven.apache.org</url>
 
+    <!--
+<profiles>
+    <profile>
+        <id>osx</id>
+        <activation>
+            <os>
+                <family>mac</family>
+            </os>
+        </activation>
+        <dependencies>
+            <dependency>
+                <groupId>kkckkc.jsourcepad</groupId>
+                <artifactId>theme-osx</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+        </dependencies>
+    </profile>
 
-    <profiles>
-        <profile>
-            <id>osx</id>
-            <activation>
-                <os>
-                    <family>mac</family>
-                </os>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>kkckkc.jsourcepad</groupId>
-                    <artifactId>theme-osx</artifactId>
-                    <version>0.0.1-SNAPSHOT</version>
-                </dependency>
-            </dependencies>
-        </profile>
+    <profile>
+        <id>unix</id>
+        <activation>
+            <os>
+                <family>unix</family>
+            </os>
+        </activation>
+        <dependencies>
+            <dependency>
+                <groupId>kkckkc.jsourcepad</groupId>
+                <artifactId>theme-gtk</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+        </dependencies>
+    </profile>
 
-        <profile>
-            <id>unix</id>
-            <activation>
-                <os>
-                    <family>unix</family>
-                </os>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>kkckkc.jsourcepad</groupId>
-                    <artifactId>theme-gtk</artifactId>
-                    <version>0.0.1-SNAPSHOT</version>
-                </dependency>
-            </dependencies>
-        </profile>
+    <profile>
+        <id>assemble</id>
+        <pluginRepositories>
+            <pluginRepository>
+                <id>Codehaus Snapshots</id>
+                <url>http://repository.codehaus.org/org/codehaus/mojo/</url>
+                <snapshots>
+                    <enabled>true</enabled>
+                </snapshots>
+                <releases>
+                    <enabled>true</enabled>
+                </releases>
+            </pluginRepository>
+        </pluginRepositories>
 
-        <profile>
-            <id>assemble</id>
-            <pluginRepositories>
-                <pluginRepository>
-                    <id>Codehaus Snapshots</id>
-                    <url>http://repository.codehaus.org/org/codehaus/mojo/</url>
-                    <snapshots>
-                        <enabled>true</enabled>
-                    </snapshots>
-                    <releases>
-                        <enabled>true</enabled>
-                    </releases>
-                </pluginRepository>
-            </pluginRepositories>
-
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>appassembler-maven-plugin</artifactId>
-                        <version>1.1-SNAPSHOT</version>
-                        <configuration>
-                            <programs>
-                                <program>
-                                    <mainClass>editor.Bootstrap</mainClass>
-                                    <name>editor</name>
-                                </program>
-                            </programs>
-                            <repositoryLayout>flat</repositoryLayout>
-				<!--
-				<extraJvmArguments>-Xshare:on -Xms64m -client -Xverify:none
-					-Dawt.nativeDoubleBuffering=true</extraJvmArguments>
-				-->
-                            <extraJvmArguments>-Xquickstart -Xms64m -Xverify:none
-					-Xgcpolicy:gencon -Xscmx64m -Xshareclasses:keep,singleJVM -Xzero
-					-Xmn7m -Xminf0.1 -Xtrace:none -Dibm.stream.nio=true
-                            </extraJvmArguments>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>appassembler-maven-plugin</artifactId>
+                    <version>1.1-SNAPSHOT</version>
+                    <configuration>
+                        <programs>
+                            <program>
+                                <mainClass>editor.Bootstrap</mainClass>
+                                <name>editor</name>
+                            </program>
+                        </programs>
+                        <repositoryLayout>flat</repositoryLayout>
+                        <extraJvmArguments>-Xquickstart -Xms64m -Xverify:none
+                -Xgcpolicy:gencon -Xscmx64m -Xshareclasses:keep,singleJVM -Xzero
+                -Xmn7m -Xminf0.1 -Xtrace:none -Dibm.stream.nio=true
+                        </extraJvmArguments>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </build>
+    </profile>
+</profiles>
+    -->
 
     <build>
         <plugins>
@@ -101,12 +98,42 @@
                     <target>1.6</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <id>package</id>
+                        <phase>package</phase>
+                        <configuration>
+                            <target>
+                                <property name="runtime_classpath" refid="maven.runtime.classpath"/>
+                                <ant inheritAll="true" antfile="package.xml" target="all"/>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     <dependencies>
         <dependency>
             <groupId>kkckkc.jsourcepad</groupId>
             <artifactId>editor</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>kkckkc.jsourcepad</groupId>
+            <artifactId>theme-gtk</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>kkckkc.jsourcepad</groupId>
+            <artifactId>theme-osx</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
