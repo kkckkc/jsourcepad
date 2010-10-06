@@ -1,7 +1,7 @@
 package kkckkc.jsourcepad.model;
 
 import kkckkc.jsourcepad.util.ApplicationFolder;
-import kkckkc.jsourcepad.util.PerformanceLogger;
+import kkckkc.utils.PerformanceLogger;
 
 import java.io.*;
 

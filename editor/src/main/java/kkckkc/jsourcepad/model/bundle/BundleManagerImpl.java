@@ -5,7 +5,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import kkckkc.jsourcepad.action.bundle.BundleAction;
 import kkckkc.jsourcepad.model.Application;
-import kkckkc.jsourcepad.util.PerformanceLogger;
+import kkckkc.utils.PerformanceLogger;
 import kkckkc.jsourcepad.util.action.ActionGroup;
 import kkckkc.syntaxpane.model.Scope;
 import kkckkc.syntaxpane.parse.grammar.textmate.TextmateScopeSelectorParser;

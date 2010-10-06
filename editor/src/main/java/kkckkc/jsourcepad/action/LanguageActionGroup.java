@@ -3,7 +3,7 @@ package kkckkc.jsourcepad.action;
 import com.google.common.collect.Maps;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
-import kkckkc.jsourcepad.util.PerformanceLogger;
+import kkckkc.utils.PerformanceLogger;
 import kkckkc.jsourcepad.util.action.ActionGroup;
 import kkckkc.syntaxpane.parse.grammar.Language;
 

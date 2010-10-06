@@ -6,7 +6,7 @@ import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.bundle.BundleManager;
 import kkckkc.jsourcepad.ui.ApplicationController;
-import kkckkc.jsourcepad.util.PerformanceLogger;
+import kkckkc.utils.PerformanceLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

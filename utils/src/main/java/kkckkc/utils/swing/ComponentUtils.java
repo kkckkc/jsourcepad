@@ -1,4 +1,4 @@
-package kkckkc.jsourcepad.util.ui;
+package kkckkc.utils.swing;
 
 import java.applet.Applet;
 import java.awt.Component;

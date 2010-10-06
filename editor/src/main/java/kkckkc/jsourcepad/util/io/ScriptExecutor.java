@@ -3,6 +3,7 @@ package kkckkc.jsourcepad.util.io;
 import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
 import com.google.common.io.Files;
+import kkckkc.utils.io.FileUtils;
 
 import java.io.*;
 import java.util.Collections;

@@ -8,7 +8,7 @@ import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 import kkckkc.jsourcepad.util.DefaultFileMonitor;
 import kkckkc.jsourcepad.util.FileMonitor;
-import kkckkc.jsourcepad.util.PerformanceLogger;
+import kkckkc.utils.PerformanceLogger;
 import kkckkc.jsourcepad.util.QueryUtils;
 import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
 import org.springframework.beans.factory.annotation.Autowired;

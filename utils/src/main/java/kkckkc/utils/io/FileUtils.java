@@ -1,4 +1,4 @@
-package kkckkc.jsourcepad.util.io;
+package kkckkc.utils.io;
 
 import java.io.File;
 import java.io.IOException;

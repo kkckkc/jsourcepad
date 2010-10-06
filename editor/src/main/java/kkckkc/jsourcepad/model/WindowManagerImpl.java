@@ -3,7 +3,7 @@ package kkckkc.jsourcepad.model;
 import com.google.common.collect.Maps;
 import kkckkc.jsourcepad.ui.WindowPresenter;
 import kkckkc.jsourcepad.util.BeanFactoryLoader;
-import kkckkc.jsourcepad.util.ui.ComponentUtils;
+import kkckkc.utils.swing.ComponentUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 

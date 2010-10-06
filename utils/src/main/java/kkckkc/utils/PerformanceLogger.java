@@ -1,16 +1,10 @@
-package kkckkc.jsourcepad.util;
+package kkckkc.utils;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
 public class PerformanceLogger {
 	private static final PerformanceLogger INSTANCE = new PerformanceLogger();
-	private Map<String, Record> records = Maps.newHashMap();
+	private Map<String, Record> records = new HashMap<String, Record>();
 	private Stack<String> stack = new Stack<String>();
 	
 	public static PerformanceLogger get() {
@@ -18,7 +12,7 @@ public class PerformanceLogger {
 	}
 
 	public void dump() {
-	    List<String> keys = Lists.newArrayList(records.keySet());
+	    List<String> keys = new ArrayList<String>(records.keySet());
 	    Collections.sort(keys);
 	    
 	    for (String key : keys) {
