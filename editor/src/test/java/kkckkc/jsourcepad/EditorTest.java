@@ -19,13 +19,13 @@ public class EditorTest {
 
     public static void init() throws InterruptedException {
         if (initialized) return;
-
+/*
         Bootstrap b = new Bootstrap();
 
         Thread mainThread = new Thread(b);
         mainThread.start();
 
-
+*/
 		Application app = Application.get();
         waitForEvents();
 
