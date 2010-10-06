@@ -15,7 +15,23 @@ public class GtkTheme implements Theme {
 		return "com.sun.java.swing.plaf.gtk.GTKLookAndFeel";
 	}
 
-	@Override
+    @Override
+    public String getId() {
+        return "theme.gtk";
+    }
+
+    @Override
+    public String[] getDependsOn() {
+        return null;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        String theme = System.getProperty("theme");
+        return getClass().getName().equals(theme);
+    }
+
+    @Override
     public Resource getOverridesLocation(Scope<?> scope) {
 		if (scope == BeanFactoryLoader.DOCUMENT) {
 			return new ClassPathResource("/gtk-document.xml");

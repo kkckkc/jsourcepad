@@ -16,25 +16,30 @@ public class OsxTheme implements Theme {
 
 	public OsxTheme() {
 		System.setProperty("apple.laf.useScreenMenuBar", "true");
-		
-		//UIDefaults defaults = UIManager.getDefaults( );
-		//defaults.put( "TabbedPane.useSmallLayout", Boolean.TRUE );
 	}
 	
 	@Override
 	public String getLookAndFeel() {
-		/*try {
-			UIManager.setLookAndFeel(
-			        ch.randelshofer.quaqua.QuaquaManager.getLookAndFeel()
-			    );
-		} catch (UnsupportedLookAndFeelException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
 		return null;
 	}
 
-	@Override
+    @Override
+    public String getId() {
+        return "theme.osx";
+    }
+
+    @Override
+    public String[] getDependsOn() {
+        return null;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        String theme = System.getProperty("theme");
+        return getClass().getName().equals(theme);
+    }
+
+    @Override
     public Resource getOverridesLocation(Scope<?> scope) {
 		if (scope == BeanFactoryLoader.DOCUMENT) {
 			return new ClassPathResource("/osx-document.xml");

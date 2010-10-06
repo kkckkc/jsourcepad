@@ -13,7 +13,22 @@ public class DefaultTheme implements Theme {
 		return null;
 	}
 
-	@Override
+    @Override
+    public String getId() {
+        return "theme.default";
+    }
+
+    @Override
+    public String[] getDependsOn() {
+        return null;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    @Override
     public Resource getOverridesLocation(Scope<?> scope) {
 	    return null;
     }

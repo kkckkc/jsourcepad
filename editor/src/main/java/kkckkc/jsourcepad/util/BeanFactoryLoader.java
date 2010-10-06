@@ -1,10 +1,13 @@
 package kkckkc.jsourcepad.util;
 
+import kkckkc.jsourcepad.Plugin;
+import kkckkc.jsourcepad.PluginManager;
 import kkckkc.jsourcepad.ScopeRoot;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.theme.Theme;
 import kkckkc.utils.DomUtil;
+import kkckkc.utils.IteratorIterable;
 import kkckkc.utils.PerformanceLogger;
 import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
@@ -21,17 +24,11 @@ import org.xml.sax.InputSource;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.util.Iterator;
+import java.util.ServiceLoader;
 
 public class BeanFactoryLoader {
     private static final FastDocumentLoader FAST_DOCUMENT_LOADER = new FastDocumentLoader();
-
-    private void loadThemeXml(Scope<?> scope, XmlBeanDefinitionReader xmlBeanDefinitionReader) throws BeanDefinitionStoreException {
-        Theme theme = Application.get().getTheme();
-        Resource themeResource = theme.getOverridesLocation(scope);
-        if (themeResource != null) {
-            xmlBeanDefinitionReader.loadBeanDefinitions(themeResource);
-        }
-    }
 
     private void loadXml(XmlBeanDefinitionReader xmlBeanDefinitionReader, Scope<?> scope) throws BeanDefinitionStoreException {
         // Improve performance by reusing XML parsers
@@ -95,9 +92,12 @@ public class BeanFactoryLoader {
 		loadXml(xmlBeanDefinitionReader, scope);
 
 		// Load theme overrides
-		if (parent != null) {
-            loadThemeXml(scope, xmlBeanDefinitionReader);
-		}
+        for (Plugin plugin : PluginManager.getActivePlugins()) {
+            Resource r = plugin.getOverridesLocation(scope);
+            if (r == null) continue;
+
+            xmlBeanDefinitionReader.loadBeanDefinitions(r);
+        }
 		
 		PerformanceLogger.get().exit();
 		

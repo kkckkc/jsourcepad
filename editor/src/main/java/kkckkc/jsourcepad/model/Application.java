@@ -1,5 +1,7 @@
 package kkckkc.jsourcepad.model;
 
+import kkckkc.jsourcepad.Plugin;
+import kkckkc.jsourcepad.PluginManager;
 import kkckkc.jsourcepad.ScopeRoot;
 import kkckkc.jsourcepad.model.bundle.BundleManager;
 import kkckkc.jsourcepad.theme.DefaultTheme;
@@ -11,11 +13,13 @@ import kkckkc.jsourcepad.util.messagebus.MessageBus;
 import kkckkc.syntaxpane.parse.grammar.LanguageManager;
 import kkckkc.syntaxpane.style.StyleParser;
 import kkckkc.syntaxpane.style.StyleScheme;
+import kkckkc.utils.IteratorIterable;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
 import java.io.File;
+import java.util.ServiceLoader;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -52,16 +56,13 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
 	}
 
 	private static Theme initTheme() {
-		String theme = System.getProperty("theme");
-		if (theme == null) return new DefaultTheme();
-		else {
-			try {
-				Class<?> c = Class.forName(theme);
-				return (Theme) c.newInstance();
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-		}
+        for (Plugin p : PluginManager.getActivePlugins()) {
+            if (! (theme instanceof Theme)) continue;
+
+            return (Theme) theme;
+        }
+
+        return new DefaultTheme();
 	}
 
 	protected Application() {
