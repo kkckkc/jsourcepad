@@ -1,4 +1,3 @@
-
 package kkckkc.jsourcepad.action;
 
 import java.awt.event.ActionEvent;

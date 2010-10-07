@@ -27,7 +27,7 @@ public class TabCloseAction extends BaseAction {
         Integer tabIndex = actionContext.get(ActionContextKeys.TAB_INDEX);
 		if (tabIndex == null) {
 			if (docList.getActiveDoc().isModified()) {
-				int j = JOptionPane.showConfirmDialog(wm.getContainer(window), "Not saved");
+				int j = JOptionPane.showConfirmDialog(window.getContainer(), "Not saved");
 				if (j == JOptionPane.CANCEL_OPTION) return;
 			}
 			docList.getActiveDoc().close();
@@ -36,7 +36,7 @@ public class TabCloseAction extends BaseAction {
 			for (Doc doc : docList.getDocs()) {
 				if (i == tabIndex) {
 					if (doc.isModified()) {
-						int j = JOptionPane.showConfirmDialog(wm.getContainer(window), "Not saved");
+						int j = JOptionPane.showConfirmDialog(window.getContainer(), "Not saved");
 						if (j == JOptionPane.CANCEL_OPTION) return;
 					}
 					doc.close();

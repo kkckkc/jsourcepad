@@ -22,9 +22,6 @@ public interface WindowManager {
 	
 	public Collection<Window> getWindows();
 
-	public Container getContainer(Window window);
-
-
     public void minimize(Window window);
     public void maximize(Window window);
 }

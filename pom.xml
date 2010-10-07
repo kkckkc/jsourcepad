@@ -20,6 +20,7 @@
         <module>utils-plist</module>
         <module>utils</module>
         <module>editor-bootstrap</module>
+        <module>editor-ui</module>
     </modules>
 
 	<build>

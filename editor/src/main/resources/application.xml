@@ -5,7 +5,7 @@
 
 	<bean id="windowManager" class="kkckkc.jsourcepad.model.WindowManagerImpl" />
 	<bean id="application" class="kkckkc.jsourcepad.model.Application" />
-	<bean id="applicationView" class="kkckkc.jsourcepad.ui.ApplicationController" />
+	<bean id="applicationController" class="kkckkc.jsourcepad.ui.ApplicationController" lazy-init="false"/>
 
 	<bean id="bundleManager" class="kkckkc.jsourcepad.model.bundle.BundleManagerImpl">
 		<constructor-arg value="~/.jsourcepad/Shared/Bundles" />
@@ -23,10 +23,7 @@
 	</bean>
 	
 	<bean id="styleParser" class="kkckkc.syntaxpane.parse.grammar.textmate.TextmateStyleParser" />
-
     <bean id="clipboardManager" class="kkckkc.jsourcepad.model.ClipboardManager" />
-
-	<bean id="httpServer" class="kkckkc.jsourcepad.http.HttpServerFactoryBean" />
-
+	<bean id="httpServer" class="kkckkc.jsourcepad.http.HttpServerFactoryBean" lazy-init="false" />
     <bean id="previewServer" class="kkckkc.jsourcepad.http.PreviewServer" lazy-init="false" />
 </beans>

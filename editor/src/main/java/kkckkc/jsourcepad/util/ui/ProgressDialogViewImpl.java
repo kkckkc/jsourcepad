@@ -9,7 +9,7 @@
  * Created on Mar 30, 2010, 8:48:44 AM
  */
 
-package kkckkc.jsourcepad.ui.dialog;
+package kkckkc.jsourcepad.util.ui;
 
 import javax.swing.*;
 

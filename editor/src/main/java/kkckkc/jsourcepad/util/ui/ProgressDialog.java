@@ -1,4 +1,4 @@
-package kkckkc.jsourcepad.ui.dialog;
+package kkckkc.jsourcepad.util.ui;
 
 import kkckkc.jsourcepad.Dialog;
 import kkckkc.jsourcepad.util.io.ScriptExecutor.Execution;

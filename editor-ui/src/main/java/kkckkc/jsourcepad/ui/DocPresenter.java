@@ -47,7 +47,7 @@ public class DocPresenter implements Presenter<DocView> {
 
         actionContext = new ActionContext();
         actionContext.put(ActionContextKeys.ACTIVE_DOC, doc);
-        actionContext.put(ActionContextKeys.FOCUSED_COMPONENT, this);
+        actionContext.put(ActionContextKeys.FOCUSED_COMPONENT, doc);
         actionContext.commit();
         
         ActionContext.set(sourcePane, actionContext);

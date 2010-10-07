@@ -1,4 +1,3 @@
-
 package kkckkc.jsourcepad.action;
 
 import kkckkc.jsourcepad.model.Buffer;

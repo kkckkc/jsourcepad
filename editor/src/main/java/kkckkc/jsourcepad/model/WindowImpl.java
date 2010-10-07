@@ -14,20 +14,26 @@ import javax.script.Bindings;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-
+import javax.swing.*;
+import java.awt.*;
 
 
 public class WindowImpl extends AbstractMessageBus implements Window, MessageBus, ScopeRoot {
 
     private int id;
-	private BeanFactory container;
+	private BeanFactory beanFactory;
 
 	// Collaborators
 	private ActionManager actionManager;
 
 	private ScriptEngine scriptEngine;
-	
-	public ScriptEngine getScriptEngine() {
+    private JFrame container;
+
+    public WindowImpl() {
+        container = new JFrame();
+    }
+
+    public ScriptEngine getScriptEngine() {
 		if (scriptEngine == null) {
 			ScriptEngineManager mgr = new ScriptEngineManager();
 			
@@ -56,22 +62,22 @@ public class WindowImpl extends AbstractMessageBus implements Window, MessageBus
 	
 	@Override
 	public Project getProject() {
-		return container.getBean(Project.class);
+		return beanFactory.getBean(Project.class);
 	}
 
 	@Override
 	public DocList getDocList() {
-		return container.getBean(DocList.class);
+		return beanFactory.getBean(DocList.class);
 	}
 
 	@Override
 	public <T> T getPresenter(Class<? extends T> clazz) {
-		return container.getBean(clazz);
+		return beanFactory.getBean(clazz);
 	}
 
 	@Override
 	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-		this.container = beanFactory;
+		this.beanFactory = beanFactory;
 	}
 
 	@Override
@@ -81,15 +87,20 @@ public class WindowImpl extends AbstractMessageBus implements Window, MessageBus
 
     @Override
     public AcceleratorManager getAcceleratorManager() {
-        return container.getBean(AcceleratorManager.class);
+        return beanFactory.getBean(AcceleratorManager.class);
     }
 
     public BeanFactory getBeanFactory() {
-	    return container;
+	    return beanFactory;
     }
 
 	public MacroEngine getMacroEngine() {
-		return container.getBean(MacroEngine.class);
+		return beanFactory.getBean(MacroEngine.class);
 	}
+
+    @Override
+    public JFrame getContainer() {
+        return container;
+    }
 
 }

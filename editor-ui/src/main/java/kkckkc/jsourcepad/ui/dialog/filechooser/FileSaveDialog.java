@@ -9,10 +9,10 @@ import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.WindowManager;
 
-public class FileOpenDialog implements Dialog<FileChooserView> {
+public class FileSaveDialog implements Dialog<FileChooserView> {
 	private FileChooserView view;
 	private Window window;
-
+	
 	@Autowired
 	public void setWindow(Window window) {
 	    this.window = window;
@@ -23,9 +23,9 @@ public class FileOpenDialog implements Dialog<FileChooserView> {
 		this.view = view;
 	}
 	
-    public void show(File pwd, FileChooserCallback fileChooserCallback) {
+    public void show(File pwd, FileChooserCallback fileChooserCallback, boolean confirmOverwrite) {
     	WindowManager wm = Application.get().getWindowManager();
-    	view.openFile(wm.getContainer(window), pwd, fileChooserCallback);
+    	view.saveFile(window.getContainer(), pwd, fileChooserCallback, confirmOverwrite);
     }
 
 	@Override

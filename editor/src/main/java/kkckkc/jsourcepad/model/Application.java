@@ -6,20 +6,17 @@ import kkckkc.jsourcepad.ScopeRoot;
 import kkckkc.jsourcepad.model.bundle.BundleManager;
 import kkckkc.jsourcepad.theme.DefaultTheme;
 import kkckkc.jsourcepad.theme.Theme;
-import kkckkc.jsourcepad.ui.ApplicationController;
 import kkckkc.jsourcepad.util.BeanFactoryLoader;
 import kkckkc.jsourcepad.util.messagebus.AbstractMessageBus;
 import kkckkc.jsourcepad.util.messagebus.MessageBus;
 import kkckkc.syntaxpane.parse.grammar.LanguageManager;
 import kkckkc.syntaxpane.style.StyleParser;
 import kkckkc.syntaxpane.style.StyleScheme;
-import kkckkc.utils.IteratorIterable;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
 import java.io.File;
-import java.util.ServiceLoader;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -51,7 +48,7 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
 		beanFactory.registerSingleton("beanFactoryLoader", loader);
 		
 		Application a = beanFactory.getBean(Application.class);
-		
+
 		return a;
 	}
 
@@ -73,10 +70,6 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
     public com.sun.net.httpserver.HttpServer getHttpServer() {
 	    return beanFactory.getBean(com.sun.net.httpserver.HttpServer.class);
     }
-	
-	public ApplicationController getApplicationController() {
-		return beanFactory.getBean(ApplicationController.class);
-	}
 
 	public ExecutorService getThreadPool() {
 	    return threadPool;

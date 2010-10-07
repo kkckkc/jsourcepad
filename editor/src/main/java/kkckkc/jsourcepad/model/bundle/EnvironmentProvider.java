@@ -6,7 +6,6 @@ import com.google.common.collect.Maps;
 import kkckkc.jsourcepad.action.ActionContextKeys;
 import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.Window;
-import kkckkc.jsourcepad.ui.ProjectPresenter;
 import kkckkc.jsourcepad.util.action.ActionManager;
 import kkckkc.syntaxpane.model.Interval;
 
@@ -68,7 +67,7 @@ public class EnvironmentProvider {
 
 		List<File> files = Lists.newArrayList();
         ActionManager actionManager = window.getActionManager();
-        if (actionManager.getActionContext().get(ActionContextKeys.FOCUSED_COMPONENT) instanceof ProjectPresenter) {
+        if (actionManager.getActionContext().get(ActionContextKeys.FOCUSED_COMPONENT) instanceof Doc) {
 			files = window.getProject().getSelectedFiles();
 		} else {
 			if (activeDoc.getFile() != null) {

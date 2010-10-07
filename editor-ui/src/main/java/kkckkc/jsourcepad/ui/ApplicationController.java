@@ -20,14 +20,7 @@ import com.google.common.collect.Maps;
 
 public class ApplicationController implements WindowManager.Listener {
 	private Map<Window, WindowPresenter> windows = Maps.newHashMap();
-	
-	private Application app;
-	
-	@Autowired
-	public void setApp(Application app) {
-	    this.app = app;
-    }
-	
+
 	@PostConstruct
 	public void init() {
 		System.setProperty("awt.useSystemAAFontSettings", "on");
@@ -37,7 +30,7 @@ public class ApplicationController implements WindowManager.Listener {
 				@Override
 				public void run() {
 					try {
-						String lnf = app.getTheme().getLookAndFeel();
+						String lnf = Application.get().getTheme().getLookAndFeel();
 						if (lnf != null) {
 							UIManager.setLookAndFeel(lnf);
 						}
@@ -51,7 +44,7 @@ public class ApplicationController implements WindowManager.Listener {
 		} catch (InvocationTargetException e) {
 			throw new RuntimeException(e);
 		}
-		
+
 		Application.get().getMessageBus().topic(WindowManager.Listener.class).subscribe(DispatchStrategy.SYNC, this);
 	}
 

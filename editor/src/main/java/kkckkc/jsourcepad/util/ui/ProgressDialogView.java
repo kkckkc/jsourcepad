@@ -1,4 +1,4 @@
-package kkckkc.jsourcepad.ui.dialog;
+package kkckkc.jsourcepad.util.ui;
 
 import javax.swing.JDialog;
 

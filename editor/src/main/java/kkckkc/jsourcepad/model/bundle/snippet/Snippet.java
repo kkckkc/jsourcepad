@@ -240,7 +240,7 @@ public class Snippet {
 	    	
 	        ScriptExecutor scriptExecutor = new ScriptExecutor(script.getBody(), Application.get().getThreadPool());
 	        try {
-	            Execution ex = scriptExecutor.execute(new UISupportCallback(wm.getContainer(window)), 
+	            Execution ex = scriptExecutor.execute(new UISupportCallback(window.getContainer()), 
 	            		new StringReader(""), 
 	            		environment);
 	            

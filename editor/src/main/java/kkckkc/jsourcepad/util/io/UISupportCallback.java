@@ -1,9 +1,9 @@
 package kkckkc.jsourcepad.util.io;
 
 import kkckkc.jsourcepad.model.Application;
-import kkckkc.jsourcepad.ui.dialog.ProgressDialog;
 import kkckkc.jsourcepad.util.io.ScriptExecutor.Callback;
 import kkckkc.jsourcepad.util.io.ScriptExecutor.Execution;
+import kkckkc.jsourcepad.util.ui.ProgressDialog;
 
 import javax.swing.*;
 import java.awt.*;

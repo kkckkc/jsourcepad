@@ -1,7 +1,6 @@
 package kkckkc.jsourcepad.model;
 
 import com.google.common.collect.Maps;
-import kkckkc.jsourcepad.ui.WindowPresenter;
 import kkckkc.jsourcepad.util.BeanFactoryLoader;
 import kkckkc.utils.swing.ComponentUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,10 +54,9 @@ public class WindowManagerImpl implements WindowManager {
 		container.registerSingleton("projectDir", new ProjectRoot(projectDir));
 
 		Window window = container.getBean("window", Window.class);
-        window.setId(++lastId);
+        ((WindowImpl) window).setId(++lastId);
 
-		Container frame = getContainer(window);
-
+		Container frame = window.getContainer();
 		container.registerSingleton("frame", frame);
 
 		openWindows.put(frame, window);
@@ -68,7 +66,7 @@ public class WindowManagerImpl implements WindowManager {
 
 	@Override
 	public void closeWindow(Window window) {
-		openWindows.remove(getContainer(window));
+		openWindows.remove(window.getContainer());
 		app.getMessageBus().topic(Listener.class).post().destroyed(window);
 	}
 
@@ -76,20 +74,17 @@ public class WindowManagerImpl implements WindowManager {
     public Collection<Window> getWindows() {
 	    return openWindows.values();
     }
-	
-	public Container getContainer(Window window) {
-		return window.getPresenter(WindowPresenter.class).getContainer();
-	}
+
 
     @Override
     public void minimize(Window window) {
-        JFrame c = (JFrame) getContainer(window);
+        JFrame c = (JFrame) window.getContainer();
         c.setState(JFrame.ICONIFIED);
     }
 
     @Override
     public void maximize(Window window) {
-        JFrame c = (JFrame) getContainer(window);
+        JFrame c = (JFrame) window.getContainer();
         if (c.getState() == JFrame.MAXIMIZED_BOTH) {
             c.setState(JFrame.NORMAL);
         } else {

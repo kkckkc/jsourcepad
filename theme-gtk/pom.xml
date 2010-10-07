@@ -21,7 +21,7 @@
     </dependency>
     <dependency>
     	<groupId>kkckkc.jsourcepad</groupId>
-    	<artifactId>editor</artifactId>
+    	<artifactId>editor-ui</artifactId>
     	<version>0.0.1-SNAPSHOT</version>
     </dependency>
   </dependencies>

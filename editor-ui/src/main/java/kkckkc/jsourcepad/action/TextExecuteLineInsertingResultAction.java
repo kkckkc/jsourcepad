@@ -35,7 +35,7 @@ public class TextExecuteLineInsertingResultAction extends BaseAction {
 		
 		ScriptExecutor scriptExecutor = new ScriptExecutor(line, Application.get().getThreadPool());
 		try {
-	        scriptExecutor.execute(new UISupportCallback(wm.getContainer(window)) {
+	        scriptExecutor.execute(new UISupportCallback(window.getContainer()) {
 	            public void onAfterFailure(Execution execution) {
 	            	b.replaceText(i, execution.getStdout(), null);
 	            }

@@ -185,7 +185,7 @@ public class CommandBundleItem implements BundleItem {
     					
     					final CountDownLatch cdl = new CountDownLatch(1);
     					
-    					scriptExecutor.execute(new UISupportCallback(wm.getContainer(window)) {
+    					scriptExecutor.execute(new UISupportCallback(window.getContainer()) {
                             public void onAfterDone() {
 	            				cdl.countDown();
 	        					try {
@@ -233,13 +233,13 @@ public class CommandBundleItem implements BundleItem {
 		
 		@Override
         public void start(ScriptExecutor scriptExecutor, final String input, Map<String, String> environment) throws IOException {
-	        scriptExecutor.execute(new UISupportCallback(wm.getContainer(window)) {
+	        scriptExecutor.execute(new UISupportCallback(window.getContainer()) {
                 public void onAfterSuccess(final Execution execution) {
                     String s = execution.getStdout();
                 	if (s == null) s = "";
 
         			if (OUTPUT_SHOW_AS_TOOLTIP.equals(output)) {
-        				JOptionPane.showMessageDialog(wm.getContainer(window), s);
+        				JOptionPane.showMessageDialog(window.getContainer(), s);
         			} else if (OUTPUT_REPLACE_SELECTED_TEXT.equals(output)) {
         				Buffer buffer = window.getDocList().getActiveDoc().getActiveBuffer();
         				Interval selection = buffer.getSelection();

@@ -7,11 +7,10 @@ import kkckkc.jsourcepad.util.action.ActionManager;
 import kkckkc.jsourcepad.util.messagebus.MessageBus;
 
 import javax.script.ScriptEngine;
-
+import javax.swing.*;
 
 
 public interface Window extends MessageBus, ScopeRoot {
-    public void setId(int id);
     public int getId();
 
     public interface FocusListener {
@@ -28,4 +27,6 @@ public interface Window extends MessageBus, ScopeRoot {
 	public ScriptEngine getScriptEngine();
 
 	public MacroEngine getMacroEngine();
+
+    public JFrame getContainer();
 }

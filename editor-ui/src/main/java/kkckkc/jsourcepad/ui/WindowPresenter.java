@@ -43,7 +43,9 @@ public class WindowPresenter implements Presenter<WindowView>, DocList.Listener 
 
 	@PostConstruct
     public void init() throws Exception {
-		frame = windowView.getJFrame();
+		frame = (JFrame) window.getContainer();
+        windowView.setJFrame(frame);
+        
 		frame.setTitle("JSourcePad");
 		
 		frame.setLocationRelativeTo(null);
@@ -127,9 +129,4 @@ public class WindowPresenter implements Presenter<WindowView>, DocList.Listener 
 		this.frame.setTitle("JSourcePad - " + doc.getTitle());
 	}
 
-	public Container getContainer() {
-	    return this.windowView.getJFrame();
-    }
-
-	
 }

@@ -75,7 +75,7 @@ public class BeanFactoryLoader {
 		}
 
         container.setAllowEagerClassLoading(false);
-		
+
 		AutowiredAnnotationBeanPostProcessor a = new AutowiredAnnotationBeanPostProcessor();
 		a.setBeanFactory(container);
 		container.addBeanPostProcessor(a);

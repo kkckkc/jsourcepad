@@ -49,7 +49,7 @@ public class ViewFullscreenAction extends BaseAction {
 
 	private class HideMouse implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			Container c = Application.get().getWindowManager().getContainer(w);
+			Container c = w.getContainer();
 			c.setCursor(emptyCursor);
 		}
 	}
@@ -59,7 +59,7 @@ public class ViewFullscreenAction extends BaseAction {
 	private class HideMouseStart implements AWTEventListener {
 		public void eventDispatched(AWTEvent e) {
 			if (MAXIMIZED) {
-				Container c = Application.get().getWindowManager().getContainer(w);
+				Container c = w.getContainer();
 				c.setCursor(Cursor.getDefaultCursor());
 				timeToHideMouse.restart();
 				timeToHideMouse.setRepeats(false);
@@ -72,7 +72,7 @@ public class ViewFullscreenAction extends BaseAction {
 		boolean setFull = !MAXIMIZED;
 
 		if (setFull != MAXIMIZED) {
-			final JFrame jf = (JFrame) Application.get().getWindowManager().getContainer(w);
+			final JFrame jf = (JFrame) w.getContainer();
 			// stop processing window events now
 			PROCESS_WINDOW_EVENTS = false;
 			final boolean wasVisible = jf.isVisible();

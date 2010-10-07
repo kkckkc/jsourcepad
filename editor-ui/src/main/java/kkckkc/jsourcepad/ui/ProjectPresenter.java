@@ -59,7 +59,7 @@ public class ProjectPresenter implements Presenter<ProjectView>, Project.FileCha
 		});
 
         actionContext = new ActionContext();
-        actionContext.put(ActionContextKeys.FOCUSED_COMPONENT, this);
+        actionContext.put(ActionContextKeys.FOCUSED_COMPONENT, window.getProject());
         actionContext.commit();
 
         ActionContext.set(view.getJComponent(), actionContext);

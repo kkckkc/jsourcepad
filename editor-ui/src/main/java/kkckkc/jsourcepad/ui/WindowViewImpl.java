@@ -33,8 +33,6 @@ public class WindowViewImpl implements WindowView {
 	
 	@PostConstruct
 	public void init() {
-		frame = new JFrame();
-		
 		frame.setSize(900, 650);
 		
 		splitpane = createSplitPane();
@@ -90,10 +88,12 @@ public class WindowViewImpl implements WindowView {
 	public JMenuBar getMenubar() {
 	    return menubar;
     }
-	
-	public JFrame getJFrame() {
-		return frame;
-	}
+
+    @Override
+    @Autowired
+    public void setJFrame(JFrame frame) {
+        this.frame = frame;
+    }
 
     @Override
     public void setShowProjectDrawer(boolean showProjectDrawer) {

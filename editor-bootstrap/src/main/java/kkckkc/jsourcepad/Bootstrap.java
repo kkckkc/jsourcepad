@@ -48,7 +48,8 @@ public class Bootstrap implements Runnable {
 
 	
 	public Bootstrap() {
-		ApplicationController c = Application.get().getApplicationController();
+        Application.get();
+        Application.get().getBeanFactory().getBean("applicationController");
 	}
 	
 	@Override
