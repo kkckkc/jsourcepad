@@ -5,7 +5,6 @@
 
 	<bean id="windowManager" class="kkckkc.jsourcepad.model.WindowManagerImpl" />
 	<bean id="application" class="kkckkc.jsourcepad.model.Application" />
-	<bean id="applicationController" class="kkckkc.jsourcepad.ui.ApplicationController" lazy-init="false"/>
 
 	<bean id="bundleManager" class="kkckkc.jsourcepad.model.bundle.BundleManagerImpl">
 		<constructor-arg value="~/.jsourcepad/Shared/Bundles" />

@@ -24,35 +24,5 @@
 
     <bean id="acceleratorManager" class="kkckkc.jsourcepad.util.action.DefaultAcceleratorManager" />
 
-	<import resource="actions.xml" />
-
-
-	<!-- User interface -->
-	<bean id="windowPresenter" class="kkckkc.jsourcepad.ui.WindowPresenter" />
-	<bean id="windowView" class="kkckkc.jsourcepad.ui.WindowViewImpl" />
-
-	<bean id="docListPresenter" class="kkckkc.jsourcepad.ui.DocListPresenter" />
-	<bean id="docListView" class="kkckkc.jsourcepad.ui.DocListViewImpl" />
-
-	<bean id="fileOpenDialog" class="kkckkc.jsourcepad.ui.dialog.filechooser.FileOpenDialog" />
-	<bean id="fileSaveDialog" class="kkckkc.jsourcepad.ui.dialog.filechooser.FileSaveDialog" />
-	<bean id="fileChooser" class="kkckkc.jsourcepad.ui.dialog.filechooser.SwingFileChooserView" />
-
-	<bean id="findDialog" class="kkckkc.jsourcepad.ui.dialog.find.FindDialog" />
-	<bean id="findDialogView" class="kkckkc.jsourcepad.ui.dialog.find.FindDialogViewImpl" />
-
-	<bean id="quickNavigationDialog" class="kkckkc.jsourcepad.ui.dialog.navigation.QuickNavigationDialog" />
-	<bean id="quickNavigationDialogView" class="kkckkc.jsourcepad.ui.dialog.navigation.QuickNavigationDialogViewImpl" autowire="constructor" scope="prototype"/>
-
-    <bean id="symbolNavigationDialog" class="kkckkc.jsourcepad.ui.dialog.navigation.SymbolNavigationDialog" />
-
-	<bean id="progressDialog" class="kkckkc.jsourcepad.util.ui.ProgressDialog" />
-	<bean id="progressDialogView" class="kkckkc.jsourcepad.util.ui.ProgressDialogViewImpl" autowire="constructor"/>
-
-	<bean id="projectPresenter" class="kkckkc.jsourcepad.ui.ProjectPresenter" />
-	<bean id="projectView" class="kkckkc.jsourcepad.ui.ProjectViewImpl" />
-
-    <bean id="gotoLineDialogView" class="kkckkc.jsourcepad.ui.dialog.gotoline.GotoLineDialogViewimpl" autowire="constructor" />
-    <bean id="gotoLineDialog" class="kkckkc.jsourcepad.ui.dialog.gotoline.GotoLineDialog" />
 
 </beans>

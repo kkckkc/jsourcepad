@@ -25,12 +25,12 @@ public class OsxTheme implements Theme {
 
     @Override
     public String getId() {
-        return "theme.osx";
+        return "theme-osx";
     }
 
     @Override
     public String[] getDependsOn() {
-        return null;
+        return new String[] { "editor-ui" };
     }
 
     @Override

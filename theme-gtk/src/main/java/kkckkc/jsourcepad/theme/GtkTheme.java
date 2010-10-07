@@ -17,12 +17,12 @@ public class GtkTheme implements Theme {
 
     @Override
     public String getId() {
-        return "theme.gtk";
+        return "theme-gtk";
     }
 
     @Override
     public String[] getDependsOn() {
-        return null;
+        return new String[] { "editor-ui" };
     }
 
     @Override
