@@ -70,5 +70,11 @@
 	  <artifactId>swing-layout</artifactId>
 	  <version>1.0.3</version>
 	 </dependency>
+        <dependency>
+            <groupId>com.miglayout</groupId>
+            <artifactId>miglayout</artifactId>
+            <classifier>swing</classifier>
+            <version>3.7.3</version>
+        </dependency>
 	</dependencies>
 </project>
