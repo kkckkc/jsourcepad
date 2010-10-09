@@ -15,8 +15,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-
-
+import java.util.concurrent.CountDownLatch;
 
 
 @SuppressWarnings("restriction")
@@ -54,6 +53,8 @@ public class Bootstrap implements Runnable {
 	
 	@Override
 	public void run() {
+        final CountDownLatch cdl = new CountDownLatch(2);
+
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				// Create new window
@@ -76,10 +77,21 @@ public class Bootstrap implements Runnable {
         		focusManager.addKeyEventDispatcher(new GlobalKeyEventDispatcher(bundleManager));
 
                 PerformanceLogger.get().exit();
+                cdl.countDown();
             }
         });
 
         HttpServer server = Application.get().getHttpServer();
         PreviewServer ps = Application.get().getBeanFactory().getBean(PreviewServer.class);
-	}
+	    cdl.countDown();
+
+        if ("true".equals(System.getProperty("immediateExitForBenchmark"))) {
+            try {
+                cdl.await();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            System.exit(0);
+        }
+    }
 }

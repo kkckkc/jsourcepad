@@ -332,6 +332,7 @@ public class BundleManagerImpl implements BundleManager {
             if (loadFromDisk) {
                 cache = (Map<String, Object>) Application.get().getPersistenceManager().load("bundle.cache");
                 if (cache == null) {
+                    this.loadFromDisk = false;
                     cache = Maps.newHashMap();
                 }
             } else {
