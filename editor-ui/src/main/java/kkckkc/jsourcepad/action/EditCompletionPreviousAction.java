@@ -1,5 +1,6 @@
 package kkckkc.jsourcepad.action;
 
+import kkckkc.jsourcepad.command.CompletionCommand;
 import kkckkc.jsourcepad.model.Buffer;
 import kkckkc.jsourcepad.util.action.BaseAction;
 
@@ -12,8 +13,9 @@ public class EditCompletionPreviousAction extends BaseAction {
 
 	@Override
     public void actionPerformed(ActionEvent e) {
-        Buffer buffer = actionContext.get(ActionContextKeys.ACTIVE_DOC).getActiveBuffer();
-        buffer.getCompletionManager().completePrevious();
+        CompletionCommand command = new CompletionCommand();
+        command.setDirection(CompletionCommand.Direction.PREVIOUS);
+        commandExecutor.execute(command);
     }
 
 }

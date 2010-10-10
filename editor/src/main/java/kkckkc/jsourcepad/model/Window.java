@@ -4,6 +4,7 @@ import kkckkc.jsourcepad.ScopeRoot;
 import kkckkc.jsourcepad.model.bundle.MacroEngine;
 import kkckkc.jsourcepad.util.action.AcceleratorManager;
 import kkckkc.jsourcepad.util.action.ActionManager;
+import kkckkc.jsourcepad.util.command.CommandExecutor;
 import kkckkc.jsourcepad.util.messagebus.MessageBus;
 
 import javax.script.ScriptEngine;
@@ -25,6 +26,7 @@ public interface Window extends MessageBus, ScopeRoot {
     public AcceleratorManager getAcceleratorManager();
 
 	public ScriptEngine getScriptEngine();
+    public CommandExecutor getCommandExecutor();
 
 	public MacroEngine getMacroEngine();
 

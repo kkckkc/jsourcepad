@@ -179,18 +179,6 @@ public class DocPresenter implements Presenter<DocView> {
     }
 
 
-	public void cut() {
-		sourcePane.getEditorPane().cut();
-	}
-	
-	public void copy() {
- 		sourcePane.getEditorPane().copy();
-	}
-	
-	public void paste() {
-		sourcePane.getEditorPane().paste();
-	}
-
 
     private class ActionContextUpdater implements Doc.StateListener, Buffer.SelectionListener {
         @Override

@@ -1,5 +1,6 @@
 package kkckkc.jsourcepad.action;
 
+import kkckkc.jsourcepad.command.TextComponentCommand;
 import kkckkc.jsourcepad.model.Buffer;
 import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.util.action.BaseAction;
@@ -18,13 +19,18 @@ public class EditorAction extends BaseAction {
         this.action = action;
     }
 
+    public void setRequireSelection(boolean b) {
+        if (b) {
+            setActionStateRules(ActionStateRules.HAS_ACTIVE_DOC, ActionStateRules.TEXT_SELECTED);
+        }
+    }
+
 	@Override
     public void actionPerformed(ActionEvent e) {
-        Doc d = actionContext.get(ActionContextKeys.ACTIVE_DOC);
-		Buffer buffer = d.getActiveBuffer();
+        TextComponentCommand command = new TextComponentCommand();
+        command.setAction(this.action);
 
-        Action a = buffer.getActionMap().get(this.action);
-        a.actionPerformed(e);
+        commandExecutor.execute(command);
     }
 
 }

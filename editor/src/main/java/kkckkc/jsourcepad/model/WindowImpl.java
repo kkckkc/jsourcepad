@@ -4,6 +4,7 @@ import kkckkc.jsourcepad.ScopeRoot;
 import kkckkc.jsourcepad.model.bundle.MacroEngine;
 import kkckkc.jsourcepad.util.action.AcceleratorManager;
 import kkckkc.jsourcepad.util.action.ActionManager;
+import kkckkc.jsourcepad.util.command.CommandExecutor;
 import kkckkc.jsourcepad.util.messagebus.AbstractMessageBus;
 import kkckkc.jsourcepad.util.messagebus.MessageBus;
 import org.springframework.beans.BeansException;
@@ -46,6 +47,11 @@ public class WindowImpl extends AbstractMessageBus implements Window, MessageBus
 		
 		return scriptEngine;
 	}
+
+    @Override
+    public CommandExecutor getCommandExecutor() {
+        return beanFactory.getBean(CommandExecutor.class);
+    }
 
     public int getId() {
         return id;

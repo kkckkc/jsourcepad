@@ -8,6 +8,7 @@
 	<bean id="window" class="kkckkc.jsourcepad.model.WindowImpl" />
 	<bean id="docList" class="kkckkc.jsourcepad.model.DocListImpl" />
 	<bean id="project" class="kkckkc.jsourcepad.model.ProjectImpl" />
+    <bean id="commandExecutor" class="kkckkc.jsourcepad.util.command.CommandExecutorImpl" />
 
 
 	<bean id="macroEngine" class="kkckkc.jsourcepad.model.bundle.MacroEngine">

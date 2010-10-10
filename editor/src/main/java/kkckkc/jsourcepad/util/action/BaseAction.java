@@ -1,5 +1,6 @@
 package kkckkc.jsourcepad.util.action;
 
+import kkckkc.jsourcepad.util.command.CommandExecutor;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,12 @@ public abstract class BaseAction extends AbstractAction implements BeanNameAware
     private ActionStateRule[] rules;
     protected ActionManager actionManager;
     protected AcceleratorManager acceleratorManager;
+    protected CommandExecutor commandExecutor;
+
+    @Autowired
+    public void setCommandExecutor(CommandExecutor commandExecutor) {
+        this.commandExecutor = commandExecutor;
+    }
 
     @Autowired
 	public void setProperties(Properties props) {

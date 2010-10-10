@@ -275,10 +275,20 @@
 
 	<bean id="action-edit-undo" parent="action" class="kkckkc.jsourcepad.action.EditUndoAction" autowire="constructor"/>
 	<bean id="action-edit-redo" parent="action" class="kkckkc.jsourcepad.action.EditRedoAction" autowire="constructor"/>
-	<bean id="action-edit-cut" parent="action" class="kkckkc.jsourcepad.action.EditCutAction" autowire="constructor"/>
-	<bean id="action-edit-copy" parent="action" class="kkckkc.jsourcepad.action.EditCopyAction" autowire="constructor"/>
-	<bean id="action-edit-paste" parent="action" class="kkckkc.jsourcepad.action.EditPasteAction" autowire="constructor"/>
-	<bean id="action-edit-paste-previous" parent="action" class="kkckkc.jsourcepad.action.EditPastePreviousAction" autowire="constructor"/>
+
+    <bean id="action-edit-cut" parent="action" class="kkckkc.jsourcepad.action.EditorAction" autowire="constructor">
+        <property name="action" value="cut" />
+        <property name="requireSelection" value="true" />
+    </bean>
+	<bean id="action-edit-copy" parent="action" class="kkckkc.jsourcepad.action.EditorAction" autowire="constructor">
+        <property name="action" value="copy" />
+        <property name="requireSelection" value="true" />
+    </bean>
+	<bean id="action-edit-paste" parent="action" class="kkckkc.jsourcepad.action.EditorAction" autowire="constructor">
+        <property name="action" value="paste" />
+    </bean>
+
+    <bean id="action-edit-paste-previous" parent="action" class="kkckkc.jsourcepad.action.EditPastePreviousAction" autowire="constructor"/>
 	<bean id="action-edit-paste-from-history" parent="action" class="kkckkc.jsourcepad.action.EditPasteFromHistoryAction" autowire="constructor"/>
 
 	<bean id="action-edit-mode-overwrite-mode" parent="action" class="kkckkc.jsourcepad.action.EditModeOverwriteModeAction" autowire="constructor"/>
