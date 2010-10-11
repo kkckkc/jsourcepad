@@ -14,10 +14,14 @@ public class AWTFileChooserView implements FileChooserView {
 			FileChooserCallback fileChooserCallback) {
 		FileDialog fileDialog = new FileDialog((Frame) parent, "Open Directory", FileDialog.LOAD);
 		fileDialog.setDirectory(canonicalize(pwd));
+        System.setProperty("apple.awt.fileDialogForDirectories", "true");
 		fileDialog.setVisible(true);
+        System.setProperty("apple.awt.fileDialogForDirectories", "false");
 		
 		if (fileDialog.getFile() == null) {
 			fileChooserCallback.cancel();
+        } else if (new File(fileDialog.getDirectory(), fileDialog.getFile()).isFile()) {
+            openDirectory(parent, pwd, fileChooserCallback);
 		} else {
 			fileChooserCallback.select(new File(fileDialog.getDirectory(), fileDialog.getFile()));
 		}

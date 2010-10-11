@@ -22,7 +22,7 @@
 				<ref local="action-file-save-all" />
 				<null />
 
-				<ref local="action-window-new" />
+				<ref local="action-file-open-project" />
                 <null />
 
 				<ref local="action-window-exit" />
@@ -272,6 +272,7 @@
 	<bean id="action-file-save-as" parent="action" class="kkckkc.jsourcepad.action.FileSaveAsAction" autowire="constructor"/>
 	<bean id="action-file-save-all" parent="action" class="kkckkc.jsourcepad.action.FileSaveAllAction" autowire="constructor"/>
 	<bean id="action-file-reveal-in-project" parent="action" class="kkckkc.jsourcepad.action.FileRevealInProjectAction" autowire="constructor"/>
+    <bean id="action-file-open-project" parent="action" class="kkckkc.jsourcepad.action.FileOpenProjectAction" autowire="constructor"/>
 
 	<bean id="action-edit-undo" parent="action" class="kkckkc.jsourcepad.action.EditUndoAction" autowire="constructor"/>
 	<bean id="action-edit-redo" parent="action" class="kkckkc.jsourcepad.action.EditRedoAction" autowire="constructor"/>
@@ -398,7 +399,6 @@
     </bean>
 
     <!-- TODO: Rename these actions -->
-	<bean id="action-window-new" parent="action" class="kkckkc.jsourcepad.action.WindowNewAction" autowire="constructor"/>
 	<bean id="action-window-close" parent="action" class="kkckkc.jsourcepad.action.WindowCloseAction" autowire="constructor"/>
 	<bean id="action-window-exit" parent="action" class="kkckkc.jsourcepad.action.WindowExitAction" autowire="constructor"/>
 

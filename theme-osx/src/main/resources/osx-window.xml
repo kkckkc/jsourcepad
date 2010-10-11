@@ -30,7 +30,7 @@
 				<ref local="action-file-save-all" />
 				<null />
 
-				<ref local="action-window-new" />
+				<ref local="action-file-open-project" />
 				<ref local="action-file-reveal-in-project" />
 			</list>
 		</property>

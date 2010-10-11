@@ -16,6 +16,7 @@
 	<bean id="docListView" class="kkckkc.jsourcepad.ui.DocListViewImpl" />
 
 	<bean id="fileOpenDialog" class="kkckkc.jsourcepad.ui.dialog.filechooser.FileOpenDialog" />
+    <bean id="directoryOpenDialog" class="kkckkc.jsourcepad.ui.dialog.filechooser.DirectoryOpenDialog" />
 	<bean id="fileSaveDialog" class="kkckkc.jsourcepad.ui.dialog.filechooser.FileSaveDialog" />
 	<bean id="fileChooser" class="kkckkc.jsourcepad.ui.dialog.filechooser.SwingFileChooserView" />
 
