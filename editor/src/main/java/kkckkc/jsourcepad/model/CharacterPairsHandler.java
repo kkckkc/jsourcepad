@@ -30,7 +30,7 @@ public class CharacterPairsHandler extends DocumentFilter {
     }
     
     @Override
-    public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs)
+    public void replace(FilterBypass fb, final int offset, int length, String text, AttributeSet attrs)
             throws BadLocationException {
     	if (text.length() != 1) {
     		fb.replace(offset, length, text, attrs);
@@ -91,7 +91,14 @@ public class CharacterPairsHandler extends DocumentFilter {
                         anchors.put(a, Boolean.TRUE);
 
                         fb.replace(offset, length, start + end, attrs);
-                        buffer.setSelection(Interval.createEmpty(offset + 1));
+
+                        // If this is not done like this, dead characters will produce a NPE
+                        EventQueue.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                buffer.setSelection(Interval.createEmpty(offset + 1));
+                            }
+                        });
 
                         anchorManager.addAnchor(a);
 
@@ -140,7 +147,7 @@ public class CharacterPairsHandler extends DocumentFilter {
 	    for (List<String> p : pairs) {
 	    	char start = p.get(0).charAt(0);
 	    	char end = p.get(1).charAt(0);
-	    	
+
 	    	char cur = buffer.getText(Interval.createWithLength(insertionPoint.getPosition() - 1, 1)).charAt(0);
 	    	
     		int pos = insertionPoint.getPosition();
