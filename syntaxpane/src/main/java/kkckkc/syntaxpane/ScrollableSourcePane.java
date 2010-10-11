@@ -112,22 +112,31 @@ public class ScrollableSourcePane extends JPanel {
 		
 		editorPane.setSelectionColor(this.styleScheme.getSelectionStyle().getBackground());
 		editorPane.setSelectedTextColor(this.styleScheme.getSelectionStyle().getColor());
-		
+        editorPane.setOpaque(false);
+
 		lineNumberPane.setBackground(this.styleScheme.getLineNumberStyle().getBackground());
 		lineNumberPane.setForeground(this.styleScheme.getLineNumberStyle().getColor());
 		
 		foldMargin.setBackground(this.styleScheme.getLineNumberStyle().getBackground());
 		foldMargin.setForeground(this.styleScheme.getLineNumberStyle().getColor());
 		foldMargin.setBorderColor(this.styleScheme.getLineNumberStyle().getBorder());
-		
-		CurrentLinePainter.apply(new CurrentLinePainter(this.styleScheme.getLineSelectionColor()), editorPane);
-		
-		if (styleSchemeChanged) {
+
+        updateCurrentLineHighlighter();
+
+        if (styleSchemeChanged) {
 			repaint();
 		}
 	}
 
-	public JEditorPane getEditorPane() {
+    private void updateCurrentLineHighlighter() {
+        CurrentLinePainter.apply(new CurrentLinePainter(
+            this.styleScheme.getLineSelectionColor(),
+            getStyleScheme().getRightMargin().getColor(),
+            getStyleScheme().getRightMargin().getBackground(),
+            getWrapColumn()), editorPane);
+    }
+
+    public JEditorPane getEditorPane() {
 		return editorPane;
 	}
 
@@ -164,6 +173,7 @@ public class ScrollableSourcePane extends JPanel {
     public void setWrapColumn(int wrapColumn) {
         if (this.wrapColumn == wrapColumn) return;
         this.wrapColumn = wrapColumn;
+        updateCurrentLineHighlighter();
         repaint();
     }
 
@@ -185,12 +195,11 @@ public class ScrollableSourcePane extends JPanel {
             graphics2d.setColor(getStyleScheme().getTextStyle().getBackground());
             graphics2d.fillRect(clip.x, clip.y, clip.width, clip.height);
 
-	    	graphics2d.setColor(getStyleScheme().getRightMargin().getBackground());
-	    	
-	    	graphics2d.fillRect(getWrapColumn() * wm, clip.y, clip.width, clip.height);
-	    	
-	    	graphics2d.setColor(getStyleScheme().getRightMargin().getColor());
-	    	graphics2d.drawLine(getWrapColumn() * wm, clip.y, getWrapColumn() * wm, clip.y + clip.height);
+            graphics2d.setColor(getStyleScheme().getRightMargin().getBackground());
+            graphics2d.fillRect(getWrapColumn() * wm, clip.y, clip.width, clip.height);
+
+            graphics2d.setColor(getStyleScheme().getRightMargin().getColor());
+            graphics2d.drawLine(getWrapColumn() * wm, clip.y, getWrapColumn() * wm, clip.y + clip.height);
 
 	    	super.paint(graphics);
 	    }

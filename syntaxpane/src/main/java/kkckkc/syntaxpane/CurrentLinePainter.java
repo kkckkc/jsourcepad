@@ -1,27 +1,28 @@
 package kkckkc.syntaxpane;
 
-import java.awt.Color;
-import java.awt.EventQueue;
-import java.awt.Graphics;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-
-import javax.swing.JEditorPane;
+import javax.swing.*;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Highlighter;
 import javax.swing.text.JTextComponent;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
 public class CurrentLinePainter implements Highlighter.HighlightPainter, CaretListener, MouseListener, MouseMotionListener {
 	private Color color;
 	private Rectangle lastHighlight;
+    private int wrapColumn;
+    private Color rightMargin;
+    private Color rightMarginBackground;
 
-	public CurrentLinePainter(Color color) {
+    public CurrentLinePainter(Color color, Color rightMargin, Color rightMarginBackground, int wrapColumn) {
 		setColor(color);
+        this.rightMargin = rightMargin;
+        this.rightMarginBackground = rightMarginBackground;
+        this.wrapColumn = wrapColumn;
 	}
 
 	public static void apply(CurrentLinePainter linePainter, JEditorPane jEditorPane) {
@@ -30,6 +31,14 @@ public class CurrentLinePainter implements Highlighter.HighlightPainter, CaretLi
 		jEditorPane.addMouseMotionListener(linePainter);
 
 		try {
+            for (Highlighter.Highlight h : jEditorPane.getHighlighter().getHighlights()) {
+                if (h.getPainter() instanceof CurrentLinePainter) {
+                    jEditorPane.getHighlighter().removeHighlight(h);
+                    jEditorPane.removeCaretListener((CaretListener) h.getPainter());
+                    jEditorPane.removeMouseListener((MouseListener) h.getPainter());
+                    jEditorPane.removeMouseMotionListener((MouseMotionListener) h.getPainter());
+                }
+            }
 			jEditorPane.getHighlighter().addHighlight(0, 0, linePainter);
 		} catch (BadLocationException ble) {
 		}
@@ -41,7 +50,17 @@ public class CurrentLinePainter implements Highlighter.HighlightPainter, CaretLi
 
 	public void paint(Graphics g, int p0, int p1, Shape bounds, JTextComponent c) {
 		try {
-			Rectangle r = c.modelToView(c.getCaretPosition());
+            Graphics2D graphics2d = (Graphics2D) g;
+
+            int wm = graphics2d.getFontMetrics().charWidth('m');
+            Rectangle r = c.modelToView(c.getCaretPosition());
+
+            graphics2d.setColor(rightMarginBackground);
+            graphics2d.fillRect(wrapColumn * wm, r.y, c.getWidth(), r.height);
+
+            graphics2d.setColor(rightMargin);
+            graphics2d.drawLine(wrapColumn * wm, r.y, wrapColumn * wm, r.y + r.height);
+
 			g.setColor(color);
 			g.fillRect(0, r.y, c.getWidth(), r.height);
 
