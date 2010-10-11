@@ -28,7 +28,35 @@ public class CharacterPairsHandler extends DocumentFilter {
 	    
 		this.anchors = new MapMaker().expiration(30, TimeUnit.SECONDS).makeMap();
     }
-    
+
+    @Override
+    public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
+        InsertionPoint insertionPoint = buffer.getInsertionPoint();
+
+	    List<List<String>> pairs = (List) Application.get().getBundleManager().getPreference(
+	    		PrefKeys.PAIRS_SMART_TYPING, insertionPoint.getScope());
+
+	    if (pairs == null) {
+	    	fb.remove(offset, length);
+	    	return;
+	    }
+
+        String startInBuffer = buffer.getText(Interval.createWithLength(offset, 1));
+        String endInBuffer = buffer.getText(Interval.createWithLength(offset + length, 1));
+
+        for (final List<String> pair : pairs) {
+	        String start = pair.get(0);
+	        String end = pair.get(1);
+
+            if (start.equals(startInBuffer) && end.equals(endInBuffer)) {
+                fb.remove(offset + length, length);
+                break;
+            }
+        }
+
+        fb.remove(offset, length);
+    }
+
     @Override
     public void replace(FilterBypass fb, final int offset, int length, String text, AttributeSet attrs)
             throws BadLocationException {
