@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>jsyntaxpane-textmate</artifactId>
-    <name>jsyntaxpane-textmate</name>
+    <name>syntaxpane-textmate</name>
     <dependencies>
         <dependency>
             <groupId>kkckkc.jsourcepad</groupId>

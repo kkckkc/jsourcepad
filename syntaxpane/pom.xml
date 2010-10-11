@@ -11,7 +11,7 @@
 	<groupId>kkckkc.jsourcepad</groupId>
 	<artifactId>jsyntaxpane</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>jsyntaxpane</name>
+	<name>syntaxpane</name>
 	<dependencies>
 		<dependency>
 			<groupId>org.slf4j</groupId>
