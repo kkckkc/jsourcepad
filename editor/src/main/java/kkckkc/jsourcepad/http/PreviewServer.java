@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import com.google.common.io.Files;
 import com.sun.net.httpserver.*;
 import kkckkc.jsourcepad.model.*;
+import kkckkc.jsourcepad.util.Config;
 import kkckkc.syntaxpane.model.Interval;
 import kkckkc.syntaxpane.model.LineManager;
 import kkckkc.utils.StringUtils;
@@ -122,7 +123,7 @@ public class PreviewServer {
                         Map<String, String> params = parseQueryString(httpPath);
 
                         String url = params.get("url");
-                        url = StringUtils.removePrefix(url, "http://localhost:8080/files");
+                        url = StringUtils.removePrefix(url, "http://localhost:" + Config.getHttpPort() + "/files");
 
                         window.getDocList().open(new File(url));
 

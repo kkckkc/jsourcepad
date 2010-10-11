@@ -5,6 +5,7 @@ import com.sun.net.httpserver.*;
 import kkckkc.jsourcepad.model.*;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.bundle.snippet.Snippet;
+import kkckkc.jsourcepad.util.Config;
 import kkckkc.jsourcepad.util.io.ScriptExecutor;
 import kkckkc.jsourcepad.util.io.ScriptExecutor.Execution;
 import kkckkc.jsourcepad.util.io.TransformingWriter;
@@ -197,8 +198,8 @@ public class CommandBundleItem implements BundleItem {
     					}, new StringReader(input),
                                 new TransformingWriter(writer, TransformingWriter.CHUNK_BY_LINE, new Function<String, String>() {
                                     public String apply(String s) {
-                                        s = s.replaceAll("txmt://", "http://localhost:8080/cmd/" + window.getId() + "/");
-                                        s = s.replaceAll("file://", "http://localhost:8080/files");
+                                        s = s.replaceAll("txmt://", "http://localhost:" + Config.getHttpPort() + "/cmd/" + window.getId() + "/");
+                                        s = s.replaceAll("file://", "http://localhost:" + Config.getHttpPort() + "/files");
                                         return s;
                                     }
                                 }), environment);

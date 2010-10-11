@@ -1,16 +1,17 @@
 package kkckkc.jsourcepad.http;
 
+import com.sun.net.httpserver.HttpServer;
+import kkckkc.jsourcepad.util.Config;
+import org.springframework.beans.factory.FactoryBean;
+
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
-
-import org.springframework.beans.factory.FactoryBean;
-import com.sun.net.httpserver.*;
 
 public class HttpServerFactoryBean implements FactoryBean<HttpServer> {
 
 	@Override
     public HttpServer getObject() throws Exception {
-		InetSocketAddress addr = new InetSocketAddress(8080);
+		InetSocketAddress addr = new InetSocketAddress(Config.getHttpPort());
 		HttpServer server = HttpServer.create(addr, 0);
 		server.setExecutor(Executors.newCachedThreadPool());
 		server.start();
