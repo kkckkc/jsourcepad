@@ -7,6 +7,6 @@ public class Config {
         if (System.getProperty(HTTP_PORT) != null) {
             return Integer.parseInt(System.getProperty(HTTP_PORT));
         }
-        return 8080;
+        return 8171;
     }
 }

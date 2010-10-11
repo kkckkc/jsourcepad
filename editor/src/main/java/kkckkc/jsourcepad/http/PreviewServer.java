@@ -106,24 +106,29 @@ public class PreviewServer {
             public void handle(HttpExchange exchange) throws IOException {
                 String requestMethod = exchange.getRequestMethod();
                 if (requestMethod.equalsIgnoreCase("GET")) {
+
                     String httpPath = exchange.getRequestURI().toString();
                     httpPath = httpPath.substring(path.length() + 1);
 
-                    int windowId = getWindowId(httpPath);
-                    String path = getFilePath(httpPath);
+                    Map<String, String> params = parseQueryString(httpPath);
 
-                    String cmd = path.substring(1, path.indexOf("/", 2));
+                    String cmd = httpPath.substring(0, httpPath.indexOf("?", 1));
 
                     exchange.sendResponseHeaders(204, 0);
 
                     if ("open".equals(cmd)) {
-                        Window window = Application.get().getWindowManager().getWindow(windowId);
-                        Project project = window.getProject();
-
-                        Map<String, String> params = parseQueryString(httpPath);
-
                         String url = params.get("url");
                         url = StringUtils.removePrefix(url, "http://localhost:" + Config.getHttpPort() + "/files");
+
+                        Window window = null;
+                        if (params.containsKey("windowId")) {
+                            int windowId = Integer.parseInt(params.get("windowId"));
+
+                            window = Application.get().getWindowManager().getWindow(windowId);
+                        } else {
+                            // TODO: Improve this
+                            window = Application.get().getWindowManager().getWindows().iterator().next();
+                        }
 
                         window.getDocList().open(new File(url));
 
