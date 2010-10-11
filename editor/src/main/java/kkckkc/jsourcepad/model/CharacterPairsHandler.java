@@ -1,15 +1,6 @@
 package kkckkc.jsourcepad.model;
 
-import java.awt.Color;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DocumentFilter;
-
+import com.google.common.collect.MapMaker;
 import kkckkc.jsourcepad.model.Anchor.Bias;
 import kkckkc.jsourcepad.model.Buffer.HighlightType;
 import kkckkc.jsourcepad.model.bundle.BundleManager;
@@ -17,7 +8,14 @@ import kkckkc.jsourcepad.model.bundle.PrefKeys;
 import kkckkc.syntaxpane.model.Interval;
 import kkckkc.syntaxpane.style.StyleBean;
 
-import com.google.common.collect.MapMaker;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
+import java.awt.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class CharacterPairsHandler extends DocumentFilter {
     private final Buffer buffer;
@@ -70,18 +68,37 @@ public class CharacterPairsHandler extends DocumentFilter {
 	        	String end = pair.get(1);
 	        	
 	        	if (start.equals(text)) {
-	            	Anchor a = new Anchor(offset + 1, Bias.RIGHT);
-	            	anchors.put(a, Boolean.TRUE);
-	                    	
-	    	    	fb.replace(offset, length, start + end, attrs);
-	                buffer.setSelection(Interval.createEmpty(offset + 1));
-	                
-	                anchorManager.addAnchor(a);
-	                
-	                handled = true;
-	                break;
-	                
-	        	} else if (end.equals(text)) {
+                    String charToTheRight = buffer.getText(Interval.createWithLength(offset, 1));
+                    if (charToTheRight.equals(end)) {
+                        Iterator<Map.Entry<Anchor, Boolean>> it = anchors.entrySet().iterator();
+                        while (it.hasNext()) {
+                            Map.Entry<Anchor, Boolean> en = it.next();
+                            Anchor a = en.getKey();
+                            if (a.isRemoved()) continue;
+
+                            if (a.getPosition() == offset) {
+                                it.remove();
+                                buffer.setSelection(Interval.createEmpty(offset + 1));
+
+                                handled = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (! handled) {
+                        Anchor a = new Anchor(offset + 1, Bias.RIGHT);
+                        anchors.put(a, Boolean.TRUE);
+
+                        fb.replace(offset, length, start + end, attrs);
+                        buffer.setSelection(Interval.createEmpty(offset + 1));
+
+                        anchorManager.addAnchor(a);
+
+                        handled = true;
+                    }
+
+ 	        	} else if (end.equals(text)) {
 	        		String charToTheRight = buffer.getText(Interval.createWithLength(offset, 1));
 	            	if (charToTheRight.equals(end)) {
 	            		Iterator<Map.Entry<Anchor, Boolean>> it = anchors.entrySet().iterator();
@@ -100,6 +117,8 @@ public class CharacterPairsHandler extends DocumentFilter {
 	            		}
 	            	}
 	        	}
+
+                if (handled) break;
 	        }
     	}
     	
