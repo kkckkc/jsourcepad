@@ -125,12 +125,10 @@ public class PreviewServer {
                             int windowId = Integer.parseInt(params.get("windowId"));
 
                             window = Application.get().getWindowManager().getWindow(windowId);
+                            window.getDocList().open(new File(url));
                         } else {
-                            // TODO: Improve this
-                            window = Application.get().getWindowManager().getWindows().iterator().next();
+                            window = Application.get().open(new File(url));
                         }
-
-                        window.getDocList().open(new File(url));
 
 
                         String line = params.get("line");

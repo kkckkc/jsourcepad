@@ -12,10 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.script.ScriptException;
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.URL;
 import java.net.URLConnection;
@@ -25,14 +22,15 @@ import java.util.concurrent.CountDownLatch;
 @SuppressWarnings("restriction")
 public class Bootstrap implements Runnable {
 	private static Logger logger = LoggerFactory.getLogger(Bootstrap.class);
-	
-	public static void main(String... args) throws IOException {
+    private String[] args;
+
+    public static void main(String... args) throws IOException {
         logger.info("Initializing");
 
         if (checkAlreadyRunning()) {
             contactApplication(args);
         } else {
-            startApplication();
+            startApplication(args);
         }
 	}
 
@@ -62,7 +60,7 @@ public class Bootstrap implements Runnable {
         }
     }
 
-    private static void startApplication() {
+    private static void startApplication(String... args) {
         PerformanceLogger.get().enter(Bootstrap.class.getName() + "#init");
 
         ThreadGroup tg = new ThreadGroup("Editor") {
@@ -77,7 +75,7 @@ public class Bootstrap implements Runnable {
             }
         });
 
-        Bootstrap b = new Bootstrap();
+        Bootstrap b = new Bootstrap(args);
 
         Thread mainThread = new Thread(tg, b);
         mainThread.start();
@@ -103,9 +101,11 @@ public class Bootstrap implements Runnable {
     }
 
 
-    public Bootstrap() {
+    public Bootstrap(String... args) {
         Application.get();
         Application.get().getBeanFactory().getBean("applicationController");
+        
+        this.args = args;
 	}
 	
 	@Override
@@ -116,11 +116,29 @@ public class Bootstrap implements Runnable {
 			public void run() {
 				// Create new window
 				try {
-	                Window w = Application.get().getWindowManager().newWindow(null);
-                    w.getDocList().create();
+                    if (args == null || args.length == 0) {
+	                    Window w = Application.get().getWindowManager().newWindow(null);
+                        w.getDocList().create();
+                    } else {
+                        for (String s : args) {
+                            File f = new File(s);
+                            if (f.isDirectory()) {
+                                Application.get().open(f);
+                            }
+                        }
+
+                        for (String s : args) {
+                            File f = new File(s);
+                            if (! f.isDirectory()) {
+                                Application.get().open(f);
+                            }
+                        }
+                    }
+                    
 	                if (System.getProperty("startupScript") != null) {
 		                try {
-		                    w.getScriptEngine().eval(new FileReader(System.getProperty("startupScript")));
+		                    Application.get().getWindowManager().getWindows().iterator().next().getScriptEngine().
+                                    eval(new FileReader(System.getProperty("startupScript")));
 	                    } catch (ScriptException e1) {
 		                    e1.printStackTrace();
 	                    }

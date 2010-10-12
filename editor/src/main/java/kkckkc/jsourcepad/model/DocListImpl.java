@@ -135,11 +135,6 @@ public class DocListImpl implements DocList {
 	}
 
     @Override
-    public boolean supportsMultipleDocs() {
-        return true;
-    }
-
-    @Override
 	public int getDocCount() {
 	    return docs.size();
 	}

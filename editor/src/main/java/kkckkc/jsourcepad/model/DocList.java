@@ -25,6 +25,4 @@ public interface DocList {
 	public Doc getActiveDoc();
 	
 	public void close(Doc doc);
-
-    public boolean supportsMultipleDocs();
 }

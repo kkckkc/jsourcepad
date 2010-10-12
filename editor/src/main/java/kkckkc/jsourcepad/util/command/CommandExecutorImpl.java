@@ -24,7 +24,7 @@ public class CommandExecutorImpl implements CommandExecutor {
         command.execute(window);
     }
 
-    private StringBuilder getBeanPropertyValues(Command command) {
+    private StringBuilder getBeanPropertyValues(Object command) {
         StringBuilder b = new StringBuilder();
         try {
             Class c = command.getClass();

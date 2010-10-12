@@ -1,6 +1,5 @@
 package kkckkc.jsourcepad.command;
 
-import kkckkc.jsourcepad.action.ActionContextKeys;
 import kkckkc.jsourcepad.model.Buffer;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.util.command.Command;

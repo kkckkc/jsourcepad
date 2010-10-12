@@ -12,11 +12,13 @@ import kkckkc.jsourcepad.util.messagebus.MessageBus;
 import kkckkc.syntaxpane.parse.grammar.LanguageManager;
 import kkckkc.syntaxpane.style.StyleParser;
 import kkckkc.syntaxpane.style.StyleScheme;
+import kkckkc.utils.io.FileUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -127,5 +129,42 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
 
     public ClipboardManager getClipboardManager() {
         return beanFactory.getBean(ClipboardManager.class);
+    }
+
+
+    public Window open(File file) throws IOException {
+        WindowManager wm = getWindowManager();
+
+        file = file.getCanonicalFile();
+
+        if (file.isDirectory()) {
+            for (Window w : wm.getWindows()) {
+                if (file.equals(w.getProject())) {
+                    return w;
+                }
+            }
+
+            return wm.newWindow(file);
+        } else {
+            Window windowToUse = null;
+
+            for (Window w : wm.getWindows()) {
+                if (w.getProject() == null && windowToUse == null) {
+                    windowToUse = w;
+                } else {
+                    if (FileUtils.isAncestorOf(file, w.getProject().getProjectDir())) {
+                        windowToUse = w;
+                    }
+                }
+            }
+
+            if (windowToUse == null) {
+                windowToUse = wm.newWindow(null);
+            }
+
+            windowToUse.getDocList().open(file);
+
+            return windowToUse;
+        }
     }
 }	

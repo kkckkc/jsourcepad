@@ -9,4 +9,16 @@ public class FileUtils {
 		f.deleteOnExit();
 		return f;
 	}
+
+    public static boolean isAncestorOf(File descendant, File ancestor) {
+        if (ancestor.equals(descendant)) {
+            return false;
+        }
+
+        while (descendant != null && ! ancestor.equals(descendant)) {
+            descendant = descendant.getParentFile();
+        }
+
+        return descendant != null;
+    }
 }
