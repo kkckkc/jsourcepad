@@ -24,6 +24,12 @@ public class NavigationGoToTabsActionGroup extends ActionGroup implements DocLis
         this.window = window;
         window.topic(DocList.Listener.class).subscribe(DispatchStrategy.ASYNC_EVENT, this);
         window.topic(Doc.StateListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, this);
+
+        for (Doc d : window.getDocList().getDocs()) {
+            this.items.add(new GoToTabAction(d));
+        }
+        updateKeyBindings();
+        updateDerivedComponents();
     }
 
     @Override
