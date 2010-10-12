@@ -534,13 +534,15 @@ public class BufferImpl implements Buffer {
 	@Override
     public TextInterval getCurrentWord() {
         Interval l = getCurrentLine();
+        if (l == null) return null;
+        
 		String line = getText(l);
 		int index = getInsertionPoint().getLineIndex();
 		
 		Pattern p = Pattern.compile("(^| )+(\\w*)");
 		Matcher matcher = p.matcher(line);
 		while (matcher.find()) {
-			if (matcher.start(2) <= index && matcher.end(2) >= index) {
+			if (matcher.groupCount() > 1 && matcher.start(2) <= index && matcher.end(2) >= index) {
 				return new BufferTextInterval(l.getStart() + matcher.start(2), l.getStart() + matcher.end(2));
 			}
 		}
