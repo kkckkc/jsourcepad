@@ -12,7 +12,10 @@ import org.slf4j.LoggerFactory;
 
 import javax.script.ScriptException;
 import java.awt.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.URL;
 import java.net.URLConnection;
@@ -113,7 +116,8 @@ public class Bootstrap implements Runnable {
 			public void run() {
 				// Create new window
 				try {
-	                Window w = Application.get().getWindowManager().newWindow(new File(".").getCanonicalFile());
+	                Window w = Application.get().getWindowManager().newWindow(null);
+                    w.getDocList().create();
 	                if (System.getProperty("startupScript") != null) {
 		                try {
 		                    w.getScriptEngine().eval(new FileReader(System.getProperty("startupScript")));

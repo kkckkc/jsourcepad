@@ -41,7 +41,7 @@ public class WindowViewImpl implements WindowView {
         blv = window.getPresenter(DocListPresenter.class);
 
         WindowSettings ws = Application.get().getSettingsManager().get(WindowSettings.class);
-        showProjectDrawer = ws.isShowProjectDrawer();
+        showProjectDrawer = ws.isShowProjectDrawer() && window.getProject() != null;
 
         if (showProjectDrawer) {
             frame.add(splitpane, BorderLayout.CENTER);

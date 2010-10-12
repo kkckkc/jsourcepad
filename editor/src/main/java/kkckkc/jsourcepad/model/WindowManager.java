@@ -16,7 +16,7 @@ public interface WindowManager {
 
 	public Window getWindow(Container jframe);
 	
-	public Window newWindow(File baseDir);
+	public Window newWindow(File file);
 
 	public void closeWindow(Window window);
 	

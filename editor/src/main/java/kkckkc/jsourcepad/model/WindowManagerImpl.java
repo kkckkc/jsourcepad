@@ -11,7 +11,7 @@ import java.awt.*;
 import java.io.File;
 import java.util.Collection;
 import java.util.Map;
-
+import java.util.Properties;
 
 
 public class WindowManagerImpl implements WindowManager {
@@ -47,21 +47,43 @@ public class WindowManagerImpl implements WindowManager {
 	}
 
 	@Override
-	public Window newWindow(File projectDir) {
-		DefaultListableBeanFactory container =
-			beanFactoryLoader.load(BeanFactoryLoader.WINDOW, app);
+	public Window newWindow(File file) {
+        Properties props = new Properties();
+        props.put("projectDir", file == null ? "" : file.toString());
 
-		container.registerSingleton("projectDir", new ProjectRoot(projectDir));
+        // TODO: Clean this method
+        if (file != null && file.isDirectory()) {
+            DefaultListableBeanFactory container =
+                beanFactoryLoader.load(BeanFactoryLoader.WINDOW, app, props);
 
-		Window window = container.getBean("window", Window.class);
-        ((WindowImpl) window).setId(++lastId);
+            Window window = container.getBean("window", Window.class);
+            ((WindowImpl) window).setId(++lastId);
 
-		Container frame = window.getContainer();
-		container.registerSingleton("frame", frame);
+            Container frame = window.getContainer();
+            container.registerSingleton("frame", frame);
 
-		openWindows.put(frame, window);
-		app.getMessageBus().topic(Listener.class).post().created(window);
-		return window;
+            openWindows.put(frame, window);
+            app.getMessageBus().topic(Listener.class).post().created(window);
+            return window;
+        } else {
+            DefaultListableBeanFactory container =
+                beanFactoryLoader.load(BeanFactoryLoader.WINDOW, app, props);
+
+            Window window = container.getBean("window", Window.class);
+            ((WindowImpl) window).setId(++lastId);
+
+            Container frame = window.getContainer();
+            container.registerSingleton("frame", frame);
+
+            openWindows.put(frame, window);
+            app.getMessageBus().topic(Listener.class).post().created(window);
+
+            if (file != null) {
+                window.getDocList().open(file);
+            }
+
+            return window;
+        }
 	}
 
 	@Override

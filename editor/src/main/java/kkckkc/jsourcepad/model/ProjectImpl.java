@@ -8,9 +8,9 @@ import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 import kkckkc.jsourcepad.util.DefaultFileMonitor;
 import kkckkc.jsourcepad.util.FileMonitor;
-import kkckkc.utils.PerformanceLogger;
 import kkckkc.jsourcepad.util.QueryUtils;
 import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
+import kkckkc.utils.PerformanceLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
@@ -27,7 +27,7 @@ public class ProjectImpl implements Project, DocList.Listener, Window.FocusListe
 	};
 
 	// Collaborators
-	private ProjectRoot projectDir;
+	private File projectDir;
 	private Window window;
 
 	private Set<File> cache = Sets.newHashSet();
@@ -41,25 +41,27 @@ public class ProjectImpl implements Project, DocList.Listener, Window.FocusListe
     }
 	
 	@Autowired
-	public void setProjectDir(ProjectRoot projectDir) {
+	public void setProjectDir(File projectDir) {
 	    this.projectDir = projectDir;
     }
 	
 	@PostConstruct
 	public void init() {
-		window.topic(Window.FocusListener.class).subscribe(DispatchStrategy.ASYNC, this);
-		
-		fileMonitor = new DefaultFileMonitor(Application.get().getThreadPool());
-		fileMonitor.addListener(this);
-		fileMonitor.registerRecursively(getProjectDir(), new Predicate<File>() {
-            public boolean apply(File input) {
-	            return ! input.getName().endsWith(".class");
-            }
-		});
+        if (projectDir != null) {
+            window.topic(Window.FocusListener.class).subscribe(DispatchStrategy.ASYNC, this);
+            
+            fileMonitor = new DefaultFileMonitor(Application.get().getThreadPool());
+            fileMonitor.addListener(this);
+            fileMonitor.registerRecursively(getProjectDir(), new Predicate<File>() {
+                public boolean apply(File input) {
+                    return ! input.getName().endsWith(".class");
+                }
+            });
+        }
 	}
 	
 	public File getProjectDir() {
-		return projectDir.getFile();
+		return projectDir;
 	}
 
 	@Override
@@ -113,7 +115,7 @@ public class ProjectImpl implements Project, DocList.Listener, Window.FocusListe
 	private void populateCacheIfEmpty() {
 		synchronized (cache) {
 			if (cache.isEmpty()) {
-		    	populateCacheRecusively(Predicates.<File>alwaysTrue(), projectDir.getFile(), 10000);
+		    	populateCacheRecusively(Predicates.<File>alwaysTrue(), projectDir, 10000);
 		    }
 		}
     }
@@ -134,7 +136,7 @@ public class ProjectImpl implements Project, DocList.Listener, Window.FocusListe
 
 	@Override
     public String getProjectRelativePath(String path) {
-	    String s = path.substring(projectDir.getFile().toString().length());
+	    String s = path.substring(projectDir.toString().length());
 	    if ("".equals(s)) return "/";
 	    return s;
     }

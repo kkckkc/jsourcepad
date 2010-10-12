@@ -5,13 +5,12 @@ import kkckkc.jsourcepad.PluginManager;
 import kkckkc.jsourcepad.ScopeRoot;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
-import kkckkc.jsourcepad.theme.Theme;
 import kkckkc.utils.DomUtil;
-import kkckkc.utils.IteratorIterable;
 import kkckkc.utils.PerformanceLogger;
 import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
 import org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor;
+import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.DocumentLoader;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
@@ -24,8 +23,7 @@ import org.xml.sax.InputSource;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import java.util.Iterator;
-import java.util.ServiceLoader;
+import java.util.Properties;
 
 public class BeanFactoryLoader {
     private static final FastDocumentLoader FAST_DOCUMENT_LOADER = new FastDocumentLoader();
@@ -61,10 +59,10 @@ public class BeanFactoryLoader {
 	
 	@SuppressWarnings("unchecked")
     public DefaultListableBeanFactory load(Scope<?> scope) {
-		return load((Scope<ScopeRoot>) scope, null);
+		return load((Scope<ScopeRoot>) scope, null, null);
 	}
 	
-	public <P extends ScopeRoot> DefaultListableBeanFactory load(Scope<P> scope, P parent) {
+	public <P extends ScopeRoot> DefaultListableBeanFactory load(Scope<P> scope, P parent, Properties properties) {
 		PerformanceLogger.get().enter(this, "load");
 		
 		DefaultListableBeanFactory container;
@@ -85,8 +83,7 @@ public class BeanFactoryLoader {
 		p.setInitAnnotationType(PostConstruct.class);
 		
 		container.addBeanPostProcessor(p);
-		
-		
+
 		XmlBeanDefinitionReader xmlBeanDefinitionReader = new XmlBeanDefinitionReader(container);
         
 		loadXml(xmlBeanDefinitionReader, scope);
@@ -98,7 +95,16 @@ public class BeanFactoryLoader {
 
             xmlBeanDefinitionReader.loadBeanDefinitions(r);
         }
-		
+
+        if (properties != null) {
+            PropertyPlaceholderConfigurer ppc = new PropertyPlaceholderConfigurer();
+            ppc.setSearchSystemEnvironment(false);
+            ppc.setProperties(properties);
+            
+            ppc.setBeanFactory(container);
+            ppc.postProcessBeanFactory(container);
+        }
+
 		PerformanceLogger.get().exit();
 		
 		return container;

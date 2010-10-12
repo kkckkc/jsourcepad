@@ -39,7 +39,7 @@ public class DocListImpl implements DocList {
 	}
 
 	private Doc createDoc() {
-		BeanFactory container = beanFactoryLoader.load(BeanFactoryLoader.DOCUMENT, window);
+		BeanFactory container = beanFactoryLoader.load(BeanFactoryLoader.DOCUMENT, window, null);
 		return container.getBean(Doc.class);
     }
 
@@ -134,7 +134,12 @@ public class DocListImpl implements DocList {
 		window.topic(Listener.class).post().closed(i, doc);
 	}
 
-	@Override
+    @Override
+    public boolean supportsMultipleDocs() {
+        return true;
+    }
+
+    @Override
 	public int getDocCount() {
 	    return docs.size();
 	}

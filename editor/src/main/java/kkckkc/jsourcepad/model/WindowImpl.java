@@ -16,7 +16,6 @@ import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.swing.*;
-import java.awt.*;
 
 
 public class WindowImpl extends AbstractMessageBus implements Window, MessageBus, ScopeRoot {
@@ -68,7 +67,9 @@ public class WindowImpl extends AbstractMessageBus implements Window, MessageBus
 	
 	@Override
 	public Project getProject() {
-		return beanFactory.getBean(Project.class);
+		Project project = beanFactory.getBean(Project.class);
+        if (project.getProjectDir() == null) return null;
+        return project;
 	}
 
 	@Override
