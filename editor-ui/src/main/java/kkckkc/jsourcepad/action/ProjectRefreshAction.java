@@ -1,11 +1,10 @@
 package kkckkc.jsourcepad.action;
 
-import java.awt.event.ActionEvent;
-import java.io.File;
-
-
 import kkckkc.jsourcepad.model.Project;
 import kkckkc.jsourcepad.util.action.BaseAction;
+
+import java.awt.event.ActionEvent;
+import java.io.File;
 
 public class ProjectRefreshAction extends BaseAction {
 
@@ -13,6 +12,7 @@ public class ProjectRefreshAction extends BaseAction {
 
 	public ProjectRefreshAction(Project project) {
 		this.project = project;
+        setActionStateRules(ActionStateRules.HAS_PROJECT);
 	}
 	
     public void actionPerformed(ActionEvent e) {

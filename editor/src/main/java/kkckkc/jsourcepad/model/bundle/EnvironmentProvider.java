@@ -46,7 +46,9 @@ public class EnvironmentProvider {
 			}
 		}
 
-		environment.put("TM_PROJECT_DIRECTORY", window.getProject().getProjectDir().getPath());
+        if (window.getProject() != null) {
+		    environment.put("TM_PROJECT_DIRECTORY", window.getProject().getProjectDir().getPath());
+        }
 
 		List<File> paths = Lists.newArrayList();
 		

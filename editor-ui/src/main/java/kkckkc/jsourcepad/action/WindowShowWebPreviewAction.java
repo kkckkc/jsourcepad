@@ -25,6 +25,7 @@ public class WindowShowWebPreviewAction extends BaseAction {
         String path = "/preview/" + doc.getDocList().getWindow().getId();
 
         if (doc.isBackedByFile()) {
+            // TODO: Fix this when file is not in project window
             path += doc.getDocList().getWindow().getProject().getProjectRelativePath(doc.getFile().getPath());
         } else {
             path += "/tab-" + doc.getDocList().getIndex(doc);

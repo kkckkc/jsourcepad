@@ -1,6 +1,8 @@
 package kkckkc.jsourcepad.action;
 
+import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Doc;
+import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.util.action.ActionContext;
 import kkckkc.jsourcepad.util.action.ActionStateRule;
 import kkckkc.syntaxpane.model.Interval;
@@ -67,6 +69,14 @@ public class ActionStateRules {
         public boolean shouldBeEnabled(ActionContext actionContext) {
             Doc d = actionContext.get(ActionContextKeys.ACTIVE_DOC);
     		return d.getActiveBuffer().canRedo();
+        }
+    };
+
+    public static ActionStateRule HAS_PROJECT = new ActionStateRule() {
+        @Override
+        public boolean shouldBeEnabled(ActionContext actionContext) {
+            Window w = Application.get().getWindowManager().getWindow(actionContext.getComponent());
+            return w.getProject() != null;
         }
     };
 

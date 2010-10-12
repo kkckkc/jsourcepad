@@ -69,6 +69,7 @@ public class ActionManager implements BeanFactoryAware {
                     ActionManager actionManager = w.getActionManager();
 
                     ActionContext ac = ActionContext.get(c);
+                    ac.setComponent(c);
 
                     actionManager.setActionContext(ac);
                 }

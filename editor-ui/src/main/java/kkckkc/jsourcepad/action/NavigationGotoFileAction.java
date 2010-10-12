@@ -1,10 +1,10 @@
 package kkckkc.jsourcepad.action;
 
-import java.awt.event.ActionEvent;
-
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.ui.dialog.navigation.QuickNavigationDialog;
 import kkckkc.jsourcepad.util.action.BaseAction;
+
+import java.awt.event.ActionEvent;
 
 public class NavigationGotoFileAction extends BaseAction {
 
@@ -12,6 +12,7 @@ public class NavigationGotoFileAction extends BaseAction {
 
 	public NavigationGotoFileAction(Window w) {
 		this.window = w;
+        setActionStateRules(ActionStateRules.HAS_PROJECT);
 	}
 	
 	@Override

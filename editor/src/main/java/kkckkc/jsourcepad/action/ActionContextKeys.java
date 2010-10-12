@@ -1,6 +1,5 @@
 package kkckkc.jsourcepad.action;
 
-import kkckkc.jsourcepad.Presenter;
 import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.util.action.ActionContext;
 

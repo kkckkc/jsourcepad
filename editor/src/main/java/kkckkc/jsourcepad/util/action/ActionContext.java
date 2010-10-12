@@ -3,11 +3,11 @@ package kkckkc.jsourcepad.util.action;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import java.awt.Container;
+
+import javax.swing.*;
+import java.awt.*;
 import java.util.Map;
 import java.util.Set;
-import javax.swing.JComponent;
-import javax.swing.JPopupMenu;
 
 public class ActionContext {
     private static final Object KEY = "ActionContext";
@@ -22,7 +22,15 @@ public class ActionContext {
     private Map<Key<?>, Object> items = Maps.newHashMap();
     private ActionContext parent;
     private Set<Listener> listeners = Sets.newHashSet();
+    private JComponent component;
 
+    public JComponent getComponent() {
+        return component;
+    }
+
+    public void setComponent(JComponent component) {
+        this.component = component;
+    }
 
     public static ActionContext get(Container c) {
         if (c == null) {

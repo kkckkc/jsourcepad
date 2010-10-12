@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 public class ViewShowHideProjectDrawerAction extends BaseAction implements Presenter.Menu {
     public ViewShowHideProjectDrawerAction() {
         updateName();
+        setActionStateRules(ActionStateRules.HAS_PROJECT);
     }
 
     @Override

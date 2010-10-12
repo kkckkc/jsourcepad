@@ -10,7 +10,7 @@ import java.util.List;
 public class NavigationGotoHeaderSourceAction extends BaseAction {
 
 	public NavigationGotoHeaderSourceAction() {
-        setActionStateRules(ActionStateRules.HAS_ACTIVE_DOC, ActionStateRules.DOC_BACKED_BY_FILE);
+        setActionStateRules(ActionStateRules.HAS_ACTIVE_DOC, ActionStateRules.DOC_BACKED_BY_FILE, ActionStateRules.HAS_PROJECT);
 	}
 
 	@Override
