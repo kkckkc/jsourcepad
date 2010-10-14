@@ -6,6 +6,7 @@ import kkckkc.jsourcepad.ScopeRoot;
 import kkckkc.jsourcepad.model.bundle.BundleManager;
 import kkckkc.jsourcepad.theme.DefaultTheme;
 import kkckkc.jsourcepad.theme.Theme;
+import kkckkc.jsourcepad.util.ApplicationFolder;
 import kkckkc.jsourcepad.util.BeanFactoryLoader;
 import kkckkc.jsourcepad.util.messagebus.AbstractMessageBus;
 import kkckkc.jsourcepad.util.messagebus.MessageBus;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -95,8 +97,10 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
 
 	public StyleScheme getStyleScheme(StyleSettings styleSettings) {
 		StyleParser styleParser = beanFactory.getBean(StyleParser.class);
-		
-		File source = new File(styleSettings.getThemeLocation());
+
+        String location = ApplicationFolder.get("Shared/Themes/" + styleSettings.getThemeLocation()).toString();
+
+		File source = new File(location);
 		if (cachedStyleScheme != null && cachedStyleScheme.getSource().equals(source)) 
 			return cachedStyleScheme;
 		
@@ -104,6 +108,15 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
 		cachedStyleScheme = scheme;
 		return scheme;
 	}
+
+    public String[] getStyleSchemes() {
+        return ApplicationFolder.get("Shared/Themes/").list(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.endsWith(".tmTheme");
+            }
+        });
+    }
 
 	@Override
 	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {

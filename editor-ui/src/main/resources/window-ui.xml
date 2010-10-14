@@ -37,4 +37,13 @@
     <bean id="gotoLineDialogView" class="kkckkc.jsourcepad.ui.dialog.gotoline.GotoLineDialogViewimpl" autowire="constructor" />
     <bean id="gotoLineDialog" class="kkckkc.jsourcepad.ui.dialog.gotoline.GotoLineDialog" />
 
+
+
+    <!-- Settings -->
+    <bean id="settingsDialog" class="kkckkc.jsourcepad.ui.dialog.settings.SettingsDialog" />
+    <bean id="settingsDialogView" class="kkckkc.jsourcepad.ui.dialog.settings.SettingsViewImpl" autowire="constructor" />
+
+    <bean id="styleSettings" class="kkckkc.jsourcepad.ui.settings.StyleSettingsPanel" />
+    <bean id="themeSettings" class="kkckkc.jsourcepad.ui.settings.ThemeSettingsPanel" />
+
 </beans>

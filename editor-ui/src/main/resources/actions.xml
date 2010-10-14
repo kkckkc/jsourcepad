@@ -237,6 +237,7 @@
                 <ref local="action-window-zoom" />
                 <null />
                 <ref local="action-window-show-web-preview" />
+                <ref local="action-preferences" />
             </list>
         </property>
     </bean>
@@ -397,6 +398,8 @@
         <constructor-arg index="0" value="1" />
         <constructor-arg index="1" value="false" />
     </bean>
+
+    <bean id="action-preferences" parent="action" class="kkckkc.jsourcepad.action.PreferencesAction" autowire="constructor"/>
 
     <!-- TODO: Rename these actions -->
 	<bean id="action-window-close" parent="action" class="kkckkc.jsourcepad.action.WindowCloseAction" autowire="constructor"/>

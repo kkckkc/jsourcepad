@@ -4,31 +4,58 @@ import kkckkc.jsourcepad.model.SettingsPanel;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
+import java.text.NumberFormat;
+import java.text.ParseException;
 
 public class StyleSettingsPanelView extends JPanel implements SettingsPanel.View {
+    private JComboBox fonts;
+    private JFormattedTextField sizeField;
+    private JComboBox styles;
+
     public StyleSettingsPanelView() {
-        initComponents();
+        try {
+            initComponents();
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private void initComponents() {
+    private void initComponents() throws ParseException {
         setOpaque(false);
         setLayout(new MigLayout("insets panel,fillx", "[right]r[grow]", "[]r[]u[]"));
 
+        fonts = new JComboBox();
+        fonts.setEnabled(false);
+
         add(new JLabel("Font:"), "");
-        add(new JTextField(), "split,width 5cm,growx");
-        add(new JButton("Select"), "wrap");
+        add(fonts, "width 8cm,growx,wrap");
+
+        sizeField = new JFormattedTextField(NumberFormat.getIntegerInstance());
 
         add(new JLabel("Size:"), "");
-        add(new JTextField(), "width 2cm,wrap");
+        add(sizeField, "width 2cm,wrap");
 
         add(new JSeparator(JSeparator.HORIZONTAL), "wrap,span,growx");
 
+        styles = new JComboBox();
         add(new JLabel("Style scheme:"), "");
-        add(new JComboBox(), "wrap,growx");
+        add(styles, "wrap,growx");
     }
 
     @Override
     public JPanel getJPanel() {
         return this;  
+    }
+
+    public JComboBox getFonts() {
+        return fonts;
+    }
+
+    public JTextField getSizeField() {
+        return sizeField;
+    }
+
+    public JComboBox getStyles() {
+        return styles;
     }
 }

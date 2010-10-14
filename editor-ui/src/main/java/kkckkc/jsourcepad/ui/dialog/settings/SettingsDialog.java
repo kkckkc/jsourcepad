@@ -10,6 +10,8 @@ import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -54,6 +56,20 @@ public class SettingsDialog implements Dialog<SettingsView>, BeanFactoryAware {
             
             view.addSettingsPanel(panel.getName(), panel.getView().getJPanel());
         }
+
+        view.getCancelButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                close();
+            }
+        });
+
+        view.getOkButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                saveAndClose();
+            }
+        });
     }
 
 

@@ -1,7 +1,5 @@
 package kkckkc.jsourcepad.ui.dialog.settings;
 
-import kkckkc.jsourcepad.ui.settings.StyleSettingsPanelView;
-import kkckkc.jsourcepad.ui.settings.ThemeSettingsPanelView;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -24,7 +22,7 @@ public class SettingsViewImpl extends JDialog implements SettingsView {
         setTitle("Settings");
 
         Container p = getContentPane();
-        p.setLayout(new MigLayout("insets dialog", "[grow,10sp::][]", "[grow,10sp::]u[]"));
+        p.setLayout(new MigLayout("insets dialog", "[grow,15sp::][]", "[grow,15sp::]u[]"));
 
         tabbedPane = new JTabbedPane();
         okButton = new JButton("OK");
@@ -58,12 +56,4 @@ public class SettingsViewImpl extends JDialog implements SettingsView {
         return cancelButton;
     }
 
-
-    public static void main(String... args) {
-        SettingsViewImpl s = new SettingsViewImpl(null);
-        s.addSettingsPanel("Font & Colors", new StyleSettingsPanelView());
-        s.addSettingsPanel("Theme", new ThemeSettingsPanelView());
-
-        s.setVisible(true);
-    }
 }

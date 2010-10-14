@@ -1,7 +1,6 @@
 package kkckkc.jsourcepad.model;
 
 import kkckkc.jsourcepad.model.SettingsManager.Setting;
-import kkckkc.jsourcepad.util.ApplicationFolder;
 
 public class StyleSettings implements Setting {
 
@@ -44,7 +43,7 @@ public class StyleSettings implements Setting {
 
     @Override
     public StyleSettings getDefault() {
-	    return new StyleSettings(ApplicationFolder.get("Shared/Themes/Twilight.tmTheme").toString(), true, 78);
+	    return new StyleSettings("Twilight.tmTheme", true, 78);
     }
 
 }
