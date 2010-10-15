@@ -8,6 +8,7 @@ import org.pushingpixels.substance.api.SubstanceLookAndFeel;
 import org.pushingpixels.substance.api.fonts.FontPolicy;
 import org.pushingpixels.substance.api.fonts.FontSet;
 import org.pushingpixels.substance.api.skin.SubstanceBusinessBlackSteelLookAndFeel;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
 import javax.swing.*;
@@ -75,7 +76,10 @@ public class SubstanceTheme implements Theme {
 
     @Override
     public Resource getOverridesLocation(BeanFactoryLoader.Scope<?> scope) {
-		return null;
+        if (scope == BeanFactoryLoader.WINDOW) {
+            return new ClassPathResource("/substance-window.xml");
+        }
+        return null;
     }
 
 }
