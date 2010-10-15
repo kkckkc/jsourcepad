@@ -71,10 +71,22 @@ public class SettingsDialog implements Dialog<SettingsView>, BeanFactoryAware {
                 saveAndClose();
             }
         });
+
+        view.getApplyButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                save();
+            }
+        });
     }
 
 
     public void saveAndClose() {
+        save();
+        close();
+    }
+
+    private void save() {
         boolean requiresRestart = false;
         for (SettingsPanel panel : panels) {
             requiresRestart |= panel.save();
@@ -82,14 +94,13 @@ public class SettingsDialog implements Dialog<SettingsView>, BeanFactoryAware {
 
         if (requiresRestart)
             JOptionPane.showMessageDialog(view.getJDialog(), "Some changes requires a restart before they take effect");
-
-        close();
     }
 
     public void show() {
         for (SettingsPanel panel : panels) {
             panel.load();
         }
+        view.getJDialog().pack();
         view.getJDialog().setVisible(true);
     }
 }

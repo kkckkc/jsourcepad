@@ -5,6 +5,8 @@ import kkckkc.jsourcepad.model.SettingsPanel;
 import net.miginfocom.swing.MigLayout;
 import org.pushingpixels.substance.api.SubstanceLookAndFeel;
 import org.pushingpixels.substance.api.SubstanceSkin;
+import org.pushingpixels.substance.api.fonts.FontPolicy;
+import org.pushingpixels.substance.api.fonts.FontSet;
 import org.pushingpixels.substance.api.renderers.SubstanceDefaultComboBoxRenderer;
 import org.pushingpixels.substance.api.skin.SkinInfo;
 
@@ -15,11 +17,13 @@ import java.util.Vector;
 public class SubstanceSettingsPanel extends JPanel implements SettingsPanel, SettingsPanel.View {
 
     private JComboBox skinList;
+    private JSlider fontSizeSlider;
+    private JCheckBox keepMenuFontSize;
 
     public SubstanceSettingsPanel() {
         setOpaque(false);
 
-        setLayout(new MigLayout("insets panel,fillx", "[right]r[grow]", "[]"));
+        setLayout(new MigLayout("insets panel,fillx", "[right]r[grow]", "[]u[]r[]r"));
 
         skinList = new JComboBox(new Vector<SkinInfo>(
                 SubstanceLookAndFeel.getAllSkins().values()));
@@ -33,8 +37,24 @@ public class SubstanceSettingsPanel extends JPanel implements SettingsPanel, Set
                         .getDisplayName(), index, isSelected, cellHasFocus);
             }
         });
-        add(new JLabel("All skins:"), "");
+
+
+        fontSizeSlider = new JSlider(JSlider.HORIZONTAL, -5, 5, 0);
+        fontSizeSlider.setMinorTickSpacing(1);
+        fontSizeSlider.setMajorTickSpacing(5);
+        fontSizeSlider.setSnapToTicks(true);
+        fontSizeSlider.setPaintLabels(true);
+        fontSizeSlider.setPaintTicks(true);
+        keepMenuFontSize = new JCheckBox();
+
+        add(new JLabel("Skins:"), "");
         add(skinList, "growx,wrap");
+
+        add(new JLabel("Font size adjustment:"), "");
+        add(fontSizeSlider, "growx,wrap");
+
+        add(new JLabel("Keep menu font size:"));
+        add(keepMenuFontSize, "growx,wrap");
     }
 
     @Override
@@ -60,19 +80,46 @@ public class SubstanceSettingsPanel extends JPanel implements SettingsPanel, Set
                 skinList.setSelectedItem(si);
             }
         }
+
+        final SubstanceSettings ss = Application.get().getSettingsManager().get(SubstanceSettings.class);
+        fontSizeSlider.setValue(ss.getFontSizeAdjustment());
+        keepMenuFontSize.setSelected(ss.isKeepMenuSize());
     }
 
     @Override
     public boolean save() {
+        final SubstanceSettings ss = Application.get().getSettingsManager().get(SubstanceSettings.class);
+        ss.setSkin(((SkinInfo) skinList.getSelectedItem()).getClassName());
+        ss.setFontSizeAdjustment(fontSizeSlider.getValue());
+        ss.setKeepMenuSize(keepMenuFontSize.isSelected());
+        Application.get().getSettingsManager().update(ss);
+
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 SubstanceLookAndFeel.setSkin(((SkinInfo) skinList.getSelectedItem()).getClassName());
-              }
+
+                SubstanceLookAndFeel.setFontPolicy(null);
+                // Get the default font set
+                final FontSet substanceCoreFontSet = SubstanceLookAndFeel.getFontPolicy().getFontSet("Substance", null);
+                // Create the wrapper font set
+                FontPolicy newFontPolicy = new FontPolicy() {
+                    public FontSet getFontSet(String lafName,
+                                              UIDefaults table) {
+                        return new WrapperFontSet(substanceCoreFontSet, ss);
+                    }
+                };
+
+                try {
+                    SubstanceSettingsPanel.this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                    // set the new font policy
+                    SubstanceLookAndFeel.setFontPolicy(newFontPolicy);
+                    SubstanceSettingsPanel.this.setCursor(Cursor.getDefaultCursor());
+                } catch (Exception exc) {
+                    exc.printStackTrace();
+                }
+            }
         });
 
-        SubstanceSettings ss = Application.get().getSettingsManager().get(SubstanceSettings.class);
-        ss.setSkin(((SkinInfo) skinList.getSelectedItem()).getClassName());
-        Application.get().getSettingsManager().update(ss);
 
         return false;
     }

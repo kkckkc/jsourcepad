@@ -9,5 +9,6 @@ public interface SettingsView extends View {
     public JDialog getJDialog();
 
     public JButton getOkButton();
+    public JButton getApplyButton();
     public JButton getCancelButton();
 }

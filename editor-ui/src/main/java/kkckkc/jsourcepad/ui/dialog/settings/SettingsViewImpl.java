@@ -8,6 +8,7 @@ import java.awt.*;
 public class SettingsViewImpl extends JDialog implements SettingsView {
     private JTabbedPane tabbedPane;
     private JButton okButton;
+    private JButton applyButton;
     private JButton cancelButton;
 
     public SettingsViewImpl(java.awt.Frame parent) {
@@ -26,10 +27,12 @@ public class SettingsViewImpl extends JDialog implements SettingsView {
 
         tabbedPane = new JTabbedPane();
         okButton = new JButton("OK");
+        applyButton = new JButton("Apply");
         cancelButton = new JButton("Cancel");
 
         p.add(tabbedPane, "grow,wrap,span");
-        p.add(okButton, "tag ok");
+        p.add(okButton, "tag ok,span 3");
+        p.add(applyButton, "tag apply");
         p.add(cancelButton, "tag cancel");
 
         pack();
@@ -49,6 +52,11 @@ public class SettingsViewImpl extends JDialog implements SettingsView {
     @Override
     public JButton getOkButton() {
         return okButton;
+    }
+
+    @Override
+    public JButton getApplyButton() {
+        return applyButton;
     }
 
     @Override

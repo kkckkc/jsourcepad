@@ -5,6 +5,8 @@ import kkckkc.jsourcepad.model.SettingsPanel;
 import kkckkc.jsourcepad.model.ThemeSettings;
 import kkckkc.jsourcepad.util.BeanFactoryLoader;
 import org.pushingpixels.substance.api.SubstanceLookAndFeel;
+import org.pushingpixels.substance.api.fonts.FontPolicy;
+import org.pushingpixels.substance.api.fonts.FontSet;
 import org.pushingpixels.substance.api.skin.SubstanceBusinessBlackSteelLookAndFeel;
 import org.springframework.core.io.Resource;
 
@@ -18,9 +20,22 @@ public class SubstanceTheme implements Theme {
 	public Object getLookAndFeel() {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                SubstanceSettings ss = SettingsManager.GLOBAL.get(SubstanceSettings.class);
+                final SubstanceSettings ss = SettingsManager.GLOBAL.get(SubstanceSettings.class);
                 if (ss.getSkin() != null) {
                     SubstanceLookAndFeel.setSkin(ss.getSkin());
+
+                    SubstanceLookAndFeel.setFontPolicy(null);
+                    // Get the default font set
+                    final FontSet substanceCoreFontSet = SubstanceLookAndFeel.getFontPolicy().getFontSet("Substance", null);
+                    // Create the wrapper font set
+                    FontPolicy newFontPolicy = new FontPolicy() {
+                        public FontSet getFontSet(String lafName,
+                                              UIDefaults table) {
+                            return new WrapperFontSet(substanceCoreFontSet, ss);
+                        }
+                    };
+
+                    SubstanceLookAndFeel.setFontPolicy(newFontPolicy);
                 }
               }
         });
