@@ -1,11 +1,11 @@
 package kkckkc.jsourcepad.theme;
 
 import kkckkc.jsourcepad.Plugin;
-import kkckkc.jsourcepad.util.BeanFactoryLoader;
-import org.springframework.core.io.Resource;
-
+import kkckkc.jsourcepad.model.SettingsPanel;
 
 
 public interface Theme extends Plugin {
-	public String getLookAndFeel();
+	public Object getLookAndFeel();
+    public void activate();
+    public SettingsPanel getSettingsPanel();
 }

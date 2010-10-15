@@ -1,8 +1,10 @@
 package kkckkc.jsourcepad.theme;
 
+import kkckkc.jsourcepad.model.SettingsManager;
+import kkckkc.jsourcepad.model.SettingsPanel;
+import kkckkc.jsourcepad.model.ThemeSettings;
 import kkckkc.jsourcepad.util.BeanFactoryLoader;
 import kkckkc.jsourcepad.util.BeanFactoryLoader.Scope;
-
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -16,6 +18,15 @@ public class GtkTheme implements Theme {
 	}
 
     @Override
+    public void activate() {
+    }
+
+    @Override
+    public SettingsPanel getSettingsPanel() {
+        return null;
+    }
+
+    @Override
     public String getId() {
         return "theme-gtk";
     }
@@ -27,8 +38,8 @@ public class GtkTheme implements Theme {
 
     @Override
     public boolean isEnabled() {
-        String theme = System.getProperty("theme");
-        return getClass().getName().equals(theme);
+        ThemeSettings ts = SettingsManager.GLOBAL.get(ThemeSettings.class);
+        return ts.getThemeId() != null && ts.getThemeId().equals(getId());
     }
 
     @Override

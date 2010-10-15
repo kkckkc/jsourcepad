@@ -1,12 +1,10 @@
 package kkckkc.jsourcepad.theme;
 
-import javax.swing.UIDefaults;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-
+import kkckkc.jsourcepad.model.SettingsManager;
+import kkckkc.jsourcepad.model.SettingsPanel;
+import kkckkc.jsourcepad.model.ThemeSettings;
 import kkckkc.jsourcepad.util.BeanFactoryLoader;
 import kkckkc.jsourcepad.util.BeanFactoryLoader.Scope;
-
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -14,14 +12,20 @@ import org.springframework.core.io.Resource;
 
 public class OsxTheme implements Theme {
 
-	public OsxTheme() {
-		System.setProperty("apple.laf.useScreenMenuBar", "true");
-	}
-	
 	@Override
 	public String getLookAndFeel() {
 		return null;
 	}
+
+    @Override
+    public void activate() {
+		System.setProperty("apple.laf.useScreenMenuBar", "true");
+    }
+
+    @Override
+    public SettingsPanel getSettingsPanel() {
+        return null;
+    }
 
     @Override
     public String getId() {
@@ -35,8 +39,8 @@ public class OsxTheme implements Theme {
 
     @Override
     public boolean isEnabled() {
-        String theme = System.getProperty("theme");
-        return getClass().getName().equals(theme);
+        ThemeSettings ts = SettingsManager.GLOBAL.get(ThemeSettings.class);
+        return ts.getThemeId() != null && ts.getThemeId().equals(getId());
     }
 
     @Override

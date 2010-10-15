@@ -14,7 +14,6 @@ public class StyleSettingsPanel implements SettingsPanel {
         this.view = new StyleSettingsPanelView();
         this.settingsManager = Application.get().getSettingsManager();
 
-        // TODO: Move to presenter
         SwingWorker<Void, Object> sw = new SwingWorker<Void, Object>() {
             protected void done() {
                 try {

@@ -141,5 +141,10 @@
             <artifactId>theme-osx</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>kkckkc.jsourcepad</groupId>
+            <artifactId>theme-substance</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>

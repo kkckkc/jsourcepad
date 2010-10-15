@@ -6,20 +6,21 @@ import java.util.*;
 
 public class PluginManager {
     private static List<Plugin> plugins;
+    private static List<Plugin> allPlugins;
 
     public static Iterable<Plugin> getActivePlugins() {
         if (plugins == null) {
-            loadPlugins();
+            plugins = loadPlugins(true);
         }
         return plugins;
     }
 
-    private static synchronized void loadPlugins() {
+    private static synchronized List<Plugin> loadPlugins(boolean filter) {
         ServiceLoader<Plugin> loader = ServiceLoader.load(Plugin.class);
 
         List<Plugin> available = new ArrayList<Plugin>();
         for (Plugin p : new IteratorIterable<Plugin>(loader.iterator())) {
-            if (p.isEnabled()) available.add(p);
+            if (! filter || p.isEnabled()) available.add(p);
         }
 
         Map<String, Plugin> resolved = new LinkedHashMap<String, Plugin>();
@@ -51,7 +52,16 @@ public class PluginManager {
             throw new RuntimeException("Cannot load plugins due to dependency problems");
         }
 
-        plugins = new ArrayList<Plugin>();
-        plugins.addAll(resolved.values());
+        List<Plugin> dest = new ArrayList<Plugin>();
+        dest.addAll(resolved.values());
+
+        return dest;
+    }
+
+    public static Iterable<Plugin> getAllPlugins() {
+        if (allPlugins == null) {
+            allPlugins = loadPlugins(false);
+        }
+        return allPlugins;
     }
 }

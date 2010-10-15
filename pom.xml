@@ -21,6 +21,7 @@
         <module>utils</module>
         <module>editor-bootstrap</module>
         <module>editor-ui</module>
+        <module>theme-substance</module>
     </modules>
 
 	<build>

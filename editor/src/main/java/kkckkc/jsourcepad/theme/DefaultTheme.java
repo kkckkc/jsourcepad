@@ -1,17 +1,27 @@
 package kkckkc.jsourcepad.theme;
 
+import kkckkc.jsourcepad.model.SettingsPanel;
 import kkckkc.jsourcepad.util.BeanFactoryLoader.Scope;
-
 import org.springframework.core.io.Resource;
 
+import javax.swing.*;
 
 
 public class DefaultTheme implements Theme {
 
-	@Override
-	public String getLookAndFeel() {
+    @Override
+	public LookAndFeel getLookAndFeel() {
 		return null;
 	}
+
+    @Override
+    public void activate() {
+    }
+
+    @Override
+    public SettingsPanel getSettingsPanel() {
+        return null;
+    }
 
     @Override
     public String getId() {

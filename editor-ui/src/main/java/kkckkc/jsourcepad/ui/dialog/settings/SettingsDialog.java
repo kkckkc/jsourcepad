@@ -10,6 +10,7 @@ import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collections;
@@ -74,9 +75,14 @@ public class SettingsDialog implements Dialog<SettingsView>, BeanFactoryAware {
 
 
     public void saveAndClose() {
+        boolean requiresRestart = false;
         for (SettingsPanel panel : panels) {
-            panel.save();
+            requiresRestart |= panel.save();
         }
+
+        if (requiresRestart)
+            JOptionPane.showMessageDialog(view.getJDialog(), "Some changes requires a restart before they take effect");
+
         close();
     }
 

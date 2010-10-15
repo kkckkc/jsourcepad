@@ -1,20 +1,16 @@
 package kkckkc.jsourcepad.ui;
 
-import java.awt.EventQueue;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
-
-import javax.annotation.PostConstruct;
-import javax.swing.UIManager;
-
+import com.google.common.collect.Maps;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.WindowManager;
 import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.google.common.collect.Maps;
+import javax.annotation.PostConstruct;
+import javax.swing.*;
+import java.awt.*;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
 
 
 
@@ -30,9 +26,13 @@ public class ApplicationController implements WindowManager.Listener {
 				@Override
 				public void run() {
 					try {
-						String lnf = Application.get().getTheme().getLookAndFeel();
+						Object lnf = Application.get().getTheme().getLookAndFeel();
 						if (lnf != null) {
-							UIManager.setLookAndFeel(lnf);
+                            if (lnf instanceof String) {
+							    UIManager.setLookAndFeel((String) lnf);
+                            } else {
+                                UIManager.setLookAndFeel((LookAndFeel) lnf);
+                            }
 						}
 					} catch (Exception e) {
 						throw new RuntimeException(e);

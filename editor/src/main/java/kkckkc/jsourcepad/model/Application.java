@@ -43,7 +43,7 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
 		return application;
 	}
 	
-	private static Application init() {
+	private static synchronized Application init() {
 		BeanFactoryLoader loader = new BeanFactoryLoader();
 		DefaultListableBeanFactory beanFactory = loader.load(BeanFactoryLoader.APPLICATION);
 		
@@ -58,9 +58,10 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
 
 	private static Theme initTheme() {
         for (Plugin p : PluginManager.getActivePlugins()) {
-            if (! (theme instanceof Theme)) continue;
+            if (! (p instanceof Theme)) continue;
 
-            return (Theme) theme;
+            ((Theme) p).activate();
+            return (Theme) p;
         }
 
         return new DefaultTheme();
@@ -88,7 +89,7 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
 	}
 
 	public SettingsManager getSettingsManager() {
-		return beanFactory.getBean(SettingsManager.class);
+		return SettingsManager.GLOBAL;
 	}
 	
 	public LanguageManager getLanguageManager() {

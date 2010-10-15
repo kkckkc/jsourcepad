@@ -6,6 +6,9 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.*;
 
 public class ThemeSettingsPanelView extends JPanel implements SettingsPanel.View {
+    private JComboBox themes;
+    private JPanel themePanel;
+
     public ThemeSettingsPanelView() {
         initComponents();
     }
@@ -14,18 +17,28 @@ public class ThemeSettingsPanelView extends JPanel implements SettingsPanel.View
         setOpaque(false);
         setLayout(new MigLayout("insets panel,fillx", "[right]r[grow]", "[]u[]"));
 
+        themes = new JComboBox();
+
         add(new JLabel("Theme:"), "");
-        add(new JComboBox(), "wrap,growx");
+        add(themes, "wrap,growx");
 
         add(new JSeparator(JSeparator.HORIZONTAL), "wrap,span,growx");        
 
-        JPanel panel = new JPanel();
-        panel.setOpaque(false);
-        add(panel, "split");
+        themePanel = new JPanel();
+        themePanel.setOpaque(false);
+        add(themePanel, "span");
     }
 
     @Override
     public JPanel getJPanel() {
         return this;
+    }
+
+    public JComboBox getThemes() {
+        return themes;
+    }
+
+    public JPanel getThemePanel() {
+        return themePanel;
     }
 }
