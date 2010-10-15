@@ -1,12 +1,9 @@
-package kkckkc.jsourcepad.theme;
+package kkckkc.jsourcepad.theme.gtk;
 
-import javax.swing.JComponent;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.border.EmptyBorder;
-
-import kkckkc.jsourcepad.ui.ProjectViewImpl;
 import kkckkc.jsourcepad.ui.WindowViewImpl;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 
 public class GtkWindowViewImpl extends WindowViewImpl {
 

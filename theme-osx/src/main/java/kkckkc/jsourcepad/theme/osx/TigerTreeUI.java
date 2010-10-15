@@ -1,16 +1,10 @@
-package kkckkc.jsourcepad.theme;
+package kkckkc.jsourcepad.theme.osx;
 
-import java.awt.Color;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Insets;
-import java.awt.Rectangle;
-import java.awt.event.MouseAdapter;
-
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.plaf.basic.BasicTreeUI;
 import javax.swing.tree.TreePath;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
 
 public class TigerTreeUI extends BasicTreeUI {
 

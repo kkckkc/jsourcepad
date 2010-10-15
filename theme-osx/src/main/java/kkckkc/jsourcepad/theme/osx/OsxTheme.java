@@ -1,8 +1,9 @@
-package kkckkc.jsourcepad.theme;
+package kkckkc.jsourcepad.theme.osx;
 
 import kkckkc.jsourcepad.model.SettingsManager;
 import kkckkc.jsourcepad.model.SettingsPanel;
 import kkckkc.jsourcepad.model.ThemeSettings;
+import kkckkc.jsourcepad.theme.Theme;
 import kkckkc.jsourcepad.util.BeanFactoryLoader;
 import kkckkc.jsourcepad.util.BeanFactoryLoader.Scope;
 import org.springframework.core.io.ClassPathResource;
@@ -10,15 +11,16 @@ import org.springframework.core.io.Resource;
 
 
 
-public class GtkTheme implements Theme {
+public class OsxTheme implements Theme {
 
 	@Override
 	public String getLookAndFeel() {
-		return "com.sun.java.swing.plaf.gtk.GTKLookAndFeel";
+		return null;
 	}
 
     @Override
     public void activate() {
+		System.setProperty("apple.laf.useScreenMenuBar", "true");
     }
 
     @Override
@@ -28,7 +30,7 @@ public class GtkTheme implements Theme {
 
     @Override
     public String getId() {
-        return "theme-gtk";
+        return "theme-osx";
     }
 
     @Override
@@ -45,11 +47,10 @@ public class GtkTheme implements Theme {
     @Override
     public Resource getOverridesLocation(Scope<?> scope) {
 		if (scope == BeanFactoryLoader.DOCUMENT) {
-			return new ClassPathResource("/gtk-document.xml");
+			return new ClassPathResource("/osx-document.xml");
 		} else if (scope == BeanFactoryLoader.WINDOW) {
-			return new ClassPathResource("/gtk-window.xml");
+			return new ClassPathResource("/osx-window.xml");
 		}
-
 		return null;
     }
 

@@ -1,9 +1,9 @@
-package kkckkc.jsourcepad.theme;
-
-import javax.swing.border.EmptyBorder;
+package kkckkc.jsourcepad.theme.gtk;
 
 import kkckkc.jsourcepad.ui.DocViewImpl;
 import kkckkc.syntaxpane.ScrollableSourcePane;
+
+import javax.swing.border.EmptyBorder;
 
 public class GtkDocViewImpl extends DocViewImpl {
 

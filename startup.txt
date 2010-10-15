@@ -6,7 +6,7 @@ Mac OSX
 -Xverify:none -noclassgc
 -Djava.util.logging.config.file=/Users/kkckkc/Documents/projects/jsourcepad/editor/src/main/resources/logging.properties
 -DsupportPath=/Applications/TextMate.app/Contents/SharedSupport/Support
--Dtheme=kkckkc.jsourcepad.theme.OsxTheme
+-Dtheme=kkckkc.jsourcepad.theme.osx.OsxTheme
 
 
 Linux / IBM JVM

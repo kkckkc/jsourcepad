@@ -1,9 +1,9 @@
-package kkckkc.jsourcepad.theme;
-
-import javax.swing.JTabbedPane;
-import javax.swing.border.EmptyBorder;
+package kkckkc.jsourcepad.theme.gtk;
 
 import kkckkc.jsourcepad.ui.DocListViewImpl;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 
 public class GtkDocListViewImpl extends DocListViewImpl {
 

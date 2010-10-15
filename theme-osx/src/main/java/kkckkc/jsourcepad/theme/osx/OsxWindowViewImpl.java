@@ -1,19 +1,9 @@
-package kkckkc.jsourcepad.theme;
-
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.FlowLayout;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-
-import javax.swing.BorderFactory;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
+package kkckkc.jsourcepad.theme.osx;
 
 import kkckkc.jsourcepad.ui.WindowViewImpl;
+
+import javax.swing.*;
+import java.awt.*;
 
 public class OsxWindowViewImpl extends WindowViewImpl {
 

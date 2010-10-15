@@ -1,16 +1,15 @@
-package kkckkc.jsourcepad.theme;
+package kkckkc.jsourcepad.theme.osx;
 
-import java.awt.Color;
-
-import javax.swing.plaf.TreeUI;
 import kkckkc.jsourcepad.model.DocList;
 import kkckkc.jsourcepad.model.Project;
-
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.Window.FocusListener;
 import kkckkc.jsourcepad.ui.ProjectViewImpl;
 import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.swing.plaf.TreeUI;
+import java.awt.*;
 
 public class OsxProjectViewImpl extends ProjectViewImpl {
 
@@ -21,7 +20,7 @@ public class OsxProjectViewImpl extends ProjectViewImpl {
 		setBackground(new Color(213, 221, 229));
 
         try {
-			setUI((TreeUI) Class.forName("kkckkc.jsourcepad.theme.TigerTreeUI").newInstance());
+			setUI((TreeUI) Class.forName("kkckkc.jsourcepad.theme.osx.TigerTreeUI").newInstance());
 		} catch (InstantiationException e) {
 			throw new RuntimeException(e);
 		} catch (IllegalAccessException e) {

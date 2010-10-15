@@ -4,8 +4,8 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
 	default-autowire="constructor">
 
-	<bean id="fileChooser" class="kkckkc.jsourcepad.theme.GtkFileChooserView" />
+	<bean id="fileChooser" class="kkckkc.jsourcepad.theme.gtk.GtkFileChooserView" />
 	
-	<bean id="windowView" class="kkckkc.jsourcepad.theme.GtkWindowViewImpl" />
-	<bean id="docListView" class="kkckkc.jsourcepad.theme.GtkDocListViewImpl" />
+	<bean id="windowView" class="kkckkc.jsourcepad.theme.gtk.GtkWindowViewImpl" />
+	<bean id="docListView" class="kkckkc.jsourcepad.theme.gtk.GtkDocListViewImpl" />
 </beans>

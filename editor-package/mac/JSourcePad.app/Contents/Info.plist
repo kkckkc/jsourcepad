@@ -33,7 +33,7 @@
         <key>Properties</key>
               <dict>
                 <key>theme</key>
-                <string>kkckkc.jsourcepad.theme.OsxTheme</string>
+                <string>kkckkc.jsourcepad.theme.osx.OsxTheme</string>
                 <key>apple.laf.useScreenMenuBar</key>
                 <string>true</string>
                 <key>apple.awt.graphics.UseQuartz</key>

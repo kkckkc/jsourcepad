@@ -1,4 +1,4 @@
-package kkckkc.jsourcepad.theme;
+package kkckkc.jsourcepad.theme.substance;
 
 import kkckkc.jsourcepad.model.SettingsManager;
 

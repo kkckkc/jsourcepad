@@ -1,4 +1,4 @@
-package kkckkc.jsourcepad.theme;
+package kkckkc.jsourcepad.theme.substance;
 
 import org.pushingpixels.substance.api.fonts.FontSet;
 

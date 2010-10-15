@@ -1,8 +1,9 @@
-package kkckkc.jsourcepad.theme;
+package kkckkc.jsourcepad.theme.substance;
 
 import kkckkc.jsourcepad.model.SettingsManager;
 import kkckkc.jsourcepad.model.SettingsPanel;
 import kkckkc.jsourcepad.model.ThemeSettings;
+import kkckkc.jsourcepad.theme.Theme;
 import kkckkc.jsourcepad.util.BeanFactoryLoader;
 import org.pushingpixels.substance.api.SubstanceLookAndFeel;
 import org.pushingpixels.substance.api.fonts.FontPolicy;

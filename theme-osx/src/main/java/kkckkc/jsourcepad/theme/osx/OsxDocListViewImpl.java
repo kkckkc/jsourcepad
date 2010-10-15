@@ -1,17 +1,13 @@
-package kkckkc.jsourcepad.theme;
-
-import java.awt.Color;
-
-import javax.annotation.PostConstruct;
-import javax.swing.BorderFactory;
-import javax.swing.JTabbedPane;
-
-import org.springframework.beans.factory.annotation.Autowired;
+package kkckkc.jsourcepad.theme.osx;
 
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.Window.FocusListener;
 import kkckkc.jsourcepad.ui.DocListViewImpl;
 import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.annotation.PostConstruct;
+import javax.swing.*;
 
 public class OsxDocListViewImpl extends DocListViewImpl {
 

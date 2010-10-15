@@ -1,4 +1,4 @@
-package kkckkc.jsourcepad.theme;
+package kkckkc.jsourcepad.theme.substance;
 
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.SettingsPanel;
@@ -75,9 +75,11 @@ public class SubstanceSettingsPanel extends JPanel implements SettingsPanel, Set
     @Override
     public void load() {
         SubstanceSkin skin = SubstanceLookAndFeel.getCurrentSkin();
-        for (SkinInfo si : SubstanceLookAndFeel.getAllSkins().values()) {
-            if (si.getClassName().equals(skin.getClass().getName())) {
-                skinList.setSelectedItem(si);
+        if (skin != null) {
+            for (SkinInfo si : SubstanceLookAndFeel.getAllSkins().values()) {
+                if (si.getClassName().equals(skin.getClass().getName())) {
+                    skinList.setSelectedItem(si);
+                }
             }
         }
 

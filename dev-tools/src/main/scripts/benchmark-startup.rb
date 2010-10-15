@@ -4,7 +4,7 @@ purge_command = "/usr/bin/purge"
 jvm_args = [
 	"-client",
 	"-Xms64m",
-	"-Dtheme=kkckkc.jsourcepad.theme.OsxTheme",
+	"-Dtheme=kkckkc.jsourcepad.theme.osx.OsxTheme",
 	"-Xdock:name=JSourcePad",
 	"-Dapple.awt.graphics.UseQuartz=true",
 	"-d32",

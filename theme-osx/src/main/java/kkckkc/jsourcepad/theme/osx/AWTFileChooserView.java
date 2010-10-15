@@ -1,4 +1,4 @@
-package kkckkc.jsourcepad.theme;
+package kkckkc.jsourcepad.theme.osx;
 
 import kkckkc.jsourcepad.ui.dialog.filechooser.FileChooserCallback;
 import kkckkc.jsourcepad.ui.dialog.filechooser.FileChooserView;
