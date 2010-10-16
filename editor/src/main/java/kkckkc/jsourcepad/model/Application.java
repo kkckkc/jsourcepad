@@ -36,9 +36,11 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
 	private ExecutorService threadPool;
 	private StyleScheme cachedStyleScheme;
 
-	public synchronized static Application get() {
+	public static Application get() {
 		if (application == null) {
 			application = init();
+
+            ((DefaultListableBeanFactory) application.beanFactory).preInstantiateSingletons();
 		}
 		return application;
 	}
@@ -50,10 +52,8 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
 		theme = initTheme();
 		beanFactory.registerSingleton("theme", theme);
 		beanFactory.registerSingleton("beanFactoryLoader", loader);
-		
-		Application a = beanFactory.getBean(Application.class);
 
-		return a;
+		return beanFactory.getBean(Application.class);
 	}
 
 	private static Theme initTheme() {

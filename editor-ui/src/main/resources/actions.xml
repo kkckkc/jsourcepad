@@ -23,10 +23,10 @@
 				<null />
 
 				<ref local="action-file-open-project" />
+                <ref local="action-file-reveal-in-project" />
                 <null />
 
 				<ref local="action-window-exit" />
-				<ref local="action-file-reveal-in-project" />
 			</list>
 		</property>
 	</bean>

@@ -3,37 +3,14 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
 	default-autowire="constructor">
-<!-- 
-	<bean id="fileChooser" class="kkckkc.jsourcepad.theme.gtk.GtkFileChooserView" />
-	
-	<bean id="windowView" class="kkckkc.jsourcepad.theme.gtk.GtkWindowViewImpl" />
- -->
  
 	<bean id="docView" class="kkckkc.jsourcepad.theme.osx.OsxDocViewImpl" />
 	<bean id="docListView" class="kkckkc.jsourcepad.theme.osx.OsxDocListViewImpl" />
  	<bean id="projectView" class="kkckkc.jsourcepad.theme.osx.OsxProjectViewImpl" />
-	<bean id="windowView" class="kkckkc.jsourcepad.theme.osx.OsxWindowViewImpl" />
+	<bean id="windowView" class="kkckkc.jsourcepad.theme.osx.OsxWindowViewImpl" depends-on="osxMenu" />
 	
 	<bean id="fileChooser" class="kkckkc.jsourcepad.theme.osx.AWTFileChooserView" />
 
-    <bean id="action-group-file-menu" parent="action-group">
-		<property name="items">
-			<list>
-                <ref local="action-file-new" />
-				<ref local="action-file-open" />
-				<null />
-
-				<ref local="action-window-close" />
-				<ref local="action-tab-close" />
-				<ref local="action-file-save" />
-				<ref local="action-file-save-as" />
-				<ref local="action-file-save-all" />
-				<null />
-
-				<ref local="action-file-open-project" />
-				<ref local="action-file-reveal-in-project" />
-			</list>
-		</property>
-	</bean>
+    <bean id="osxMenu" class="kkckkc.jsourcepad.theme.osx.OsxMenu" lazy-init="false" />
 
 </beans>

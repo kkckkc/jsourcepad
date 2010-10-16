@@ -4,4 +4,12 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
 	<bean id="applicationController" class="kkckkc.jsourcepad.ui.ApplicationController" lazy-init="false"/>
+
+    <!-- Settings -->
+    <bean id="settingsDialog" class="kkckkc.jsourcepad.ui.dialog.settings.SettingsDialog" />
+    <bean id="settingsDialogView" class="kkckkc.jsourcepad.ui.dialog.settings.SettingsViewImpl" autowire="constructor" />
+
+    <bean id="styleSettings" class="kkckkc.jsourcepad.ui.settings.StyleSettingsPanel" />
+    <bean id="themeSettings" class="kkckkc.jsourcepad.ui.settings.ThemeSettingsPanel" />
+    
 </beans>

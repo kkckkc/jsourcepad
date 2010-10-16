@@ -11,9 +11,9 @@ public class SettingsViewImpl extends JDialog implements SettingsView {
     private JButton applyButton;
     private JButton cancelButton;
 
-    public SettingsViewImpl(java.awt.Frame parent) {
-        super(parent, true);
-        setLocationRelativeTo(parent);
+    public SettingsViewImpl() {
+        super((Frame) null, true);
+        setLocationRelativeTo(null);
         initComponents();
     }
 

@@ -50,6 +50,8 @@ public class OsxTheme implements Theme {
 			return new ClassPathResource("/osx-document.xml");
 		} else if (scope == BeanFactoryLoader.WINDOW) {
 			return new ClassPathResource("/osx-window.xml");
+		} else if (scope == BeanFactoryLoader.APPLICATION) {
+			return new ClassPathResource("/osx-application.xml");
 		}
 		return null;
     }
