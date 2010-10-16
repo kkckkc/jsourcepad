@@ -230,6 +230,15 @@
 		</property>
 	</bean>
 
+    <bean id="action-group-bundles-menu" parent="action-group">
+        <property name="items">
+            <list>
+                <ref local="action-bundles-bundle-editor" />
+                <null />
+            </list>
+        </property>
+    </bean>
+
     <bean id="action-group-window-menu" parent="action-group">
         <property name="items">
             <list>
@@ -400,6 +409,8 @@
     </bean>
 
     <bean id="action-preferences" parent="action" class="kkckkc.jsourcepad.action.PreferencesAction" autowire="constructor"/>
+
+    <bean id="action-bundles-bundle-editor" parent="action" class="kkckkc.jsourcepad.action.BundlesBundleEditorAction" autowire="constructor"/>
 
     <!-- TODO: Rename these actions -->
 	<bean id="action-window-close" parent="action" class="kkckkc.jsourcepad.action.WindowCloseAction" autowire="constructor"/>

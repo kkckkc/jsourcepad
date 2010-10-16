@@ -30,6 +30,6 @@ HTML bundle
 [x] Embedded javascript syntax colors
 [x] beforeRunningCommand
 [x] Wrap Each Selected Line in Open/Close Tag
-[ ] persistent includes
 [x] movie, fieldset etc, i.e. same tabstop in wrong order
 
+[ ] Bundle editor

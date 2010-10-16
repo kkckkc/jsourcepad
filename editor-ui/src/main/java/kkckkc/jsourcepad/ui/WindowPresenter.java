@@ -6,6 +6,7 @@ import kkckkc.jsourcepad.action.bundle.BundleJMenuItem;
 import kkckkc.jsourcepad.model.*;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.bundle.BundleManager;
+import kkckkc.jsourcepad.util.action.ActionGroup;
 import kkckkc.jsourcepad.util.action.MenuFactory;
 import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,9 +93,18 @@ public class WindowPresenter implements Presenter<WindowView>, DocList.Listener 
                 menuFactory.buildMenu(viewMenu, window.getActionManager().getActionGroup("view-menu"), null, false);
                 menuFactory.buildMenu(textMenu, window.getActionManager().getActionGroup("text-menu"), null, false);
                 menuFactory.buildMenu(navigationMenu, window.getActionManager().getActionGroup("navigation-menu"), null, false);
-                menuFactory.buildMenu(bundleMenu, bundleManager.getBundleActionGroup(), new MenuFactory.ItemBuilder() {
+
+                ActionGroup bundlesAg = window.getActionManager().getActionGroup("bundles-menu");
+                for (Action o : bundleManager.getBundleActionGroup()) {
+                    bundlesAg.add(o);
+                }
+                menuFactory.buildMenu(bundleMenu, bundlesAg, new MenuFactory.ItemBuilder() {
                     public JMenuItem build(Action action) {
-                        return new BundleJMenuItem((BundleAction) action);
+                        if (action instanceof BundleAction) {
+                            return new BundleJMenuItem((BundleAction) action);
+                        } else {
+                            return new JMenuItem(action);
+                        }
                     }
                 }, true);
                 menuFactory.buildMenu(windowMenu, window.getActionManager().getActionGroup("window-menu"), null, false);

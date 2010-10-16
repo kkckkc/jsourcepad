@@ -1,0 +1,28 @@
+package kkckkc.jsourcepad.action;
+
+import kkckkc.jsourcepad.model.Application;
+import kkckkc.jsourcepad.model.Window;
+import kkckkc.jsourcepad.model.WindowManager;
+import kkckkc.jsourcepad.ui.dialog.filechooser.DirectoryOpenDialog;
+import kkckkc.jsourcepad.util.action.BaseAction;
+
+import java.awt.event.ActionEvent;
+import java.io.File;
+
+public class BundlesBundleEditorAction extends BaseAction {
+
+    private Window window;
+    private DirectoryOpenDialog directoryOpenDialog;
+
+    public BundlesBundleEditorAction(Window window, DirectoryOpenDialog directoryOpenDialog) {
+		this.window = window;
+		this.directoryOpenDialog = directoryOpenDialog;
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+        WindowManager wm = Application.get().getWindowManager();
+		Window w = wm.newWindow(new File(System.getProperty("user.home") + "/.jsourcepad/Shared/Bundles"));
+	}
+
+}
