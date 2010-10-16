@@ -15,7 +15,7 @@
 				<ref local="action-file-open" />
 				<null />
 
-				<ref local="action-window-close" />
+				<ref local="action-file-close" />
 				<ref local="action-tab-close" />
 				<ref local="action-file-save" />
 				<ref local="action-file-save-as" />
@@ -26,7 +26,7 @@
                 <ref local="action-file-reveal-in-project" />
                 <null />
 
-				<ref local="action-window-exit" />
+				<ref local="action-file-exit" />
 			</list>
 		</property>
 	</bean>
@@ -218,10 +218,10 @@
 					<constructor-arg><value>Scroll</value></constructor-arg>
 					<property name="items">
 						<list>
-                            <ref local="action-scroll-line-up" />
-                            <ref local="action-scroll-line-down" />
-                            <ref local="action-scroll-column-left" />
-                            <ref local="action-scroll-column-right" />
+                            <ref local="action-navigation-scroll-line-up" />
+                            <ref local="action-navigation-scroll-line-down" />
+                            <ref local="action-navigation-scroll-column-left" />
+                            <ref local="action-navigation-scroll-column-right" />
 						</list>
 					</property>
 				</bean>
@@ -273,9 +273,11 @@
 
 	<bean id="action-group-language-menu" parent="action" class="kkckkc.jsourcepad.action.LanguageActionGroup" autowire="constructor" />
 
-	<bean id="action-project-refresh" parent="action" class="kkckkc.jsourcepad.action.ProjectRefreshAction" autowire="constructor"/>
-	<bean id="action-project-file-open" parent="action" class="kkckkc.jsourcepad.action.ProjectFileOpenAction" autowire="constructor"/>
 
+
+    <!-- **********************************************************************************************************************
+         *  FILE MENU
+         ********************************************************************************************************************** -->
 	<bean id="action-file-new" parent="action" class="kkckkc.jsourcepad.action.FileNewAction" autowire="constructor"/>
 	<bean id="action-file-open" parent="action" class="kkckkc.jsourcepad.action.FileOpenAction" autowire="constructor"/>
 	<bean id="action-file-save" parent="action" class="kkckkc.jsourcepad.action.FileSaveAction" autowire="constructor"/>
@@ -283,10 +285,14 @@
 	<bean id="action-file-save-all" parent="action" class="kkckkc.jsourcepad.action.FileSaveAllAction" autowire="constructor"/>
 	<bean id="action-file-reveal-in-project" parent="action" class="kkckkc.jsourcepad.action.FileRevealInProjectAction" autowire="constructor"/>
     <bean id="action-file-open-project" parent="action" class="kkckkc.jsourcepad.action.FileOpenProjectAction" autowire="constructor"/>
+    <bean id="action-file-exit" parent="action" class="kkckkc.jsourcepad.action.FileExitAction" autowire="constructor"/>
+    <bean id="action-file-close" parent="action" class="kkckkc.jsourcepad.action.FileCloseAction" autowire="constructor"/>
 
+    <!-- **********************************************************************************************************************
+         *  EDIT MENU
+         ********************************************************************************************************************** -->
 	<bean id="action-edit-undo" parent="action" class="kkckkc.jsourcepad.action.EditUndoAction" autowire="constructor"/>
 	<bean id="action-edit-redo" parent="action" class="kkckkc.jsourcepad.action.EditRedoAction" autowire="constructor"/>
-
     <bean id="action-edit-cut" parent="action" class="kkckkc.jsourcepad.action.EditorAction" autowire="constructor">
         <property name="action" value="cut" />
         <property name="requireSelection" value="true" />
@@ -298,30 +304,23 @@
 	<bean id="action-edit-paste" parent="action" class="kkckkc.jsourcepad.action.EditorAction" autowire="constructor">
         <property name="action" value="paste" />
     </bean>
-
     <bean id="action-edit-paste-previous" parent="action" class="kkckkc.jsourcepad.action.EditPastePreviousAction" autowire="constructor"/>
 	<bean id="action-edit-paste-from-history" parent="action" class="kkckkc.jsourcepad.action.EditPasteFromHistoryAction" autowire="constructor"/>
-
 	<bean id="action-edit-mode-overwrite-mode" parent="action" class="kkckkc.jsourcepad.action.EditModeOverwriteModeAction" autowire="constructor"/>
-
-    <bean id="action-edit-select-word" parent="action" class="kkckkc.jsourcepad.action.EditorAction" autowire="constructor">
+    <bean id="action-edit-select-word" p:action="select-word" parent="action" class="kkckkc.jsourcepad.action.EditorAction" autowire="constructor">
         <property name="action" value="select-word" />
     </bean>
-
     <bean id="action-edit-select-line" parent="action" class="kkckkc.jsourcepad.action.EditorAction" autowire="constructor">
         <property name="action" value="select-line" />
     </bean>
-
     <bean id="action-edit-select-paragraph" parent="action" class="kkckkc.jsourcepad.action.EditorAction" autowire="constructor">
         <property name="action" value="select-paragraph" />
     </bean>
-
     <bean id="action-edit-select-all" parent="action" class="kkckkc.jsourcepad.action.EditorAction" autowire="constructor">
         <property name="action" value="select-all" />
     </bean>
     <bean id="action-edit-select-enclosing-bracket" parent="action" class="kkckkc.jsourcepad.action.EditSelectEnclosingBracketsAction" autowire="constructor" />
     <bean id="action-edit-select-current-scope" parent="action" class="kkckkc.jsourcepad.action.EditSelectCurrentScopeAction" autowire="constructor" />
-
     <bean id="action-edit-find-find" parent="action" class="kkckkc.jsourcepad.action.EditFindAction" autowire="constructor"/>
 	<bean id="action-edit-find-next" parent="action" class="kkckkc.jsourcepad.action.EditFindNextAction" autowire="constructor"/>
 	<bean id="action-edit-find-previous" parent="action" class="kkckkc.jsourcepad.action.EditFindPreviousAction" autowire="constructor"/>
@@ -331,19 +330,18 @@
     <bean id="action-edit-find-use-selection-for-find" parent="action" class="kkckkc.jsourcepad.action.EditFindUseSelectionForFindAction" autowire="constructor"/>
     <bean id="action-edit-find-use-selection-for-replace" parent="action" class="kkckkc.jsourcepad.action.EditFindUseSelectionForReplaceAction" autowire="constructor"/>
     <bean id="action-edit-find-jump-to-selection" parent="action" class="kkckkc.jsourcepad.action.EditFindJumpToSelectionAction" autowire="constructor"/>
-
     <bean id="action-edit-completion-next" parent="action" class="kkckkc.jsourcepad.action.EditCompletionNextAction" autowire="constructor"/>
     <bean id="action-edit-completion-previous" parent="action" class="kkckkc.jsourcepad.action.EditCompletionPreviousAction" autowire="constructor"/>
 
+    <!-- **********************************************************************************************************************
+         *  VIEW MENU
+         ********************************************************************************************************************** -->
     <bean id="action-view-font-increase" parent="action" class="kkckkc.jsourcepad.action.ViewFontIncreaseAction" autowire="constructor"/>
     <bean id="action-view-font-decrease" parent="action" class="kkckkc.jsourcepad.action.ViewFontDecreaseAction" autowire="constructor"/>
-
     <bean id="action-view-gutter-foldings" parent="action" class="kkckkc.jsourcepad.action.ViewGutterFoldingsAction" autowire="constructor"/>
     <bean id="action-view-gutter-line-numbers" parent="action" class="kkckkc.jsourcepad.action.ViewGutterLineNumbersAction" autowire="constructor"/>
-
     <bean id="action-view-show-hide-project-drawer" parent="action" class="kkckkc.jsourcepad.action.ViewShowHideProjectDrawerAction" autowire="constructor"/>
     <bean id="action-view-show-hide-invisibles" parent="action" class="kkckkc.jsourcepad.action.ViewShowHideInvisiblesAction" autowire="constructor"/>
-
     <bean id="action-view-wrap-column-other" parent="action" class="kkckkc.jsourcepad.action.ViewWrapColumnAction">
         <property name="column" value="0" />
     </bean>
@@ -353,14 +351,12 @@
     <bean id="action-view-wrap-column-40" parent="action" class="kkckkc.jsourcepad.action.ViewWrapColumnAction">
         <property name="column" value="40" />
     </bean>
-
     <bean id="action-view-fold-current-block" parent="action" class="kkckkc.jsourcepad.action.ViewFoldCurrentBlockAction" autowire="constructor"/>
-
-
 	<bean id="action-view-fullscreen" parent="action" class="kkckkc.jsourcepad.action.ViewFullscreenAction" autowire="constructor"/>
 
-
-
+    <!-- **********************************************************************************************************************
+         *  TEXT MENU
+         ********************************************************************************************************************** -->
     <bean id="action-text-shift-left" parent="action" class="kkckkc.jsourcepad.action.TextShiftLeftAction" autowire="constructor"/>
     <bean id="action-text-shift-right" parent="action" class="kkckkc.jsourcepad.action.TextShiftRightAction" autowire="constructor"/>
     <bean id="action-text-indent-line" parent="action" class="kkckkc.jsourcepad.action.TextIndentLineAction" autowire="constructor"/>
@@ -370,7 +366,6 @@
     <bean id="action-text-align-center" parent="action" class="kkckkc.jsourcepad.action.TextAlignCenterAction" autowire="constructor"/>
     <bean id="action-text-align-right" parent="action" class="kkckkc.jsourcepad.action.TextAlignRightAction" autowire="constructor"/>
     <bean id="action-text-align-justified" parent="action" class="kkckkc.jsourcepad.action.TextAlignJustifiedAction" autowire="constructor"/>
-
     <bean id="action-text-convert-to-uppercase" parent="action" class="kkckkc.jsourcepad.action.TextConvertToUppercaseAction" autowire="constructor"/>
     <bean id="action-text-convert-to-lowercase" parent="action" class="kkckkc.jsourcepad.action.TextConvertToLowercaseAction" autowire="constructor"/>
     <bean id="action-text-convert-to-titlecase" parent="action" class="kkckkc.jsourcepad.action.TextConvertToTitlecaseAction" autowire="constructor"/>
@@ -378,50 +373,64 @@
     <bean id="action-text-convert-spaces-to-tabs" parent="action" class="kkckkc.jsourcepad.action.TextConvertSpacesToTabsAction" autowire="constructor"/>
     <bean id="action-text-convert-tabs-to-spaces" parent="action" class="kkckkc.jsourcepad.action.TextConvertTabsToSpacesAction" autowire="constructor"/>
     <bean id="action-text-convert-transpose" parent="action" class="kkckkc.jsourcepad.action.TextConvertTransposeAction" autowire="constructor"/>
-
     <bean id="action-text-reformat-paragraph" parent="action" class="kkckkc.jsourcepad.action.TextReformatParagraphAction" autowire="constructor"/>
     <bean id="action-text-reformat-and-justify" parent="action" class="kkckkc.jsourcepad.action.TextReformatAndJustifyAction" autowire="constructor"/>
     <bean id="action-text-unwrap-selection" parent="action" class="kkckkc.jsourcepad.action.TextUnwrapSelectionAction" autowire="constructor"/>
 
-
+    <!-- **********************************************************************************************************************
+         *  NAVIGATION MENU
+         ********************************************************************************************************************** -->
     <bean id="action-navigation-goto-file" parent="action" class="kkckkc.jsourcepad.action.NavigationGotoFileAction" autowire="constructor"/>
     <bean id="action-navigation-goto-symbol" parent="action" class="kkckkc.jsourcepad.action.NavigationGotoSymbolAction" autowire="constructor"/>
     <bean id="action-navigation-goto-header-source" parent="action" class="kkckkc.jsourcepad.action.NavigationGotoHeaderSourceAction" autowire="constructor"/>
     <bean id="action-navigation-next-file-tab" parent="action" class="kkckkc.jsourcepad.action.NavigationNextFileTabAction" autowire="constructor"/>
     <bean id="action-navigation-previous-file-tab" parent="action" class="kkckkc.jsourcepad.action.NavigationPreviousFileTabAction" autowire="constructor"/>
     <bean id="action-navigation-goto-line" parent="action" class="kkckkc.jsourcepad.action.NavigationGotoLineAction" autowire="constructor"/>
-
-    <bean id="action-scroll-line-up" parent="action" class="kkckkc.jsourcepad.action.NavigationScrollAction">
+    <bean id="action-navigation-scroll-line-up" parent="action" class="kkckkc.jsourcepad.action.NavigationScrollAction">
         <constructor-arg index="0" value="-1" />
         <constructor-arg index="1" value="true" />
     </bean>
-    <bean id="action-scroll-line-down" parent="action" class="kkckkc.jsourcepad.action.NavigationScrollAction">
+    <bean id="action-navigation-scroll-line-down" parent="action" class="kkckkc.jsourcepad.action.NavigationScrollAction">
         <constructor-arg index="0" value="1" />
         <constructor-arg index="1" value="true" />
     </bean>
-    <bean id="action-scroll-column-left" parent="action" class="kkckkc.jsourcepad.action.NavigationScrollAction">
+    <bean id="action-navigation-scroll-column-left" parent="action" class="kkckkc.jsourcepad.action.NavigationScrollAction">
         <constructor-arg index="0" value="-1" />
         <constructor-arg index="1" value="false" />
     </bean>
-    <bean id="action-scroll-column-right" parent="action" class="kkckkc.jsourcepad.action.NavigationScrollAction">
+    <bean id="action-navigation-scroll-column-right" parent="action" class="kkckkc.jsourcepad.action.NavigationScrollAction">
         <constructor-arg index="0" value="1" />
         <constructor-arg index="1" value="false" />
     </bean>
 
-    <bean id="action-preferences" parent="action" class="kkckkc.jsourcepad.action.PreferencesAction" autowire="constructor"/>
-
+    <!-- **********************************************************************************************************************
+         *  BUNDLES MENU
+         ********************************************************************************************************************** -->
     <bean id="action-bundles-bundle-editor" parent="action" class="kkckkc.jsourcepad.action.BundlesBundleEditorAction" autowire="constructor"/>
 
-    <!-- TODO: Rename these actions -->
-	<bean id="action-window-close" parent="action" class="kkckkc.jsourcepad.action.WindowCloseAction" autowire="constructor"/>
-	<bean id="action-window-exit" parent="action" class="kkckkc.jsourcepad.action.WindowExitAction" autowire="constructor"/>
-
+    <!-- **********************************************************************************************************************
+         *  WINDOW MENU
+         ********************************************************************************************************************** -->
     <bean id="action-window-show-web-preview" parent="action" class="kkckkc.jsourcepad.action.WindowShowWebPreviewAction" autowire="constructor"/>
     <bean id="action-window-minimize" parent="action" class="kkckkc.jsourcepad.action.WindowMinimizeAction" autowire="constructor"/>
     <bean id="action-window-zoom" parent="action" class="kkckkc.jsourcepad.action.WindowZoomAction" autowire="constructor"/>
 
+    <!-- **********************************************************************************************************************
+         *  TAB CONTEXT MENU
+         ********************************************************************************************************************** -->
 	<bean id="action-tab-close" parent="action" class="kkckkc.jsourcepad.action.TabCloseAction" autowire="constructor" />
 	<bean id="action-tab-close-all" parent="action" class="kkckkc.jsourcepad.action.TabCloseAllAction" autowire="constructor" />
 	<bean id="action-tab-close-others" parent="action" class="kkckkc.jsourcepad.action.TabCloseOthersAction" autowire="constructor" />
+
+    <!-- **********************************************************************************************************************
+         *  PROJECT CONTEXT MENU
+         ********************************************************************************************************************** -->
+    <bean id="action-project-refresh" parent="action" class="kkckkc.jsourcepad.action.ProjectRefreshAction" autowire="constructor"/>
+    <bean id="action-project-file-open" parent="action" class="kkckkc.jsourcepad.action.ProjectFileOpenAction" autowire="constructor"/>
+
+    <!-- **********************************************************************************************************************
+         *  MISC
+         ********************************************************************************************************************** -->
+    <bean id="action-preferences" parent="action" class="kkckkc.jsourcepad.action.PreferencesAction" autowire="constructor"/>
 
 </beans>

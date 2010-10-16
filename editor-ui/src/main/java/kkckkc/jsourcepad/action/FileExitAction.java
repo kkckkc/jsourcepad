@@ -1,11 +1,10 @@
 package kkckkc.jsourcepad.action;
 
-import java.awt.event.ActionEvent;
-
-import javax.swing.AbstractAction;
 import kkckkc.jsourcepad.util.action.BaseAction;
 
-public class WindowExitAction extends BaseAction {
+import java.awt.event.ActionEvent;
+
+public class FileExitAction extends BaseAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
