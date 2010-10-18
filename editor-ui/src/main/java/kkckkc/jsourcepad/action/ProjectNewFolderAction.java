@@ -23,7 +23,8 @@ public class ProjectNewFolderAction extends BaseAction {
 
         String name = JOptionPane.showInputDialog("File Name:");
 
-
+        if (name == null || "".equals(name)) return;
+        
         File f;
         if (file.isDirectory()) {
             f = new File(file, name);

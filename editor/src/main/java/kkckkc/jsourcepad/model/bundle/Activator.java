@@ -1,5 +1,6 @@
 package kkckkc.jsourcepad.model.bundle;
 
+import kkckkc.jsourcepad.util.ui.KeyStrokeUtils;
 import kkckkc.syntaxpane.style.ScopeSelector;
 
 import javax.swing.*;
@@ -53,27 +54,7 @@ public class Activator {
     }
 
 	public boolean matches(KeyEvent ks) {
-		if (keyStroke == null) return false;
-
-		char keyChar = ks.getKeyChar();
-		int keyCode = ks.getKeyCode();
-
-		if (keyChar < 0x20) {
-			if (keyChar != keyCode) {
-				keyChar += 0x40;
-
-				if ((keyChar >= 'A') && (keyChar <= 'Z')) {
-					keyChar += 0x20;
-				}
-			}
-		}
-
-		return 
-			(keyStroke.getModifiers() & 0xF) == (ks.getModifiers() & 0xF) && 
-			keyCode != 0 && 
-			(keyStroke.getKeyCode() == keyCode || 
-					(keyChar != KeyEvent.CHAR_UNDEFINED && Character.toLowerCase(keyStroke.getKeyChar()) == keyChar) ||
-                    (KeyEvent.getKeyText(keyCode).charAt(0) == keyStroke.getKeyChar()));
+        return KeyStrokeUtils.matches(keyStroke, ks);
     }
 
 	public ScopeSelector getScopeSelector() {
