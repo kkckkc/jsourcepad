@@ -7,7 +7,7 @@
 [x]ÊRegister clipboard operations even when using keyboard shortcuts
 [x]ÊAdd persistence mechanism. Store find history and clipboard history
 
-[ ] Dialogs close on escape, harmonize minimize etc
+[x] Dialogs close on escape, harmonize minimize etc
 [x] Package per theme
 [ ]ÊWindow/project specific settings - for instance for overwrite mode and tab size
 [ ] Freehanded editing
@@ -25,6 +25,7 @@
 [ ] Templates
 [x] Snippet moving backwards, shift tab. See for instance movie
 [x] ScopeSelector and Rule.parse should be moved into specific classes in either syntaxpane-gtksourceview or syntaxpane-textmate
+[ ] Move actions to plist format
 
 HTML bundle
 [x] Embedded javascript syntax colors

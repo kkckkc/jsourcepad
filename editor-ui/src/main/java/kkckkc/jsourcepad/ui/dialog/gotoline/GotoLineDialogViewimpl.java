@@ -1,11 +1,12 @@
 package kkckkc.jsourcepad.ui.dialog.gotoline;
 
+import kkckkc.jsourcepad.util.ui.BaseJDialog;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class GotoLineDialogViewimpl extends JDialog implements GotoLineDialogView {
+public class GotoLineDialogViewimpl extends BaseJDialog implements GotoLineDialogView {
     private JTextField lineNumberField;
     private JButton okButton;
     private JLabel lineNumberLabel;

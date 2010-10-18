@@ -1,11 +1,12 @@
 package kkckkc.jsourcepad.ui.dialog.navigation;
 
+import kkckkc.jsourcepad.util.ui.BaseJDialog;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class QuickNavigationDialogViewImpl extends JDialog implements QuickNavigationDialogView {
+public class QuickNavigationDialogViewImpl extends BaseJDialog implements QuickNavigationDialogView {
     private JTextField textField    ;
     private JList result;
     private JLabel path;

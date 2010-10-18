@@ -1,12 +1,13 @@
 package kkckkc.jsourcepad.ui.dialog.find;
 
+import kkckkc.jsourcepad.util.ui.BaseJDialog;
 import net.miginfocom.swing.MigLayout;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class FindDialogViewImpl extends JDialog implements FindDialogView{
+public class FindDialogViewImpl extends BaseJDialog implements FindDialogView{
 
     private JComboBox findField;
     private JLabel findLabel;

@@ -5,7 +5,7 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.*;
 import java.awt.*;
 
-public class ProgressDialogViewImpl extends JDialog implements ProgressDialogView {
+public class ProgressDialogViewImpl extends BaseJDialog implements ProgressDialogView {
     private JLabel titleLabel;
 
     public ProgressDialogViewImpl(java.awt.Frame parent) {

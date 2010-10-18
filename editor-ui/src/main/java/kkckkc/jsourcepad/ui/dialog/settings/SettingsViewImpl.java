@@ -1,11 +1,12 @@
 package kkckkc.jsourcepad.ui.dialog.settings;
 
+import kkckkc.jsourcepad.util.ui.BaseJDialog;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class SettingsViewImpl extends JDialog implements SettingsView {
+public class SettingsViewImpl extends BaseJDialog implements SettingsView {
     private JTabbedPane tabbedPane;
     private JButton okButton;
     private JButton applyButton;
