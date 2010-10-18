@@ -22,10 +22,11 @@
 [ ] Replacement for keystrokes that are impossible on non-us keyboards
 [x] Joni replaceAll, removed NamedPatternFactory, check body
 [x]ÊHome button
-[ ] Templates
 [x] Snippet moving backwards, shift tab. See for instance movie
 [x] ScopeSelector and Rule.parse should be moved into specific classes in either syntaxpane-gtksourceview or syntaxpane-textmate
+[ ] Templates
 [ ] Move actions to plist format
+[ ] Error reporting
 
 HTML bundle
 [x] Embedded javascript syntax colors

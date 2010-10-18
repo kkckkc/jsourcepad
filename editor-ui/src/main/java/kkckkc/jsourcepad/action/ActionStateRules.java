@@ -18,6 +18,30 @@ public class ActionStateRules {
         }
     };
 
+    public static ActionStateRule FOLDER_SELECTED = new ActionStateRule() {
+        @Override
+        public boolean shouldBeEnabled(ActionContext actionContext) {
+            Object[] tp = actionContext.get(ActionContextKeys.SELECTION);
+            return tp != null && tp.length > 0 && tp[0] instanceof File && ((File) tp[0]).isDirectory();
+        }
+    };
+
+    public static ActionStateRule FILE_OR_FOLDER_SELECTED = new ActionStateRule() {
+        @Override
+        public boolean shouldBeEnabled(ActionContext actionContext) {
+            Object[] tp = actionContext.get(ActionContextKeys.SELECTION);
+            return tp != null && tp.length > 0 && tp[0] instanceof File;
+        }
+    };
+
+    public static ActionStateRule ONE_SELECTION = new ActionStateRule() {
+        @Override
+        public boolean shouldBeEnabled(ActionContext actionContext) {
+            Object[] tp = actionContext.get(ActionContextKeys.SELECTION);
+            return tp != null && tp.length == 1;
+        }
+    };
+
     public static ActionStateRule TEXT_SELECTED = new ActionStateRule() {
         @Override
         public boolean shouldBeEnabled(ActionContext actionContext) {

@@ -264,7 +264,14 @@
 	<bean id="action-group-project-context-menu" parent="action-group">
 		<property name="items">
 			<list>
-				<ref local="action-project-file-open" />
+                <ref local="action-project-new-file" />
+                <ref local="action-project-new-folder" />
+                <ref local="action-project-rename" />
+                <ref local="action-project-remove-selected-files" />
+                <null />
+				<ref local="action-project-open" />
+				<ref local="action-project-open-in-new-window" />
+				<ref local="action-project-open-in-preferred-application" />
 				<null />
 				<ref local="action-project-refresh" />
 			</list>
@@ -425,8 +432,15 @@
     <!-- **********************************************************************************************************************
          *  PROJECT CONTEXT MENU
          ********************************************************************************************************************** -->
+    <bean id="action-project-new-file" parent="action" class="kkckkc.jsourcepad.action.ProjectNewFileAction" autowire="constructor"/>
+    <bean id="action-project-new-folder" parent="action" class="kkckkc.jsourcepad.action.ProjectNewFolderAction" autowire="constructor"/>
+    <bean id="action-project-rename" parent="action" class="kkckkc.jsourcepad.action.ProjectRenameAction" autowire="constructor"/>
+    <bean id="action-project-remove-selected-files" parent="action" class="kkckkc.jsourcepad.action.ProjectRemoveSelectedFilesAction" autowire="constructor"/>
+    <bean id="action-project-open" parent="action" class="kkckkc.jsourcepad.action.ProjectOpenAction" autowire="constructor"/>
+    <bean id="action-project-open-in-new-window" parent="action" class="kkckkc.jsourcepad.action.ProjectOpenInNewWindowAction" autowire="constructor"/>
+    <bean id="action-project-open-in-preferred-application" parent="action" class="kkckkc.jsourcepad.action.ProjectOpenInPreferredApplicationAction" autowire="constructor"/>
     <bean id="action-project-refresh" parent="action" class="kkckkc.jsourcepad.action.ProjectRefreshAction" autowire="constructor"/>
-    <bean id="action-project-file-open" parent="action" class="kkckkc.jsourcepad.action.ProjectFileOpenAction" autowire="constructor"/>
+
 
     <!-- **********************************************************************************************************************
          *  MISC
