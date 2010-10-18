@@ -3,20 +3,14 @@ package kkckkc.jsourcepad.ui.dialog.newfile;
 import kkckkc.jsourcepad.Dialog;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
-import kkckkc.jsourcepad.model.bundle.Bundle;
-import kkckkc.jsourcepad.model.bundle.BundleItem;
-import kkckkc.jsourcepad.model.bundle.BundleItemSupplier;
-import kkckkc.jsourcepad.model.bundle.BundleManager;
+import kkckkc.jsourcepad.model.bundle.*;
 import kkckkc.utils.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -82,6 +76,20 @@ public class NewFileDialog implements Dialog<NewFileDialogView>, ActionListener,
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        view.getTemplateField().addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED && e.getItem() instanceof BundleItemSupplier) {
+                    BundleItemSupplier bis = (BundleItemSupplier) e.getItem();
+                    TemplateBundleItem bi = (TemplateBundleItem) bis.get();
+                    String ext = bi.getExtension();
+                    if (ext != null) {
+                        view.getFileNameField().setText(FileUtils.getBaseName(view.getFileNameField().getText()) + "." + ext);
+                    }
+                }
+            }
+        });
 
         view.getJDialog().pack();
 

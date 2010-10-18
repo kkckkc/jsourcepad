@@ -24,7 +24,7 @@
 [x]ÊHome button
 [x] Snippet moving backwards, shift tab. See for instance movie
 [x] ScopeSelector and Rule.parse should be moved into specific classes in either syntaxpane-gtksourceview or syntaxpane-textmate
-[ ] Templates
+[x] Templates
 [ ] Move actions to plist format
 [ ] Error reporting
 

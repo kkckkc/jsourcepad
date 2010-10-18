@@ -24,6 +24,10 @@ public class FileUtils {
 
     public static String getBaseName(File file) {
         String s = file.getName();
+        return getBaseName(s);
+    }
+
+    public static String getBaseName(String s) {
         if (! s.contains(".")) return s;
         return s.substring(0, s.lastIndexOf('.'));
     }
