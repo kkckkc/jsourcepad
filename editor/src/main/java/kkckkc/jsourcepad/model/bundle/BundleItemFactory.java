@@ -2,7 +2,6 @@ package kkckkc.jsourcepad.model.bundle;
 
 import kkckkc.jsourcepad.model.bundle.snippet.SnippetBundleItem;
 import kkckkc.utils.plist.GeneralPListReader;
-import kkckkc.utils.plist.PListFormatter;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,26 +12,36 @@ public class BundleItemFactory {
 
 	public static BundleItem getItem(BundleItemSupplier bundleItemSupplier, File file) {
 		try {
-			File dir = file.getParentFile();
-			if (dir.getName().equals("Commands")) {
-				return getCommand(bundleItemSupplier, file);
-			} else if (dir.getName().equals("Snippets")) {
-				return getSnippet(bundleItemSupplier, file);
-			} else {
-				throw new RuntimeException("Unsupported bundle item " + file);
-			}
+            switch (bundleItemSupplier.getType()) {
+                case COMMAND:
+                    return getCommand(bundleItemSupplier, file);
+
+                case SNIPPET:
+                    return getSnippet(bundleItemSupplier, file);
+
+                case TEMPLATE:
+                    return getTemplate(bundleItemSupplier, file);
+
+                default:
+                    throw new RuntimeException("Unsupported bundle item " + file);
+            }
 		} catch (IOException ioe) {
 			throw new RuntimeException(ioe);
 		}
     }
 
-	private static BundleItem getCommand(BundleItemSupplier bundleItemSupplier, File file) throws IOException {
+
+    private static BundleItem getTemplate(BundleItemSupplier bundleItemSupplier, File file) throws IOException {
+        GeneralPListReader gpl = new GeneralPListReader();
+        Map m = (Map) gpl.read(file);
+
+        return TemplateBundleItem.create(bundleItemSupplier, m);
+    }
+
+    private static BundleItem getCommand(BundleItemSupplier bundleItemSupplier, File file) throws IOException {
 		GeneralPListReader gpl = new GeneralPListReader();
 		Map m = (Map) gpl.read(file);
 
-        System.out.println(bundleItemSupplier.getFile());
-		System.out.println(new PListFormatter().format(m));
-		
 	    return CommandBundleItem.create(bundleItemSupplier, m);
     }
 
@@ -40,9 +49,7 @@ public class BundleItemFactory {
 	private static BundleItem getSnippet(BundleItemSupplier bundleItemSupplier, File file) throws IOException {
 		GeneralPListReader gpl = new GeneralPListReader();
 		Map m = (Map) gpl.read(file);
-		
-		System.out.println(new PListFormatter().format(m));
-		
+
 	    return SnippetBundleItem.create(bundleItemSupplier, m);
     }
 	

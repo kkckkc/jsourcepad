@@ -1,12 +1,11 @@
 package kkckkc.jsourcepad.action;
 
 import kkckkc.jsourcepad.model.Window;
+import kkckkc.jsourcepad.ui.dialog.newfile.NewFileDialog;
 import kkckkc.jsourcepad.util.action.BaseAction;
 
-import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.io.IOException;
 
 public class ProjectNewFileAction extends BaseAction {
 
@@ -22,6 +21,13 @@ public class ProjectNewFileAction extends BaseAction {
         Object[] tp = actionContext.get(ActionContextKeys.SELECTION);
         File file = (File) tp[0];
 
+        NewFileDialog newFileDialog = window.getPresenter(NewFileDialog.class);
+        if (file.isDirectory()) {
+            newFileDialog.show(file);
+        } else {
+            newFileDialog.show(file.getParentFile());
+        }
+/*
         String name = JOptionPane.showInputDialog("File Name:");
 
 
@@ -40,6 +46,7 @@ public class ProjectNewFileAction extends BaseAction {
         
         window.getProject().refresh(f.getParentFile());
         window.getDocList().open(f);
+        */
 	}
 
 }

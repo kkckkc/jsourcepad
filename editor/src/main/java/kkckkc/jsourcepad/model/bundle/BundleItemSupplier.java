@@ -1,10 +1,9 @@
 package kkckkc.jsourcepad.model.bundle;
 
-import java.io.File;
-
-import javax.swing.Action;
-
 import com.google.common.base.Supplier;
+
+import javax.swing.*;
+import java.io.File;
 
 public class BundleItemSupplier implements Supplier<BundleItem> {
 
@@ -12,11 +11,13 @@ public class BundleItemSupplier implements Supplier<BundleItem> {
 	private String name;
 	private Activator activator;
 	private Action action;
+    private BundleItem.Type type;
 
-	public BundleItemSupplier(File file, String name, Activator activator) {
+    public BundleItemSupplier(File file, String name, Activator activator, BundleItem.Type type) {
 	    this.file = file;
 	    this.name = name;
 	    this.activator = activator;
+        this.type = type;
     }
 
 	public Activator getActivator() {
@@ -47,4 +48,7 @@ public class BundleItemSupplier implements Supplier<BundleItem> {
 	    return action;
     }
 
+    public BundleItem.Type getType() {
+        return type;
+    }
 }

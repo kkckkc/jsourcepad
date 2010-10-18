@@ -5,13 +5,13 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import kkckkc.jsourcepad.action.bundle.BundleAction;
 import kkckkc.jsourcepad.model.Application;
-import kkckkc.utils.PerformanceLogger;
 import kkckkc.jsourcepad.util.action.ActionGroup;
 import kkckkc.syntaxpane.model.Scope;
 import kkckkc.syntaxpane.parse.grammar.textmate.TextmateScopeSelectorParser;
 import kkckkc.syntaxpane.style.ScopeSelector;
 import kkckkc.syntaxpane.style.ScopeSelectorManager;
 import kkckkc.utils.Pair;
+import kkckkc.utils.PerformanceLogger;
 import kkckkc.utils.plist.GeneralPListReader;
 import kkckkc.utils.plist.PListReader;
 
@@ -161,11 +161,11 @@ public class BundleManagerImpl implements BundleManager {
 	    	load(new File(dir, "Commands"), r, uuidToItem);
 	    	load(new File(dir, "Snippets"), r, uuidToItem);
 	    	load(new File(dir, "Macros"), r, uuidToItem);
+            loadTemplates(new File(dir, "Templates"), r, uuidToItem);
 
 	    	Map<String, Map<ScopeSelector, Object>> preferences = Maps.newHashMap();
 	    	loadPreferences(new File(dir, "Preferences"), r, preferences);
 
-	    	
             List<Object> root = Lists.newArrayList();
 	    	buildMenu(root, items, uuidToItem, submenus);
 
@@ -226,8 +226,7 @@ public class BundleManagerImpl implements BundleManager {
 		for (File file : dir.listFiles()) {
 			String n = file.getName();
 			if (n.equals("info.plist")) continue;
-			if (n.endsWith(".plist") || n.endsWith(".tmLanguage") || n.endsWith(".tmSnippet") || 
-					n.endsWith(".tmCommand")) {
+			if (n.endsWith(".plist") || n.endsWith(".tmLanguage") || n.endsWith(".tmSnippet") || n.endsWith(".tmCommand")) {
 
 				Map data = (Map) reader.read(file);
 				
@@ -239,18 +238,39 @@ public class BundleManagerImpl implements BundleManager {
 				if (keyEq != null && ! "".equals(keyEq)) {
 					ks = new KeystrokeParser().parse(keyEq);
 				}
-				
+
+                BundleItem.Type type = null;
+                if (dir.getName().equals("Commands")) type = BundleItem.Type.COMMAND;
+                else type = BundleItem.Type.SNIPPET;
 				uuidToItem.put((String) data.get("uuid"), 
 						new BundleItemSupplier(
 								file, (String) data.get("name"), 
 								new Activator(ks, tabTrigger, 
 									scope != null ? TextmateScopeSelectorParser.parse(scope) : null	
-								)));
+								),
+                                type));
 			} 
 		}
 	}
 
-	
+
+    private void loadTemplates(File dir, PListReader reader, Map<String, BundleItemSupplier> uuidToItem) throws FileNotFoundException, IOException {
+        if (! dir.exists()) return;
+
+        for (File subdir : dir.listFiles()) {
+            if (! subdir.isDirectory()) continue;
+
+            File file = new File(subdir, "info.plist");
+            Map data = (Map) reader.read(file);
+
+            uuidToItem.put((String) data.get("uuid"),
+                        new BundleItemSupplier(
+                                file, (String) data.get("name"),
+                                null,
+                                BundleItem.Type.TEMPLATE));
+        }
+    }
+
 
 	@Override
     public Collection<BundleItemSupplier> getItemsForShortcut(final KeyEvent ks, Scope scope) {

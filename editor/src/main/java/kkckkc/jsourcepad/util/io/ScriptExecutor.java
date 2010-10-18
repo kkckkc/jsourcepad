@@ -14,13 +14,18 @@ public class ScriptExecutor {
 	private static final int DELAY_BEFORE_DELAY_EVENT = 500;
 	private String script;
 	private ExecutorService executorService;
+    private File directory;
 
 	public ScriptExecutor(String script, ExecutorService executorService) {
 		this.script = script;
 		this.executorService = executorService;
 	}
-	
-	public Execution execute(Callback callback, Reader input, Map<String, String> environment) throws IOException {
+
+    public void setDirectory(File directory) {
+        this.directory = directory;
+    }
+
+    public Execution execute(Callback callback, Reader input, Map<String, String> environment) throws IOException {
 		StringWriter sw = new StringWriter();
 		return execute(new Execution(callback, input, sw, sw), environment);
 	}
@@ -35,8 +40,8 @@ public class ScriptExecutor {
 	
 	private Execution execute(final Execution execution, Map<String, String> environment) throws IOException { 
 		final ProcessBuilder pb = getProcess(execution, environment);
-		final Process p = pb.start();
-		
+        final Process p = pb.start();
+
 		final Future<?> stdoutFuture = this.executorService.submit(
 				new GobblerRunnable(p.getInputStream(), execution.stdout));
 		final Future<?> stderrFuture = this.executorService.submit(
@@ -100,11 +105,13 @@ public class ScriptExecutor {
 
         Files.write(script, execution.tempScriptFile, Charsets.UTF_8);
 
-        System.out.println("environment: " + environment);
-
 		ProcessBuilder pb = new ProcessBuilder("bash", "-c", execution.tempScriptFile.getPath());
 		pb.environment().putAll(environment);
-		
+
+        if (directory != null) {
+            pb.directory(directory);
+        }
+
 	    return pb;
     }
 

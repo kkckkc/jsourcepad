@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 @SuppressWarnings("restriction")
-public class CommandBundleItem implements BundleItem {
+public class CommandBundleItem implements BundleItem<Void> {
 	
 	private static final String OUTPUT_SHOW_AS_HTML = "showAsHTML";
 	private static final String OUTPUT_DISCARD = "discard";
@@ -73,7 +73,7 @@ public class CommandBundleItem implements BundleItem {
 	}
 	
 	
-	public void execute(Window window) throws Exception {
+	public void execute(Window window, Void context) throws Exception {
         beforeRunning(window);
 
 		ScriptExecutor scriptExecutor = new ScriptExecutor(command, Application.get().getThreadPool());
@@ -87,6 +87,11 @@ public class CommandBundleItem implements BundleItem {
 		ExecutionMethod executionMethod = createExecutionMethod(window, wm);
 		executionMethod.start(scriptExecutor, inputText, EnvironmentProvider.getEnvironment(window, bundleItemSupplier));
 	}
+
+    @Override
+    public Type getType() {
+        return Type.COMMAND;
+    }
 
     private void beforeRunning(Window window) {
         if (beforeRunning == null || "nop".equals(beforeRunning)) return;
@@ -294,10 +299,4 @@ public class CommandBundleItem implements BundleItem {
 	        }, new StringReader(input), environment);
         }
 	}
-
-
-	@Override
-    public BundleItemSupplier getBundleItemRef() {
-	    return bundleItemSupplier;
-    }
 }

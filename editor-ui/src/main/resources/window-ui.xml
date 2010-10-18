@@ -37,7 +37,8 @@
     <bean id="gotoLineDialogView" class="kkckkc.jsourcepad.ui.dialog.gotoline.GotoLineDialogViewimpl" autowire="constructor" />
     <bean id="gotoLineDialog" class="kkckkc.jsourcepad.ui.dialog.gotoline.GotoLineDialog" />
 
-
+    <bean id="newFileDialogView" class="kkckkc.jsourcepad.ui.dialog.newfile.NewFileDialogViewimpl" autowire="constructor" />
+    <bean id="newFileDialog" class="kkckkc.jsourcepad.ui.dialog.newfile.NewFileDialog" />
 
 
 </beans>

@@ -1,12 +1,12 @@
 package kkckkc.jsourcepad.model.bundle.snippet;
 
-import java.util.Map;
-
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.bundle.BundleItem;
 import kkckkc.jsourcepad.model.bundle.BundleItemSupplier;
 
-public class SnippetBundleItem implements BundleItem {
+import java.util.Map;
+
+public class SnippetBundleItem implements BundleItem<Void> {
 	private String content;
 
 	private BundleItemSupplier bundleItemSupplier;
@@ -21,13 +21,13 @@ public class SnippetBundleItem implements BundleItem {
     }
 
 	@Override
-	public BundleItemSupplier getBundleItemRef() {
-	    return bundleItemSupplier;
-	}
-
-	@Override
-    public void execute(Window window) throws Exception {
+    public void execute(Window window, Void context) throws Exception {
 	    Snippet snippet = new Snippet(content, bundleItemSupplier);
 	    snippet.insert(window, window.getDocList().getActiveDoc().getActiveBuffer());
+    }
+
+    @Override
+    public Type getType() {
+        return Type.SNIPPET;
     }
 }

@@ -21,4 +21,21 @@ public class FileUtils {
 
         return descendant != null;
     }
+
+    public static String getBaseName(File file) {
+        String s = file.getName();
+        if (! s.contains(".")) return s;
+        return s.substring(0, s.lastIndexOf('.'));
+    }
+
+    public static String shorten(String path) {
+        if (path.startsWith(System.getProperty("user.home") + File.separator)) {
+            return "~" + path.substring(System.getProperty("user.home").length());
+        }
+        return path;
+    }
+
+    public static String expand(String text) {
+        return text.replaceAll("~", System.getProperty("user.home"));
+    }
 }

@@ -72,7 +72,7 @@ public class EnvironmentProvider {
         if (actionManager.getActionContext().get(ActionContextKeys.FOCUSED_COMPONENT) instanceof Doc) {
 			files = window.getProject().getSelectedFiles();
 		} else {
-			if (activeDoc.getFile() != null) {
+			if (activeDoc != null && activeDoc.getFile() != null) {
 				files = Collections.singletonList(activeDoc.getFile());
 			}
 		}
@@ -89,9 +89,11 @@ public class EnvironmentProvider {
 			environment.put("TM_SELECTED_FILES", Joiner.on("\"").join(s));
 		}
 		
-		
-		environment.put("TM_SOFT_TABS", activeDoc.getTabManager().isSoftTabs() ? "true" : "false");
-		environment.put("TM_TAB_SIZE", Integer.toString(activeDoc.getTabManager().getTabSize()));
+
+        if (activeDoc != null) {
+		    environment.put("TM_SOFT_TABS", activeDoc.getTabManager().isSoftTabs() ? "true" : "false");
+		    environment.put("TM_TAB_SIZE", Integer.toString(activeDoc.getTabManager().getTabSize()));
+        }
 
 		// Build path
 		environment.put("PATH",

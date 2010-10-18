@@ -3,7 +3,9 @@ package kkckkc.jsourcepad.model.bundle;
 import kkckkc.jsourcepad.model.Window;
 
 
-public interface BundleItem {
-	public void execute(Window window) throws Exception;
-	public BundleItemSupplier getBundleItemRef();
+public interface BundleItem<C> {
+    public static enum Type { SNIPPET, COMMAND, TEMPLATE }
+
+	public void execute(Window window, C context) throws Exception;
+    public Type getType();
 }
