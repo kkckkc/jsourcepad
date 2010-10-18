@@ -31,15 +31,15 @@ public class DocListImpl implements DocList {
 	
 	@Override
 	public Doc create() {
-		Doc doc = createDoc();
+		Doc doc = createDoc(null);
 		docs.add(doc);
 		window.topic(Listener.class).post().created(doc);
 		setActive(docs.size() - 1);
 		return doc;
 	}
 
-	private Doc createDoc() {
-		BeanFactory container = beanFactoryLoader.load(BeanFactoryLoader.DOCUMENT, window, null);
+	private Doc createDoc(File file) {
+		BeanFactory container = beanFactoryLoader.load(BeanFactoryLoader.DOCUMENT, window, file, null);
 		return container.getBean(Doc.class);
     }
 
@@ -59,7 +59,7 @@ public class DocListImpl implements DocList {
 			i++;
 		}
 		
-		Doc doc = createDoc();
+		Doc doc = createDoc(file);
 		try {
 			doc.open(file);
 		} catch (IOException e) {

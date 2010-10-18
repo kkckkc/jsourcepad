@@ -5,7 +5,6 @@ import kkckkc.jsourcepad.model.SettingsPanel;
 import kkckkc.jsourcepad.model.ThemeSettings;
 import kkckkc.jsourcepad.theme.Theme;
 import kkckkc.jsourcepad.util.BeanFactoryLoader;
-import kkckkc.jsourcepad.util.BeanFactoryLoader.Scope;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -45,7 +44,7 @@ public class OsxTheme implements Theme {
     }
 
     @Override
-    public Resource getOverridesLocation(Scope<?> scope) {
+    public <C> Resource getOverridesLocation(BeanFactoryLoader.Scope<?, C> scope, C context) {
 		if (scope == BeanFactoryLoader.DOCUMENT) {
 			return new ClassPathResource("/osx-document.xml");
 		} else if (scope == BeanFactoryLoader.WINDOW) {

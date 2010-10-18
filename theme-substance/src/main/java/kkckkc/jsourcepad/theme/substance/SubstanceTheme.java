@@ -76,7 +76,7 @@ public class SubstanceTheme implements Theme {
     }
 
     @Override
-    public Resource getOverridesLocation(BeanFactoryLoader.Scope<?> scope) {
+    public <C> Resource getOverridesLocation(BeanFactoryLoader.Scope<?, C> scope, C context) {
         if (scope == BeanFactoryLoader.WINDOW) {
             return new ClassPathResource("/substance-window.xml");
         }

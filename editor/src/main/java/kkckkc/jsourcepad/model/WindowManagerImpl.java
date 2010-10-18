@@ -54,7 +54,7 @@ public class WindowManagerImpl implements WindowManager {
         // TODO: Clean this method
         if (file != null && file.isDirectory()) {
             DefaultListableBeanFactory container =
-                beanFactoryLoader.load(BeanFactoryLoader.WINDOW, app, props);
+                beanFactoryLoader.load(BeanFactoryLoader.WINDOW, app, file, props);
 
             Window window = container.getBean("window", Window.class);
             ((WindowImpl) window).setId(++lastId);
@@ -67,7 +67,7 @@ public class WindowManagerImpl implements WindowManager {
             return window;
         } else {
             DefaultListableBeanFactory container =
-                beanFactoryLoader.load(BeanFactoryLoader.WINDOW, app, props);
+                beanFactoryLoader.load(BeanFactoryLoader.WINDOW, app, file, props);
 
             Window window = container.getBean("window", Window.class);
             ((WindowImpl) window).setId(++lastId);

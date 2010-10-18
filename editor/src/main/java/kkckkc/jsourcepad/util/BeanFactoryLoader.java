@@ -23,34 +23,35 @@ import org.xml.sax.InputSource;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.io.File;
 import java.util.Properties;
 
 public class BeanFactoryLoader {
     private static final FastDocumentLoader FAST_DOCUMENT_LOADER = new FastDocumentLoader();
 
-    private void loadXml(XmlBeanDefinitionReader xmlBeanDefinitionReader, Scope<?> scope) throws BeanDefinitionStoreException {
+    private void loadXml(XmlBeanDefinitionReader xmlBeanDefinitionReader, Scope<?, ?> scope) throws BeanDefinitionStoreException {
         // Improve performance by reusing XML parsers
         xmlBeanDefinitionReader.setDocumentLoader(FAST_DOCUMENT_LOADER);
         xmlBeanDefinitionReader.loadBeanDefinitions(new ClassPathResource(scope.getResource()));
     }
 
-	public interface Scope<P> { 
+	public interface Scope<P, C> {
 		public String getResource();
 	}
 	
-	public static final Scope<Void> APPLICATION = new Scope<Void>() {
+	public static final Scope<Void, Void> APPLICATION = new Scope<Void, Void>() {
         public String getResource() {
 	        return "/application.xml";
         }
 	};
 	
-	public static final Scope<Application> WINDOW = new Scope<Application>() {
+	public static final Scope<Application, File> WINDOW = new Scope<Application, File>() {
         public String getResource() {
 	        return "/window.xml";
         }
 	};
 	
-	public static final Scope<Window> DOCUMENT = new Scope<Window>() {
+	public static final Scope<Window, File> DOCUMENT = new Scope<Window, File>() {
         public String getResource() {
 	        return "/document.xml";
         }
@@ -58,11 +59,11 @@ public class BeanFactoryLoader {
 	
 	
 	@SuppressWarnings("unchecked")
-    public DefaultListableBeanFactory load(Scope<?> scope) {
-		return load((Scope<ScopeRoot>) scope, null, null);
+    public DefaultListableBeanFactory load(Scope<?, ?> scope) {
+		return load((Scope<ScopeRoot, Void>) scope, null, null, null);
 	}
 	
-	public <P extends ScopeRoot> DefaultListableBeanFactory load(Scope<P> scope, P parent, Properties properties) {
+	public <P extends ScopeRoot, C> DefaultListableBeanFactory load(Scope<P, C> scope, P parent, C context, Properties properties) {
 		PerformanceLogger.get().enter(this, "load");
 		
 		DefaultListableBeanFactory container;
@@ -90,7 +91,7 @@ public class BeanFactoryLoader {
 
 		// Load theme overrides
         for (Plugin plugin : PluginManager.getActivePlugins()) {
-            Resource r = plugin.getOverridesLocation(scope);
+            Resource r = plugin.getOverridesLocation(scope, context);
             if (r == null) continue;
 
             xmlBeanDefinitionReader.loadBeanDefinitions(r);

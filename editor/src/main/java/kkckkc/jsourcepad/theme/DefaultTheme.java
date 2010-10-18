@@ -1,7 +1,7 @@
 package kkckkc.jsourcepad.theme;
 
 import kkckkc.jsourcepad.model.SettingsPanel;
-import kkckkc.jsourcepad.util.BeanFactoryLoader.Scope;
+import kkckkc.jsourcepad.util.BeanFactoryLoader;
 import org.springframework.core.io.Resource;
 
 import javax.swing.*;
@@ -39,7 +39,7 @@ public class DefaultTheme implements Theme {
     }
 
     @Override
-    public Resource getOverridesLocation(Scope<?> scope) {
+    public <C> Resource getOverridesLocation(BeanFactoryLoader.Scope<?, C> scope, C context) {
 	    return null;
     }
 
