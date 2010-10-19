@@ -69,8 +69,10 @@ public class EnvironmentProvider {
 
 		List<File> files = Lists.newArrayList();
         ActionManager actionManager = window.getActionManager();
-        if (actionManager.getActionContext().get(ActionContextKeys.FOCUSED_COMPONENT) instanceof Doc) {
-			files = window.getProject().getSelectedFiles();
+        if (! (actionManager.getActionContext().get(ActionContextKeys.FOCUSED_COMPONENT) instanceof Doc)) {
+            if (window.getProject() != null) {
+			    files = window.getProject().getSelectedFiles();
+            }
 		} else {
 			if (activeDoc != null && activeDoc.getFile() != null) {
 				files = Collections.singletonList(activeDoc.getFile());
