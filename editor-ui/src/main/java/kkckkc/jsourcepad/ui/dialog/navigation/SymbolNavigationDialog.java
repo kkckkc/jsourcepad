@@ -48,7 +48,6 @@ public class SymbolNavigationDialog extends NavigationDialog {
     public void keyReleased(KeyEvent e) {
 		if (e.getSource() instanceof JTextField) {
 			if (view.getTextField().getText().length() > 0) {
-                System.out.println(symbolList);
 				view.getResult().setListData(symbolList.getSymbols(view.getTextField().getText()).toArray());
 				view.getResult().setSelectedIndex(0);
 			} else {

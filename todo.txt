@@ -29,6 +29,7 @@
 [ ] Rework FoldManager and support fold level actions
 [ ] Text > Move Selection
 [ ] Text > Edit Each Line in Selection
+[ ] Macros
 
 HTML bundle
 [x] Embedded javascript syntax colors
@@ -36,5 +37,5 @@ HTML bundle
 [x] Wrap Each Selected Line in Open/Close Tag
 [x] movie, fieldset etc, i.e. same tabstop in wrong order
 
-[ ] Bundle menu
+[x] Bundle menu
 [ ] Bundle editor

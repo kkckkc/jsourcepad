@@ -27,6 +27,7 @@
 	<bean id="quickNavigationDialogView" class="kkckkc.jsourcepad.ui.dialog.navigation.QuickNavigationDialogViewImpl" autowire="constructor" scope="prototype"/>
 
     <bean id="symbolNavigationDialog" class="kkckkc.jsourcepad.ui.dialog.navigation.SymbolNavigationDialog" />
+    <bean id="bundleItemNavigationDialog" class="kkckkc.jsourcepad.ui.dialog.navigation.BundleItemNavigationDialog" />
 
 	<bean id="progressDialog" class="kkckkc.jsourcepad.util.ui.ProgressDialog" />
 	<bean id="progressDialogView" class="kkckkc.jsourcepad.util.ui.ProgressDialogViewImpl" autowire="constructor"/>
