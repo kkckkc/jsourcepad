@@ -25,8 +25,16 @@ public class TextmateLanguageParser {
 
 	public TextmateLanguageParser(File file) {
 		this.file = file;
-		
-		this.factory = new JoniPatternFactory();
+
+        final PatternFactory delegate = new JoniPatternFactory();
+		this.factory = new PatternFactory() {
+            @Override
+            public kkckkc.syntaxpane.regex.Pattern create(String s) {
+                // TODO: Investigate if this is really needed
+                s = s.replaceAll("\\\\n", "\n");
+                return delegate.create(s);
+            }
+        };
 	}
 
 	public Language parse() throws FileNotFoundException, IOException {
@@ -147,6 +155,7 @@ public class TextmateLanguageParser {
 	    ContainerContext cc = new ContainerContext(factory);
 		cc.setId((String) entry.get("name")); 
 		cc.setName((String) entry.get("name"));
+
 		if (entry.containsKey("disabled")) {
             cc.setDisabled(true);
         } else {
@@ -155,9 +164,10 @@ public class TextmateLanguageParser {
 
 		if (entry.containsKey("begin")) 
 			cc.setBegin(factory.create((String) entry.get("begin")));
-		if (entry.containsKey("end")) 
-			cc.setEnd(factory.create(	
-					CHANGE_BACKREF.matcher((String) entry.get("end")).replaceAll("\\\\%{\\1@start}")));
+		if (entry.containsKey("end")) {
+            String end = CHANGE_BACKREF.matcher((String) entry.get("end")).replaceAll("\\\\%{\\1@start}");
+            cc.setEnd(factory.create(end));
+        }
 	    
 		List<Map> patterns = (List<Map>) entry.get("patterns");
 		List<Context> contexts = new ArrayList<Context>();
