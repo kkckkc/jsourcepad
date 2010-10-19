@@ -27,7 +27,8 @@
 [ ] Move actions to plist format
 [ ] Error reporting
 [ ] Support contentName
-[ ] Fix python unittest color coding
+[x] Fix python unittest color coding
+[ ] Italic fonts, for instance in python unittest
 
 HTML bundle
 [x] Embedded javascript syntax colors

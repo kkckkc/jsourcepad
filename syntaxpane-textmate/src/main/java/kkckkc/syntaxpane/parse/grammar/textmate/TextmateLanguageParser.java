@@ -165,10 +165,9 @@ public class TextmateLanguageParser {
 		if (entry.containsKey("begin")) 
 			cc.setBegin(factory.create((String) entry.get("begin")));
 		if (entry.containsKey("end")) {
-            String end = CHANGE_BACKREF.matcher((String) entry.get("end")).replaceAll("\\\\%{\\1@start}");
-            cc.setEnd(factory.create(end));
+            cc.setEnd(factory.create(CHANGE_BACKREF.matcher((String) entry.get("end")).replaceAll("\\\\%{\\1@start}")));
         }
-	    
+
 		List<Map> patterns = (List<Map>) entry.get("patterns");
 		List<Context> contexts = new ArrayList<Context>();
 		if (patterns != null) {
@@ -176,6 +175,23 @@ public class TextmateLanguageParser {
 				contexts.add(parseContext(e));
 			}
 		}
+
+        if (entry.containsKey("contentName")) {
+            ContainerContext s = new ContainerContext(factory);
+            s.setId((String) entry.get("contentName"));
+            s.setName((String) entry.get("contentName"));
+
+            s.setBegin(factory.create("(?=.)"));
+            if (entry.containsKey("end"))
+                s.setEnd(factory.create("(?=" + entry.get("end") + ")"));
+            else
+                s.setEnd(factory.create("(?=.)"));
+
+            s.setChildReferences(contexts.toArray(new Context[] {}));
+
+            contexts.clear();
+            contexts.add(s);
+        }
 
 		if (entry.containsKey("beginCaptures")) {
 			List<SubPatternContext> dest = new ArrayList<SubPatternContext>();
