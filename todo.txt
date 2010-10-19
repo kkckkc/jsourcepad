@@ -9,6 +9,19 @@
 
 [x] Dialogs close on escape, harmonize minimize etc
 [x] Package per theme
+[x] Buffer.replaceText - one undo operation
+[x] Joni replaceAll, removed NamedPatternFactory, check body
+[x]ÊHome button
+[x] Snippet moving backwards, shift tab. See for instance movie
+[x] ScopeSelector and Rule.parse should be moved into specific classes in either syntaxpane-gtksourceview or syntaxpane-textmate
+[x] Templates
+[x] Support contentName
+[x] Fix python unittest color coding
+[x] Italic fonts, for instance in python unittest
+[ ] Error reporting
+[ ] Move actions to plist format
+[ ] Window menu
+[ ] Replacement for keystrokes that are impossible on non-us keyboards
 [ ]ÊWindow/project specific settings - for instance for overwrite mode and tab size
 [ ] Freehanded editing
 [ ] Implement proper completion
@@ -16,19 +29,6 @@
 [ ] Rework FoldManager and support fold level actions
 [ ] Text > Move Selection
 [ ] Text > Edit Each Line in Selection
-[x] Buffer.replaceText - one undo operation
-[ ] Window menu
-[ ] Replacement for keystrokes that are impossible on non-us keyboards
-[x] Joni replaceAll, removed NamedPatternFactory, check body
-[x]ÊHome button
-[x] Snippet moving backwards, shift tab. See for instance movie
-[x] ScopeSelector and Rule.parse should be moved into specific classes in either syntaxpane-gtksourceview or syntaxpane-textmate
-[x] Templates
-[ ] Move actions to plist format
-[ ] Error reporting
-[ ] Support contentName
-[x] Fix python unittest color coding
-[x] Italic fonts, for instance in python unittest
 
 HTML bundle
 [x] Embedded javascript syntax colors

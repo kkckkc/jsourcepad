@@ -9,12 +9,12 @@ import kkckkc.jsourcepad.util.action.BaseAction;
 import java.awt.event.ActionEvent;
 import java.io.File;
 
-public class BundlesBundleEditorAction extends BaseAction {
+public class BundlesBundleEditorShowAction extends BaseAction {
 
     private Window window;
     private DirectoryOpenDialog directoryOpenDialog;
 
-    public BundlesBundleEditorAction(Window window, DirectoryOpenDialog directoryOpenDialog) {
+    public BundlesBundleEditorShowAction(Window window, DirectoryOpenDialog directoryOpenDialog) {
 		this.window = window;
 		this.directoryOpenDialog = directoryOpenDialog;
 	}

@@ -233,7 +233,15 @@
     <bean id="action-group-bundles-menu" parent="action-group">
         <property name="items">
             <list>
-                <ref local="action-bundles-bundle-editor" />
+                <bean parent="action-group">
+					<constructor-arg><value>Bundle Editor</value></constructor-arg>
+					<property name="items">
+						<list>
+                            <ref local="action-bundles-bundle-editor-show" />
+                            <ref local="action-bundles-bundle-editor-reload" />
+						</list>
+					</property>
+				</bean>
                 <null />
             </list>
         </property>
@@ -413,7 +421,8 @@
     <!-- **********************************************************************************************************************
          *  BUNDLES MENU
          ********************************************************************************************************************** -->
-    <bean id="action-bundles-bundle-editor" parent="action" class="kkckkc.jsourcepad.action.BundlesBundleEditorAction" autowire="constructor"/>
+    <bean id="action-bundles-bundle-editor-show" parent="action" class="kkckkc.jsourcepad.action.BundlesBundleEditorShowAction" autowire="constructor"/>
+    <bean id="action-bundles-bundle-editor-reload" parent="action" class="kkckkc.jsourcepad.action.BundlesBundleEditorReloadAction" autowire="constructor"/>
 
     <!-- **********************************************************************************************************************
          *  WINDOW MENU
