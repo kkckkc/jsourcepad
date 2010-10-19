@@ -103,7 +103,7 @@ public class SourceView extends FoldablePlainView {
 	private int draw(Graphics graphics, int x, int y, int s, int e,
 			Segment segment, TabExpander tabExpander, Line line, Scope scope)
 			throws BadLocationException {
-		TextStyle style = scopeSelectorManager.getMatch(scope, editorKit
+        TextStyle style = scopeSelectorManager.getMatch(scope, editorKit
 				.getSourcePane().getStyleScheme().getStyles());
 		if (style == null) {
 			style = editorKit.getSourcePane().getStyleScheme().getTextStyle();
@@ -163,7 +163,7 @@ public class SourceView extends FoldablePlainView {
 			TabExpander tabExpander) {
 		graphics.setColor(style.getColor());
 		Font f = graphics.getFont();
-
+        
 		Font newFont = f;
 		if (style.isBold() || style.isItalic() || style.isUnderline())
 			newFont = newFont.deriveFont((style.isBold() ? Font.BOLD : 0)
