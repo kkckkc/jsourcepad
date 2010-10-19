@@ -11,7 +11,7 @@ public class QueryUtils {
                     for (char c : query.toCharArray()) {
                         boolean found = false;
                         for (; i < s.length(); i++) {
-                            found = s.charAt(i) == c;
+                            found = Character.toLowerCase(s.charAt(i)) == Character.toLowerCase(c);
                             if (found) break;
                         }
                         if (! found) return false;
@@ -27,12 +27,15 @@ public class QueryUtils {
         int i = 0;
         for (char c : query.toCharArray()) {
             for (; i < s.length(); i++) {
-                if (s.charAt(i) == c) {
-                    score -= i;
+                if (Character.toLowerCase(s.charAt(i)) == Character.toLowerCase(c)) {
+                    score += i;
                     break;
                 }
             }
         }
+
+        score += s.length() - i;
+
         return score;
     }
 

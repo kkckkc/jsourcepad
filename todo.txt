@@ -37,5 +37,7 @@ HTML bundle
 [x] Wrap Each Selected Line in Open/Close Tag
 [x] movie, fieldset etc, i.e. same tabstop in wrong order
 
+[ ] Style navigation dialog on mac
+[ ] Select Bundle Item should filter out unavailable due to scope
 [x] Bundle menu
 [ ] Bundle editor
