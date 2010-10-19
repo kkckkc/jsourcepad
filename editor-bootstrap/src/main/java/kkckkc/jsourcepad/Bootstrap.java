@@ -63,11 +63,13 @@ public class Bootstrap implements Runnable {
     private static void startApplication(String... args) {
         PerformanceLogger.get().enter(Bootstrap.class.getName() + "#init");
 
-        ThreadGroup tg = new ThreadGroup("Editor") {
+        ThreadGroup tg = new ThreadGroup("Editor");
+
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             public void uncaughtException(Thread t, Throwable e) {
-                super.uncaughtException(t, e);
+                e.printStackTrace();
             }
-        };
+        });
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
