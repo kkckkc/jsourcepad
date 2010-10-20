@@ -30,6 +30,7 @@
 [ ] Text > Move Selection
 [ ] Text > Edit Each Line in Selection
 [ ] Macros
+[ ] contentName functionality needs replacement. Check entities.txt
 
 HTML bundle
 [x] Embedded javascript syntax colors

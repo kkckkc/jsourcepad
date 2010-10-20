@@ -8,5 +8,5 @@ public interface Plugin {
     public String[] getDependsOn();
     public boolean isEnabled();
 
-    public <C> Resource getOverridesLocation(BeanFactoryLoader.Scope<?, C> scope, C context);
+    public <P, C> Resource getOverridesLocation(BeanFactoryLoader.Scope<P, C> scope, P parent, C context);
 }

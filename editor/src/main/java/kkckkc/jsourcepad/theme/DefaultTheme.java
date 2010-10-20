@@ -39,7 +39,7 @@ public class DefaultTheme implements Theme {
     }
 
     @Override
-    public <C> Resource getOverridesLocation(BeanFactoryLoader.Scope<?, C> scope, C context) {
+    public <P, C> Resource getOverridesLocation(BeanFactoryLoader.Scope<P, C> scope, P parent, C context) {
 	    return null;
     }
 

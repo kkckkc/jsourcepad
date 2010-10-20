@@ -43,7 +43,7 @@ public class GtkTheme implements Theme {
     }
 
     @Override
-    public <C> Resource getOverridesLocation(BeanFactoryLoader.Scope<?, C> scope, C context) {
+    public <P, C> Resource getOverridesLocation(BeanFactoryLoader.Scope<P, C> scope, P parent, C context) {
 		if (scope == BeanFactoryLoader.DOCUMENT) {
 			return new ClassPathResource("/gtk-document.xml");
 		} else if (scope == BeanFactoryLoader.WINDOW) {

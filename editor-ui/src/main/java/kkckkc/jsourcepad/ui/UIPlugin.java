@@ -22,7 +22,7 @@ public class UIPlugin implements Plugin {
     }
 
     @Override
-    public <C> Resource getOverridesLocation(BeanFactoryLoader.Scope<?, C> scope, C context) {
+    public <P, C> Resource getOverridesLocation(BeanFactoryLoader.Scope<P, C> scope, P parent, C context) {
         if (scope == BeanFactoryLoader.WINDOW) {
             return new ClassPathResource("/window-ui.xml");
         } else if (scope == BeanFactoryLoader.APPLICATION) {

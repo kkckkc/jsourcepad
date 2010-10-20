@@ -91,7 +91,7 @@ public class BeanFactoryLoader {
 
 		// Load theme overrides
         for (Plugin plugin : PluginManager.getActivePlugins()) {
-            Resource r = plugin.getOverridesLocation(scope, context);
+            Resource r = plugin.getOverridesLocation(scope, parent, context);
             if (r == null) continue;
 
             xmlBeanDefinitionReader.loadBeanDefinitions(r);

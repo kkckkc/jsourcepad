@@ -44,7 +44,7 @@ public class OsxTheme implements Theme {
     }
 
     @Override
-    public <C> Resource getOverridesLocation(BeanFactoryLoader.Scope<?, C> scope, C context) {
+    public <P, C> Resource getOverridesLocation(BeanFactoryLoader.Scope<P, C> scope, P parent, C context) {
 		if (scope == BeanFactoryLoader.DOCUMENT) {
 			return new ClassPathResource("/osx-document.xml");
 		} else if (scope == BeanFactoryLoader.WINDOW) {
