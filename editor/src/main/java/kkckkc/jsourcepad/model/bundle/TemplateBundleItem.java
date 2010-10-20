@@ -48,8 +48,8 @@ public class TemplateBundleItem implements BundleItem<File> {
     }
 
     @Override
-    public Type getType() {
-        return BundleItem.Type.TEMPLATE;
+    public BundleStructure.Type getType() {
+        return BundleStructure.Type.TEMPLATE;
     }
 
     public static BundleItem create(BundleItemSupplier bundleItemSupplier, Map m) {

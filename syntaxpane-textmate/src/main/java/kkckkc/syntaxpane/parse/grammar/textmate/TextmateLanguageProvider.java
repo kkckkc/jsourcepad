@@ -1,16 +1,17 @@
 package kkckkc.syntaxpane.parse.grammar.textmate;
 
+import kkckkc.syntaxpane.parse.grammar.Language;
+import kkckkc.syntaxpane.parse.grammar.LanguageManager;
+import kkckkc.syntaxpane.parse.grammar.RootContext;
+import kkckkc.utils.io.FileUtils;
+import kkckkc.utils.plist.GeneralPListReader;
+import kkckkc.utils.plist.PListReader;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import kkckkc.syntaxpane.parse.grammar.Language;
-import kkckkc.syntaxpane.parse.grammar.LanguageManager;
-import kkckkc.syntaxpane.parse.grammar.RootContext;
-import kkckkc.utils.plist.GeneralPListReader;
-import kkckkc.utils.plist.PListReader;
 
 public class TextmateLanguageProvider implements LanguageManager.Provider {
 
@@ -24,7 +25,7 @@ public class TextmateLanguageProvider implements LanguageManager.Provider {
 	private File root;
 	
 	public TextmateLanguageProvider(String root) {
-		this.root = new File(root.replace("~", System.getProperty("user.home")));
+		this.root = new File(FileUtils.expandAbbreviations(root));
 	}
 	
 	public Map<String, Language> getLanguages(LanguageManager languageManager) {

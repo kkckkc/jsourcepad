@@ -32,14 +32,14 @@ public class FileUtils {
         return s.substring(0, s.lastIndexOf('.'));
     }
 
-    public static String shorten(String path) {
+    public static String abbreviate(String path) {
         if (path.startsWith(System.getProperty("user.home") + File.separator)) {
             return "~" + path.substring(System.getProperty("user.home").length());
         }
         return path;
     }
 
-    public static String expand(String text) {
+    public static String expandAbbreviations(String text) {
         return text.replaceAll("~", System.getProperty("user.home"));
     }
 }

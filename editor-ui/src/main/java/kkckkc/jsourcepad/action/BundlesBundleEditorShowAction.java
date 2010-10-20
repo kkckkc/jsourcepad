@@ -7,7 +7,6 @@ import kkckkc.jsourcepad.ui.dialog.filechooser.DirectoryOpenDialog;
 import kkckkc.jsourcepad.util.action.BaseAction;
 
 import java.awt.event.ActionEvent;
-import java.io.File;
 
 public class BundlesBundleEditorShowAction extends BaseAction {
 
@@ -22,7 +21,7 @@ public class BundlesBundleEditorShowAction extends BaseAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
         WindowManager wm = Application.get().getWindowManager();
-		Window w = wm.newWindow(new File(System.getProperty("user.home") + "/.jsourcepad/Shared/Bundles"));
+		Window w = wm.newWindow(Application.get().getBundleManager().getBundleDir());
 	}
 
 }

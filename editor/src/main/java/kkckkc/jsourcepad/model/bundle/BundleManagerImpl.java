@@ -12,6 +12,7 @@ import kkckkc.syntaxpane.style.ScopeSelector;
 import kkckkc.syntaxpane.style.ScopeSelectorManager;
 import kkckkc.utils.Pair;
 import kkckkc.utils.PerformanceLogger;
+import kkckkc.utils.io.FileUtils;
 import kkckkc.utils.plist.GeneralPListReader;
 import kkckkc.utils.plist.PListReader;
 
@@ -28,10 +29,15 @@ public class BundleManagerImpl implements BundleManager {
 	private String bundleDir;
 	
 	public BundleManagerImpl(String bundleDir) {
-		this.bundleDir = bundleDir.replace("~", System.getProperty("user.home"));
+		this.bundleDir = FileUtils.expandAbbreviations(bundleDir);
 	}
-	
-	@Override
+
+    @Override
+    public File getBundleDir() {
+        return new File(bundleDir);
+    }
+
+    @Override
     public ActionGroup getBundleActionGroup() {
 		loadBundlesIfNeeded();
 		
@@ -158,13 +164,13 @@ public class BundleManagerImpl implements BundleManager {
 			Map submenus = (Map) menu.get("submenus");
 
 			Map<String, BundleItemSupplier> uuidToItem = Maps.newHashMap();
-	    	load(new File(dir, "Commands"), r, uuidToItem);
-	    	load(new File(dir, "Snippets"), r, uuidToItem);
-	    	load(new File(dir, "Macros"), r, uuidToItem);
-            loadTemplates(new File(dir, "Templates"), r, uuidToItem);
+	    	load(dir, BundleStructure.Type.COMMAND, r, uuidToItem);
+	    	load(dir, BundleStructure.Type.SNIPPET, r, uuidToItem);
+	    	load(dir, BundleStructure.Type.MACRO, r, uuidToItem);
+            loadTemplates(dir, BundleStructure.Type.TEMPLATE, r, uuidToItem);
 
 	    	Map<String, Map<ScopeSelector, Object>> preferences = Maps.newHashMap();
-	    	loadPreferences(new File(dir, "Preferences"), r, preferences);
+	    	loadPreferences(dir, BundleStructure.Type.PREFERENCE, r, preferences);
 
             List<Object> root = Lists.newArrayList();
 	    	buildMenu(root, items, uuidToItem, submenus);
@@ -192,14 +198,15 @@ public class BundleManagerImpl implements BundleManager {
     	}
     }
 
-	private void loadPreferences(File file, PListReader r, 
+	private void loadPreferences(File dir, BundleStructure.Type type, PListReader r,
 			Map<String, Map<ScopeSelector, Object>> prefs) throws FileNotFoundException, IOException {
-		if (! file.exists()) return;
+        dir = new File(dir, type.getFolder());
+		if (! dir.exists()) return;
 		
-		for (File f : file.listFiles()) {
+		for (File f : dir.listFiles()) {
 			String n = f.getName();
 			if (n.equals("info.plist")) continue;
-			if (n.endsWith(".tmPreferences") || n.endsWith(".plist")) {
+			if (BundleStructure.isOfType(type, f)) {
 				Map<String, Object> m = (Map<String, Object>) r.read(f);
 				for (Map.Entry<String, Object> entry : ((Map<String, Object>) m.get("settings")).entrySet()) {
 					
@@ -220,13 +227,15 @@ public class BundleManagerImpl implements BundleManager {
 	}
 
 	
-	private void load(File dir, PListReader reader, Map<String, BundleItemSupplier> uuidToItem) throws FileNotFoundException, IOException {
+	private void load(File dir, BundleStructure.Type type, PListReader reader, Map<String, BundleItemSupplier> uuidToItem) throws FileNotFoundException, IOException {
+        dir = new File(dir, type.getFolder());
+
 		if (! dir.exists()) return;
 		
 		for (File file : dir.listFiles()) {
 			String n = file.getName();
 			if (n.equals("info.plist")) continue;
-			if (n.endsWith(".plist") || n.endsWith(".tmLanguage") || n.endsWith(".tmSnippet") || n.endsWith(".tmCommand")) {
+			if (BundleStructure.isOfType(type, file)) {
 
 				Map data = (Map) reader.read(file);
 				
@@ -239,10 +248,7 @@ public class BundleManagerImpl implements BundleManager {
 					ks = new KeystrokeParser().parse(keyEq);
 				}
 
-                BundleItem.Type type = null;
-                if (dir.getName().equals("Commands")) type = BundleItem.Type.COMMAND;
-                else type = BundleItem.Type.SNIPPET;
-				uuidToItem.put((String) data.get("uuid"), 
+				uuidToItem.put((String) data.get("uuid"),
 						new BundleItemSupplier(
 								file, (String) data.get("name"), 
 								new Activator(ks, tabTrigger, 
@@ -254,7 +260,8 @@ public class BundleManagerImpl implements BundleManager {
 	}
 
 
-    private void loadTemplates(File dir, PListReader reader, Map<String, BundleItemSupplier> uuidToItem) throws FileNotFoundException, IOException {
+    private void loadTemplates(File dir, BundleStructure.Type type, PListReader reader, Map<String, BundleItemSupplier> uuidToItem) throws FileNotFoundException, IOException {
+        dir = new File(dir, type.getFolder());
         if (! dir.exists()) return;
 
         for (File subdir : dir.listFiles()) {
@@ -267,7 +274,7 @@ public class BundleManagerImpl implements BundleManager {
                         new BundleItemSupplier(
                                 file, (String) data.get("name"),
                                 null,
-                                BundleItem.Type.TEMPLATE));
+                                BundleStructure.Type.TEMPLATE));
         }
     }
 

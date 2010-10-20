@@ -89,8 +89,8 @@ public class CommandBundleItem implements BundleItem<Void> {
 	}
 
     @Override
-    public Type getType() {
-        return Type.COMMAND;
+    public BundleStructure.Type getType() {
+        return BundleStructure.Type.COMMAND;
     }
 
     private void beforeRunning(Window window) {

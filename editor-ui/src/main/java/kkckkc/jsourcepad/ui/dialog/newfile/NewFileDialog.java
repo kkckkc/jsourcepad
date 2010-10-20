@@ -45,7 +45,7 @@ public class NewFileDialog implements Dialog<NewFileDialogView>, ActionListener,
             for (Bundle b : bundles) {
                 boolean groupAdded = false;
                 for (BundleItemSupplier bis : b.getItems()) {
-                    if (bis.getType() == BundleItem.Type.TEMPLATE) {
+                    if (bis.getType() == BundleStructure.Type.TEMPLATE) {
                         if (! groupAdded) {
                             templates.addItem(b);
                             groupAdded = true;
@@ -72,7 +72,7 @@ public class NewFileDialog implements Dialog<NewFileDialogView>, ActionListener,
         });
 
         try {
-            view.getLocationField().setText(FileUtils.shorten(baseFolder.getCanonicalPath()));
+            view.getLocationField().setText(FileUtils.abbreviate(baseFolder.getCanonicalPath()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -110,7 +110,7 @@ public class NewFileDialog implements Dialog<NewFileDialogView>, ActionListener,
         BundleItemSupplier bis = (BundleItemSupplier) view.getTemplateField().getSelectedItem();
         BundleItem bi = bis.get();
         try {
-            File file = new File(new File(FileUtils.expand(view.getLocationField().getText())), view.getFileNameField().getText());
+            File file = new File(new File(FileUtils.expandAbbreviations(view.getLocationField().getText())), view.getFileNameField().getText());
 
             bi.execute(window, file);
 

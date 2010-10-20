@@ -3,6 +3,7 @@ package kkckkc.jsourcepad.model.bundle.snippet;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.bundle.BundleItem;
 import kkckkc.jsourcepad.model.bundle.BundleItemSupplier;
+import kkckkc.jsourcepad.model.bundle.BundleStructure;
 
 import java.util.Map;
 
@@ -27,7 +28,7 @@ public class SnippetBundleItem implements BundleItem<Void> {
     }
 
     @Override
-    public Type getType() {
-        return Type.SNIPPET;
+    public BundleStructure.Type getType() {
+        return BundleStructure.Type.SNIPPET;
     }
 }

@@ -11,9 +11,9 @@ public class BundleItemSupplier implements Supplier<BundleItem> {
 	private String name;
 	private Activator activator;
 	private Action action;
-    private BundleItem.Type type;
+    private BundleStructure.Type type;
 
-    public BundleItemSupplier(File file, String name, Activator activator, BundleItem.Type type) {
+    public BundleItemSupplier(File file, String name, Activator activator, BundleStructure.Type type) {
 	    this.file = file;
 	    this.name = name;
 	    this.activator = activator;
@@ -48,7 +48,7 @@ public class BundleItemSupplier implements Supplier<BundleItem> {
 	    return action;
     }
 
-    public BundleItem.Type getType() {
+    public BundleStructure.Type getType() {
         return type;
     }
 }

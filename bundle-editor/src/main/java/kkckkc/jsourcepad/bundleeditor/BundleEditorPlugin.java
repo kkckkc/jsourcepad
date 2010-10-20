@@ -1,12 +1,11 @@
 package kkckkc.jsourcepad.bundleeditor;
 
 import kkckkc.jsourcepad.Plugin;
+import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.util.BeanFactoryLoader;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-
-import java.io.File;
 
 public class BundleEditorPlugin implements Plugin {
     @Override
@@ -28,7 +27,7 @@ public class BundleEditorPlugin implements Plugin {
     public <P, C> Resource getOverridesLocation(BeanFactoryLoader.Scope<P, C> scope, P parent, C context) {
         if (scope == BeanFactoryLoader.DOCUMENT) {
             Window window = (Window) parent;
-            if (window.getProject() != null && window.getProject().getProjectDir().equals(new File(System.getProperty("user.home") + "/.jsourcepad/Shared/Bundles"))) {
+            if (window.getProject() != null && window.getProject().getProjectDir().equals(Application.get().getBundleManager().getBundleDir())) {
                 return new ClassPathResource("document-bundle-editor.xml");
             }
         }

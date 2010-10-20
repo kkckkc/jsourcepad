@@ -1,15 +1,16 @@
 package kkckkc.jsourcepad.model.bundle;
 
-import java.awt.event.KeyEvent;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
 import kkckkc.jsourcepad.util.action.ActionGroup;
 import kkckkc.syntaxpane.model.Scope;
 import kkckkc.syntaxpane.style.ScopeSelector;
 
-public interface BundleManager { // extends LanguageManager.Provider {
+import java.awt.event.KeyEvent;
+import java.io.File;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
+public interface BundleManager { 
 	public Map<String, List<Bundle>> getBundles();
 
 	public ActionGroup getBundleActionGroup();
@@ -23,4 +24,5 @@ public interface BundleManager { // extends LanguageManager.Provider {
 
 	public Collection<BundleItemSupplier> getItemsForTabTrigger(String trigger, Scope scope);
 
+    public File getBundleDir();
 }
