@@ -1,8 +1,24 @@
 package kkckkc.jsourcepad.ui;
 
 import com.google.common.collect.Lists;
-import java.awt.Color;
-import java.awt.Component;
+import kkckkc.jsourcepad.model.DocList;
+import kkckkc.jsourcepad.model.Project;
+import kkckkc.jsourcepad.model.Window;
+import kkckkc.jsourcepad.util.action.ActionGroup;
+import kkckkc.jsourcepad.util.action.MenuFactory;
+import kkckkc.jsourcepad.util.ui.PopupUtils;
+import kkckkc.utils.EnvironmentUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.EventListenerList;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreePath;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
@@ -11,30 +27,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JComponent;
-import javax.swing.JPopupMenu;
-import javax.swing.JTree;
-import javax.swing.UIManager;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.EventListenerList;
-import javax.swing.event.TreeModelEvent;
-import javax.swing.event.TreeModelListener;
-import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreePath;
-
-import kkckkc.jsourcepad.model.DocList;
-import kkckkc.jsourcepad.model.Project;
-import kkckkc.jsourcepad.model.Window;
-import kkckkc.jsourcepad.util.action.ActionGroup;
-import kkckkc.jsourcepad.util.action.MenuFactory;
-import kkckkc.jsourcepad.util.ui.PopupUtils;
-import kkckkc.utils.EnvironmentUtils;
-
-import org.springframework.beans.factory.annotation.Autowired;
 
 
 
@@ -105,16 +97,19 @@ public class ProjectViewImpl extends JTree implements ProjectView, MouseListener
 
 	@Override
     public void insertFile(File file) {
+        if (project == null) return;
 		getModel().insertFile(file);
     }
 
 	@Override
     public void refresh(File file) {
+        if (project == null) return;
 		getModel().refresh(file);
     }
 
 	@Override
     public void refresh() {
+        if (project == null) return;
 		getModel().refresh();
     }
 
