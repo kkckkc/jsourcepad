@@ -109,10 +109,9 @@ public class BundleDocImpl extends DocImpl {
     }
 
     private void loadCommand() throws IOException {
-        PListFormatter formatter = new PListFormatter();
-        String s = formatter.format(plist.get("command"));
+        String s = (String) plist.get("command");
 
-        this.buffer.setText(languageManager.getLanguage(""), new BufferedReader(new StringReader(s)));
+        this.buffer.setText(languageManager.getLanguage(s, new File("")), new BufferedReader(new StringReader(s)));
     }
 
     private void loadMacro() throws IOException {

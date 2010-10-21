@@ -23,6 +23,15 @@ public class BundleDocListPresenter extends DocListPresenter {
 
             return presenter;
 
+        } else if (bdi.getType() == BundleStructure.Type.TEMPLATE) {
+
+           TemplateBundleDocPresenter presenter = new TemplateBundleDocPresenter();
+           presenter.setDoc(doc);
+           presenter.setView(new TemplateBundleDocViewImpl());
+           presenter.init();
+
+           return presenter;
+            
         } else {
 
             BasicBundleDocPresenter presenter = new BasicBundleDocPresenter();
