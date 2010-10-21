@@ -73,7 +73,6 @@ public class BundleDocImpl extends DocImpl {
 
         plist.remove("uuid");
         plist.remove("keyEquivalent");
-        plist.remove("name");
         plist.remove("scope");
         plist.remove("tabTrigger");
 

@@ -53,20 +53,31 @@ public class BasicBundleDocViewImpl extends DocViewImpl {
 
     protected void layout() {
         panel = new JPanel();
-        panel.setLayout(new MigLayout("insets panel", "[right][grow,10sp]", "[grow]u[]r[]r[]"));
+        panel.setLayout(new MigLayout("insets panel", "[right][grow,10sp]", "[]r[]r[grow]r[]r[]r[]r[]"));
 
-        panel.add(getSourcePane(), "grow,span,wrap");
+        layoutHeader();
+
+        panel.add(new JLabel("Details:"), "top");
+        panel.add(getSourcePane(), "gapx 3 3,grow,wrap");
 
         layoutFooter();
     }
 
     protected void layoutFooter() {
+        panel.add(new JSeparator(JSeparator.HORIZONTAL), "span,growx,wrap");
         panel.add(new JLabel("Activation:"), "");
         panel.add(activation, "split");
         panel.add(activationSpec, "grow, wrap");
 
         panel.add(new JLabel("Scope Selector:"));
         panel.add(scope, "grow");
+    }
+
+
+    protected void layoutHeader() {
+        panel.add(new JLabel("Name:"), "");
+        panel.add(new JTextField(), "grow, wrap");
+        panel.add(new JSeparator(JSeparator.HORIZONTAL), "span,growx,wrap");
     }
 
     public JComboBox getActivation() {
