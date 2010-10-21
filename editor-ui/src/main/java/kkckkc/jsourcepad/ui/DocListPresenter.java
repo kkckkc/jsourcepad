@@ -92,11 +92,15 @@ public class DocListPresenter implements Presenter<DocListView>, DocList.Listene
 	
 	@Override
 	public void created(final Doc doc) {
-		DocPresenter docPresenter = doc.getPresenter(DocPresenter.class);
-		tabbedPane.add(docPresenter.getTitle(), docPresenter.getView().getComponent());
+        DocPresenter docPresenter = createPresenter(doc);
+        tabbedPane.add(docPresenter.getTitle(), docPresenter.getView().getComponent());
 	}
 
-	@Override
+    protected DocPresenter createPresenter(Doc doc) {
+        return doc.getPresenter(DocPresenter.class);
+    }
+
+    @Override
 	public void selected(int index, Doc doc) {
 		tabbedPane.setSelectedIndex(index);
 	}

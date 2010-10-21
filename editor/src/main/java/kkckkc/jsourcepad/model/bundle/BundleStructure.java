@@ -53,8 +53,8 @@ public class BundleStructure {
 
 
 
-    private static boolean isBundleDir(File f) {
-        return f.equals(Application.get().getBundleManager().getBundleDir());
+    public static boolean isBundleDir(File f) {
+        return f != null && f.equals(Application.get().getBundleManager().getBundleDir());
     }
 
 

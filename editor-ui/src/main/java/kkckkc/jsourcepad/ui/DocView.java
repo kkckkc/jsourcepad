@@ -3,8 +3,12 @@ package kkckkc.jsourcepad.ui;
 import kkckkc.jsourcepad.ComponentView;
 import kkckkc.syntaxpane.ScrollableSourcePane;
 
-public interface DocView extends ComponentView<ScrollableSourcePane> {
-	ScrollableSourcePane getComponent();
+import javax.swing.*;
+
+public interface DocView extends ComponentView<JComponent> {
+	JComponent getComponent();
+
+    ScrollableSourcePane getSourcePane();
 
 	void updateTabSize(int tabSize);
 

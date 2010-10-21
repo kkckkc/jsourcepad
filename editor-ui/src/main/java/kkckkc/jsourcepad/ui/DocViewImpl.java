@@ -3,6 +3,7 @@ package kkckkc.jsourcepad.ui;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.syntaxpane.ScrollableSourcePane;
 
+import javax.swing.*;
 import javax.swing.text.PlainDocument;
 import java.awt.*;
 
@@ -16,11 +17,16 @@ public class DocViewImpl implements DocView {
 	}
 	
 	@Override
-    public ScrollableSourcePane getComponent() {
+    public JComponent getComponent() {
 	    return sourcePane;
     }
 
-	protected ScrollableSourcePane createScrollableSource() {
+    @Override
+    public ScrollableSourcePane getSourcePane() {
+        return sourcePane;
+    }
+
+    protected ScrollableSourcePane createScrollableSource() {
 	    return new ScrollableSourcePane(Application.get().getLanguageManager());
     }
 

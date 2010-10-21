@@ -16,12 +16,41 @@ import java.util.Map;
 
 public class BundleDocImpl extends DocImpl {
 
-    private String uuid;
     private Map plist;
+    
     private BundleStructure.Type type;
+    private String keyEquivalent;
+    private String name;
+    private String scope;
+    private String tabTrigger;
+    private String uuid;
 
     public BundleDocImpl(final Window window, DocList docList, LanguageManager languageManager) {
         super(window, docList, languageManager);
+    }
+
+    public BundleStructure.Type getType() {
+        return type;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getScope() {
+        return scope;
+    }
+
+    public String getTabTrigger() {
+        return tabTrigger;
+    }
+
+    public String getKeyEquivalent() {
+        return keyEquivalent;
+    }
+
+    public Map getPlist() {
+        return plist;
     }
 
     @Override
@@ -37,6 +66,17 @@ public class BundleDocImpl extends DocImpl {
         plist = (Map) pl.read(file);
 
         this.uuid = (String) plist.get("uuid");
+        this.keyEquivalent = (String) plist.get("keyEquivalent");
+        this.name = (String) plist.get("name");
+        this.tabTrigger = (String) plist.get("tabTrigger");
+        this.scope = (String) plist.get("scope");
+
+        plist.remove("uuid");
+        plist.remove("keyEquivalent");
+        plist.remove("name");
+        plist.remove("scope");
+        plist.remove("tabTrigger");
+
         this.type = BundleStructure.getType(file);
 
         switch (this.type) {
@@ -46,6 +86,14 @@ public class BundleDocImpl extends DocImpl {
 
             case PREFERENCE:
                 loadPreferences();
+                break;
+
+            case MACRO:
+                loadMacro();
+                break;
+
+            case COMMAND:
+                loadCommand();
                 break;
 
             default:
@@ -60,11 +108,22 @@ public class BundleDocImpl extends DocImpl {
         this.buffer.setText(languageManager.getLanguage(""), new BufferedReader(new StringReader(s)));
     }
 
-    private void loadSyntax() throws IOException {
-        plist.remove("keyEquivalent");
-        plist.remove("uuid");
-        plist.remove("name");
+    private void loadCommand() throws IOException {
+        PListFormatter formatter = new PListFormatter();
+        String s = formatter.format(plist.get("command"));
 
+        this.buffer.setText(languageManager.getLanguage(""), new BufferedReader(new StringReader(s)));
+    }
+
+    private void loadMacro() throws IOException {
+        PListFormatter formatter = new PListFormatter();
+        formatter.setMapKeyComparator(new MacroKeyComparator());
+        String s = formatter.format(plist.get("commands"));
+
+        this.buffer.setText(languageManager.getLanguage(""), new BufferedReader(new StringReader(s)));
+    }
+
+    private void loadSyntax() throws IOException {
         PListFormatter formatter = new PListFormatter();
         formatter.setMapKeyComparator(new SyntaxesKeyComparator());
         String s = formatter.format(plist);

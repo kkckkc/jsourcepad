@@ -20,12 +20,12 @@ import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeListener;
 
 public class DocPresenter implements Presenter<DocView> {
-	private ScrollableSourcePane sourcePane;
-	private Doc doc;
-    private ActionContext actionContext;
+	protected ScrollableSourcePane sourcePane;
+	protected Doc doc;
+    protected ActionContext actionContext;
 	
 	// Collaborators
-	private DocView view;
+	protected DocView view;
 
 	@Autowired
     public void setView(DocView view) {
@@ -43,7 +43,7 @@ public class DocPresenter implements Presenter<DocView> {
 	
 	@PostConstruct
     public void init() {
-		sourcePane = view.getComponent();
+		sourcePane = view.getSourcePane();
 
         actionContext = new ActionContext();
         actionContext.put(ActionContextKeys.ACTIVE_DOC, doc);
@@ -158,19 +158,19 @@ public class DocPresenter implements Presenter<DocView> {
 	        	view.updateTabSize(tabSettings.getTabSize());
 	        } else if (settings instanceof StyleSettings) {
 	        	StyleSettings styleSettings = (StyleSettings) settings;
-	        	view.getComponent().setStyleScheme(Application.get().getStyleScheme(styleSettings));
-                view.getComponent().setShowInvisibles(styleSettings.isShowInvisibles());
-                view.getComponent().setWrapColumn(styleSettings.getWrapColumn());
+	        	view.getSourcePane().setStyleScheme(Application.get().getStyleScheme(styleSettings));
+                view.getSourcePane().setShowInvisibles(styleSettings.isShowInvisibles());
+                view.getSourcePane().setWrapColumn(styleSettings.getWrapColumn());
 	        } else if (settings instanceof FontSettings) {
 	        	FontSettings fontSettings = (FontSettings) settings;
-	        	view.getComponent().setFont(fontSettings.asFont());
+	        	view.getSourcePane().setFont(fontSettings.asFont());
 	        } else if (settings instanceof EditModeSettings) {
 	        	EditModeSettings editModeSettings = (EditModeSettings) settings;
-	        	view.getComponent().setOverwriteMode(editModeSettings.isOverwriteMode());
+	        	view.getSourcePane().setOverwriteMode(editModeSettings.isOverwriteMode());
 	        } else if (settings instanceof GutterSettings) {
 	        	GutterSettings gutterSettings = (GutterSettings) settings;
-	        	view.getComponent().setFoldings(gutterSettings.isFoldings());
-                view.getComponent().setLineNumbers(gutterSettings.isLineNumbers());
+	        	view.getSourcePane().setFoldings(gutterSettings.isFoldings());
+                view.getSourcePane().setLineNumbers(gutterSettings.isLineNumbers());
 	        }
 
 
