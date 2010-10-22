@@ -14,6 +14,10 @@ public class BundleDocListPresenter extends DocListPresenter {
 
         BundleDocImpl bdi = (BundleDocImpl) doc;
 
+        if (bdi.getType() == null) {
+            return super.createPresenter(doc);
+        }
+
         if (bdi.getType() == BundleStructure.Type.COMMAND) {
 
             CommandBundleDocPresenter presenter = new CommandBundleDocPresenter();

@@ -5,7 +5,7 @@ import com.google.common.collect.Maps;
 import java.util.Comparator;
 import java.util.Map;
 
-class MacroKeyComparator implements Comparator<String> {
+public class MacroKeyComparator implements Comparator<String> {
     static Map<String, Integer> fixedOrdering;
     static {
         int i = 0;

@@ -177,6 +177,25 @@ public class DomUtil {
 		}
 	}
 
+    public static Document newDocument() {
+        try {
+            DocumentBuilder builder = documentBuilderPool.poll();
+            if (builder == null) {
+                builder = factory.newDocumentBuilder();
+                builder.setEntityResolver(ENTITY_RESOLVER);
+            }
+
+            Document d = builder.newDocument();
+
+            builder.reset();
+            documentBuilderPool.offer(builder);
+
+            return d;
+        } catch (ParserConfigurationException e) {
+            throw new RuntimeException("Can't create parser", e);
+        }
+    }
+
 	public static Document parse(File file) throws FileNotFoundException {
 		BufferedReader reader = new BufferedReader(new FileReader(file));
 		try {

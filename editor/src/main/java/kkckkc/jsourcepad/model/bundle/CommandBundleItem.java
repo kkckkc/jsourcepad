@@ -24,22 +24,22 @@ import java.util.concurrent.CountDownLatch;
 @SuppressWarnings("restriction")
 public class CommandBundleItem implements BundleItem<Void> {
 	
-	private static final String OUTPUT_SHOW_AS_HTML = "showAsHTML";
-	private static final String OUTPUT_DISCARD = "discard";
-	private static final String OUTPUT_REPLACE_SELECTED_TEXT = "replaceSelectedText";
-	private static final String OUTPUT_SHOW_AS_TOOLTIP = "showAsTooltip";
-	private static final String OUTPUT_INSERT_AS_SNIPPET = "insertAsSnippet";
-	private static final String OUTPUT_AFTER_SELECTED_TEXT = "afterSelectedText";
+	public static final String OUTPUT_SHOW_AS_HTML = "showAsHTML";
+	public static final String OUTPUT_DISCARD = "discard";
+	public static final String OUTPUT_REPLACE_SELECTED_TEXT = "replaceSelectedText";
+	public static final String OUTPUT_SHOW_AS_TOOLTIP = "showAsTooltip";
+	public static final String OUTPUT_INSERT_AS_SNIPPET = "insertAsSnippet";
+	public static final String OUTPUT_AFTER_SELECTED_TEXT = "afterSelectedText";
 
-	private static final String INPUT_NONE = "none";
-	private static final String INPUT_DOCUMENT = "document";
-	private static final String INPUT_SELECTION = "selection";
-    private static final String INPUT_CHARACTER = "character";
-    private static final String INPUT_LINE = "line";
-    private static final String INPUT_WORD = "word";
+	public static final String INPUT_NONE = "none";
+	public static final String INPUT_DOCUMENT = "document";
+	public static final String INPUT_SELECTION = "selection";
+    public static final String INPUT_CHARACTER = "character";
+    public static final String INPUT_LINE = "line";
+    public static final String INPUT_WORD = "word";
 
-    private static final String BEFORE_SAVE_ALL = "saveModifiedFiles";
-    private static final String BEFORE_SAVE_ACTIVE = "saveActiveFile";
+    public static final String BEFORE_SAVE_ALL = "saveModifiedFiles";
+    public static final String BEFORE_SAVE_ACTIVE = "saveActiveFile";
 
 	private String output;
 	private String command;

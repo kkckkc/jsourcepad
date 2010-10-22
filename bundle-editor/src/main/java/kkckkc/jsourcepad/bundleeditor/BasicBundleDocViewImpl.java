@@ -20,10 +20,17 @@ public class BasicBundleDocViewImpl extends DocViewImpl {
     protected JTextField scope;
     protected JComboBox activation;
     protected JPanel activationSpec;
+    private JTextField name;
 
     public BasicBundleDocViewImpl() {
         super();
 
+        initComponents();
+
+        layout();
+    }
+
+    protected void initComponents() {
         activation = new JComboBox(new String[] { KEY_EQUIVALENT, TAB_TRIGGER });
 
         final CardLayout cardLayout = new CardLayout();
@@ -32,6 +39,7 @@ public class BasicBundleDocViewImpl extends DocViewImpl {
 
         keyEquivalent = new JTextField();
         tabTrigger = new JTextField();
+        name = new JTextField();
 
         activationSpec.add(keyEquivalent, KEY_EQUIVALENT);
         activationSpec.add(tabTrigger, TAB_TRIGGER);
@@ -46,9 +54,6 @@ public class BasicBundleDocViewImpl extends DocViewImpl {
         });
 
         scope = new JTextField();
-
-
-        layout();
     }
 
     protected void layout() {
@@ -76,7 +81,7 @@ public class BasicBundleDocViewImpl extends DocViewImpl {
 
     protected void layoutHeader() {
         panel.add(new JLabel("Name:"), "");
-        panel.add(new JTextField(), "grow, wrap");
+        panel.add(name, "grow, wrap");
         panel.add(new JSeparator(JSeparator.HORIZONTAL), "span,growx,wrap");
     }
 
@@ -99,5 +104,9 @@ public class BasicBundleDocViewImpl extends DocViewImpl {
     @Override
     public JComponent getComponent() {
         return panel;
+    }
+
+    public JTextField getName() {
+        return name;
     }
 }
