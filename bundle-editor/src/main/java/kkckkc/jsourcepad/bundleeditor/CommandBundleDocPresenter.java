@@ -58,6 +58,11 @@ public class CommandBundleDocPresenter extends BasicBundleDocPresenter {
         cView.getInput().setSelectedItem(inputMap.inverse().get(plist.get("input")));
         cView.getOutput().setSelectedItem(outputMap.inverse().get(plist.get("output")));
         cView.getSave().setSelectedItem(saveMap.inverse().get(plist.get("beforeRunningCommand")));
+
+        register(cView.getSecondayInput());
+        register(cView.getInput());
+        register(cView.getOutput());
+        register(cView.getSave());
     }
 
     @Override

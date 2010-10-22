@@ -1,6 +1,7 @@
 package kkckkc.jsourcepad.bundleeditor.model;
 
 import com.google.common.base.Strings;
+import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.DocImpl;
 import kkckkc.jsourcepad.model.DocList;
 import kkckkc.jsourcepad.model.Window;
@@ -30,6 +31,7 @@ public class BundleDocImpl extends DocImpl {
     private String uuid;
 
     private Runnable saveCallback;
+    private boolean modified;
 
     public BundleDocImpl(final Window window, DocList docList, LanguageManager languageManager) {
         super(window, docList, languageManager);
@@ -259,4 +261,15 @@ public class BundleDocImpl extends DocImpl {
         }
     }
 
+    @Override
+    public boolean isModified() {
+        return this.modified || super.isModified();
+    }
+
+    public void setModified(boolean b) {
+        this.modified = b;
+
+        getDocList().getWindow().topic(Doc.StateListener.class).post().modified(this, true, false);
+
+    }
 }

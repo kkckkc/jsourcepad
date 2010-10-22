@@ -45,13 +45,6 @@ public class DocPresenter implements Presenter<DocView> {
     public void init() {
 		sourcePane = view.getSourcePane();
 
-        actionContext = new ActionContext();
-        actionContext.put(ActionContextKeys.ACTIVE_DOC, doc);
-        actionContext.put(ActionContextKeys.FOCUSED_COMPONENT, doc);
-        actionContext.commit();
-        
-        ActionContext.set(sourcePane, actionContext);
-
         doc.getDocList().getWindow().topic(Buffer.SelectionListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, ACTION_CONTEXT_UPDATER);
         doc.getDocList().getWindow().topic(Doc.StateListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, ACTION_CONTEXT_UPDATER);
 
@@ -82,6 +75,15 @@ public class DocPresenter implements Presenter<DocView> {
 
         wrapClipboardAction("copy", sourcePane);
         wrapClipboardAction("cut", sourcePane);
+
+
+        actionContext = new ActionContext();
+        actionContext.put(ActionContextKeys.ACTIVE_DOC, doc);
+        actionContext.put(ActionContextKeys.FOCUSED_COMPONENT, doc);
+        actionContext.commit();
+
+        ActionContext.set(view.getComponent(), actionContext);
+
     }
 	
 	public String getTitle() {
