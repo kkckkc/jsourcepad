@@ -27,15 +27,15 @@ public class ManifestBundleDocViewImpl extends BasicBundleDocViewImpl {
         layoutHeader();
 
         JPanel innerPanel = new JPanel();
-        innerPanel.setLayout(new MigLayout("insets 0", "[grow][grow]", "[grow]"));
+        innerPanel.setLayout(new MigLayout("insets 0", "[][]", "[grow]"));
 
         menu = new JTree();
         available = new JTree();
 
-        innerPanel.add(new JScrollPane(menu), "grow");
-        innerPanel.add(new JScrollPane(available), "grow");
+        innerPanel.add(new JScrollPane(menu), "grow, width 50%");
+        innerPanel.add(new JScrollPane(available), "grow, width 50%");
 
-        panel.add(innerPanel, "grow,span,wrap");
+        panel.add(innerPanel, "grow,span");
     }
 
     public JTree getMenu() {
