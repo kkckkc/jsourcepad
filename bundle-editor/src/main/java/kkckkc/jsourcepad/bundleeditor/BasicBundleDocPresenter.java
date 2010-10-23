@@ -3,7 +3,7 @@ package kkckkc.jsourcepad.bundleeditor;
 import com.google.common.base.Strings;
 import kkckkc.jsourcepad.bundleeditor.model.BundleDocImpl;
 import kkckkc.jsourcepad.model.bundle.BundleStructure;
-import kkckkc.jsourcepad.model.bundle.KeystrokeParser;
+import kkckkc.jsourcepad.model.bundle.TextmateKeystrokeEncoding;
 import kkckkc.jsourcepad.ui.DocPresenter;
 
 import javax.swing.*;
@@ -22,7 +22,7 @@ public class BasicBundleDocPresenter extends DocPresenter {
         if (Strings.isNullOrEmpty(bDoc.getKeyEquivalent())) {
             bView.getKeyEquivalent().setText("");
         } else {
-            String s = KeystrokeParser.parse(bDoc.getKeyEquivalent()).toString();
+            String s = TextmateKeystrokeEncoding.parse(bDoc.getKeyEquivalent()).toString();
             s = s.replaceAll("pressed ", "").replaceAll("typed ", "");
             bView.getKeyEquivalent().setText(s);
         }
@@ -89,7 +89,7 @@ public class BasicBundleDocPresenter extends DocPresenter {
         bDoc.setScope(bView.getScope().getText());
         bDoc.setName(bView.getName().getText());
         if (bView.getActivation().getSelectedItem().equals(BasicBundleDocViewImpl.KEY_EQUIVALENT)) {
-            bDoc.setKeyEquivalent(bView.getKeyEquivalent().getText());
+            bDoc.setKeyEquivalent(TextmateKeystrokeEncoding.toString(KeyStroke.getKeyStroke(bView.getKeyEquivalent().getText())));
             bDoc.setTabTrigger(null);
         } else {
             bDoc.setKeyEquivalent(null);

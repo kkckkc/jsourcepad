@@ -245,7 +245,7 @@ public class BundleManagerImpl implements BundleManager {
 				
 				KeyStroke ks = null;
 				if (keyEq != null && ! "".equals(keyEq)) {
-					ks = new KeystrokeParser().parse(keyEq);
+					ks = new TextmateKeystrokeEncoding().parse(keyEq);
 				}
 
 				uuidToItem.put((String) data.get("uuid"),
