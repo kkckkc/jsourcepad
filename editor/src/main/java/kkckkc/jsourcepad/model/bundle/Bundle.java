@@ -10,12 +10,15 @@ public class Bundle {
 	private List<Object> menu;
 	private Map<String, Map<ScopeSelector, Object>> preferences;
 	private List<BundleItemSupplier> items;
-	
-	public Bundle(String name, List<Object> menu, Map<String, Map<ScopeSelector, Object>> preferences, List<BundleItemSupplier> items) {
+    private Map<String, BundleItemSupplier> itemsByUuid;
+
+    public Bundle(String name, List<Object> menu, Map<String, Map<ScopeSelector, Object>> preferences,
+                  Map<String, BundleItemSupplier> itemsByUuid, List<BundleItemSupplier> items) {
 	    this.name = name;
 	    this.menu = menu;
 	    this.preferences = preferences;
 	    this.items = items;
+        this.itemsByUuid = itemsByUuid;
     }
 	
 	public Map<String, Map<ScopeSelector, Object>> getPreferences() {
@@ -32,5 +35,9 @@ public class Bundle {
 
 	public List<BundleItemSupplier> getItems() {
 	    return items;
+    }
+
+    public Map<String, BundleItemSupplier> getItemsByUuid() {
+        return itemsByUuid;
     }
 }

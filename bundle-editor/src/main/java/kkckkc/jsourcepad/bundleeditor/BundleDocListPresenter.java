@@ -35,7 +35,17 @@ public class BundleDocListPresenter extends DocListPresenter {
            presenter.init();
 
            return presenter;
-            
+
+        } else if (bdi.getType() == BundleStructure.Type.MANIFEST) {
+
+            ManifestBundleDocPresenter presenter = new ManifestBundleDocPresenter();
+            presenter.setDoc(doc);
+            presenter.setView(new ManifestBundleDocViewImpl());
+            presenter.init();
+
+            return presenter;
+
+
         } else {
 
             BasicBundleDocPresenter presenter = new BasicBundleDocPresenter();

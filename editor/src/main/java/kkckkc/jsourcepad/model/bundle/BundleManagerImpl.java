@@ -175,7 +175,7 @@ public class BundleManagerImpl implements BundleManager {
             List<Object> root = Lists.newArrayList();
 	    	buildMenu(root, items, uuidToItem, submenus);
 
-			return new Bundle(name, root, preferences, Lists.newArrayList(uuidToItem.values()));
+			return new Bundle(name, root, preferences, uuidToItem, Lists.newArrayList(uuidToItem.values()));
 		} catch (IOException e) {
         	throw new RuntimeException(e);
         } 
