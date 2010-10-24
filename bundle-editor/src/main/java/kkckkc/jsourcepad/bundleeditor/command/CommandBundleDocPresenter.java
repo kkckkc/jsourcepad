@@ -1,7 +1,8 @@
-package kkckkc.jsourcepad.bundleeditor;
+package kkckkc.jsourcepad.bundleeditor.command;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import kkckkc.jsourcepad.bundleeditor.BasicBundleDocPresenter;
 import kkckkc.jsourcepad.bundleeditor.model.BundleDocImpl;
 import kkckkc.jsourcepad.model.bundle.CommandBundleItem;
 

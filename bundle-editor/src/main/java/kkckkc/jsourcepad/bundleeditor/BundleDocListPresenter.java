@@ -1,6 +1,12 @@
 package kkckkc.jsourcepad.bundleeditor;
 
+import kkckkc.jsourcepad.bundleeditor.command.CommandBundleDocPresenter;
+import kkckkc.jsourcepad.bundleeditor.command.CommandBundleDocViewImpl;
+import kkckkc.jsourcepad.bundleeditor.manifest.ManifestBundleDocPresenter;
+import kkckkc.jsourcepad.bundleeditor.manifest.ManifestBundleDocViewImpl;
 import kkckkc.jsourcepad.bundleeditor.model.BundleDocImpl;
+import kkckkc.jsourcepad.bundleeditor.template.TemplateBundleDocPresenter;
+import kkckkc.jsourcepad.bundleeditor.template.TemplateBundleDocViewImpl;
 import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.bundle.BundleStructure;
 import kkckkc.jsourcepad.ui.DocListPresenter;

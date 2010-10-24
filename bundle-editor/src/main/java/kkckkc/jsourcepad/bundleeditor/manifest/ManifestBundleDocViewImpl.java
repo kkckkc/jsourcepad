@@ -1,5 +1,6 @@
-package kkckkc.jsourcepad.bundleeditor;
+package kkckkc.jsourcepad.bundleeditor.manifest;
 
+import kkckkc.jsourcepad.bundleeditor.BasicBundleDocViewImpl;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;

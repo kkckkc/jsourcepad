@@ -1,5 +1,7 @@
-package kkckkc.jsourcepad.bundleeditor;
+package kkckkc.jsourcepad.bundleeditor.template;
 
+import kkckkc.jsourcepad.bundleeditor.BasicBundleDocPresenter;
+import kkckkc.jsourcepad.bundleeditor.command.CommandBundleDocViewImpl;
 import kkckkc.jsourcepad.bundleeditor.model.BundleDocImpl;
 import kkckkc.jsourcepad.model.bundle.CommandBundleItem;
 
