@@ -250,7 +250,7 @@ public class BundleManagerImpl implements BundleManager {
 
 				uuidToItem.put((String) data.get("uuid"),
 						new BundleItemSupplier(
-								file, (String) data.get("name"), 
+								file, (String) data.get("uuid"), (String) data.get("name"), 
 								new Activator(ks, tabTrigger, 
 									scope != null ? TextmateScopeSelectorParser.parse(scope) : null	
 								),
@@ -272,7 +272,7 @@ public class BundleManagerImpl implements BundleManager {
 
             uuidToItem.put((String) data.get("uuid"),
                         new BundleItemSupplier(
-                                file, (String) data.get("name"),
+                                file, (String) data.get("uuid"), (String) data.get("name"),
                                 null,
                                 BundleStructure.Type.TEMPLATE));
         }

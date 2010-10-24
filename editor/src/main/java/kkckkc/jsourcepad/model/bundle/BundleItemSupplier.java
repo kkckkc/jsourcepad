@@ -12,9 +12,11 @@ public class BundleItemSupplier implements Supplier<BundleItem> {
 	private Activator activator;
 	private Action action;
     private BundleStructure.Type type;
+    private String uuid;
 
-    public BundleItemSupplier(File file, String name, Activator activator, BundleStructure.Type type) {
-	    this.file = file;
+    public BundleItemSupplier(File file, String uuid, String name, Activator activator, BundleStructure.Type type) {
+	    this.uuid = uuid;
+        this.file = file;
 	    this.name = name;
 	    this.activator = activator;
         this.type = type;
@@ -50,5 +52,9 @@ public class BundleItemSupplier implements Supplier<BundleItem> {
 
     public BundleStructure.Type getType() {
         return type;
+    }
+
+    public String getUUID() {
+        return uuid;
     }
 }
