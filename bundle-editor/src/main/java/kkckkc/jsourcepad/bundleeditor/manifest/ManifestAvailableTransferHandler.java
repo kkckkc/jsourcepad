@@ -1,0 +1,92 @@
+package kkckkc.jsourcepad.bundleeditor.manifest;
+
+import kkckkc.jsourcepad.model.bundle.Bundle;
+import kkckkc.jsourcepad.model.bundle.BundleItemSupplier;
+import kkckkc.utils.swing.JTreeUtils;
+
+import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
+
+class ManifestAvailableTransferHandler extends ManifestTransferHandler {
+    private final DefaultTreeModel availableModel;
+    private final Bundle bundle;
+
+    public ManifestAvailableTransferHandler(DefaultTreeModel availableModel, Bundle bundle) {
+        this.availableModel = availableModel;
+        this.bundle = bundle;
+    }
+
+    @Override
+    protected void exportDone(JComponent source, Transferable data, int action) {
+        if (action == MOVE) {
+            try {
+                String s = (String) data.getTransferData(BundleTransferable.DATAFLOVOR);
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode) ((JTree) source).getSelectionPath().getLastPathComponent();
+                DefaultMutableTreeNode parent = (DefaultMutableTreeNode) node.getParent();
+                int idx = parent.getIndex(node);
+                parent.remove(node);
+                availableModel.nodesWereRemoved(parent, new int[] { idx }, new Object[] { node });
+            } catch (UnsupportedFlavorException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        super.exportDone(source, data, action);
+    }
+
+    public int getSourceActions(JComponent comp) {
+        TreePath selection = ((JTree) comp).getSelectionPath();
+        if (selection != null) {
+            DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) selection.getLastPathComponent();
+            if (treeNode.getUserObject() instanceof String) return NONE;
+
+            TreeEntry te = (TreeEntry) treeNode.getUserObject();
+            if ("".equals(te.getKey()) || te.getKey().startsWith("---")) return COPY;
+        }
+
+        return MOVE;
+    }
+
+
+    @Override
+    public boolean importData(TransferSupport support) {
+        try {
+            String data = (String) support.getTransferable().getTransferData(BundleTransferable.DATAFLOVOR);
+
+            if (data.startsWith("---")) return true;
+
+            BundleItemSupplier bis = bundle.getItemsByUuid().get(data);
+            if (bis == null) return true;
+
+            String folder = bis.getType().getFolder();
+            DefaultMutableTreeNode destination = null;
+            DefaultMutableTreeNode root = (DefaultMutableTreeNode) availableModel.getRoot();
+            for (int i = 0; i < root.getChildCount(); i++) {
+                DefaultMutableTreeNode d = (DefaultMutableTreeNode) root.getChildAt(i);
+                if (d.getUserObject().toString().equals(folder)) {
+                    destination = d;
+                    break;
+                }
+            }
+
+            if (destination == null) {
+                destination = new DefaultMutableTreeNode(folder);
+                JTreeUtils.insertIntoSortedTree(availableModel, destination, root, new TreeEntry.TreeEntryComparator());
+            }
+
+            DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(new TreeEntry(data, bis.getName(), false));
+            JTreeUtils.insertIntoSortedTree(availableModel, newNode, destination, new TreeEntry.TreeEntryComparator());
+
+            return true;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+}

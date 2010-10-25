@@ -13,6 +13,8 @@ import java.util.Map;
 public interface BundleManager { 
 	public Map<String, List<Bundle>> getBundles();
 
+    public Bundle getBundle(String name);
+
 	public ActionGroup getBundleActionGroup();
 	
 	public Map<String, Map<ScopeSelector, Object>> getPreferences();

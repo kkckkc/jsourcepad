@@ -61,6 +61,16 @@ public class BundleManagerImpl implements BundleManager {
 	    return bundles;
     }
 
+    @Override
+    public Bundle getBundle(String name) {
+        for (Map.Entry<String, List<Bundle>> entry : getBundles().entrySet()) {
+            for (Bundle b : entry.getValue()) {
+                if (b.getName().equals(name)) return b;
+            }
+        }
+        return null;
+    }
+
     public Map<String, Map<ScopeSelector, Object>> getPreferences() {
     	return preferences;
     }
