@@ -5,6 +5,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.syntaxpane.model.Scope;
+import kkckkc.syntaxpane.parse.grammar.Language;
+import kkckkc.syntaxpane.parse.grammar.LanguageManager;
+import kkckkc.syntaxpane.parse.grammar.textmate.TextmateLanguageProvider;
 import kkckkc.syntaxpane.parse.grammar.textmate.TextmateScopeSelectorParser;
 import kkckkc.syntaxpane.style.ScopeSelector;
 import kkckkc.syntaxpane.style.ScopeSelectorManager;
@@ -21,15 +24,43 @@ import java.util.*;
 
 public class BundleManagerImpl implements BundleManager {
 
-    private List<Listener> listeners = Lists.newArrayList();
+    private List<BundleListener> listeners = Lists.newArrayList();
 	private List<Bundle> bundles;
 	private Map<String, Map<ScopeSelector, Object>> preferences;
 
 	private String bundleDir;
-	
-	public BundleManagerImpl(String bundleDir) {
+
+    private TextmateLanguageProvider languageProvider;
+    private LanguageManager languageManager;
+
+    public BundleManagerImpl(String bundleDir, LanguageManager languageManager) {
 		this.bundleDir = FileUtils.expandAbbreviations(bundleDir);
+        this.languageProvider = new TextmateLanguageProvider(bundleDir);
+        this.languageManager = languageManager;
+        this.languageManager.setProvider(this);
 	}
+
+
+    @Override
+    public Map<String, Language> getLanguages(LanguageManager languageManager) {
+        return languageProvider.getLanguages(languageManager);
+    }
+
+    @Override
+    public void reload(LanguageManager languageManager) {
+        languageProvider.reload(languageManager);
+        for (BundleListener l : listeners) l.languagesUpdated();
+    }
+
+    @Override
+    public Language getDefaultLanguage() {
+        return languageProvider.getDefaultLanguage();
+    }
+
+    @Override
+    public void reloadSyntaxDefinition(File file) {
+        reload(languageManager);
+    }
 
     @Override
     public File getBundleDir() {
@@ -37,12 +68,12 @@ public class BundleManagerImpl implements BundleManager {
     }
 
     @Override
-    public void addListener(Listener listener) {
+    public void addListener(BundleListener listener) {
         listeners.add(listener);
     }
 
     @Override
-    public void removeListener(Listener listener) {
+    public void removeListener(BundleListener listener) {
         listeners.remove(listener);
     }
 
@@ -96,7 +127,7 @@ public class BundleManagerImpl implements BundleManager {
         bundles.add(bundle);
 
         indexPreferences();
-        for (Listener l : listeners) l.bundleUpdated(bundle);
+        for (BundleListener l : listeners) l.bundleUpdated(bundle);
     }
 
     @Override
@@ -105,15 +136,18 @@ public class BundleManagerImpl implements BundleManager {
         bundles.add(bundle);
 
         indexPreferences();
-        for (Listener l : listeners) l.bundleAdded(bundle);
+        for (BundleListener l : listeners) l.bundleAdded(bundle);
+        reload(languageManager);
     }
 
     @Override
     public synchronized void remove(Bundle bundle) {
         bundles.remove(bundle);
         indexPreferences();
-        for (Listener l : listeners) l.bundleRemoved(bundle);
+        for (BundleListener l : listeners) l.bundleRemoved(bundle);
+        reload(languageManager);
     }
+
 
     public void reload(CachingPListReader r) {
         List<Bundle> oldBundles = bundles;
@@ -136,12 +170,12 @@ public class BundleManagerImpl implements BundleManager {
                     boolean found = false;
                     for (Bundle b : oldBundles) {
                         if (b.getDir().equals(bundleDir)) {
-                            for (Listener l : listeners) l.bundleUpdated(newBundle);
+                            for (BundleListener l : listeners) l.bundleUpdated(newBundle);
                             found = true;
                             break;
                         }
                     }
-                    if (! found) for (Listener l : listeners) l.bundleAdded(newBundle);
+                    if (! found) for (BundleListener l : listeners) l.bundleAdded(newBundle);
                 }
 	    	} catch (Exception e) {
 	    		e.printStackTrace();
@@ -159,7 +193,7 @@ public class BundleManagerImpl implements BundleManager {
                         found = true;
                     }
                 }
-                if (! found) for (Listener l : listeners) l.bundleRemoved(b);
+                if (! found) for (BundleListener l : listeners) l.bundleRemoved(b);
             }
         }
 

@@ -8,18 +8,13 @@
 
 	<bean id="bundleManager" class="kkckkc.jsourcepad.model.bundle.BundleManagerImpl">
 		<constructor-arg value="~/.jsourcepad/Shared/Bundles" />
+		<constructor-arg ref="languageManager" />
 	</bean>
 	
 	<bean id="persistenceManager" class="kkckkc.jsourcepad.model.PersistenceManagerImpl" />
 
-	<bean id="languageManager" class="kkckkc.syntaxpane.parse.grammar.LanguageManager" lazy-init="true">
-		<property name="provider">
-			<bean class="kkckkc.syntaxpane.parse.grammar.textmate.TextmateLanguageProvider" lazy-init="true">
-				<constructor-arg value="~/.jsourcepad/Shared/Bundles" />
-			</bean>
-		</property>
-	</bean>
-	
+	<bean id="languageManager" class="kkckkc.syntaxpane.parse.grammar.LanguageManager" lazy-init="true" />
+
 	<bean id="styleParser" class="kkckkc.syntaxpane.parse.grammar.textmate.TextmateStyleParser" />
     <bean id="clipboardManager" class="kkckkc.jsourcepad.model.ClipboardManager" />
 	<bean id="httpServer" class="kkckkc.jsourcepad.http.HttpServerFactoryBean" lazy-init="false" />
