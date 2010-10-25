@@ -24,7 +24,6 @@ import java.util.*;
 
 public class BundleManagerImpl implements BundleManager {
 
-    private List<BundleListener> listeners = Lists.newArrayList();
 	private List<Bundle> bundles;
 	private Map<String, Map<ScopeSelector, Object>> preferences;
 
@@ -49,7 +48,7 @@ public class BundleManagerImpl implements BundleManager {
     @Override
     public void reload(LanguageManager languageManager) {
         languageProvider.reload(languageManager);
-        for (BundleListener l : listeners) l.languagesUpdated();
+        Application.get().topic(BundleListener.class).post().languagesUpdated();
     }
 
     @Override
@@ -65,16 +64,6 @@ public class BundleManagerImpl implements BundleManager {
     @Override
     public File getBundleDir() {
         return new File(bundleDir);
-    }
-
-    @Override
-    public void addListener(BundleListener listener) {
-        listeners.add(listener);
-    }
-
-    @Override
-    public void removeListener(BundleListener listener) {
-        listeners.remove(listener);
     }
 
     @Override
@@ -127,7 +116,7 @@ public class BundleManagerImpl implements BundleManager {
         bundles.add(bundle);
 
         indexPreferences();
-        for (BundleListener l : listeners) l.bundleUpdated(bundle);
+        Application.get().topic(BundleListener.class).post().bundleUpdated(bundle);
     }
 
     @Override
@@ -136,7 +125,7 @@ public class BundleManagerImpl implements BundleManager {
         bundles.add(bundle);
 
         indexPreferences();
-        for (BundleListener l : listeners) l.bundleAdded(bundle);
+        Application.get().topic(BundleListener.class).post().bundleAdded(bundle);
         reload(languageManager);
     }
 
@@ -144,7 +133,7 @@ public class BundleManagerImpl implements BundleManager {
     public synchronized void remove(Bundle bundle) {
         bundles.remove(bundle);
         indexPreferences();
-        for (BundleListener l : listeners) l.bundleRemoved(bundle);
+        Application.get().topic(BundleListener.class).post().bundleRemoved(bundle);
         reload(languageManager);
     }
 
@@ -170,12 +159,12 @@ public class BundleManagerImpl implements BundleManager {
                     boolean found = false;
                     for (Bundle b : oldBundles) {
                         if (b.getDir().equals(bundleDir)) {
-                            for (BundleListener l : listeners) l.bundleUpdated(newBundle);
+                            Application.get().topic(BundleListener.class).post().bundleUpdated(newBundle);
                             found = true;
                             break;
                         }
                     }
-                    if (! found) for (BundleListener l : listeners) l.bundleAdded(newBundle);
+                    if (! found) Application.get().topic(BundleListener.class).post().bundleAdded(newBundle);
                 }
 	    	} catch (Exception e) {
 	    		e.printStackTrace();
@@ -193,7 +182,7 @@ public class BundleManagerImpl implements BundleManager {
                         found = true;
                     }
                 }
-                if (! found) for (BundleListener l : listeners) l.bundleRemoved(b);
+                if (! found) Application.get().topic(BundleListener.class).post().bundleRemoved(b);
             }
         }
 

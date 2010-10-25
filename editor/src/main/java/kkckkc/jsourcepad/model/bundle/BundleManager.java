@@ -33,8 +33,4 @@ public interface BundleManager extends LanguageManager.Provider {
 
     // Properties
     public File getBundleDir();
-
-    // TODO: Change to use topic
-    public void addListener(BundleListener listener);
-    public void removeListener(BundleListener listener);
 }
