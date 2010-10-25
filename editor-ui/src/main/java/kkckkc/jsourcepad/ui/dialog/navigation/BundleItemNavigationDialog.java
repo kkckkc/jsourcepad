@@ -71,10 +71,8 @@ public class BundleItemNavigationDialog extends NavigationDialog {
     private Collection<BundleItemSupplier> getBundleItems(final String query) {
         java.util.List<BundleItemSupplier> all = Lists.newArrayList();
 
-        for (java.util.List<Bundle> bl : Application.get().getBundleManager().getBundles().values()) {
-            for (Bundle b : bl) {
-                all.addAll(b.getItems());
-            }
+        for (Bundle b : Application.get().getBundleManager().getBundles()) {
+            all.addAll(b.getItems());
         }
 
         java.util.List<BundleItemSupplier> dest = Lists.newArrayList();

@@ -7,13 +7,12 @@ import java.awt.datatransfer.Transferable;
 
 public abstract class ManifestTransferHandler extends TransferHandler {
 
+    @Override
+    public boolean canImport(TransferSupport transferSupport) {
+        return transferSupport.isDataFlavorSupported(BundleTransferable.DATAFLOVOR);
+    }
 
-            @Override
-            public boolean canImport(TransferSupport transferSupport) {
-                return transferSupport.isDataFlavorSupported(BundleTransferable.DATAFLOVOR);
-            }
-
-
+    @Override
     public Transferable createTransferable(JComponent comp) {
         TreePath selection = ((JTree) comp).getSelectionPath();
         DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) selection.getLastPathComponent();

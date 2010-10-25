@@ -42,14 +42,6 @@ public class BundleItemSupplier implements Supplier<BundleItem> {
 	    return file;
     }
 
-	public void setAction(Action action) {
-	    this.action = action;
-    }
-	
-	public Action getAction() {
-	    return action;
-    }
-
     public BundleStructure.Type getType() {
         return type;
     }

@@ -6,6 +6,7 @@ import kkckkc.jsourcepad.action.bundle.BundleJMenuItem;
 import kkckkc.jsourcepad.model.*;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.bundle.BundleManager;
+import kkckkc.jsourcepad.model.bundle.BundleMenuProvider;
 import kkckkc.jsourcepad.util.action.ActionGroup;
 import kkckkc.jsourcepad.util.action.MenuFactory;
 import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
@@ -95,7 +96,7 @@ public class WindowPresenter implements Presenter<WindowView>, DocList.Listener 
                 menuFactory.buildMenu(navigationMenu, window.getActionManager().getActionGroup("navigation-menu"), null, false);
 
                 ActionGroup bundlesAg = window.getActionManager().getActionGroup("bundles-menu");
-                for (Action o : bundleManager.getBundleActionGroup()) {
+                for (Action o : BundleMenuProvider.getBundleActionGroup()) {
                     bundlesAg.add(o);
                 }
                 menuFactory.buildMenu(bundleMenu, bundlesAg, new MenuFactory.ItemBuilder() {

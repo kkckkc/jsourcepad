@@ -13,7 +13,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 public class NewFileDialog implements Dialog<NewFileDialogView>, ActionListener, KeyListener {
     private NewFileDialogView view;
@@ -41,20 +40,18 @@ public class NewFileDialog implements Dialog<NewFileDialogView>, ActionListener,
 
         BundleItemSupplier selected = null;
         BundleManager bm = Application.get().getBundleManager();
-        for (List<Bundle> bundles : bm.getBundles().values()) {
-            for (Bundle b : bundles) {
-                boolean groupAdded = false;
-                for (BundleItemSupplier bis : b.getItems()) {
-                    if (bis.getType() == BundleStructure.Type.TEMPLATE) {
-                        if (! groupAdded) {
-                            templates.addItem(b);
-                            groupAdded = true;
-                        }
-
-                        if (bis.getName().equals("Empty File")) selected = bis;
-
-                        templates.addItem(bis);
+        for (Bundle b : bm.getBundles()) {
+            boolean groupAdded = false;
+            for (BundleItemSupplier bis : b.getItems()) {
+                if (bis.getType() == BundleStructure.Type.TEMPLATE) {
+                    if (! groupAdded) {
+                        templates.addItem(b);
+                        groupAdded = true;
                     }
+
+                    if (bis.getName().equals("Empty File")) selected = bis;
+
+                    templates.addItem(bis);
                 }
             }
         }

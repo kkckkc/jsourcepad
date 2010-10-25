@@ -3,9 +3,7 @@ package kkckkc.jsourcepad.model.bundle;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import kkckkc.jsourcepad.action.bundle.BundleAction;
 import kkckkc.jsourcepad.model.Application;
-import kkckkc.jsourcepad.util.action.ActionGroup;
 import kkckkc.syntaxpane.model.Scope;
 import kkckkc.syntaxpane.parse.grammar.textmate.TextmateScopeSelectorParser;
 import kkckkc.syntaxpane.style.ScopeSelector;
@@ -23,8 +21,9 @@ import java.util.*;
 
 public class BundleManagerImpl implements BundleManager {
 
-	private Map<String, List<Bundle>> bundles;
-	private HashMap<String, Map<ScopeSelector, Object>> preferences;
+    private List<Listener> listeners = Lists.newArrayList();
+	private List<Bundle> bundles;
+	private Map<String, Map<ScopeSelector, Object>> preferences;
 
 	private String bundleDir;
 	
@@ -38,35 +37,35 @@ public class BundleManagerImpl implements BundleManager {
     }
 
     @Override
-    public ActionGroup getBundleActionGroup() {
-		loadBundlesIfNeeded();
-		
-		ActionGroup ag = new ActionGroup();
-		for (String key : bundles.keySet()) {
-			if (key == null) {
-				buildMenu(ag, bundles.get(key));
-			} else {
-				ActionGroup sub = new ActionGroup(key);
-				ag.add(sub);
-				buildMenu(sub, bundles.get(key));
-			}
-		}
-		return ag;
+    public void addListener(Listener listener) {
+        listeners.add(listener);
     }
 
-	@Override
+    @Override
+    public void removeListener(Listener listener) {
+        listeners.remove(listener);
+    }
+
+    @Override
 	@Deprecated
-    public Map<String, List<Bundle>> getBundles() {
+    public List<Bundle> getBundles() {
 		loadBundlesIfNeeded();
 	    return bundles;
     }
 
     @Override
     public Bundle getBundle(String name) {
-        for (Map.Entry<String, List<Bundle>> entry : getBundles().entrySet()) {
-            for (Bundle b : entry.getValue()) {
-                if (b.getName().equals(name)) return b;
-            }
+        for (Bundle b : bundles) {
+            if (b.getName().equals(name)) return b;
+        }
+        return null;
+    }
+
+
+    @Override
+    public Bundle getBundle(File dir) {
+        for (Bundle b : bundles) {
+            if (b.getDir().equals(dir)) return b;
         }
         return null;
     }
@@ -80,43 +79,45 @@ public class BundleManagerImpl implements BundleManager {
 		Map<ScopeSelector, Object> prefs = preferences.get(key);
 		return new ScopeSelectorManager().getMatch(scope, prefs);
     }
-	
-	private void buildMenu(ActionGroup ag, List<Bundle> list) {
-	    for (Bundle b : list) {
-            ActionGroup bm = new ActionGroup(b.getName());
-            ag.add(bm);
-            createMenu(bm, b.getMenu());
-	    }
-    }
-
-    private void createMenu(ActionGroup ag, List<Object> items) {
-        for (Object o : items) {
-            if (o == null) {
-                ag.add(null);
-            } else if (o instanceof BundleItemSupplier) {
-                ag.add(new BundleAction((BundleItemSupplier) o));
-            } else {
-                Pair<String, List<Object>> pair = (Pair<String, List<Object>>) o;
-                ActionGroup sub = new ActionGroup(pair.getFirst());
-                createMenu(sub, pair.getSecond());
-                ag.add(sub);
-            }
-        }
-    }
 
     private synchronized void loadBundlesIfNeeded() {
 		if (bundles != null) return;
 		reload(new CachingPListReader(true));
     }
 
-    public void reload() {
+    public synchronized void reload() {
         reload(new CachingPListReader(false));
     }
 
-	public void reload(CachingPListReader r) {
-	    bundles = Maps.newHashMap();
-		List<Bundle> bundleList = Lists.newArrayList();
-		bundles.put(null, bundleList);
+    @Override
+    public synchronized void reload(Bundle bundle) {
+        bundles.remove(bundle);
+        bundle = buildFromDirectory(new CachingPListReader(true), bundle.getDir());
+        bundles.add(bundle);
+
+        indexPreferences();
+        for (Listener l : listeners) l.bundleUpdated(bundle);
+    }
+
+    @Override
+    public synchronized void addBundle(File dir) {
+        Bundle bundle = buildFromDirectory(new CachingPListReader(true), dir);
+        bundles.add(bundle);
+
+        indexPreferences();
+        for (Listener l : listeners) l.bundleAdded(bundle);
+    }
+
+    @Override
+    public synchronized void remove(Bundle bundle) {
+        bundles.remove(bundle);
+        indexPreferences();
+        for (Listener l : listeners) l.bundleRemoved(bundle);
+    }
+
+    public void reload(CachingPListReader r) {
+        List<Bundle> oldBundles = bundles;
+	    bundles = Lists.newArrayList();
 
 		PerformanceLogger.get().enter(this, "reload.load");
 
@@ -128,7 +129,20 @@ public class BundleManagerImpl implements BundleManager {
 		Arrays.sort(bundles);
 	    for (File bundleDir : bundles) {
 	    	try {
-	    		bundleList.add(buildFromDirectory(r, bundleDir));
+                Bundle newBundle = buildFromDirectory(r, bundleDir);
+                this.bundles.add(newBundle);
+
+                if (oldBundles != null) {
+                    boolean found = false;
+                    for (Bundle b : oldBundles) {
+                        if (b.getDir().equals(bundleDir)) {
+                            for (Listener l : listeners) l.bundleUpdated(newBundle);
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (! found) for (Listener l : listeners) l.bundleAdded(newBundle);
+                }
 	    	} catch (Exception e) {
 	    		e.printStackTrace();
 	    	}
@@ -136,28 +150,42 @@ public class BundleManagerImpl implements BundleManager {
 	    
 	    PerformanceLogger.get().exit();
 	    
-	    
-		PerformanceLogger.get().enter(this, "reload.index");
-	    
-	    preferences = Maps.newHashMap();
-	    for (Bundle b : bundleList) {
-	    	for (Map.Entry<String, Map<ScopeSelector, Object>> entry : b.getPreferences().entrySet()) {
-	    		if (! preferences.containsKey(entry.getKey())) {
-	    			preferences.put(entry.getKey(), entry.getValue());
-	    		} else {
-	    			preferences.get(entry.getKey()).putAll(entry.getValue());
-	    		}
-	    	}
-	    }
-	    
-	    PerformanceLogger.get().exit();
+
+        if (oldBundles != null) {
+            for (Bundle b : oldBundles) {
+                boolean found = false;
+                for (Bundle nb : this.bundles) {
+                    if (nb.getDir().equals(b)) {
+                        found = true;
+                    }
+                }
+                if (! found) for (Listener l : listeners) l.bundleRemoved(b);
+            }
+        }
+
+
+        PerformanceLogger.get().enter(this, "reload.index");
+        indexPreferences();
+        PerformanceLogger.get().exit();
 
         r.close();
     }
 
+    private void indexPreferences() {
+        preferences = Maps.newHashMap();
+        for (Bundle b : bundles) {
+            for (Map.Entry<String, Map<ScopeSelector, Object>> entry : b.getPreferences().entrySet()) {
+                if (! preferences.containsKey(entry.getKey())) {
+                    preferences.put(entry.getKey(), entry.getValue());
+                } else {
+                    preferences.get(entry.getKey()).putAll(entry.getValue());
+                }
+            }
+        }
+    }
 
-	
-	private Bundle buildFromDirectory(PListReader r, File dir) {
+
+    private Bundle buildFromDirectory(PListReader r, File dir) {
 		try {
 	    	File bundleFile = new File(dir, "info.plist");
 			Map m = (Map) r.read(bundleFile); 
@@ -185,7 +213,7 @@ public class BundleManagerImpl implements BundleManager {
             List<Object> root = Lists.newArrayList();
 	    	buildMenu(root, items, uuidToItem, submenus);
 
-			return new Bundle(name, root, preferences, uuidToItem, Lists.newArrayList(uuidToItem.values()));
+			return new Bundle(name, root, preferences, uuidToItem, dir);
 		} catch (IOException e) {
         	throw new RuntimeException(e);
         } 
@@ -328,13 +356,11 @@ public class BundleManagerImpl implements BundleManager {
 
     private List<BundleItemSupplier> findBundleItems(Predicate<BundleItemSupplier> predicate, boolean delimit) {
         List<BundleItemSupplier> dest = Lists.newArrayList();
-	    for (Map.Entry<String, List<Bundle>> e : bundles.entrySet()) {
-	    	for (Bundle b : e.getValue()) {
-                int size = dest.size();
-                findInMenu(dest, b.getMenu(), predicate, delimit);
-                if (delimit && size != dest.size()) dest.add(null);
-	    	}
-	    }
+        for (Bundle b : bundles) {
+            int size = dest.size();
+            findInMenu(dest, b.getMenu(), predicate, delimit);
+            if (delimit && size != dest.size()) dest.add(null);
+        }
 
         return dest;
     }

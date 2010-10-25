@@ -4,6 +4,7 @@ import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.InsertionPoint;
 import kkckkc.jsourcepad.model.bundle.BundleItemSupplier;
+import kkckkc.jsourcepad.model.bundle.BundleMenuProvider;
 import kkckkc.jsourcepad.model.bundle.snippet.SnippetUtils;
 import kkckkc.jsourcepad.util.action.ActionGroup;
 import kkckkc.jsourcepad.util.action.MenuFactory;
@@ -38,7 +39,7 @@ public final class TabAction extends AbstractAction {
 			final ActionGroup tempActionGroup = new ActionGroup();
 			
 			for (BundleItemSupplier r : items) {
-				tempActionGroup.add(r.getAction());
+				tempActionGroup.add(BundleMenuProvider.getActionForItem(r.getUUID()));
 			}
 			
 			if (tempActionGroup.size() > 1) {

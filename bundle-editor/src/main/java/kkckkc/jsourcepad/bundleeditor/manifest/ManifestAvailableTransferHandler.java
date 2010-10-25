@@ -11,6 +11,7 @@ import javax.swing.tree.TreePath;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
+import java.util.Comparator;
 
 class ManifestAvailableTransferHandler extends ManifestTransferHandler {
     private final DefaultTreeModel availableModel;
@@ -77,8 +78,16 @@ class ManifestAvailableTransferHandler extends ManifestTransferHandler {
             }
 
             if (destination == null) {
-                destination = new DefaultMutableTreeNode(folder);
-                JTreeUtils.insertIntoSortedTree(availableModel, destination, root, new TreeEntry.TreeEntryComparator());
+                destination = new DefaultMutableTreeNode(new TreeEntry("", folder, true));
+                final TreeEntry.TreeEntryComparator comparator = new TreeEntry.TreeEntryComparator();
+                JTreeUtils.insertIntoSortedTree(availableModel, destination, root, new Comparator<TreeEntry>() {
+                    @Override
+                    public int compare(TreeEntry o1, TreeEntry o2) {
+                        if (o2.getKey().startsWith("----")) return 1;
+                        if (o2.getValue().equals("New Submenu")) return 1;
+                        return comparator.compare(o1, o2);  
+                    }
+                });
             }
 
             DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(new TreeEntry(data, bis.getName(), false));

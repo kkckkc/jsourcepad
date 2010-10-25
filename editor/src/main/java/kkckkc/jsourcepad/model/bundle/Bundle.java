@@ -2,6 +2,8 @@ package kkckkc.jsourcepad.model.bundle;
 
 import kkckkc.syntaxpane.style.ScopeSelector;
 
+import java.io.File;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -9,19 +11,26 @@ public class Bundle {
 	private String name;
 	private List<Object> menu;
 	private Map<String, Map<ScopeSelector, Object>> preferences;
-	private List<BundleItemSupplier> items;
     private Map<String, BundleItemSupplier> itemsByUuid;
+    private File dir;
 
-    public Bundle(String name, List<Object> menu, Map<String, Map<ScopeSelector, Object>> preferences,
-                  Map<String, BundleItemSupplier> itemsByUuid, List<BundleItemSupplier> items) {
+    public Bundle(String name,
+                  List<Object> menu, 
+                  Map<String, Map<ScopeSelector, Object>> preferences,
+                  Map<String, BundleItemSupplier> itemsByUuid,
+                  File dir) {
 	    this.name = name;
 	    this.menu = menu;
 	    this.preferences = preferences;
-	    this.items = items;
         this.itemsByUuid = itemsByUuid;
+        this.dir = dir;
     }
-	
-	public Map<String, Map<ScopeSelector, Object>> getPreferences() {
+
+    public File getDir() {
+        return dir;
+    }
+
+    public Map<String, Map<ScopeSelector, Object>> getPreferences() {
 	    return preferences;
     }
 	
@@ -33,8 +42,8 @@ public class Bundle {
 	    return menu;
     }
 
-	public List<BundleItemSupplier> getItems() {
-	    return items;
+	public Collection<BundleItemSupplier> getItems() {
+	    return itemsByUuid.values();
     }
 
     public Map<String, BundleItemSupplier> getItemsByUuid() {

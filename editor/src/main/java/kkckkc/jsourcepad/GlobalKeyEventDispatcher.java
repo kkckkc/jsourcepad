@@ -4,6 +4,7 @@ import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.bundle.BundleItemSupplier;
 import kkckkc.jsourcepad.model.bundle.BundleManager;
+import kkckkc.jsourcepad.model.bundle.BundleMenuProvider;
 import kkckkc.jsourcepad.util.action.ActionGroup;
 import kkckkc.jsourcepad.util.action.DelegatingAction;
 import kkckkc.jsourcepad.util.action.MenuFactory;
@@ -56,10 +57,10 @@ public class GlobalKeyEventDispatcher implements KeyEventDispatcher {
                     tempActionGroup.add(null);
                 } else {
                     if (i < 10) {
-                        tempActionGroup.add(new DelegatingAction(r.getAction(),
+                        tempActionGroup.add(new DelegatingAction(BundleMenuProvider.getActionForItem(r.getUUID()),
                                 KeyStroke.getKeyStroke(Integer.toString(i).charAt(0))));
                     } else {
-                        tempActionGroup.add(r.getAction());
+                        tempActionGroup.add(BundleMenuProvider.getActionForItem(r.getUUID()));
                     }
                     i++;
                 }

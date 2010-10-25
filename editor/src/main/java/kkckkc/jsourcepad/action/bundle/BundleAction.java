@@ -4,6 +4,7 @@ import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.bundle.BundleItem;
 import kkckkc.jsourcepad.model.bundle.BundleItemSupplier;
+import kkckkc.jsourcepad.model.bundle.BundleMenuProvider;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,7 +18,7 @@ public class BundleAction extends AbstractAction {
 //		super("<html>" + ref.getName() + "&nbsp;&nbsp;&nbsp;<i>" + ref.getActivator().toString() + "</i></html>");
 		super(ref.getName());
 		this.ref = ref;
-		this.ref.setAction(this);
+        BundleMenuProvider.registerActionForItem(ref.getUUID(), this);
     }
 
 	public BundleItemSupplier getRef() {
