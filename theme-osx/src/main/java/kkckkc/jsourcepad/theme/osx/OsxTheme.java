@@ -5,6 +5,7 @@ import kkckkc.jsourcepad.model.SettingsPanel;
 import kkckkc.jsourcepad.model.ThemeSettings;
 import kkckkc.jsourcepad.theme.Theme;
 import kkckkc.jsourcepad.util.BeanFactoryLoader;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -53,6 +54,11 @@ public class OsxTheme implements Theme {
 			return new ClassPathResource("/osx-application.xml");
 		}
 		return null;
+    }
+
+    @Override
+    public <P, C> void init(BeanFactoryLoader.Scope<P, C> scope, P parent, C context, BeanFactory container) {
+
     }
 
 }

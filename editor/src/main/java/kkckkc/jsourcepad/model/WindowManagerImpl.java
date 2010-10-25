@@ -74,7 +74,7 @@ public class WindowManagerImpl implements WindowManager {
 
             Container frame = window.getContainer();
             container.registerSingleton("frame", frame);
-
+            
             openWindows.put(frame, window);
             app.getMessageBus().topic(Listener.class).post().created(window);
 

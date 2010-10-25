@@ -106,6 +106,10 @@ public class BeanFactoryLoader {
             ppc.postProcessBeanFactory(container);
         }
 
+        for (Plugin plugin : PluginManager.getActivePlugins()) {
+            plugin.init(scope, parent, context, container);
+        }
+
 		PerformanceLogger.get().exit();
 		
 		return container;

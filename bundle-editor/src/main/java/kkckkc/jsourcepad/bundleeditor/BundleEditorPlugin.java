@@ -4,6 +4,7 @@ import kkckkc.jsourcepad.Plugin;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.bundle.BundleStructure;
 import kkckkc.jsourcepad.util.BeanFactoryLoader;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -38,5 +39,14 @@ public class BundleEditorPlugin implements Plugin {
             }
         }
         return null;  
+    }
+
+    @Override
+    public <P, C> void init(BeanFactoryLoader.Scope<P, C> scope, P parent, C context, BeanFactory container) {
+        if (scope == BeanFactoryLoader.WINDOW) {
+            if (BundleStructure.isBundleDir((File) context)) {
+                BundleEditorContextMenu.init(container);
+            }
+        }
     }
 }

@@ -2,6 +2,7 @@ package kkckkc.jsourcepad.ui;
 
 import kkckkc.jsourcepad.Plugin;
 import kkckkc.jsourcepad.util.BeanFactoryLoader;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -31,5 +32,9 @@ public class UIPlugin implements Plugin {
             return new ClassPathResource("/document-ui.xml");
         }
         return null;
+    }
+
+    @Override
+    public <P, C> void init(BeanFactoryLoader.Scope<P, C> scope, P parent, C context, BeanFactory container) {
     }
 }

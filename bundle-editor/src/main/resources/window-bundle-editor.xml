@@ -6,4 +6,5 @@
 
 	<bean id="docListPresenter" class="kkckkc.jsourcepad.bundleeditor.BundleDocListPresenter" />
 
+    <bean id="bundleEditorMenu" class="kkckkc.jsourcepad.bundleeditor.BundleEditorContextMenu" lazy-init="false" />
 </beans>
