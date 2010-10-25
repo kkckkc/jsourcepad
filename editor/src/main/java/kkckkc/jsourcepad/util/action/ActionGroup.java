@@ -187,4 +187,22 @@ public class ActionGroup extends AbstractAction implements List<Action> {
     public void registerDerivedComponent(JComponent component) {
         derivedComponents.add(new WeakReference<JComponent>(component));
     }
+
+     protected void updateDerivedComponents() {
+        for (WeakReference<JComponent> ref : derivedComponents) {
+            if (ref == null) continue;
+
+            JComponent comp = ref.get();
+            if (comp == null) continue;
+            if (! (comp instanceof JMenu)) continue;
+
+            // Clear menu
+            JMenu jm = (JMenu) comp;
+            while (jm.getItemCount() > 0)
+                jm.remove(jm.getItem(0));
+
+            MenuFactory mf = new MenuFactory();
+            mf.loadMenu(Lists.<JMenuItem>newArrayList(), this, jm, null, false);
+        }
+    }
 }

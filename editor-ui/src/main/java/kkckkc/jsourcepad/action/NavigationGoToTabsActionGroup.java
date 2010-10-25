@@ -1,18 +1,15 @@
 package kkckkc.jsourcepad.action;
 
-import com.google.common.collect.Lists;
 import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.DocList;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.util.action.ActionGroup;
 import kkckkc.jsourcepad.util.action.BaseAction;
-import kkckkc.jsourcepad.util.action.MenuFactory;
 import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.lang.ref.WeakReference;
 
 public class NavigationGoToTabsActionGroup extends ActionGroup implements DocList.Listener, Doc.StateListener {
     private Window window;
@@ -52,24 +49,6 @@ public class NavigationGoToTabsActionGroup extends ActionGroup implements DocLis
             GoToTabAction goToTabAction = (GoToTabAction) a;
             goToTabAction.setIndex(i >= 10 ? -1 : i);
             i++;
-        }
-    }
-
-    private void updateDerivedComponents() {
-        for (WeakReference<JComponent> ref : derivedComponents) {
-            if (ref == null) continue;
-
-            JComponent comp = ref.get();
-            if (comp == null) continue;
-            if (! (comp instanceof JMenu)) continue;
-
-            // Clear menu
-            JMenu jm = (JMenu) comp;
-            while (jm.getItemCount() > 0)
-                jm.remove(jm.getItem(0));
-
-            MenuFactory mf = new MenuFactory();
-            mf.loadMenu(Lists.<JMenuItem>newArrayList(), this, jm, null, false);
         }
     }
 
