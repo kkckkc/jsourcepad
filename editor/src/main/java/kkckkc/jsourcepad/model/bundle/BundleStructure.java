@@ -57,7 +57,6 @@ public class BundleStructure {
         return f != null && f.equals(Application.get().getBundleManager().getBundleDir());
     }
 
-
     public static boolean isOfType(Type type, File file) {
         return predicates.get(type).apply(file);
     }
@@ -76,6 +75,14 @@ public class BundleStructure {
         return null;
     }
 
+    public static boolean isBundleItemDir(File dir) {
+        if (! isBundleDir(dir.getParentFile().getParentFile())) return false;
+
+        for (Type type : predicates.keySet()) {
+            if (dir.getName().equals(type.getFolder())) return true;
+        }
+        return false;
+    }
 
 
     static class BundleFilePredicate implements Predicate<File> {

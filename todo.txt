@@ -32,6 +32,7 @@
 [ ] Macros
 [ ] contentName functionality needs replacement. Check entities.txt
 [ ] Support all missing (commented) input and output methods in CommandBundleDocPresenter
+[ ] Change actions to work with active buffer instead of active document where applicable
 
 HTML bundle
 [x] Embedded javascript syntax colors
