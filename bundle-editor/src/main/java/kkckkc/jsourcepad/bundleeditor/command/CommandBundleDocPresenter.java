@@ -54,11 +54,24 @@ public class CommandBundleDocPresenter extends BasicBundleDocPresenter {
         BundleDocImpl bDoc = (BundleDocImpl) doc;
         CommandBundleDocViewImpl cView = (CommandBundleDocViewImpl) view;
         Map plist = bDoc.getPlist();
-        
-        cView.getSecondayInput().setSelectedItem(secondaryInputMap.inverse().get(plist.get("fallbackInput")));
-        cView.getInput().setSelectedItem(inputMap.inverse().get(plist.get("input")));
-        cView.getOutput().setSelectedItem(outputMap.inverse().get(plist.get("output")));
-        cView.getSave().setSelectedItem(saveMap.inverse().get(plist.get("beforeRunningCommand")));
+
+        cView.getSecondayInput().setSelectedIndex(0);
+        cView.getInput().setSelectedIndex(0);
+        cView.getOutput().setSelectedIndex(0);
+        cView.getSave().setSelectedIndex(0);
+
+
+        String fallbackInput = secondaryInputMap.inverse().get(plist.get("fallbackInput"));
+        if (fallbackInput != null) cView.getSecondayInput().setSelectedItem(fallbackInput);
+
+        String input = inputMap.inverse().get(plist.get("input"));
+        if (input != null) cView.getInput().setSelectedItem(input);
+
+        String output = outputMap.inverse().get(plist.get("output"));
+        if (output != null) cView.getOutput().setSelectedItem(output);
+
+        String beforeRunningCommand = saveMap.inverse().get(plist.get("beforeRunningCommand"));
+        if (beforeRunningCommand != null) cView.getSave().setSelectedItem(beforeRunningCommand);
 
         register(cView.getSecondayInput());
         register(cView.getInput());

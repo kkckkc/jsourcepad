@@ -89,7 +89,12 @@ public class BasicBundleDocPresenter extends DocPresenter {
         bDoc.setScope(bView.getScope().getText());
         bDoc.setName(bView.getName().getText());
         if (bView.getActivation().getSelectedItem().equals(BasicBundleDocViewImpl.KEY_EQUIVALENT)) {
-            bDoc.setKeyEquivalent(TextmateKeystrokeEncoding.toString(KeyStroke.getKeyStroke(bView.getKeyEquivalent().getText())));
+            KeyStroke keyStroke = KeyStroke.getKeyStroke(bView.getKeyEquivalent().getText());
+            if (keyStroke == null) {
+                bDoc.setKeyEquivalent("");
+            } else {
+                bDoc.setKeyEquivalent(TextmateKeystrokeEncoding.toString(keyStroke));
+            }
             bDoc.setTabTrigger(null);
         } else {
             bDoc.setKeyEquivalent(null);

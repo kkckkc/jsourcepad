@@ -19,7 +19,7 @@ import java.io.*;
 public class DocImpl extends AbstractMessageBus implements Doc, ScopeRoot {
 	protected LanguageManager languageManager;
 	private DocList docList;
-	private Window window;
+	protected Window window;
 	protected File backingFile;
 	protected Buffer buffer;
 	private TabManager tabManager;

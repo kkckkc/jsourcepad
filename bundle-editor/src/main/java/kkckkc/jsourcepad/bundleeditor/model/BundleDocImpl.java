@@ -1,6 +1,8 @@
 package kkckkc.jsourcepad.bundleeditor.model;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
+import com.google.common.io.Files;
 import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.DocImpl;
 import kkckkc.jsourcepad.model.DocList;
@@ -146,6 +148,7 @@ public class BundleDocImpl extends DocImpl {
 
     private void loadCommand() throws IOException {
         String s = (String) plist.get("command");
+        if (s == null) s = "";
 
         this.buffer.setText(languageManager.getLanguage(s, new File("")), new BufferedReader(new StringReader(s)));
     }
@@ -255,7 +258,13 @@ public class BundleDocImpl extends DocImpl {
 
             XMLPListWriter w = new XMLPListWriter();
             w.setPropertyList(plist);
-            System.out.println(w.getString());
+
+            Files.write(w.getString(), backingFile, Charsets.UTF_8);
+            setModified(false);
+            getActiveBuffer().clearModified();
+            window.topic(Doc.StateListener.class).post().modified(this, true, false);
+
+            //System.out.println(w.getString());
         } catch (IOException ioe) {
             throw new RuntimeException(ioe);
         }

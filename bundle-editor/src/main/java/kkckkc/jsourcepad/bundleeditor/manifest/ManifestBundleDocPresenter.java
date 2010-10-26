@@ -68,7 +68,7 @@ public class ManifestBundleDocPresenter extends BasicBundleDocPresenter {
                 }
             }
         });
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode("Menu Structure");
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode(new TreeEntry("", "Menu Structure", true));
         DefaultTreeModel menuModel = new TreeEntryTreeModel(root);
         menu.setModel(menuModel);
         menu.setDragEnabled(true);
