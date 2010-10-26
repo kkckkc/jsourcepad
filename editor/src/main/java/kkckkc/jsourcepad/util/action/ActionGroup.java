@@ -188,7 +188,7 @@ public class ActionGroup extends AbstractAction implements List<Action> {
         derivedComponents.add(new WeakReference<JComponent>(component));
     }
 
-     protected void updateDerivedComponents() {
+    public void updateDerivedComponents() {
         for (WeakReference<JComponent> ref : derivedComponents) {
             if (ref == null) continue;
 

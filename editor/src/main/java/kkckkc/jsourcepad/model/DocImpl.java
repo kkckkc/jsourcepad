@@ -1,7 +1,10 @@
 package kkckkc.jsourcepad.model;
 
 import kkckkc.jsourcepad.ScopeRoot;
+import kkckkc.jsourcepad.model.bundle.Bundle;
+import kkckkc.jsourcepad.model.bundle.BundleListener;
 import kkckkc.jsourcepad.util.messagebus.AbstractMessageBus;
+import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
 import kkckkc.syntaxpane.model.SourceDocument;
 import kkckkc.syntaxpane.parse.grammar.Language;
 import kkckkc.syntaxpane.parse.grammar.LanguageManager;
@@ -31,6 +34,28 @@ public class DocImpl extends AbstractMessageBus implements Doc, ScopeRoot {
 		this.window = window;
 		this.languageManager = languageManager;
 		this.tabManager = new TabManagerImpl(this);
+
+        Application.get().topic(BundleListener.class).subscribe(DispatchStrategy.ASYNC, new BundleListener() {
+
+            @Override
+            public void bundleAdded(Bundle bundle) {
+            }
+
+            @Override
+            public void bundleRemoved(Bundle bundle) {
+            }
+
+            @Override
+            public void bundleUpdated(Bundle bundle) {
+            }
+
+            @Override
+            public void languagesUpdated() {
+                Language language = DocImpl.this.languageManager.getLanguage(
+                        buffer.getLineManager().getLineByPosition(0).getCharSequence().toString(), backingFile);
+		        DocImpl.this.buffer.setLanguage(language);
+            }
+        });
 	}
 	
 	public Buffer getActiveBuffer() {
