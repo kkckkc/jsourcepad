@@ -1,17 +1,18 @@
 package kkckkc.jsourcepad.bundleeditor.manifest;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Sets;
+import com.google.common.collect.*;
 import kkckkc.jsourcepad.bundleeditor.BasicBundleDocPresenter;
 import kkckkc.jsourcepad.bundleeditor.model.BundleDocImpl;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.bundle.Bundle;
 import kkckkc.jsourcepad.model.bundle.BundleItemSupplier;
+import kkckkc.jsourcepad.model.bundle.BundleListener;
 import kkckkc.jsourcepad.model.bundle.BundleStructure;
+import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
 
 import javax.swing.*;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
@@ -25,19 +26,94 @@ public class ManifestBundleDocPresenter extends BasicBundleDocPresenter {
     @Override
     protected void saveCallback() {
         super.saveCallback();
+
+        Map mainMenu = Maps.newHashMap();
+        save(mainMenu, (DefaultMutableTreeNode) ((ManifestBundleDocViewImpl) view).getMenu().getModel().getRoot());
+
+        BundleDocImpl bDoc = (BundleDocImpl) doc;
+        bDoc.getPlist().put("mainMenu", mainMenu);
+    }
+
+    private void save(Map dest, DefaultMutableTreeNode root) {
+        List items = Lists.newArrayList();
+        Map submenus = Maps.newHashMap();
+        for (int i = 0; i < root.getChildCount(); i++) {
+            DefaultMutableTreeNode n = (DefaultMutableTreeNode) root.getChildAt(i);
+            TreeEntry v = (TreeEntry) n.getUserObject();
+
+            if (v.isFolder()) {
+                Map s = Maps.newHashMap();
+                s.put("name", v.getValue());
+                submenus.put(v.getKey(), s);
+                save(s, n);
+
+            }
+
+            items.add(v.getKey());
+        }
+
+        dest.put("items", items);
+        dest.put("submenus", submenus);
     }
 
     @Override
     public void init() {
         super.init();
 
-        ManifestBundleDocViewImpl mView = (ManifestBundleDocViewImpl) view;
-        BundleDocImpl bDoc = (BundleDocImpl) doc;
-
+        final ManifestBundleDocViewImpl mView = (ManifestBundleDocViewImpl) view;
+        final BundleDocImpl bDoc = (BundleDocImpl) doc;
         final Bundle bundle = Application.get().getBundleManager().getBundle(bDoc.getName());
+
+        Application.get().topic(BundleListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, new BundleListener() {
+
+            @Override
+            public void bundleAdded(Bundle bundle) {
+            }
+
+            @Override
+            public void bundleRemoved(Bundle bundle) {
+            }
+
+            @Override
+            public void bundleUpdated(Bundle bundle) {
+                initMenu(mView, bDoc, bundle);
+                initAvailable(mView, (DefaultTreeModel) mView.getMenu().getModel(), Application.get().getBundleManager().getBundle(bDoc.getName()));
+            }
+
+            @Override
+            public void languagesUpdated() { }
+        });
+
 
         DefaultTreeModel menuModel = initMenu(mView, bDoc, bundle);
         initAvailable(mView, menuModel, bundle);
+
+        mView.getMenu().getModel().addTreeModelListener(new TreeModelListener() {
+
+            @Override
+            public void treeNodesChanged(TreeModelEvent e) {
+                BundleDocImpl bDoc = (BundleDocImpl) doc;
+                bDoc.setModified(true);
+            }
+
+            @Override
+            public void treeNodesInserted(TreeModelEvent e) {
+                BundleDocImpl bDoc = (BundleDocImpl) doc;
+                bDoc.setModified(true);
+            }
+
+            @Override
+            public void treeNodesRemoved(TreeModelEvent e) {
+                BundleDocImpl bDoc = (BundleDocImpl) doc;
+                bDoc.setModified(true);
+            }
+
+            @Override
+            public void treeStructureChanged(TreeModelEvent e) {
+                BundleDocImpl bDoc = (BundleDocImpl) doc;
+                bDoc.setModified(true);
+            }
+        });
     }
 
     private void initAvailable(ManifestBundleDocViewImpl mView, DefaultTreeModel menuModel, Bundle bundle) {
@@ -70,12 +146,12 @@ public class ManifestBundleDocPresenter extends BasicBundleDocPresenter {
         });
         DefaultMutableTreeNode root = new DefaultMutableTreeNode(new TreeEntry("", "Menu Structure", true));
         DefaultTreeModel menuModel = new TreeEntryTreeModel(root);
-        menu.setModel(menuModel);
         menu.setDragEnabled(true);
         menu.setDropMode(DropMode.INSERT);
         menu.setTransferHandler(new ManifestMenuTransferHandler(menuModel, bundle));
 
         buildMenu(root, (Map) bDoc.getPlist().get("mainMenu"), bundle.getItemsByUuid());
+        menu.setModel(menuModel);
         menu.expandPath(new TreePath(new Object[] { root }));
         return menuModel;
     }
@@ -131,7 +207,8 @@ public class ManifestBundleDocPresenter extends BasicBundleDocPresenter {
             } else if (s.startsWith("----")) {
                 parent.add(new DefaultMutableTreeNode(new TreeEntry(s, s, false), false));
             } else {
-                parent.add(new DefaultMutableTreeNode(new TreeEntry(s, itemsByUuid.get(s).getName(), false), false));
+                String name = itemsByUuid.get(s).getName();
+                parent.add(new DefaultMutableTreeNode(new TreeEntry(s, name, false), false));
             }
         }
     }

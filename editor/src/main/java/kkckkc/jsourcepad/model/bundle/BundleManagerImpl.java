@@ -111,9 +111,7 @@ public class BundleManagerImpl implements BundleManager {
 
     @Override
     public synchronized void reload(Bundle bundle) {
-        bundles.remove(bundle);
-        bundle = buildFromDirectory(new CachingPListReader(true), bundle.getDir());
-        bundles.add(bundle);
+        buildFromDirectory(bundle, new CachingPListReader(true), bundle.getDir());
 
         indexPreferences();
         Application.get().topic(BundleListener.class).post().bundleUpdated(bundle);
@@ -121,7 +119,7 @@ public class BundleManagerImpl implements BundleManager {
 
     @Override
     public synchronized void addBundle(File dir) {
-        Bundle bundle = buildFromDirectory(new CachingPListReader(true), dir);
+        Bundle bundle = buildFromDirectory(null, new CachingPListReader(true), dir);
         bundles.add(bundle);
 
         indexPreferences();
@@ -152,7 +150,7 @@ public class BundleManagerImpl implements BundleManager {
 		Arrays.sort(bundles);
 	    for (File bundleDir : bundles) {
 	    	try {
-                Bundle newBundle = buildFromDirectory(r, bundleDir);
+                Bundle newBundle = buildFromDirectory(null, r, bundleDir);
                 this.bundles.add(newBundle);
 
                 if (oldBundles != null) {
@@ -208,7 +206,7 @@ public class BundleManagerImpl implements BundleManager {
     }
 
 
-    private Bundle buildFromDirectory(PListReader r, File dir) {
+    private Bundle buildFromDirectory(Bundle bundle, PListReader r, File dir) {
 		try {
 	    	File bundleFile = new File(dir, "info.plist");
 			Map m = (Map) r.read(bundleFile); 
@@ -236,7 +234,16 @@ public class BundleManagerImpl implements BundleManager {
             List<Object> root = Lists.newArrayList();
 	    	buildMenu(root, items, uuidToItem, submenus);
 
-			return new Bundle(name, root, preferences, uuidToItem, dir);
+            if (bundle == null) {
+			    return new Bundle(name, root, preferences, uuidToItem, dir);
+            } else {
+                bundle.setName(name);
+                bundle.setMenu(root);
+                bundle.setPreferences(preferences);
+                bundle.setItemsByUuid(uuidToItem);
+                bundle.setDir(dir);
+                return bundle;
+            }
 		} catch (IOException e) {
         	throw new RuntimeException(e);
         } 

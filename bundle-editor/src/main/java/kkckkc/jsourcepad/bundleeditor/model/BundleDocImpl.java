@@ -3,10 +3,8 @@ package kkckkc.jsourcepad.bundleeditor.model;
 import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
-import kkckkc.jsourcepad.model.Doc;
-import kkckkc.jsourcepad.model.DocImpl;
-import kkckkc.jsourcepad.model.DocList;
-import kkckkc.jsourcepad.model.Window;
+import kkckkc.jsourcepad.model.*;
+import kkckkc.jsourcepad.model.bundle.Bundle;
 import kkckkc.jsourcepad.model.bundle.BundleStructure;
 import kkckkc.syntaxpane.parse.grammar.LanguageManager;
 import kkckkc.utils.plist.GeneralPListReader;
@@ -234,6 +232,9 @@ public class BundleDocImpl extends DocImpl {
                     saveSnippet();
                     break;
 
+                case MANIFEST:
+                    break;
+
                 default:
                     saveDefault();
             }
@@ -252,10 +253,6 @@ public class BundleDocImpl extends DocImpl {
             if (! Strings.isNullOrEmpty(name)) plist.put("name", name);
 
 
-/*            PListFormatter formatter = new PListFormatter();
-            String s = formatter.format(plist);
-            System.out.println(s);*/
-
             XMLPListWriter w = new XMLPListWriter();
             w.setPropertyList(plist);
 
@@ -264,7 +261,16 @@ public class BundleDocImpl extends DocImpl {
             getActiveBuffer().clearModified();
             window.topic(Doc.StateListener.class).post().modified(this, true, false);
 
-            //System.out.println(w.getString());
+            Bundle bundle;
+            if (type == BundleStructure.Type.MANIFEST) {
+                bundle = Application.get().getBundleManager().getBundle(this.backingFile.getParentFile());
+            } else {
+                bundle = Application.get().getBundleManager().getBundle(this.backingFile.getParentFile().getParentFile());
+            }
+            
+            if (bundle != null) {
+                Application.get().getBundleManager().reload(bundle);
+            }
         } catch (IOException ioe) {
             throw new RuntimeException(ioe);
         }

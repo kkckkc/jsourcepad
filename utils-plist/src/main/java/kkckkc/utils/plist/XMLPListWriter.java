@@ -55,7 +55,7 @@ public class XMLPListWriter {
         Element array = document.createElement("array");
         parent.appendChild(array);
         for (Object obj : o) {
-            write(array, o);
+            write(array, obj);
         }
     }
 

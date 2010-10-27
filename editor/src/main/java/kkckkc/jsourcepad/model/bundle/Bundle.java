@@ -26,6 +26,26 @@ public class Bundle {
         this.dir = dir;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setMenu(List<Object> menu) {
+        this.menu = menu;
+    }
+
+    public void setPreferences(Map<String, Map<ScopeSelector, Object>> preferences) {
+        this.preferences = preferences;
+    }
+
+    public void setItemsByUuid(Map<String, BundleItemSupplier> itemsByUuid) {
+        this.itemsByUuid = itemsByUuid;
+    }
+
+    public void setDir(File dir) {
+        this.dir = dir;
+    }
+
     public File getDir() {
         return dir;
     }
