@@ -1,25 +1,21 @@
 package kkckkc.jsourcepad.ui;
 
-import java.io.File;
-import java.util.List;
+import com.google.common.collect.Lists;
+import kkckkc.jsourcepad.Presenter;
+import kkckkc.jsourcepad.action.ActionContextKeys;
+import kkckkc.jsourcepad.model.Project;
+import kkckkc.jsourcepad.model.Window;
+import kkckkc.jsourcepad.util.action.ActionContext;
+import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
-import javax.swing.JComponent;
-import javax.swing.JTree;
+import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
-
-import kkckkc.jsourcepad.Presenter;
-import kkckkc.jsourcepad.model.Project;
-import kkckkc.jsourcepad.model.Window;
-import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.google.common.collect.Lists;
-import kkckkc.jsourcepad.action.ActionContextKeys;
-import kkckkc.jsourcepad.util.action.ActionContext;
+import java.io.File;
+import java.util.List;
 
 public class ProjectPresenter implements Presenter<ProjectView>, Project.FileChangeListener {
 
@@ -65,7 +61,12 @@ public class ProjectPresenter implements Presenter<ProjectView>, Project.FileCha
         ActionContext.set(view.getJComponent(), actionContext);
 	}
 
-	@Override
+    @Override
+    public void removed(File file) {
+        view.refresh(file.getParentFile());
+    }
+
+    @Override
     public void created(File file) {
 		view.insertFile(file);
     }

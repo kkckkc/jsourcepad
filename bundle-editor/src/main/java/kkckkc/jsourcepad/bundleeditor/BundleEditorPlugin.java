@@ -1,9 +1,11 @@
 package kkckkc.jsourcepad.bundleeditor;
 
 import kkckkc.jsourcepad.Plugin;
+import kkckkc.jsourcepad.model.Project;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.bundle.BundleStructure;
 import kkckkc.jsourcepad.util.BeanFactoryLoader;
+import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -46,6 +48,8 @@ public class BundleEditorPlugin implements Plugin {
         if (scope == BeanFactoryLoader.WINDOW) {
             if (BundleStructure.isBundleDir((File) context)) {
                 BundleEditorContextMenu.init(container);
+                Window window = container.getBean(Window.class);
+                window.topic(Project.FileChangeListener.class).subscribe(DispatchStrategy.ASYNC, new BundleFileChangeListener());
             }
         }
     }

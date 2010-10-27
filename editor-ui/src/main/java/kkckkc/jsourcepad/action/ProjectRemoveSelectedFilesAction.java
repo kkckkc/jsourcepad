@@ -1,6 +1,7 @@
 package kkckkc.jsourcepad.action;
 
 import com.google.common.io.Files;
+import kkckkc.jsourcepad.model.Project;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.util.action.BaseAction;
 
@@ -23,10 +24,17 @@ public class ProjectRemoveSelectedFilesAction extends BaseAction {
 	public void actionPerformed(ActionEvent e) {
         int confirm = JOptionPane.showConfirmDialog((Component) e.getSource(), "Really Delete");
         if (confirm == JOptionPane.OK_OPTION || confirm == JOptionPane.YES_OPTION) {
+            Project project = window.getProject();
+
             Object[] tp = actionContext.get(ActionContextKeys.SELECTION);
             for (Object f : tp) {
                 try {
                     Files.deleteRecursively((File) f);
+
+                    if (project != null) {
+                        project.refresh(((File) f).getParentFile());
+                        window.topic(Project.FileChangeListener.class).post().removed((File) f);
+                    }
                 } catch (IOException e1) {
                     throw new RuntimeException(e1);
                 }

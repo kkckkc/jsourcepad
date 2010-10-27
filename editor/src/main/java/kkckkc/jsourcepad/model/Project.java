@@ -5,6 +5,7 @@ import java.util.List;
 
 public interface Project {
 	interface FileChangeListener {
+        void removed(File file);
 		void created(File file);
 		void refresh(File file);
 	}
