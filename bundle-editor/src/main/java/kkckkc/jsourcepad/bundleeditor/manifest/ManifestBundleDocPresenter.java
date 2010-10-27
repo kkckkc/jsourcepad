@@ -150,19 +150,8 @@ public class ManifestBundleDocPresenter extends BasicBundleDocPresenter {
 
     private DefaultTreeModel initMenu(ManifestBundleDocViewImpl mView, BundleDocImpl bDoc, Bundle bundle) {
         final JTree menu = mView.getMenu();
-        menu.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2 && menu.getSelectionPath() != null) {
-                    // TODO: Implement renaming
-                    JOptionPane.showMessageDialog(menu, "Lorem ipsum");
-                } else {
-                    super.mouseClicked(e);
-                }
-            }
-        });
         DefaultMutableTreeNode root = new DefaultMutableTreeNode(new TreeEntry("", "Menu Structure", true));
-        DefaultTreeModel menuModel = new TreeEntryTreeModel(root);
+        final DefaultTreeModel menuModel = new TreeEntryTreeModel(root);
         menu.setDragEnabled(true);
         menu.setDropMode(DropMode.INSERT);
         menu.setTransferHandler(new ManifestMenuTransferHandler(menuModel, bundle));
@@ -171,6 +160,26 @@ public class ManifestBundleDocPresenter extends BasicBundleDocPresenter {
         
         menu.setModel(menuModel);
         menu.expandPath(new TreePath(new Object[] { root }));
+
+        menu.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2 && menu.getSelectionPath() != null) {
+                    Object userObject = ((DefaultMutableTreeNode) menu.getSelectionPath().getLastPathComponent()).getUserObject();
+                    if (userObject instanceof TreeEntry && ((TreeEntry) userObject).isFolder()) {
+                        String value = JOptionPane.showInputDialog("Enter new name:");
+
+                        if (value != null) {
+                            ((TreeEntry) userObject).setValue(value);
+                            menuModel.nodeChanged(((DefaultMutableTreeNode) menu.getSelectionPath().getLastPathComponent()));
+                        }
+                    }
+                } else {
+                    super.mouseClicked(e);
+                }
+            }
+        });
+
         return menuModel;
     }
 

@@ -64,6 +64,11 @@ public class ProjectPresenter implements Presenter<ProjectView>, Project.FileCha
 	}
 
     @Override
+    public void renamed(File newFile, File oldFile) {
+        view.refresh(newFile.getParentFile());
+    }
+
+    @Override
     public void removed(File file) {
         view.refresh(file.getParentFile());
     }

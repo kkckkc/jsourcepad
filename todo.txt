@@ -43,4 +43,4 @@ HTML bundle
 [ ] Style navigation dialog on mac
 [ ] Select Bundle Item should filter out unavailable due to scope
 [x] Bundle menu
-[ ] Bundle editor
+[x] Bundle editor

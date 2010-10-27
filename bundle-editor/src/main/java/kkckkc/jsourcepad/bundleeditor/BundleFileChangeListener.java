@@ -10,6 +10,30 @@ import java.io.File;
 
 public class BundleFileChangeListener implements Project.FileChangeListener {
     @Override
+    public void renamed(File newFile, File oldFile) {
+        removed(oldFile);
+
+        BundleManager bm = Application.get().getBundleManager();
+        if (FileUtils.isAncestorOf(newFile, bm.getBundleDir())) {
+            // Did we delete a bundle
+            if (newFile.getParentFile().equals(bm.getBundleDir())) {
+                bm.addBundle(newFile);
+
+            } else {
+                // Find bundle
+                while (! newFile.getParentFile().equals(bm.getBundleDir())) {
+                    newFile = newFile.getParentFile();
+                }
+
+                // Reload
+                Bundle bundle = bm.getBundle(newFile);
+                bm.reload(bundle);
+            }
+        }
+
+    }
+
+    @Override
     public void removed(File file) {
         BundleManager bm = Application.get().getBundleManager();
         if (FileUtils.isAncestorOf(file, bm.getBundleDir())) {
