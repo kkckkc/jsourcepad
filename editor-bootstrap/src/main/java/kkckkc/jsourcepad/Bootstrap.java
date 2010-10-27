@@ -104,9 +104,6 @@ public class Bootstrap implements Runnable {
 
 
     public Bootstrap(String... args) {
-        Application.get();
-        Application.get().getBeanFactory().getBean("applicationController");
-        
         this.args = args;
 	}
 	
@@ -116,6 +113,9 @@ public class Bootstrap implements Runnable {
 
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
+                Application.get();
+                Application.get().getBeanFactory().getBean("applicationController");
+
 				// Create new window
 				try {
                     if (args == null || args.length == 0) {
@@ -154,13 +154,14 @@ public class Bootstrap implements Runnable {
         		KeyboardFocusManager focusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
         		focusManager.addKeyEventDispatcher(new GlobalKeyEventDispatcher(bundleManager));
 
+                HttpServer server = Application.get().getHttpServer();
+                PreviewServer ps = Application.get().getBeanFactory().getBean(PreviewServer.class);
+
                 PerformanceLogger.get().exit();
                 cdl.countDown();
             }
         });
 
-        HttpServer server = Application.get().getHttpServer();
-        PreviewServer ps = Application.get().getBeanFactory().getBean(PreviewServer.class);
 	    cdl.countDown();
 
         if ("true".equals(System.getProperty("immediateExitForBenchmark"))) {

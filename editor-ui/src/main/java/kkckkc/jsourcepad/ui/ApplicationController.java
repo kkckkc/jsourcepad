@@ -9,7 +9,6 @@ import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
 import javax.annotation.PostConstruct;
 import javax.swing.*;
 import java.awt.*;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 
@@ -19,31 +18,22 @@ public class ApplicationController implements WindowManager.Listener {
 
 	@PostConstruct
 	public void init() {
+        if (! EventQueue.isDispatchThread()) throw new IllegalStateException("Must be on EDT");
+
 		System.setProperty("awt.useSystemAAFontSettings", "on");
 
-		try {
-			EventQueue.invokeAndWait(new Runnable() {
-				@Override
-				public void run() {
-					try {
-						Object lnf = Application.get().getTheme().getLookAndFeel();
-						if (lnf != null) {
-                            if (lnf instanceof String) {
-							    UIManager.setLookAndFeel((String) lnf);
-                            } else {
-                                UIManager.setLookAndFeel((LookAndFeel) lnf);
-                            }
-						}
-					} catch (Exception e) {
-						throw new RuntimeException(e);
-					}
-				}
-			});
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
-		} catch (InvocationTargetException e) {
-			throw new RuntimeException(e);
-		}
+        try {
+            Object lnf = Application.get().getTheme().getLookAndFeel();
+            if (lnf != null) {
+                if (lnf instanceof String) {
+                    UIManager.setLookAndFeel((String) lnf);
+                } else {
+                    UIManager.setLookAndFeel((LookAndFeel) lnf);
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
 		Application.get().getMessageBus().topic(WindowManager.Listener.class).subscribe(DispatchStrategy.SYNC, this);
 	}

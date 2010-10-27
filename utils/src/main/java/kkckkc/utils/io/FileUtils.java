@@ -40,6 +40,6 @@ public class FileUtils {
     }
 
     public static String expandAbbreviations(String text) {
-        return text.replaceAll("~", System.getProperty("user.home"));
+        return text.replaceAll("~", System.getProperty("user.home").replace('\\', '/'));
     }
 }
