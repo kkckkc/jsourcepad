@@ -9,6 +9,7 @@ import kkckkc.jsourcepad.model.bundle.BundleItemSupplier;
 import kkckkc.jsourcepad.model.bundle.BundleListener;
 import kkckkc.jsourcepad.model.bundle.BundleStructure;
 import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
+import kkckkc.jsourcepad.util.ui.JTreeUtils;
 
 import javax.swing.*;
 import javax.swing.event.TreeModelEvent;
@@ -76,8 +77,22 @@ public class ManifestBundleDocPresenter extends BasicBundleDocPresenter {
 
             @Override
             public void bundleUpdated(Bundle bundle) {
-                initMenu(mView, bDoc, bundle);
-                initAvailable(mView, (DefaultTreeModel) mView.getMenu().getModel(), Application.get().getBundleManager().getBundle(bDoc.getName()));
+                DefaultMutableTreeNode root = new DefaultMutableTreeNode(new TreeEntry("", "Menu Structure", true));
+                DefaultTreeModel menuModel = new TreeEntryTreeModel(root);
+
+                buildMenu(root, (Map) bDoc.getPlist().get("mainMenu"), bundle.getItemsByUuid());
+
+                JTreeUtils.mergeModels((DefaultTreeModel) mView.getMenu().getModel(), menuModel, new TreeEntryMerger());
+
+
+                root = new DefaultMutableTreeNode("Available Items");
+                DefaultTreeModel availableModel = new TreeEntryTreeModel(root);
+
+                Set<String> usedUuids = Sets.newHashSet();
+                addAllUuids(usedUuids, (DefaultMutableTreeNode) menuModel.getRoot());
+                buildAvailable(root, bundle, usedUuids);
+
+                JTreeUtils.mergeModels((DefaultTreeModel) mView.getAvailable().getModel(), availableModel, new TreeEntryMerger());
             }
 
             @Override
@@ -122,9 +137,11 @@ public class ManifestBundleDocPresenter extends BasicBundleDocPresenter {
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("Available Items");
         DefaultTreeModel availableModel = new TreeEntryTreeModel(root);
         available.setModel(availableModel);
+
         Set<String> usedUuids = Sets.newHashSet();
         addAllUuids(usedUuids, (DefaultMutableTreeNode) menuModel.getRoot());
         buildAvailable(root, bundle, usedUuids);
+
         available.expandPath(new TreePath(new Object[] { root }));
         available.setDragEnabled(true);
         available.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
@@ -151,6 +168,7 @@ public class ManifestBundleDocPresenter extends BasicBundleDocPresenter {
         menu.setTransferHandler(new ManifestMenuTransferHandler(menuModel, bundle));
 
         buildMenu(root, (Map) bDoc.getPlist().get("mainMenu"), bundle.getItemsByUuid());
+        
         menu.setModel(menuModel);
         menu.expandPath(new TreePath(new Object[] { root }));
         return menuModel;

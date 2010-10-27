@@ -2,7 +2,7 @@ package kkckkc.jsourcepad.bundleeditor.manifest;
 
 import kkckkc.jsourcepad.model.bundle.Bundle;
 import kkckkc.jsourcepad.model.bundle.BundleItemSupplier;
-import kkckkc.utils.swing.JTreeUtils;
+import kkckkc.jsourcepad.util.ui.JTreeUtils;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
