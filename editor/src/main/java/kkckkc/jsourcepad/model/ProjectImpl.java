@@ -66,7 +66,7 @@ public class ProjectImpl implements Project, DocList.Listener, Window.FocusListe
 
 	@Override
     public void refresh(File file) {
-	    window.topic(Project.FileChangeListener.class).post().refresh(file);
+	    window.topic(RefreshListener.class).post().refresh(file);
     	cache.clear();
     }
 

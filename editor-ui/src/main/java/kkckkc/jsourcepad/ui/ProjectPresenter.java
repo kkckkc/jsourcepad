@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import kkckkc.jsourcepad.Presenter;
 import kkckkc.jsourcepad.action.ActionContextKeys;
 import kkckkc.jsourcepad.model.Project;
+import kkckkc.jsourcepad.model.ProjectImpl;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.util.action.ActionContext;
 import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
@@ -17,7 +18,7 @@ import javax.swing.tree.TreePath;
 import java.io.File;
 import java.util.List;
 
-public class ProjectPresenter implements Presenter<ProjectView>, Project.FileChangeListener {
+public class ProjectPresenter implements Presenter<ProjectView>, Project.FileChangeListener, ProjectImpl.RefreshListener {
 
 	private ProjectView view;
 	private Window window;
@@ -36,7 +37,8 @@ public class ProjectPresenter implements Presenter<ProjectView>, Project.FileCha
 	@PostConstruct
 	public void init() {
 		window.topic(Project.FileChangeListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, this);
-		
+		window.topic(ProjectImpl.RefreshListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, this);
+
 		((JTree) view).getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
 			@Override
 			public void valueChanged(TreeSelectionEvent e) {

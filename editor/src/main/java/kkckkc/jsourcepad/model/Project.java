@@ -7,9 +7,13 @@ public interface Project {
 	interface FileChangeListener {
         void removed(File file);
 		void created(File file);
-		void refresh(File file);
 	}
 
+    interface RefreshListener {
+        public void refresh(File file);
+    }
+
+    
 	public List<File> findFile(String query);
 	public File getProjectDir();
 	public void refresh(File file);
