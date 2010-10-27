@@ -1,5 +1,6 @@
 package kkckkc.jsourcepad.ui;
 
+import com.google.common.io.Resources;
 import kkckkc.jsourcepad.Presenter;
 import kkckkc.jsourcepad.action.bundle.BundleAction;
 import kkckkc.jsourcepad.action.bundle.BundleJMenuItem;
@@ -18,6 +19,7 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
+import java.util.Arrays;
 
 
 public class WindowPresenter implements Presenter<WindowView>, DocList.Listener {
@@ -46,6 +48,16 @@ public class WindowPresenter implements Presenter<WindowView>, DocList.Listener 
 	@PostConstruct
     public void init() throws Exception {
 		frame = (JFrame) window.getContainer();
+
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+        
+        frame.setIconImages(Arrays.asList(
+                toolkit.createImage(Resources.toByteArray(getClass().getResource("/icons/icon_16x16x32.png"))),
+                toolkit.createImage(Resources.toByteArray(getClass().getResource("/icons/icon_32x32x32.png"))),
+                toolkit.createImage(Resources.toByteArray(getClass().getResource("/icons/icon_48x48x32.png"))),
+                toolkit.createImage(Resources.toByteArray(getClass().getResource("/icons/icon_128x128x32.png"))),
+                toolkit.createImage(Resources.toByteArray(getClass().getResource("/icons/icon_256x256x32.png")))
+                ));
         windowView.setJFrame(frame);
         
 		frame.setTitle("JSourcePad");

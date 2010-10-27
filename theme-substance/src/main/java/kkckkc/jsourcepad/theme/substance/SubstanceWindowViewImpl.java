@@ -26,6 +26,7 @@ public class SubstanceWindowViewImpl extends WindowViewImpl {
     protected JScrollPane createTreeScrollPane(JComponent tree) {
         JScrollPane jsp = super.createTreeScrollPane(tree);
         jsp.setBorder(BorderFactory.createEmptyBorder());
+        SubstanceLookAndFeel.setDecorationType(jsp, DecorationAreaType.GENERAL);
         return jsp;
     }
 }

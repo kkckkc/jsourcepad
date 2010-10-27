@@ -78,7 +78,7 @@ public class CurrentLinePainter implements Highlighter.HighlightPainter, CaretLi
 					int offset = editorPane.getCaretPosition();
 					Rectangle currentView = editorPane.modelToView(offset);
 
-					if (lastHighlight.y != currentView.y) {
+					if (lastHighlight != null && lastHighlight.y != currentView.y) {
 						editorPane.repaint(
 								0, lastHighlight.y, editorPane.getWidth(), lastHighlight.height);
 						lastHighlight = currentView;

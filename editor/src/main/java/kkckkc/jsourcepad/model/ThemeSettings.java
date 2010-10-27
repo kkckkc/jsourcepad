@@ -19,8 +19,10 @@ public class ThemeSettings implements SettingsManager.Setting {
         ThemeSettings ts = new ThemeSettings();
         if (EnvironmentUtils.isMac()) {
             ts.setThemeId("theme-osx");
+        } else if (EnvironmentUtils.isLinux()) {
+            ts.setThemeId("theme-gtk");
         } else {
-            ts.setThemeId(null);
+            ts.setThemeId("theme-substance");
         }
         return ts;
     }

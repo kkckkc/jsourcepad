@@ -8,7 +8,7 @@ import kkckkc.jsourcepad.util.BeanFactoryLoader;
 import org.pushingpixels.substance.api.SubstanceLookAndFeel;
 import org.pushingpixels.substance.api.fonts.FontPolicy;
 import org.pushingpixels.substance.api.fonts.FontSet;
-import org.pushingpixels.substance.api.skin.SubstanceBusinessBlackSteelLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceOfficeBlack2007LookAndFeel;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -43,7 +43,7 @@ public class SubstanceTheme implements Theme {
               }
         });
 
-        return new SubstanceBusinessBlackSteelLookAndFeel();
+        return new SubstanceOfficeBlack2007LookAndFeel();
 	}
 
     @Override

@@ -313,12 +313,16 @@ public class ProjectViewImpl extends JTree implements ProjectView, MouseListener
 		    if (file.isDirectory()) {
 				if (EnvironmentUtils.isMac()) {
 					return UIManager.getDefaults().getIcon("FileChooser.newFolderIcon");
+                } else if (EnvironmentUtils.isWindows()) {
+                    return UIManager.getDefaults().getIcon("FileChooser.newFolderIcon");
 				} else {
 					return new ImageIcon("/usr/share/icons/Human/16x16/places/folder.png");
 				}
 			} else {
 				if (EnvironmentUtils.isMac()) {
 					return UIManager.getDefaults().getIcon("FileView.fileIcon");
+                } else if (EnvironmentUtils.isWindows()) {
+                    return UIManager.getDefaults().getIcon("FileView.fileIcon");
 				} else {
 					return new ImageIcon("/usr/share/icons/gnome/16x16/mimetypes/text-x-generic.png");
 				}

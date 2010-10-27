@@ -1,9 +1,9 @@
 package kkckkc.jsourcepad.model;
 
-import java.awt.Font;
-
 import kkckkc.jsourcepad.model.SettingsManager.Setting;
 import kkckkc.utils.EnvironmentUtils;
+
+import java.awt.*;
 
 public class FontSettings implements Setting {
 
@@ -47,9 +47,11 @@ public class FontSettings implements Setting {
 	public FontSettings getDefault() {
 		if (EnvironmentUtils.isMac()) {
 			return new FontSettings("Monaco", Font.PLAIN, 12);
-		} else {
+		} else if (EnvironmentUtils.isLinux()) {
 			return new FontSettings("Liberation Mono", Font.PLAIN, 12);
-		}
+		} else {
+            return new FontSettings("Courier New", Font.PLAIN, 12);
+        }
 	}
 
 	public Font asFont() {

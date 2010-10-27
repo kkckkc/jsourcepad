@@ -36,6 +36,7 @@ public class ScopeSelectorManager {
 	}
 
 	public <T> T getMatch(Scope scope, Map<ScopeSelector, T> selectors) {
+        if (selectors == null) return null;
 		List<T> matches = getMatches(scope, selectors);
 		if (matches == null || matches.isEmpty()) return null;
 		return matches.get(0);
