@@ -1,12 +1,19 @@
 package kkckkc.jsourcepad.util.io;
 
 import com.google.common.base.Charsets;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.common.io.CharStreams;
 import com.google.common.io.Files;
+import kkckkc.jsourcepad.util.Cygwin;
+import kkckkc.utils.EnvironmentUtils;
 import kkckkc.utils.io.FileUtils;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
 
@@ -102,10 +109,28 @@ public class ScriptExecutor {
 	private ProcessBuilder getProcess(Execution execution, Map<String, String> environment) throws IOException {
 		execution.tempScriptFile = FileUtils.newTempFile("jsourcepad", ".sh");
 		execution.tempScriptFile.setExecutable(true);
-
         Files.write(script, execution.tempScriptFile, Charsets.UTF_8);
 
-		ProcessBuilder pb = new ProcessBuilder("bash", "-c", execution.tempScriptFile.getPath());
+        String path = execution.tempScriptFile.getPath();
+
+        List<String> argList = Lists.newArrayList();
+        if (EnvironmentUtils.isWindows()) {
+            argList.addAll(Arrays.asList("c:/cygwin/bin/bash.exe", "--login", "-c"));
+            path = Cygwin.makePath(path);
+        } else {
+            argList.addAll(Arrays.asList("bash", "-c"));
+        }
+
+        String firstLine = Iterables.get(Splitter.on("\n").split(script), 0);
+        if (firstLine.startsWith("#!")) {
+            // Remove shebang
+            firstLine = firstLine.substring(2);
+            argList.add(firstLine.trim() + " " + path);
+        } else {
+            argList.add(path);
+        }
+
+		ProcessBuilder pb = new ProcessBuilder(argList);
 		pb.environment().putAll(environment);
 
         if (directory != null) {
@@ -115,9 +140,10 @@ public class ScriptExecutor {
 	    return pb;
     }
 
+    
 
-	
-	public interface Callback {
+
+    public interface Callback {
 		public void onSuccess(Execution execution);
 		public void onAbort(Execution execution);
 		public void onDelay(Execution execution);

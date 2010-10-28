@@ -1,13 +1,17 @@
 package kkckkc.jsourcepad.model.bundle;
 
+import com.google.common.base.Function;
 import com.google.common.base.Joiner;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import kkckkc.jsourcepad.action.ActionContextKeys;
 import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.Window;
+import kkckkc.jsourcepad.util.Cygwin;
 import kkckkc.jsourcepad.util.action.ActionManager;
 import kkckkc.syntaxpane.model.Interval;
+import kkckkc.utils.EnvironmentUtils;
 
 import java.io.File;
 import java.util.Collections;
@@ -15,7 +19,14 @@ import java.util.List;
 import java.util.Map;
 
 public class EnvironmentProvider {
-	public static Map<String, String> getEnvironment(Window window, BundleItemSupplier bundleItemSupplier) {
+    private static final Function<? super File,String> FILE_TO_STRING = new Function<File, String>() {
+        @Override
+        public String apply(File file) {
+            return formatPath(file.toString());
+        }
+    };
+
+    public static Map<String, String> getEnvironment(Window window, BundleItemSupplier bundleItemSupplier) {
 		Map<String, String> environment = Maps.newHashMap();
 		Doc activeDoc = window.getDocList().getActiveDoc();
 
@@ -34,27 +45,29 @@ public class EnvironmentProvider {
 
 			if (activeDoc.getFile() != null) {
 				environment.put("TM_FILENAME", activeDoc.getFile().getName());
-				environment.put("TM_DIRECTORY", activeDoc.getFile().getParentFile().getPath());
-				environment.put("TM_FILEPATH", activeDoc.getFile().getPath());
-				
-				Interval selection = activeDoc.getActiveBuffer().getSelection();
-				if (selection != null && ! selection.isEmpty()) {
-					String text = activeDoc.getActiveBuffer().getText(selection);
-					if (text.length() > 60000) text = text.substring(0, 60000);
-					environment.put("TM_SELECTED_TEXT", text);
-				}
+				environment.put("TM_DIRECTORY", formatPath(activeDoc.getFile().getParentFile().getPath()));
+				environment.put("TM_FILEPATH", formatPath(activeDoc.getFile().getPath()));
 			}
+
+            System.out.println("selection = " + activeDoc.getActiveBuffer().getSelection());
+
+            Interval selection = activeDoc.getActiveBuffer().getSelection();
+            if (selection != null && ! selection.isEmpty()) {
+                String text = activeDoc.getActiveBuffer().getText(selection);
+                if (text.length() > 60000) text = text.substring(0, 60000);
+                environment.put("TM_SELECTED_TEXT", text);
+            }
 		}
 
         if (window.getProject() != null) {
-		    environment.put("TM_PROJECT_DIRECTORY", window.getProject().getProjectDir().getPath());
+		    environment.put("TM_PROJECT_DIRECTORY", formatPath(window.getProject().getProjectDir().getPath()));
         }
 
 		List<File> paths = Lists.newArrayList();
 		
 		if (bundleItemSupplier != null) {
 			environment.put("TM_BUNDLE_SUPPORT", 
-					new File(bundleItemSupplier.getFile().getParentFile().getParentFile(), "Support").getPath());
+					formatPath(new File(bundleItemSupplier.getFile().getParentFile().getParentFile(), "Support").getPath()));
 			paths.add(new File(bundleItemSupplier.getFile().getParentFile().getParentFile(), "Support/bin"));
 		}
 		
@@ -83,12 +96,8 @@ public class EnvironmentProvider {
 			environment.put("TM_SELECTED_FILE", "");
 			environment.put("TM_SELECTED_FILES", "");
 		} else {
-			List<String> s = Lists.newArrayList();
-			for (File f : files) {
-				s.add("\"" + f.toString() + "\"");
-			}
-			environment.put("TM_SELECTED_FILE", "\"" + s.get(0));
-			environment.put("TM_SELECTED_FILES", Joiner.on("\"").join(s));
+			environment.put("TM_SELECTED_FILE", "\"" + formatPath(files.get(0).toString()) + "\"");
+			environment.put("TM_SELECTED_FILES", Joiner.on("\"").join(Collections2.transform(files, FILE_TO_STRING)));
 		}
 		
 
@@ -98,10 +107,21 @@ public class EnvironmentProvider {
         }
 
 		// Build path
-		environment.put("PATH",
-                System.getenv("PATH") + File.pathSeparator +
-				    Joiner.on(File.pathSeparator).join(paths));
-		
+        if (EnvironmentUtils.isWindows()) {
+            environment.put("PATH", Joiner.on(File.pathSeparator).join(Collections2.transform(paths, FILE_TO_STRING)));
+        } else {
+            environment.put("PATH",
+                    System.getenv("PATH") + File.pathSeparator +
+                        Joiner.on(File.pathSeparator).join(Collections2.transform(paths, FILE_TO_STRING)));
+        }
+
 	    return environment;
+    }
+
+    private static String formatPath(String s) {
+        if (EnvironmentUtils.isWindows()) {
+            return Cygwin.makePath(s);
+        }
+        return s;
     }
 }

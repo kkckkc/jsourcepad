@@ -73,17 +73,41 @@ public class BufferImpl implements Buffer {
     }
 
 	@Override
-	public void bind(JTextComponent jtc) {
+	public void bind(final JTextComponent jtc) {
 		jtc.setDocument(document);
-	    this.caret = jtc.getCaret();
-        this.caret.addChangeListener(completionManager);
-        this.caret.addChangeListener(new ChangeListener() {
+        this.caret = jtc.getCaret();
+
+        // Work around issue with substance look and feel
+        EventQueue.invokeLater(new Runnable() {
+
             @Override
-            public void stateChanged(ChangeEvent e) {
-                if (restrictedEditor != null) restrictedEditor.caretPositionChanged(caret.getDot());
+            public void run() {
+                BufferImpl.this.caret = jtc.getCaret();
+                BufferImpl.this.caret.addChangeListener(completionManager);
+                BufferImpl.this.caret.addChangeListener(new ChangeListener() {
+                    @Override
+                    public void stateChanged(ChangeEvent e) {
+                        if (restrictedEditor != null) restrictedEditor.caretPositionChanged(caret.getDot());
+                    }
+                });
+
+                BufferImpl.this.caret.addChangeListener(new ChangeListener() {
+                    @Override
+                    public void stateChanged(ChangeEvent e) {
+                        if (caret.getDot() == caret.getMark()) {
+                            selection = null;
+                            if (insertionPoint == null || insertionPoint.getPosition() != caret.getDot() || selection != null) {
+                                insertionPoint = new InsertionPoint(caret.getDot(), document.getScopeForPosition(caret.getDot()), document.getLineManager());
+                                postInsertionPointUpdate();
+                            }
+                        } else {
+                            selection = new BufferTextInterval(caret.getDot(), caret.getMark());
+                            window.topic(Buffer.SelectionListener.class).post().selectionModified(BufferImpl.this);
+                        }
+                    }
+                });
             }
         });
-
 
 		document.addDocumentListener(new DocumentListener() {
             @Override
@@ -105,22 +129,6 @@ public class BufferImpl implements Buffer {
 		document.addDocumentListener(anchorManager);
 
 	    this.textComponent = jtc;
-	    
-	    this.caret.addChangeListener(new ChangeListener() {
-            @Override
-			public void stateChanged(ChangeEvent e) {
-				if (caret.getDot() == caret.getMark()) {
-                    selection = null;
-					if (insertionPoint == null || insertionPoint.getPosition() != caret.getDot() || selection != null) {
-						insertionPoint = new InsertionPoint(caret.getDot(), document.getScopeForPosition(caret.getDot()), document.getLineManager());
-						postInsertionPointUpdate();
-					}
-				} else {
-					selection = new BufferTextInterval(caret.getDot(), caret.getMark());
-                	window.topic(Buffer.SelectionListener.class).post().selectionModified(BufferImpl.this);
-				}
-			}
-		});
 
 	    characterPairsHandler = new CharacterPairsHandler(this, anchorManager);
 	    document.setDocumentFilter(characterPairsHandler);
