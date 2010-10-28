@@ -1,5 +1,6 @@
-package kkckkc.jsourcepad.util.ui;
+package kkckkc.jsourcepad.ui.dialog.progress;
 
+import kkckkc.jsourcepad.util.ui.BaseJDialog;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;

@@ -6,6 +6,7 @@ import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.bundle.BundleManager;
 import kkckkc.jsourcepad.util.Config;
+import kkckkc.jsourcepad.util.io.ErrorDialog;
 import kkckkc.utils.PerformanceLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,7 +68,8 @@ public class Bootstrap implements Runnable {
 
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             public void uncaughtException(Thread t, Throwable e) {
-                e.printStackTrace();
+                ErrorDialog errorDialog = Application.get().getErrorDialog();
+                errorDialog.show(e, null);
             }
         });
 

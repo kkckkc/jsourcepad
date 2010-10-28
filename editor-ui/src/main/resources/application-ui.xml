@@ -11,5 +11,9 @@
 
     <bean id="styleSettings" class="kkckkc.jsourcepad.ui.settings.StyleSettingsPanel" />
     <bean id="themeSettings" class="kkckkc.jsourcepad.ui.settings.ThemeSettingsPanel" />
+
+
+    <bean id="errorDialog" class="kkckkc.jsourcepad.ui.dialog.error.ErrorDialogImpl" />
+    <bean id="errorDialogView" class="kkckkc.jsourcepad.ui.dialog.error.ErrorDialogViewImpl" autowire="constructor"/>
     
 </beans>

@@ -1,5 +1,5 @@
-[ ] Error reporting
-[ ] Error reporting for commands
+[x] Error reporting
+[x] Error reporting for commands
 [x] contentName functionality needs replacement. Check entities.txt
 [x] perl highlighting problem
 

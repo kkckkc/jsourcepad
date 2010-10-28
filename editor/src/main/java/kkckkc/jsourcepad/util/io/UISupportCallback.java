@@ -1,11 +1,11 @@
 package kkckkc.jsourcepad.util.io;
 
+import com.google.common.base.Strings;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.util.io.ScriptExecutor.Callback;
 import kkckkc.jsourcepad.util.io.ScriptExecutor.Execution;
 import kkckkc.jsourcepad.util.ui.ProgressDialog;
 
-import javax.swing.*;
 import java.awt.*;
 
 public class UISupportCallback implements Callback {
@@ -55,10 +55,12 @@ public class UISupportCallback implements Callback {
 				onAfterFailure(execution);
 				onAfterDone();
 
-				// TODO: Add details
-                System.out.println(execution.getStderr());
-				JOptionPane.showMessageDialog(parent, "Execution Failed...");
-			}
+                ErrorDialog errorDialog = Application.get().getErrorDialog();
+                errorDialog.show("Script Execution Failed...",
+                    execution.getStderr() +
+                    "\n" + "Script Follows:\n" + Strings.repeat("-", 120) + "\n" +
+                    execution.getScript(), parent);
+            }
 		});
 	}
 

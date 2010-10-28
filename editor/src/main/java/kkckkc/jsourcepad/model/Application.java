@@ -8,6 +8,7 @@ import kkckkc.jsourcepad.theme.DefaultTheme;
 import kkckkc.jsourcepad.theme.Theme;
 import kkckkc.jsourcepad.util.ApplicationFolder;
 import kkckkc.jsourcepad.util.BeanFactoryLoader;
+import kkckkc.jsourcepad.util.io.ErrorDialog;
 import kkckkc.jsourcepad.util.messagebus.AbstractMessageBus;
 import kkckkc.jsourcepad.util.messagebus.MessageBus;
 import kkckkc.syntaxpane.parse.grammar.LanguageManager;
@@ -181,4 +182,8 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
             return windowToUse;
         }
     }
-}	
+
+    public ErrorDialog getErrorDialog() {
+        return beanFactory.getBean(ErrorDialog.class);
+    }
+}

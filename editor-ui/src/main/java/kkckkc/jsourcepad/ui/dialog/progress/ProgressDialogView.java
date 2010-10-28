@@ -1,8 +1,8 @@
-package kkckkc.jsourcepad.util.ui;
-
-import javax.swing.JDialog;
+package kkckkc.jsourcepad.ui.dialog.progress;
 
 import kkckkc.jsourcepad.View;
+
+import javax.swing.*;
 
 public interface ProgressDialogView extends View {
 

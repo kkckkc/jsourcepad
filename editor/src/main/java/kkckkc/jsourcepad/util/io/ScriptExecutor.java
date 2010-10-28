@@ -109,6 +109,7 @@ public class ScriptExecutor {
 	private ProcessBuilder getProcess(Execution execution, Map<String, String> environment) throws IOException {
 		execution.tempScriptFile = FileUtils.newTempFile("jsourcepad", ".sh");
 		execution.tempScriptFile.setExecutable(true);
+        execution.script = script;
         Files.write(script, execution.tempScriptFile, Charsets.UTF_8);
 
         String path = execution.tempScriptFile.getPath();
@@ -168,12 +169,17 @@ public class ScriptExecutor {
 		private Callback callback;
 		private Reader input;
 		private boolean cancelled = false;
+        private String script;
 
-		public Execution(Callback callback, Reader input, Writer stdout, Writer stderr) {
+        public Execution(Callback callback, Reader input, Writer stdout, Writer stderr) {
 	        this.callback = callback;
 	        this.stdout = stdout;
 	        this.stderr = stderr;
 	        this.input = input;
+        }
+
+        public String getScript() {
+            return script;
         }
 
 		public boolean isCancelled() {
