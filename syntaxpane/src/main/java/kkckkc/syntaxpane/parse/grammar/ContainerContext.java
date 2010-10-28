@@ -20,6 +20,8 @@ public class ContainerContext extends MatchableContext {
 	private PatternFactory factory;
     private boolean disabled;
 
+    private boolean contentNameContext;
+
     public ContainerContext(PatternFactory factory) {
 		this.factory = factory;
 		this.beginPattern = factory.create("$^");
@@ -64,7 +66,7 @@ public class ContainerContext extends MatchableContext {
 			s = new Scope(matcher.start(), matcher.end(), this, parent);
 		}
 		
-		if (endPattern != null && endPattern.pattern().indexOf("@start") >= 0) {
+		if (endPattern != null && !contentNameContext && endPattern.pattern().indexOf("@start") >= 0) {
 			for (int i = 0; i < matcher.groupCount(); i++) {
 				s.addAttribute(i + "@start", matcher.group(i));
 			}
@@ -89,9 +91,15 @@ public class ContainerContext extends MatchableContext {
 	public Matcher getEndMatcher(CharSequence segment, Scope scope) {
 		if (endPattern != null && endPattern.pattern().indexOf("@start") >= 0) {
 			String p = endPattern.pattern();
-			for (Map.Entry<String, String> entry : scope.getAttributes().entrySet()) {
-				p = StringUtils.replace(p, "\\%\\{" + entry.getKey() + "\\}", entry.getValue());
-			}
+            if (contentNameContext) {
+                for (Map.Entry<String, String> entry : scope.getParent().getAttributes().entrySet()) {
+                    p = StringUtils.replace(p, "\\%\\{" + entry.getKey() + "\\}", entry.getValue());
+                }
+            } else {
+                for (Map.Entry<String, String> entry : scope.getAttributes().entrySet()) {
+                    p = StringUtils.replace(p, "\\%\\{" + entry.getKey() + "\\}", entry.getValue());
+                }
+            }
 			
 			if (! previousEndPattern.equals(p)) {
 				previousEndPattern = p;
@@ -112,5 +120,9 @@ public class ContainerContext extends MatchableContext {
 
     public void setDisabled(boolean b) {
         this.disabled = b;
+    }
+
+    public void setContentNameContext(boolean b) {
+        this.contentNameContext = b;
     }
 }

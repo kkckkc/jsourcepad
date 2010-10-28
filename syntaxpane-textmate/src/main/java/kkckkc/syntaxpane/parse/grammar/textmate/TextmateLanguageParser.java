@@ -150,7 +150,6 @@ public class TextmateLanguageParser {
 		}
 	}
 
-	Pattern CHANGE_BACKREF = Pattern.compile("\\\\([0-9]+)");
 	private Context parseContainerContext(Map entry) {
 	    ContainerContext cc = new ContainerContext(factory);
 		cc.setId((String) entry.get("name")); 
@@ -165,7 +164,7 @@ public class TextmateLanguageParser {
 		if (entry.containsKey("begin")) 
 			cc.setBegin(factory.create((String) entry.get("begin")));
 		if (entry.containsKey("end")) {
-            cc.setEnd(factory.create(CHANGE_BACKREF.matcher((String) entry.get("end")).replaceAll("\\\\%{\\1@start}")));
+            cc.setEnd(factory.create(fixBackrefs((String) entry.get("end"))));
         }
 
 		List<Map> patterns = (List<Map>) entry.get("patterns");
@@ -180,10 +179,11 @@ public class TextmateLanguageParser {
             ContainerContext s = new ContainerContext(factory);
             s.setId((String) entry.get("contentName"));
             s.setName((String) entry.get("contentName"));
+            s.setContentNameContext(true);
 
             s.setBegin(factory.create("(?=.)"));
             if (entry.containsKey("end"))
-                s.setEnd(factory.create("(?=" + entry.get("end") + ")"));
+                s.setEnd(factory.create("(?=" + fixBackrefs((String) entry.get("end")) + ")"));
             else
                 s.setEnd(factory.create("(?=.)"));
 
@@ -243,7 +243,12 @@ public class TextmateLanguageParser {
 	    return cc;
     }
 
-	private Context parseSimpleContext(Map entry) {
+    Pattern CHANGE_BACKREF = Pattern.compile("\\\\([0-9]+)");
+    private String fixBackrefs(String s) {
+        return CHANGE_BACKREF.matcher(s).replaceAll("\\\\%{\\1@start}");
+    }
+
+    private Context parseSimpleContext(Map entry) {
 		SimpleContext sc = new SimpleContext();
 		sc.setId((String) entry.get("name")); 
 		sc.setName((String) entry.get("name"));
