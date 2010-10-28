@@ -137,7 +137,7 @@ public class MutableFoldManager implements FoldManager {
 	
 
 	private int getEndOfFold(Line line) {
-		String s = line.getCharSequence().toString();
+		String s = line.getCharSequence(false).toString();
 		int i = 0;
 		while (Character.isWhitespace(s.charAt(i))) {
 			i++;
@@ -149,7 +149,7 @@ public class MutableFoldManager implements FoldManager {
 		while (l != null) {
 			end = l.getIdx();
 
-			CharSequence lc = l.getCharSequence();
+			CharSequence lc = l.getCharSequence(false);
 			if (CharSequenceUtils.startsWith(lc, prefix) && 
 					foldEndPattern.matcher(lc).matches() &&
 					! Character.isWhitespace(lc.charAt(prefix.length()))) {

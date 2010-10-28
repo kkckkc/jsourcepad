@@ -78,8 +78,12 @@ public abstract class LineManager {
 			return scope.getRoot().toXml(charProvider.getSubSequence(start, end)).toString();
 		}
 
-		public CharSequence getCharSequence() {
-			return charProvider.getSubSequence(this.start, this.end);
+		public CharSequence getCharSequence(boolean includeLineEnd) {
+            if (includeLineEnd) {
+                return charProvider.getSubSequence(this.start, Math.min(charProvider.getLength(), this.end + 1));
+            } else {
+			    return charProvider.getSubSequence(this.start, this.end);
+            }
 		}
 	}
 }

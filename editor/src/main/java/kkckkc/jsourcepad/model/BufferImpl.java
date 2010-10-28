@@ -216,12 +216,12 @@ public class BufferImpl implements Buffer {
 
         Line line = lm.getLineByPosition(caret.getDot());
         Line endLine = line;
-        while (endLine != null && ! CharSequenceUtils.isWhitespace(endLine.getCharSequence())) {
+        while (endLine != null && ! CharSequenceUtils.isWhitespace(endLine.getCharSequence(false))) {
             endLine = lm.getNext(endLine);
         }
         
         Line startLine = line;
-        while (startLine != null && ! CharSequenceUtils.isWhitespace(startLine.getCharSequence())) {
+        while (startLine != null && ! CharSequenceUtils.isWhitespace(startLine.getCharSequence(false))) {
             startLine = lm.getPrevious(startLine);
         }
 
@@ -353,7 +353,7 @@ public class BufferImpl implements Buffer {
 
 		BundleManager bundleManager = Application.get().getBundleManager();
 		
-    	CharSequence prevLine = prev.getCharSequence();
+    	CharSequence prevLine = prev.getCharSequence(false);
     	int indentCount = doc.getTabManager().getTabCount(prevLine);
     	
     	String decrease = (String) bundleManager.getPreference(PrefKeys.INDENT_DECREASE, current.getScope());
@@ -373,8 +373,8 @@ public class BufferImpl implements Buffer {
     		
     		Line prevprev = document.getLineManager().getPrevious(prev);
     		if (prevprev != null) {
-    			if (doc.getTabManager().getTabCount(prevprev.getCharSequence()) == indentCount && indentCount > 0) {
-    				String s = doc.getTabManager().getFirstIndentionString(prev.getCharSequence());
+    			if (doc.getTabManager().getTabCount(prevprev.getCharSequence(false)) == indentCount && indentCount > 0) {
+    				String s = doc.getTabManager().getFirstIndentionString(prev.getCharSequence(false));
     				Interval i = Interval.createWithLength(prev.getStart(), s.length());
 	                doc.getActiveBuffer().remove(i);
 	                position -= s.length();
@@ -385,7 +385,7 @@ public class BufferImpl implements Buffer {
     	} else {
     		Line prevprev = document.getLineManager().getPrevious(prev);
     		if (prevprev != null) {
-    			if (matches(indentNextLine, prevprev.getCharSequence())) {
+    			if (matches(indentNextLine, prevprev.getCharSequence(false))) {
     				indentCount--;
     			}
     		}
@@ -393,7 +393,7 @@ public class BufferImpl implements Buffer {
     	
     	// Remove old indent
 		String s;
-		while ((s = doc.getTabManager().getFirstIndentionString(current.getCharSequence())) != null) {
+		while ((s = doc.getTabManager().getFirstIndentionString(current.getCharSequence(false))) != null) {
 			Interval i = Interval.createWithLength(current.getStart(), s.length());
             doc.getActiveBuffer().remove(i);
             position -= s.length();
@@ -420,7 +420,7 @@ public class BufferImpl implements Buffer {
 			if (length > 0) {
 				insertText(line.getStart(), indent, null);
 			} else {
-				if (doc.getTabManager().getTabCount(line.getCharSequence()) > 0) {
+				if (doc.getTabManager().getTabCount(line.getCharSequence(false)) > 0) {
 	                remove(Interval.createWithLength(line.getStart(), indent.length()));
 	                end = end - indent.length();
 				}   

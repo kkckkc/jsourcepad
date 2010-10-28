@@ -1,7 +1,7 @@
 [ ] Error reporting
 [ ] Error reporting for commands
 [x] contentName functionality needs replacement. Check entities.txt
-[ ] perl highlighting problem
+[x] perl highlighting problem
 
 [ ] OS specific plugins
 [ ] Cygwin settings

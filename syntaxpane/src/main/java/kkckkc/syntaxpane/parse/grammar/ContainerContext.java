@@ -21,6 +21,7 @@ public class ContainerContext extends MatchableContext {
     private boolean disabled;
 
     private boolean contentNameContext;
+    private String endPatternExpression;
 
     public ContainerContext(PatternFactory factory) {
 		this.factory = factory;
@@ -39,6 +40,7 @@ public class ContainerContext extends MatchableContext {
 	
 	public void setEnd(Pattern end) {
 		this.endPattern = end;
+        this.endPatternExpression = end.pattern();
 	}
 
 	public boolean isStyleInside() {
@@ -66,11 +68,7 @@ public class ContainerContext extends MatchableContext {
 			s = new Scope(matcher.start(), matcher.end(), this, parent);
 		}
 
-        if ("string.regexp.replaceXXX.simple_delimiter.perl".equals(getName())) {
-            System.out.println("ContainerContext.getEndMatcher");
-        }
-
-		if (endPattern != null && !contentNameContext && endPattern.pattern().indexOf("@start") >= 0) {
+		if (endPattern != null && !contentNameContext && endPatternExpression.indexOf("@start") >= 0) {
 			for (int i = 0; i < matcher.groupCount(); i++) {
 				s.addAttribute(i + "@start", matcher.group(i));
 			}
@@ -93,8 +91,8 @@ public class ContainerContext extends MatchableContext {
 	}
 
 	public Matcher getEndMatcher(CharSequence segment, Scope scope) {
-		if (endPattern != null && endPattern.pattern().indexOf("@start") >= 0) {
-			String p = endPattern.pattern();
+		if (endPattern != null && scope.getAttributes() != null && endPatternExpression.indexOf("@start") >= 0) {
+			String p = endPatternExpression;
             if (contentNameContext) {
                 for (Map.Entry<String, String> entry : scope.getParent().getAttributes().entrySet()) {
                     p = StringUtils.replace(p, "\\%{" + entry.getKey() + "}", entry.getValue());

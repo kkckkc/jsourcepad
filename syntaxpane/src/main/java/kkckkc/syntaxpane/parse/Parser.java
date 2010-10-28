@@ -58,7 +58,7 @@ public class Parser {
 			line.setScope(scope);
 
 			if (language.getFoldStart() != null) {
-				if (language.getFoldStart().matcher(line.getCharSequence()).matches()) {
+				if (language.getFoldStart().matcher(line.getCharSequence(false)).matches()) {
 					foldChanges |= foldManager.setFoldableFlag(line.getIdx(), true);
 				} else {
 					foldChanges |= foldManager.setFoldableFlag(line.getIdx(), false);
@@ -82,7 +82,7 @@ public class Parser {
 	}
 	
 	private Scope parseLine(Scope scope, LineManager.Line line) {
-		CharSequence seq = line.getCharSequence();
+		CharSequence seq = line.getCharSequence(true);
 		
 		// Apply previous scope to all of this line
 		if (scope != null) {

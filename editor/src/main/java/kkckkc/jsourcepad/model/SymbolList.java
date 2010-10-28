@@ -44,7 +44,7 @@ public class SymbolList {
 		
 		Object o = bundleManager.getPreference(PrefKeys.SYMBOL_SHOW_IN_LIST, s);
 		if (s.getRoot() != s && o != null) {
-			String symbol = l.getCharSequence().subSequence(s.getStart(), s.getEnd()).toString();
+			String symbol = l.getCharSequence(false).subSequence(s.getStart(), s.getEnd()).toString();
 			
 			String transformation = (String) bundleManager.getPreference(PrefKeys.SYMBOL_TRANSFORMATION, s);
 			if (transformation != null) {

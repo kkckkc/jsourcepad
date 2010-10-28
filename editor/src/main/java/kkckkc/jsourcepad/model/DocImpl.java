@@ -54,7 +54,7 @@ public class DocImpl extends AbstractMessageBus implements Doc, ScopeRoot {
             public void languagesUpdated() {
                 LineManager.Line line = buffer.getLineManager().getLineByPosition(0);
                 Language language = DocImpl.this.languageManager.getLanguage(
-                        line != null ? line.getCharSequence().toString() : "", backingFile);
+                        line != null ? line.getCharSequence(false).toString() : "", backingFile);
 		        DocImpl.this.buffer.setLanguage(language);
             }
         });
