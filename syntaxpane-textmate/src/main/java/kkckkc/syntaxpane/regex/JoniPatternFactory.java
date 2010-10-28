@@ -164,7 +164,7 @@ public class JoniPatternFactory implements PatternFactory {
 
 		@Override
         public String group(int i) {
-	        return new String(chars, start(i), end(i));
+	        return new String(chars, start(i), end(i) - start(i));
         }
 
 		@Override

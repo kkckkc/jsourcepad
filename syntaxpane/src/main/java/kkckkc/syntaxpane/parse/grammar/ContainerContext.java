@@ -65,7 +65,11 @@ public class ContainerContext extends MatchableContext {
 		} else {
 			s = new Scope(matcher.start(), matcher.end(), this, parent);
 		}
-		
+
+        if ("string.regexp.replaceXXX.simple_delimiter.perl".equals(getName())) {
+            System.out.println("ContainerContext.getEndMatcher");
+        }
+
 		if (endPattern != null && !contentNameContext && endPattern.pattern().indexOf("@start") >= 0) {
 			for (int i = 0; i < matcher.groupCount(); i++) {
 				s.addAttribute(i + "@start", matcher.group(i));
@@ -93,11 +97,11 @@ public class ContainerContext extends MatchableContext {
 			String p = endPattern.pattern();
             if (contentNameContext) {
                 for (Map.Entry<String, String> entry : scope.getParent().getAttributes().entrySet()) {
-                    p = StringUtils.replace(p, "\\%\\{" + entry.getKey() + "\\}", entry.getValue());
+                    p = StringUtils.replace(p, "\\%{" + entry.getKey() + "}", entry.getValue());
                 }
             } else {
                 for (Map.Entry<String, String> entry : scope.getAttributes().entrySet()) {
-                    p = StringUtils.replace(p, "\\%\\{" + entry.getKey() + "\\}", entry.getValue());
+                    p = StringUtils.replace(p, "\\%{" + entry.getKey() + "}", entry.getValue());
                 }
             }
 			

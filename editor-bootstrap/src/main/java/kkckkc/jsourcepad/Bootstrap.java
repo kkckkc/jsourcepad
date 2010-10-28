@@ -119,7 +119,7 @@ public class Bootstrap implements Runnable {
 				// Create new window
 				try {
                     if (args == null || args.length == 0) {
-	                    Window w = Application.get().getWindowManager().newWindow(null);
+	                    Window w = Application.get().getWindowManager().newWindow(new File("/Users/magnus/.jsourcepad/Shared/Bundles/Perl.tmBundle"));
                         w.getDocList().create();
                     } else {
                         for (String s : args) {

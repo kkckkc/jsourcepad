@@ -245,7 +245,7 @@ public class TextmateLanguageParser {
 
     Pattern CHANGE_BACKREF = Pattern.compile("\\\\([0-9]+)");
     private String fixBackrefs(String s) {
-        return CHANGE_BACKREF.matcher(s).replaceAll("\\\\%{\\1@start}");
+        return CHANGE_BACKREF.matcher(s).replaceAll("\\\\%{$1@start}");
     }
 
     private Context parseSimpleContext(Map entry) {
