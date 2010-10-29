@@ -4,6 +4,7 @@
 [x] perl highlighting problem
 [x] windows and linux packaging
 
+[ ] Someway to install themes, bundles etc. Check at first start.
 [ ] OS specific plugins
 [ ] Cygwin settings
 [ ] Select Bundle Item should filter out unavailable due to scope
