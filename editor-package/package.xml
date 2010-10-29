@@ -2,6 +2,8 @@
          xmlns:rsel="antlib:org.apache.tools.ant.types.resources.selectors">
 
     <target name="all">
+        <delete dir="target/package" />
+
         <!-- Remove current module classpath -->
         <restrict id="test">
             <path path="${runtime_classpath}"/>
@@ -18,11 +20,11 @@
             <path path="${t}"/>
             <chainedmapper>
                 <flattenmapper/>
-<!--                <regexpmapper from="^(.*)-([0-9]+\.?)+(.*)?\.jar$$" to="\1.jar"/> -->
             </chainedmapper>
         </copy>
 
         <antcall target="build-mac-app" />
+        <antcall target="build-zip-app" />
     </target>
 
     <target name="build-mac-app">
@@ -60,6 +62,49 @@
         </copy>
 
         <exec command="/Developer/Tools/SetFile -a B target/package/mac/JSourcePad.app" />
+    </target>
+
+    <target name="build-zip-app">
+        <mkdir dir="target/package/zip-app" />
+
+        <path id="lib-classpath">
+            <fileset dir="target/package/lib" includes="*.jar" />
+        </path>
+
+        <pathconvert property="cp" refid="lib-classpath" pathsep=";">
+            <mapper>
+                <chainedmapper>
+                <flattenmapper/>
+                <regexpmapper from="^(.*)\.jar$$" to="lib/\1.jar" />
+                </chainedmapper>
+            </mapper>
+        </pathconvert>
+
+        <pathconvert property="unix-cp" refid="lib-classpath" pathsep=":">
+            <mapper>
+                <chainedmapper>
+                <flattenmapper/>
+                <regexpmapper from="^(.*)\.jar$$" to="lib/\1.jar" />
+                </chainedmapper>
+            </mapper>
+        </pathconvert>
+
+
+        <copy todir="target/package/zip-app">
+             <fileset dir="zip/contents" />
+             <filterset>
+                <filter token="CLASSPATH" value="${cp}"/>
+                <filter token="UNIXCLASSPATH" value="${unix-cp}"/>
+            </filterset>
+        </copy>
+
+        <copy todir="target/package/zip-app/lib">
+            <fileset dir="target/package/lib" />
+        </copy>
+
+        <zip file="target/package/jsourcepad.zip">
+            <zipfileset dir="target/package/zip-app" prefix="jsourcepad" />
+        </zip>
     </target>
 
 </project>
