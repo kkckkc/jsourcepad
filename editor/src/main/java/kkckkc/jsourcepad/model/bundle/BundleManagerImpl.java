@@ -4,6 +4,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import kkckkc.jsourcepad.model.Application;
+import kkckkc.jsourcepad.util.Config;
 import kkckkc.syntaxpane.model.Scope;
 import kkckkc.syntaxpane.parse.grammar.Language;
 import kkckkc.syntaxpane.parse.grammar.LanguageManager;
@@ -13,7 +14,6 @@ import kkckkc.syntaxpane.style.ScopeSelector;
 import kkckkc.syntaxpane.style.ScopeSelectorManager;
 import kkckkc.utils.Pair;
 import kkckkc.utils.PerformanceLogger;
-import kkckkc.utils.io.FileUtils;
 import kkckkc.utils.plist.GeneralPListReader;
 import kkckkc.utils.plist.PListReader;
 
@@ -32,9 +32,11 @@ public class BundleManagerImpl implements BundleManager {
     private TextmateLanguageProvider languageProvider;
     private LanguageManager languageManager;
 
-    public BundleManagerImpl(String bundleDir, LanguageManager languageManager) {
-		this.bundleDir = FileUtils.expandAbbreviations(bundleDir);
+    public BundleManagerImpl(LanguageManager languageManager) {
+		this.bundleDir = Config.getBundlesFolder().toString();
+
         this.languageProvider = new TextmateLanguageProvider(bundleDir);
+
         this.languageManager = languageManager;
         this.languageManager.setProvider(this);
 	}
@@ -62,15 +64,20 @@ public class BundleManagerImpl implements BundleManager {
     }
 
     @Override
-    public File getBundleDir() {
-        return new File(bundleDir);
-    }
-
-    @Override
 	@Deprecated
     public List<Bundle> getBundles() {
 		loadBundlesIfNeeded();
 	    return bundles;
+    }
+
+    @Override
+    public Bundle getBundleByDirName(String name) {
+        if (bundles != null) {
+            for (Bundle b : bundles) {
+                if (b.getBundleDirName().equals(name)) return b;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -140,13 +147,15 @@ public class BundleManagerImpl implements BundleManager {
         List<Bundle> oldBundles = bundles;
 	    bundles = Lists.newArrayList();
 
-		PerformanceLogger.get().enter(this, "reload.load");
 
 		File[] bundles = new File(bundleDir).listFiles(new FileFilter() {
             public boolean accept(File pathname) {
                 return pathname.isDirectory();
             }
         });
+        if (bundles == null) return;
+
+        PerformanceLogger.get().enter(this, "reload.load");
 		Arrays.sort(bundles);
 	    for (File bundleDir : bundles) {
 	    	try {

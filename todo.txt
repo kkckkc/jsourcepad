@@ -7,6 +7,12 @@
 [ ] Someway to install themes, bundles etc. Check at first start.
 [ ] OS specific plugins
 [ ] Cygwin settings
+[ ] Tab completion when line ends with whitespace
+[ ] Open with on Windows
+[ ] launch4j
+
+[ ] Don't print performance log issues in packaged app
+[ ] Logging for packaged app
 [ ] Select Bundle Item should filter out unavailable due to scope
 [ ] Project filtering
 [ ] Implement proper completion

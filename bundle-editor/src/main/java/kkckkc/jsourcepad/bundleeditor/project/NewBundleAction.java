@@ -4,6 +4,7 @@ import kkckkc.jsourcepad.action.ActionContextKeys;
 import kkckkc.jsourcepad.action.ActionStateRules;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
+import kkckkc.jsourcepad.util.Config;
 import kkckkc.jsourcepad.util.action.ActionContext;
 import kkckkc.jsourcepad.util.action.ActionStateRule;
 import kkckkc.jsourcepad.util.action.BaseAction;
@@ -20,7 +21,7 @@ public class NewBundleAction extends BaseAction {
             @Override
             public boolean shouldBeEnabled(ActionContext actionContext) {
                 Object[] tp = actionContext.get(ActionContextKeys.SELECTION);
-                return ((File) tp[0]).equals(Application.get().getBundleManager().getBundleDir());
+                return ((File) tp[0]).equals(Config.getBundlesFolder());
             }
         });
     }

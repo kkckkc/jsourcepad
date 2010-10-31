@@ -13,6 +13,7 @@ import java.util.Map;
 public interface BundleManager extends LanguageManager.Provider {
     // Bundles
 	public List<Bundle> getBundles();
+    public Bundle getBundleByDirName(String name);
     public Bundle getBundle(String name);
     public Bundle getBundle(File dir);
 
@@ -31,6 +32,4 @@ public interface BundleManager extends LanguageManager.Provider {
 	public Collection<BundleItemSupplier> getItemsForShortcut(KeyEvent ks, Scope scope);
 	public Collection<BundleItemSupplier> getItemsForTabTrigger(String trigger, Scope scope);
 
-    // Properties
-    public File getBundleDir();
 }

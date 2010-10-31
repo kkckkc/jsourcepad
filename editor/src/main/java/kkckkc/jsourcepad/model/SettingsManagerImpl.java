@@ -1,27 +1,22 @@
 package kkckkc.jsourcepad.model;
 
-import java.beans.XMLDecoder;
-import java.beans.XMLEncoder;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.util.Map;
-
-import kkckkc.jsourcepad.util.ApplicationFolder;
+import com.google.common.collect.Maps;
+import kkckkc.jsourcepad.util.Config;
 import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
 import kkckkc.jsourcepad.util.messagebus.MessageBus;
 
-import com.google.common.collect.Maps;
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
+import java.io.*;
+import java.lang.reflect.Method;
+import java.util.Map;
 
 public class SettingsManagerImpl implements SettingsManager {
 	private File settingsDir;
 	private Map<Class<?>, Setting> cache;
 	
 	public SettingsManagerImpl() {
-		settingsDir = ApplicationFolder.get();
+		settingsDir = Config.getSettingsFolder();
 		settingsDir.mkdirs();
 		settingsDir.mkdir();
 		

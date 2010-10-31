@@ -7,7 +7,6 @@
 	<bean id="application" class="kkckkc.jsourcepad.model.Application" />
 
 	<bean id="bundleManager" class="kkckkc.jsourcepad.model.bundle.BundleManagerImpl">
-		<constructor-arg value="~/.jsourcepad/Shared/Bundles" />
 		<constructor-arg ref="languageManager" />
 	</bean>
 	

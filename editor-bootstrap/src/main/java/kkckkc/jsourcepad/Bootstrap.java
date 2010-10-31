@@ -1,5 +1,6 @@
 package kkckkc.jsourcepad;
 
+import com.google.common.base.Function;
 import com.sun.net.httpserver.HttpServer;
 import kkckkc.jsourcepad.http.PreviewServer;
 import kkckkc.jsourcepad.model.Application;
@@ -113,15 +114,13 @@ public class Bootstrap implements Runnable {
 	public void run() {
         final CountDownLatch cdl = new CountDownLatch(2);
 
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-                Application.get();
-                Application.get().getBeanFactory().getBean("applicationController");
-
-				// Create new window
-				try {
+        final Runnable initializeApplicationContinuation = new Runnable() {
+            @Override
+            public void run() {
+                // Create new window
+                try {
                     if (args == null || args.length == 0) {
-	                    Window w = Application.get().getWindowManager().newWindow(null);
+                        Window w = Application.get().getWindowManager().newWindow(null);
                         w.getDocList().create();
                     } else {
                         for (String s : args) {
@@ -138,26 +137,43 @@ public class Bootstrap implements Runnable {
                             }
                         }
                     }
-                    
-	                if (System.getProperty("startupScript") != null) {
-		                try {
-		                    Application.get().getWindowManager().getWindows().iterator().next().getScriptEngine().
+
+                    if (System.getProperty("startupScript") != null) {
+                        try {
+                            Application.get().getWindowManager().getWindows().iterator().next().getScriptEngine().
                                     eval(new FileReader(System.getProperty("startupScript")));
-	                    } catch (ScriptException e1) {
-		                    e1.printStackTrace();
-	                    }
-	                }
+                        } catch (ScriptException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
                 } catch (IOException e) {
-	                throw new RuntimeException(e);
+                    throw new RuntimeException(e);
                 }
 
                 final BundleManager bundleManager = Application.get().getBundleManager();
-                
-        		KeyboardFocusManager focusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
-        		focusManager.addKeyEventDispatcher(new GlobalKeyEventDispatcher(bundleManager));
+
+                KeyboardFocusManager focusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+                focusManager.addKeyEventDispatcher(new GlobalKeyEventDispatcher(bundleManager));
 
                 HttpServer server = Application.get().getHttpServer();
                 PreviewServer ps = Application.get().getBeanFactory().getBean(PreviewServer.class);
+            }
+        };
+
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+                Application.get();
+                Application.get().getBeanFactory().getBean("applicationController");
+
+                if (isFirstStart()) {
+                    Function<Runnable, Boolean> installer =
+                            (Function<Runnable, Boolean>) Application.get().getBeanFactory().getBean("installer");
+                    if (! installer.apply(initializeApplicationContinuation)) {
+                        System.exit(1);
+                    }
+                } else {
+                    initializeApplicationContinuation.run();
+                }
 
                 PerformanceLogger.get().exit();
                 cdl.countDown();
@@ -174,5 +190,9 @@ public class Bootstrap implements Runnable {
             }
             System.exit(0);
         }
+    }
+
+    public boolean isFirstStart() {
+        return ! Config.getBundlesFolder().exists();
     }
 }

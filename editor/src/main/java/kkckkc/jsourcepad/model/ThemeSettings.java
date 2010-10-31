@@ -1,6 +1,6 @@
 package kkckkc.jsourcepad.model;
 
-import kkckkc.utils.EnvironmentUtils;
+import kkckkc.utils.Os;
 
 public class ThemeSettings implements SettingsManager.Setting {
 
@@ -17,9 +17,9 @@ public class ThemeSettings implements SettingsManager.Setting {
     @Override
     public SettingsManager.Setting getDefault() {
         ThemeSettings ts = new ThemeSettings();
-        if (EnvironmentUtils.isMac()) {
+        if (Os.isMac()) {
             ts.setThemeId("theme-osx");
-        } else if (EnvironmentUtils.isLinux()) {
+        } else if (Os.isLinux()) {
             ts.setThemeId("theme-gtk");
         } else {
             ts.setThemeId("theme-substance");

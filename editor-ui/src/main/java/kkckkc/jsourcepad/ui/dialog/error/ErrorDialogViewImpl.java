@@ -20,7 +20,7 @@ public class ErrorDialogViewImpl extends BaseJDialog implements ErrorDialogView 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
         Container p = getContentPane();
-        p.setLayout(new MigLayout("insets dialog", "[grow,25sp]", "[]r[grow,10cm]u[]"));
+        p.setLayout(new MigLayout("insets dialog", "[grow,16cm]", "[]r[grow,10cm]u[]"));
 
         titleLabel = new JLabel();
 
@@ -36,7 +36,7 @@ public class ErrorDialogViewImpl extends BaseJDialog implements ErrorDialogView 
         });
 
         p.add(titleLabel, "wrap,growx");
-        p.add(new JScrollPane(details), "wrap,grow");
+        p.add(new JScrollPane(details, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS), "wrap,grow");
         p.add(okButton, "tag cancel");
 
         pack();
@@ -60,7 +60,7 @@ public class ErrorDialogViewImpl extends BaseJDialog implements ErrorDialogView 
 
     @Override
     public void setTitle(String title) {
-        titleLabel.setText(title);
+        titleLabel.setText(title.length() > 40 ? title.substring(0, 39) + "..." : title);
         super.setTitle(title);
     }
 

@@ -7,7 +7,7 @@ import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.util.action.ActionGroup;
 import kkckkc.jsourcepad.util.action.MenuFactory;
 import kkckkc.jsourcepad.util.ui.PopupUtils;
-import kkckkc.utils.EnvironmentUtils;
+import kkckkc.utils.Os;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
@@ -280,7 +280,7 @@ public class ProjectViewImpl extends JTree implements ProjectView, MouseListener
 	public static class FileTreeCellRenderer extends DefaultTreeCellRenderer {
 
 		public FileTreeCellRenderer() {
-			if (EnvironmentUtils.isMac()) {
+			if (Os.isMac()) {
 				setBackgroundNonSelectionColor(null); 
 				setBackgroundSelectionColor(null);
 				setBorderSelectionColor(null);
@@ -311,17 +311,17 @@ public class ProjectViewImpl extends JTree implements ProjectView, MouseListener
 	    
 		private Icon getNodeIcon(File file) {
 		    if (file.isDirectory()) {
-				if (EnvironmentUtils.isMac()) {
+				if (Os.isMac()) {
 					return UIManager.getDefaults().getIcon("FileChooser.newFolderIcon");
-                } else if (EnvironmentUtils.isWindows()) {
+                } else if (Os.isWindows()) {
                     return UIManager.getDefaults().getIcon("FileChooser.newFolderIcon");
 				} else {
 					return new ImageIcon("/usr/share/icons/Human/16x16/places/folder.png");
 				}
 			} else {
-				if (EnvironmentUtils.isMac()) {
+				if (Os.isMac()) {
 					return UIManager.getDefaults().getIcon("FileView.fileIcon");
-                } else if (EnvironmentUtils.isWindows()) {
+                } else if (Os.isWindows()) {
                     return UIManager.getDefaults().getIcon("FileView.fileIcon");
 				} else {
 					return new ImageIcon("/usr/share/icons/gnome/16x16/mimetypes/text-x-generic.png");

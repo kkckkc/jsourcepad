@@ -23,6 +23,7 @@
         <module>editor-ui</module>
         <module>theme-substance</module>
         <module>bundle-editor</module>
+        <module>editor-installer</module>
     </modules>
 
 	<build>

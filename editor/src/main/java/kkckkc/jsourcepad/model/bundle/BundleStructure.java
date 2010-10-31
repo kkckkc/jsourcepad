@@ -2,7 +2,7 @@ package kkckkc.jsourcepad.model.bundle;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Maps;
-import kkckkc.jsourcepad.model.Application;
+import kkckkc.jsourcepad.util.Config;
 
 import java.io.File;
 import java.util.Map;
@@ -54,7 +54,7 @@ public class BundleStructure {
 
 
     public static boolean isBundleDir(File f) {
-        return f != null && f.equals(Application.get().getBundleManager().getBundleDir());
+        return f != null && f.equals(Config.getBundlesFolder());
     }
 
     public static boolean isOfType(Type type, File file) {

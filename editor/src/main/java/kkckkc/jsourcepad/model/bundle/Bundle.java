@@ -26,6 +26,10 @@ public class Bundle {
         this.dir = dir;
     }
 
+    public String getBundleDirName() {
+        return this.dir.getName();
+    }
+
     public void setName(String name) {
         this.name = name;
     }

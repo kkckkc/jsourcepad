@@ -1,6 +1,6 @@
 package kkckkc.jsourcepad.model;
 
-import kkckkc.jsourcepad.util.ApplicationFolder;
+import kkckkc.jsourcepad.util.Config;
 import kkckkc.utils.PerformanceLogger;
 
 import java.io.*;
@@ -11,7 +11,7 @@ public class PersistenceManagerImpl implements PersistenceManager {
     private File settingsDir;
 
     public PersistenceManagerImpl() {
-        settingsDir = ApplicationFolder.get();
+        settingsDir = Config.getCacheFolder();
         settingsDir.mkdirs();
         settingsDir.mkdir();
     }

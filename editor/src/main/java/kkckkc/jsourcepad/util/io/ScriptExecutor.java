@@ -7,7 +7,7 @@ import com.google.common.collect.Lists;
 import com.google.common.io.CharStreams;
 import com.google.common.io.Files;
 import kkckkc.jsourcepad.util.Cygwin;
-import kkckkc.utils.EnvironmentUtils;
+import kkckkc.utils.Os;
 import kkckkc.utils.io.FileUtils;
 
 import java.io.*;
@@ -115,11 +115,11 @@ public class ScriptExecutor {
         String path = execution.tempScriptFile.getPath();
 
         List<String> argList = Lists.newArrayList();
-        if (EnvironmentUtils.isWindows()) {
+        if (Os.isWindows()) {
             argList.addAll(Arrays.asList("c:/cygwin/bin/bash.exe", "--login", "-c"));
             path = Cygwin.makePath(path);
         } else {
-            argList.addAll(Arrays.asList("bash", "-c"));
+            argList.addAll(Arrays.asList("bash", "--login", "-c"));
         }
 
         String firstLine = Iterables.get(Splitter.on("\n").split(script), 0);

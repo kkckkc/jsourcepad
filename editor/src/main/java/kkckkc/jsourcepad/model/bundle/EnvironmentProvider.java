@@ -11,7 +11,7 @@ import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.util.Cygwin;
 import kkckkc.jsourcepad.util.action.ActionManager;
 import kkckkc.syntaxpane.model.Interval;
-import kkckkc.utils.EnvironmentUtils;
+import kkckkc.utils.Os;
 
 import java.io.File;
 import java.util.Collections;
@@ -107,7 +107,7 @@ public class EnvironmentProvider {
         }
 
 		// Build path
-        if (EnvironmentUtils.isWindows()) {
+        if (Os.isWindows()) {
             environment.put("PATH", Joiner.on(File.pathSeparator).join(Collections2.transform(paths, FILE_TO_STRING)));
         } else {
             environment.put("PATH",
@@ -119,7 +119,7 @@ public class EnvironmentProvider {
     }
 
     private static String formatPath(String s) {
-        if (EnvironmentUtils.isWindows()) {
+        if (Os.isWindows()) {
             return Cygwin.makePath(s);
         }
         return s;

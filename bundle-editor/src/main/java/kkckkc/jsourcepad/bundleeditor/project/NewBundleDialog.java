@@ -6,6 +6,7 @@ import com.google.common.collect.Maps;
 import com.google.common.io.Files;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
+import kkckkc.jsourcepad.util.Config;
 import kkckkc.utils.plist.XMLPListWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -62,7 +63,7 @@ public class NewBundleDialog implements ActionListener, KeyListener {
     }
 
     private void perform() {
-        File file = new File(Application.get().getBundleManager().getBundleDir(), view.getNameField().getText() + ".tmBundle");
+        File file = new File(Config.getBundlesFolder(), view.getNameField().getText() + ".tmBundle");
         file.mkdir();
 
         File manifestFile = new File(file, "info.plist");

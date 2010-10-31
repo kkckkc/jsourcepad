@@ -6,8 +6,8 @@ import kkckkc.jsourcepad.ScopeRoot;
 import kkckkc.jsourcepad.model.bundle.BundleManager;
 import kkckkc.jsourcepad.theme.DefaultTheme;
 import kkckkc.jsourcepad.theme.Theme;
-import kkckkc.jsourcepad.util.ApplicationFolder;
 import kkckkc.jsourcepad.util.BeanFactoryLoader;
+import kkckkc.jsourcepad.util.Config;
 import kkckkc.jsourcepad.util.io.ErrorDialog;
 import kkckkc.jsourcepad.util.messagebus.AbstractMessageBus;
 import kkckkc.jsourcepad.util.messagebus.MessageBus;
@@ -100,7 +100,7 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
 	public StyleScheme getStyleScheme(StyleSettings styleSettings) {
 		StyleParser styleParser = beanFactory.getBean(StyleParser.class);
 
-        String location = ApplicationFolder.get("Shared/Themes/" + styleSettings.getThemeLocation()).toString();
+        String location = new File(Config.getThemesFolder(), styleSettings.getThemeLocation()).toString();
 
 		File source = new File(location);
 		if (cachedStyleScheme != null && cachedStyleScheme.getSource().equals(source)) 
@@ -112,7 +112,7 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
 	}
 
     public String[] getStyleSchemes() {
-        return ApplicationFolder.get("Shared/Themes/").list(new FilenameFilter() {
+        return Config.getThemesFolder().list(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
                 return name.endsWith(".tmTheme");

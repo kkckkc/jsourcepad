@@ -6,7 +6,7 @@ import kkckkc.syntaxpane.model.Scope;
 import kkckkc.syntaxpane.model.SourceDocument;
 import kkckkc.syntaxpane.style.ScopeSelectorManager;
 import kkckkc.syntaxpane.style.TextStyle;
-import kkckkc.utils.EnvironmentUtils;
+import kkckkc.utils.Os;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.text.*;
@@ -41,7 +41,7 @@ public class SourceView extends FoldablePlainView {
 	protected int drawUnselectedText(Graphics graphics, int x, int y, int p0,
 			int p1) throws BadLocationException {
 		Graphics2D graphics2d = (Graphics2D) graphics;
-        if (EnvironmentUtils.isMac() || EnvironmentUtils.isLinux()) {
+        if (Os.isMac() || Os.isLinux()) {
 		    graphics2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
 			    	RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
 		    graphics2d.setRenderingHint(RenderingHints.KEY_TEXT_LCD_CONTRAST, 200);
