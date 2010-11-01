@@ -157,6 +157,11 @@
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
+            <groupId>kkckkc.jsourcepad</groupId>
+            <artifactId>os-windows</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>be.cyberelf.nanoxml</groupId>
             <artifactId>lite</artifactId>
             <version>2.2.3</version>

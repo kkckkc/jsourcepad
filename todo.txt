@@ -6,10 +6,11 @@
 
 [x] Someway to install themes, bundles etc. Check at first start.
 [ ] OS specific plugins
-[ ] Cygwin settings
+[x] Cygwin settings
 [ ] Tab completion when line ends with whitespace
 [ ] Open with on Windows
 [ ] launch4j
+[ ] Cygwin testing
 
 [ ] Install bundles don't reload bundles
 [ ] What happends when adding items to a bundle menu that was previously empty

@@ -6,6 +6,9 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.io.CharStreams;
 import com.google.common.io.Files;
+import kkckkc.jsourcepad.model.Application;
+import kkckkc.jsourcepad.model.ExecutionSettings;
+import kkckkc.jsourcepad.model.SettingsManager;
 import kkckkc.jsourcepad.util.Cygwin;
 import kkckkc.utils.Os;
 import kkckkc.utils.io.FileUtils;
@@ -115,11 +118,12 @@ public class ScriptExecutor {
         String path = execution.tempScriptFile.getPath();
 
         List<String> argList = Lists.newArrayList();
+
+        SettingsManager settingsManager = Application.get().getSettingsManager();
+        argList = Arrays.asList(settingsManager.get(ExecutionSettings.class).getArgs());
+
         if (Os.isWindows()) {
-            argList.addAll(Arrays.asList("c:/cygwin/bin/bash.exe", "--login", "-c"));
             path = Cygwin.makePath(path);
-        } else {
-            argList.addAll(Arrays.asList("bash", "--login", "-c"));
         }
 
         String firstLine = Iterables.get(Splitter.on("\n").split(script), 0);

@@ -24,6 +24,7 @@
         <module>theme-substance</module>
         <module>bundle-editor</module>
         <module>editor-installer</module>
+        <module>os-windows</module>
     </modules>
 
 	<build>
