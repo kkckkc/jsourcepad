@@ -8,9 +8,11 @@
 [ ] OS specific plugins
 [x] Cygwin settings
 [x] Tab completion when line ends with whitespace
+[x] launch4j
 [ ] Open with on Windows
-[ ] launch4j
 [ ] Cygwin testing
+( ) Install Bundles doesnt look right on substance
+
 
 [ ] Install bundles don't reload bundles
 [ ] What happends when adding items to a bundle menu that was previously empty

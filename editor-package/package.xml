@@ -90,6 +90,8 @@
         </pathconvert>
 
 
+
+
         <copy todir="target/package/zip-app">
              <fileset dir="zip/contents" />
              <filterset>
@@ -101,6 +103,12 @@
         <copy todir="target/package/zip-app/lib">
             <fileset dir="target/package/lib" />
         </copy>
+
+        <property name="launch4j.dir" location="/Users/magnus/Desktop/launch4j" />
+        <taskdef name="launch4j"
+            classname="net.sf.launch4j.ant.Launch4jTask"
+            classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar" />
+        <launch4j configFile="zip/launch4j.xml" outfile="target/package/zip-app/jsourcepad.exe" />
 
         <zip file="target/package/jsourcepad.zip">
             <zipfileset dir="target/package/zip-app" prefix="jsourcepad" />

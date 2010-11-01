@@ -1,0 +1,14 @@
+<launch4jConfig>
+    <headerType>gui</headerType>
+    <dontWrapJar>true</dontWrapJar>
+    <icon>icon.ico</icon>
+    <classPath>
+        <mainClass>kkckkc.jsourcepad.Bootstrap</mainClass>
+        <cp>lib/*.jar</cp>
+    </classPath>
+    <jre>
+        <minVersion>1.6.0</minVersion>
+        <opt>-Dlaunch4j.exedir="%EXEDIR%"</opt>
+        <opt>-Dlaunch4j.exefile="%EXEFILE%"</opt>
+    </jre>
+</launch4jConfig>

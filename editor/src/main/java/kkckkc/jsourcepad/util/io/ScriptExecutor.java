@@ -14,10 +14,7 @@ import kkckkc.utils.Os;
 import kkckkc.utils.io.FileUtils;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.*;
 
 public class ScriptExecutor {
@@ -120,7 +117,7 @@ public class ScriptExecutor {
         List<String> argList = Lists.newArrayList();
 
         SettingsManager settingsManager = Application.get().getSettingsManager();
-        argList = Arrays.asList(settingsManager.get(ExecutionSettings.class).getArgs());
+        argList = new ArrayList(Arrays.asList(settingsManager.get(ExecutionSettings.class).getArgs()));
 
         if (Os.isWindows()) {
             path = Cygwin.makePath(path);
