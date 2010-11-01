@@ -1,93 +1,102 @@
 package kkckkc.utils.plist;
 
-import kkckkc.utils.DomUtil;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import nanoxml.XMLElement;
 
-import javax.xml.transform.*;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import java.io.StringWriter;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class XMLPListWriter {
-    private Document document;
+    private XMLElement root;
 
     public XMLPListWriter() {
-        this.document = DomUtil.newDocument();
     }
 
     public void setPropertyList(Object o) {
-        Element e = document.createElement("plist");
-        e.setAttribute("version", "1.0");
-        document.appendChild(e);
-        write(e, o);
+        this.root = new XMLElement();
+        this.root.setName("plist");
+        this.root.setAttribute("version", "1.0");
+
+        write(this.root, o);
     }
 
-    private void write(Element parent, Object o) {
+    private void write(XMLElement parent, Object o) {
         if (o instanceof Map) {
             write(parent, (Map) o);
         } else if (o instanceof List) {
             write(parent, (List) o);
         } else if (o instanceof String) {
             write(parent, (String) o);
+        } else if (o instanceof Boolean) {
+            write(parent, (Boolean) o);
+        } else if (o instanceof Integer) {
+            write(parent, (Integer) o);
         } else {
             throw new RuntimeException("Unsupported type " + o.getClass());
         }
     }
 
-    private void write(Element parent, Map o) {
-        Element dict = document.createElement("dict");
-        parent.appendChild(dict);
+    private void write(XMLElement parent, Map o) {
+        XMLElement dict = new XMLElement();
+        dict.setName("dict");
+        parent.addChild(dict);
 
         for (Map.Entry entry : (Set<Map.Entry>) o.entrySet()) {
-            Element key = document.createElement("key");
-            key.setTextContent((String) entry.getKey());
-            dict.appendChild(key);
+            XMLElement key = new XMLElement();
+            key.setName("key");
+            key.setContent((String) entry.getKey());
+            dict.addChild(key);
 
             write(dict, entry.getValue());
         }
     }
 
-    private void write(Element parent, List o) {
-        Element array = document.createElement("array");
-        parent.appendChild(array);
+    private void write(XMLElement parent, List o) {
+        XMLElement array = new XMLElement();
+        array.setName("array");
+        parent.addChild(array);
         for (Object obj : o) {
             write(array, obj);
         }
     }
 
-    private void write(Element parent, String s) {
-        Element string = document.createElement("string");
-        string.setTextContent(s);
-        parent.appendChild(string);
+    private void write(XMLElement parent, String s) {
+        XMLElement string = new XMLElement();
+        string.setName("string");
+        string.setContent(s);
+        parent.addChild(string);
     }
 
-    public Document getDocument() {
-        return document;
+    private void write(XMLElement parent, Integer s) {
+        XMLElement string = new XMLElement();
+        string.setName("integer");
+        string.setContent(s.toString());
+        parent.addChild(string);
+    }
+
+    private void write(XMLElement parent, Boolean s) {
+        if (s) {
+            XMLElement string = new XMLElement();
+            string.setName("true");
+            parent.addChild(string);
+        } else {
+            XMLElement string = new XMLElement();
+            string.setName("false");
+            parent.addChild(string);
+        }
     }
 
     public String getString() {
-        try {
-            // Create a transformer
-            Transformer xformer = TransformerFactory.newInstance().newTransformer();
+        return
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n" +
+                this.root.toString().replaceAll("VERSION=\"1\\.0\"", "version=\"1.0\"");
+    }
 
-            // Set the public and system id
-            xformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, "-//Apple//DTD PLIST 1.0//EN");
-            xformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, "http://www.apple.com/DTDs/PropertyList-1.0.dtd");
+    public static void main(String... args) {
+        Map m = new HashMap();
+        m.put("test", Arrays.asList("Lorem", "Ipsum", Boolean.TRUE, new Integer(5)));
 
-            StringWriter dest = new StringWriter();
-
-            // Write the DOM document to a file
-            Source source = new DOMSource(document);
-            Result result = new StreamResult(dest);
-            xformer.transform(source, result);
-
-            return dest.toString();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        XMLPListWriter xmlpListWriter = new XMLPListWriter();
+        xmlpListWriter.setPropertyList(m);
+        System.out.println(xmlpListWriter.getString());
     }
 }

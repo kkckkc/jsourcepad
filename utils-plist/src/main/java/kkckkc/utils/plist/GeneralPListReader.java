@@ -10,8 +10,6 @@ public class GeneralPListReader implements PListReader {
 	public Object read(File file) throws IOException {
 		byte[] dest = readBytes(file);
 
-        System.out.println("file = " + file);
-
 		if (dest[0] == (byte) 'b' && dest[1] == (byte) 'p') {
 			return new NIOBinaryPListReader().read(dest);
 		} else if (dest[0] == (byte) '<' && dest[1] == (byte) '?') {
