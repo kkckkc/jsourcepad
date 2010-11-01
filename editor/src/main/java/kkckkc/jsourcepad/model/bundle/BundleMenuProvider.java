@@ -84,6 +84,8 @@ public class BundleMenuProvider {
 
 	private static void buildMenu(ActionGroup ag, List<Bundle> list) {
 	    for (Bundle b : list) {
+            if (b.getMenu().isEmpty()) continue;
+            
             ActionGroup bm = new ActionGroup(b.getName());
             actionGroups.put(b.getName(), bm);
             ag.add(bm);

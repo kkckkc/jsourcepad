@@ -221,21 +221,25 @@ public class ManifestBundleDocPresenter extends BasicBundleDocPresenter {
     }
 
     private void buildMenu(DefaultMutableTreeNode parent, Map map, Map<String, BundleItemSupplier> itemsByUuid) {
+        if (map == null) map = Maps.newHashMap();
+        
         Map<String, Map> submenus = (Map<String, Map>) map.get("submenus");
         if (submenus == null) submenus = Maps.newHashMap();
 
         List<String> items = (List<String>) map.get("items");
-        for (String s : items) {
-            if (submenus.containsKey(s)) {
-                Map sm = submenus.get(s);
-                DefaultMutableTreeNode newParent = new DefaultMutableTreeNode(new TreeEntry(s, (String) sm.get("name"), true), true);
-                parent.add(newParent);
-                buildMenu(newParent, sm, itemsByUuid);
-            } else if (s.startsWith("----")) {
-                parent.add(new DefaultMutableTreeNode(new TreeEntry(s, s, false), false));
-            } else {
-                String name = itemsByUuid.get(s).getName();
-                parent.add(new DefaultMutableTreeNode(new TreeEntry(s, name, false), false));
+        if (items != null) {
+            for (String s : items) {
+                if (submenus.containsKey(s)) {
+                    Map sm = submenus.get(s);
+                    DefaultMutableTreeNode newParent = new DefaultMutableTreeNode(new TreeEntry(s, (String) sm.get("name"), true), true);
+                    parent.add(newParent);
+                    buildMenu(newParent, sm, itemsByUuid);
+                } else if (s.startsWith("----")) {
+                    parent.add(new DefaultMutableTreeNode(new TreeEntry(s, s, false), false));
+                } else {
+                    String name = itemsByUuid.get(s).getName();
+                    parent.add(new DefaultMutableTreeNode(new TreeEntry(s, name, false), false));
+                }
             }
         }
     }

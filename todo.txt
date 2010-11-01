@@ -4,12 +4,17 @@
 [x] perl highlighting problem
 [x] windows and linux packaging
 
-[ ] Someway to install themes, bundles etc. Check at first start.
+[x] Someway to install themes, bundles etc. Check at first start.
 [ ] OS specific plugins
 [ ] Cygwin settings
 [ ] Tab completion when line ends with whitespace
 [ ] Open with on Windows
 [ ] launch4j
+
+[ ] Install bundles don't reload bundles
+[ ] What happends when adding items to a bundle menu that was previously empty
+[ ] Plugin adding removing from menus in a better way
+[ ] Move bundle installation stuff to bundle editor
 
 [ ] Don't print performance log issues in packaged app
 [ ] Logging for packaged app
