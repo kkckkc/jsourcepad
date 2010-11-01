@@ -21,6 +21,7 @@ public class InstallerMenu {
             @Override
             public void actionPerformed(ActionEvent e) {
                 BundleInstallerDialog dialog = window.getPresenter(BundleInstallerDialog.class);
+                
                 dialog.show();;
             }
         };

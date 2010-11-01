@@ -11,7 +11,7 @@
 [x] launch4j
 [ ] Open with on Windows
 [ ] Cygwin testing
-( ) Install Bundles doesnt look right on substance
+[x] Install Bundles doesnt look right on substance
 
 
 [ ] Install bundles don't reload bundles
