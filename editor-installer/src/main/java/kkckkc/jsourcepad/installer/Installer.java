@@ -32,6 +32,8 @@ public class Installer implements Function<Runnable, Boolean> {
                 throw new RuntimeException(ioe);
             }
 
+            Config.getBundlesFolder().mkdirs();
+
             // Do you want to install more bundles
             int option = JOptionPane.showOptionDialog(null,
                     "You have no bundles installed. Do you want to run the bundle installer now?\n" +
@@ -45,61 +47,6 @@ public class Installer implements Function<Runnable, Boolean> {
             if (option == 0) {
                 bundleInstallerDialog.show();
             }
-
-            // Verify git
-            /*
-            class StatusCallback extends ScriptExecutor.CallbackAdapter {
-                boolean successful = false;
-
-                @Override
-                public void onFailure(ScriptExecutor.Execution execution) {
-                    successful = false;
-                }
-
-                @Override
-                public void onSuccess(ScriptExecutor.Execution execution) {
-                    successful = true;
-                }
-
-                public boolean isSuccessful() {
-                    return successful;
-                }
-            };
-
-            StatusCallback statusCallback = new StatusCallback();
-
-            ScriptExecutor se = new ScriptExecutor("gitc --version", Application.get().getThreadPool());
-            ScriptExecutor.Execution execution = se.execute(statusCallback, new StringReader(""), System.getenv());
-            execution.waitForCompletion();
-
-            if (! statusCallback.isSuccessful()) {
-                System.out.println("FAILURE");
-
-                System.out.println(execution.getStderr());
-
-                return false;
-                // TODO: Notify user
-            }
-            */
-
-/*
-            // Show available bundles
-            URL url = new URL("http://github.com/api/v2/xml/repos/show/textmate");
-            final URLConnection conn = url.openConnection();
-            conn.connect();
-
-            String s = CharStreams.toString(CharStreams.newReaderSupplier(new InputSupplier<InputStream>() {
-
-                @Override
-                public InputStream getInput() throws IOException {
-                    return conn.getInputStream();
-                }
-            }, Charsets.UTF_8));
-
-            System.out.println(s);
-*/
-            // Install bundles
-
 
             continuation.run();
 

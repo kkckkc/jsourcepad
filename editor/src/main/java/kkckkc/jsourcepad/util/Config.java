@@ -38,7 +38,7 @@ public class Config {
 
     public static File getBundlesFolder() {
         if (useCorrectMacLocations && Os.isMac()) {
-            return new File(System.getProperty("user.home"), "Library/Application Support/JSourcePad/Bundles");
+            return new File(System.getProperty("user.home"), "test");// "Library/Application Support/JSourcePad/Bundles");
         } else {
             return new File(new File(System.getProperty("user.home"), ".jsourcepad"), "Shared/Bundles");
         }

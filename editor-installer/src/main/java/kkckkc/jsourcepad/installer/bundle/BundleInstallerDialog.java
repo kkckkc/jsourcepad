@@ -1,10 +1,14 @@
 package kkckkc.jsourcepad.installer.bundle;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import kkckkc.jsourcepad.Dialog;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.bundle.BundleManager;
+import kkckkc.jsourcepad.util.Config;
+import kkckkc.jsourcepad.util.io.ScriptExecutor;
 import kkckkc.utils.DomUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.Document;
@@ -15,9 +19,11 @@ import javax.annotation.PostConstruct;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.StringReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -31,7 +37,6 @@ public class BundleInstallerDialog implements Dialog<BundleInstallerDialogView> 
             @Override
             public void actionPerformed(ActionEvent e) {
                 install();
-                close();
             }
         });
 
@@ -51,6 +56,14 @@ public class BundleInstallerDialog implements Dialog<BundleInstallerDialogView> 
     public void show() {
         final BundleManager bundleManager = Application.get().getBundleManager();
         bundles = Lists.newArrayList();
+
+        if (! verifyGit()) {
+            JOptionPane.showMessageDialog(null,
+                    "Git is not found. Please make sure git is installed (in cygwin if running on windows).",
+                    "Git is not found",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
         try {
             new SwingWorker<Void, Object>() {
@@ -79,7 +92,7 @@ public class BundleInstallerDialog implements Dialog<BundleInstallerDialogView> 
                         bundles.add(new BundleTableModel.Entry(
                                 bundleManager.getBundleByDirName(name) != null ||
                                     preSelectedBundles.contains(name.substring(0, name.lastIndexOf("."))),
-                                bundleManager.getBundleByDirName(name) != null, name));
+                                bundleManager.getBundleByDirName(name) != null, name, DomUtil.getChildText(e, "url")));
                     }
 
                     return null;
@@ -106,6 +119,26 @@ public class BundleInstallerDialog implements Dialog<BundleInstallerDialogView> 
         view.getJDialog().show();
     }
 
+    private boolean verifyGit() {
+        try {
+
+
+            StatusCallback statusCallback = new StatusCallback();
+
+            ScriptExecutor se = new ScriptExecutor("git --version", Application.get().getThreadPool());
+            ScriptExecutor.Execution execution = se.execute(statusCallback, new StringReader(""), System.getenv());
+            execution.waitForCompletion();
+
+            if (! statusCallback.isSuccessful()) {
+                return false;
+            }
+        } catch (Exception ioe) {
+            throw new RuntimeException(ioe);
+        }
+        
+        return true;
+    }
+
     @Override
     public void close() {
         view.getJDialog().dispose();
@@ -119,11 +152,89 @@ public class BundleInstallerDialog implements Dialog<BundleInstallerDialogView> 
 
 
     private void install() {
-        for (BundleTableModel.Entry entry : bundles) {
-            if (entry.isDisabled()) continue;
-            if (entry.isSelected()) {
-                System.out.println("entry.getName() = " + entry.getName());
+        final Collection<BundleTableModel.Entry> entriesToInstall = Collections2.filter(bundles, new Predicate<BundleTableModel.Entry>() {
+            @Override
+            public boolean apply(BundleTableModel.Entry entry) {
+                return ! entry.isDisabled() && entry.isSelected();
             }
-        }
+        });
+
+        final ProgressMonitor progressMonitor = new ProgressMonitor(view.getJDialog(),
+                                      "Installing bundles",
+                                      "", 0, entriesToInstall.size());
+        progressMonitor.setMillisToPopup(100);
+
+        new SwingWorker<Void, BundleTableModel.Entry>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                int i = 0;
+                for (BundleTableModel.Entry entry : entriesToInstall) {
+                    setProgress(i++);
+                    publish(entry);
+
+                    installBundle(entry);
+
+                    if (progressMonitor.isCanceled()) {
+                        return null;
+                    }
+                }
+
+                return null;
+            }
+
+            @Override
+            protected void process(List<BundleTableModel.Entry> chunks) {
+                for (BundleTableModel.Entry s : chunks) {
+                    progressMonitor.setProgress(getProgress());
+                    progressMonitor.setNote(s.getName());
+                }
+            }
+
+            @Override
+            protected void done() {
+                Application.get().getBundleManager().reload();
+
+                progressMonitor.close();
+                close();
+            }
+
+            private void installBundle(BundleTableModel.Entry entry) {
+                try {
+                    // TODO: Show progress
+                    StatusCallback statusCallback = new StatusCallback();
+
+                    ScriptExecutor se = new ScriptExecutor("git clone " + entry.getUrl() + ".git", Application.get().getThreadPool());
+                    se.setDirectory(Config.getBundlesFolder());
+                    ScriptExecutor.Execution execution = se.execute(statusCallback, new StringReader(""), System.getenv());
+                    execution.waitForCompletion();
+                        
+                    if (! statusCallback.isSuccessful()) {
+                        JOptionPane.showMessageDialog(view.getJDialog(), "Cannot install bundle " + entry.getName(),
+                                "Error installing bundle", JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }.execute();
+
     }
+
+    static class StatusCallback extends ScriptExecutor.CallbackAdapter {
+        boolean successful = false;
+
+        @Override
+        public void onFailure(ScriptExecutor.Execution execution) {
+            successful = false;
+        }
+
+        @Override
+        public void onSuccess(ScriptExecutor.Execution execution) {
+            successful = true;
+        }
+
+        public boolean isSuccessful() {
+            return successful;
+        }
+    };
 }

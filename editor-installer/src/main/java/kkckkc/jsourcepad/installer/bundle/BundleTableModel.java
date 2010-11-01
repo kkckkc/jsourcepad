@@ -50,11 +50,17 @@ class BundleTableModel extends AbstractTableModel {
         boolean selected;
         boolean disabled;
         String name;
+        private String url;
 
-        Entry(boolean selected, boolean disabled, String name) {
+        Entry(boolean selected, boolean disabled, String name, String url) {
             this.selected = selected;
             this.disabled = disabled;
             this.name = name;
+            this.url = url;
+        }
+
+        public String getUrl() {
+            return url;
         }
 
         public boolean isSelected() {
