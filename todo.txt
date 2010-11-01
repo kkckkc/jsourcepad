@@ -7,7 +7,7 @@
 [x] Someway to install themes, bundles etc. Check at first start.
 [ ] OS specific plugins
 [x] Cygwin settings
-[ ] Tab completion when line ends with whitespace
+[x] Tab completion when line ends with whitespace
 [ ] Open with on Windows
 [ ] launch4j
 [ ] Cygwin testing
