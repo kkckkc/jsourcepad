@@ -68,9 +68,14 @@ public class Bootstrap implements Runnable {
         ThreadGroup tg = new ThreadGroup("Editor");
 
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-            public void uncaughtException(Thread t, Throwable e) {
-                ErrorDialog errorDialog = Application.get().getErrorDialog();
-                errorDialog.show(e, null);
+            public void uncaughtException(Thread t, final Throwable e) {
+                EventQueue.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        ErrorDialog errorDialog = Application.get().getErrorDialog();
+                        errorDialog.show(e, null);
+                    }
+                });
             }
         });
 
