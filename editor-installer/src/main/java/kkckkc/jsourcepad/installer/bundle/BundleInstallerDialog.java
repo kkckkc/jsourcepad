@@ -168,6 +168,7 @@ public class BundleInstallerDialog implements Dialog<BundleInstallerDialogView> 
             @Override
             protected Void doInBackground() throws Exception {
                 int i = 0;
+
                 for (BundleTableModel.Entry entry : entriesToInstall) {
                     setProgress(i++);
                     publish(entry);
