@@ -19,7 +19,7 @@ public class Config {
 
     public static File getApplicationFolder() {
         if (System.getProperty(APPLICATION_FOLDER) == null) {
-            throw new RuntimeException(APPLICATION_FOLDER + " property is not set");
+            return new File(".");
         }
         return new File(System.getProperty(APPLICATION_FOLDER));
     }
@@ -28,7 +28,7 @@ public class Config {
         if (useCorrectMacLocations && Os.isMac()) {
             return new File(System.getProperty("user.home"), "Library/Application Support/JSourcePad/Themes");
         } else {
-            return new File(new File(System.getProperty("user.home"), ".jsourcepad"), "Shared/Themes");
+            return new File(new File(System.getProperty("user.home"), ".jsourcepad"), "Themes");
         }
     }
 
@@ -38,9 +38,9 @@ public class Config {
 
     public static File getBundlesFolder() {
         if (useCorrectMacLocations && Os.isMac()) {
-            return new File(System.getProperty("user.home"), "test");// "Library/Application Support/JSourcePad/Bundles");
+            return new File(System.getProperty("user.home"), "Library/Application Support/JSourcePad/Bundles");
         } else {
-            return new File(new File(System.getProperty("user.home"), ".jsourcepad"), "Shared/Bundles");
+            return new File(new File(System.getProperty("user.home"), ".jsourcepad"), "Bundles");
         }
     }
 

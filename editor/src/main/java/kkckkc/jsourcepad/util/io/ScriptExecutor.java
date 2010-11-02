@@ -123,13 +123,30 @@ public class ScriptExecutor {
             path = Cygwin.makePath(path);
         }
 
-        String firstLine = Iterables.get(Splitter.on("\n").split(script), 0);
+        List<String> lines = Lists.newArrayList();
+        Iterables.addAll(lines, Splitter.on("\n").split(script));
+        String firstLine = lines.get(0);
+        String cygwinPrefix = "cd " + Cygwin.makePath(directory == null ? new File(".").getCanonicalPath() : directory.getPath()) + "; ";
         if (firstLine.startsWith("#!")) {
             // Remove shebang
             firstLine = firstLine.substring(2);
-            argList.add(firstLine.trim() + " " + path);
+            if (Os.isWindows()) {
+                argList.add(cygwinPrefix + firstLine.trim() + " " + path);
+            } else {
+                argList.add(firstLine.trim() + " " + path);
+            }
+        } else if (lines.size() == 1) {
+            if (Os.isWindows()) {
+                argList.add(cygwinPrefix + firstLine.trim());
+            } else {
+                argList.add(firstLine.trim());
+            }
         } else {
-            argList.add(path);
+            if (Os.isWindows()) {
+                argList.add(cygwinPrefix + path);
+            } else {
+                argList.add(path);
+            }
         }
 
 		ProcessBuilder pb = new ProcessBuilder(argList);

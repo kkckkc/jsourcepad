@@ -25,8 +25,11 @@ public class Installer implements Function<Runnable, Boolean> {
             // Copy themes
             try {
                 Config.getThemesFolder().mkdirs();
-                for (File theme : new File(Config.getApplicationFolder(), "Shared/Themes").listFiles()) {
-                    Files.copy(theme, new File(Config.getThemesFolder(), theme.getName()));
+                File themeFolder = new File(Config.getApplicationFolder(), "Shared/Themes");
+                if (themeFolder != null && themeFolder.listFiles() != null) {
+                    for (File theme : themeFolder.listFiles()) {
+                        Files.copy(theme, new File(Config.getThemesFolder(), theme.getName()));
+                    }
                 }
             } catch (IOException ioe) {
                 throw new RuntimeException(ioe);

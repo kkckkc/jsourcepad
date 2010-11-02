@@ -5,6 +5,7 @@
 [x] windows and linux packaging
 
 [x] Someway to install themes, bundles etc. Check at first start.
+[x] Fix when running cygwin
 [ ] OS specific plugins
 [x] Cygwin settings
 [x] Tab completion when line ends with whitespace
