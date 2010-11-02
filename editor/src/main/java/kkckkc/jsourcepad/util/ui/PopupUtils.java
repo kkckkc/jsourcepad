@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class PopupUtils {
+    // TODO: Look at Component.setComponentPopupMenu instead
     public static void bind(final JPopupMenu jp, final Component component, final boolean allButtons, final PopupListener listener) {
 		component.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
@@ -17,6 +18,7 @@ public class PopupUtils {
 
 			private void maybeShowPopup(MouseEvent e) {
 				if (allButtons || e.isPopupTrigger()) {
+                    e.consume();
                     if (listener != null) {
                         listener.show(e);
                     }

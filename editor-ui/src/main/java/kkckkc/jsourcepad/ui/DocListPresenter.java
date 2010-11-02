@@ -16,9 +16,7 @@ import javax.annotation.PostConstruct;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 public class DocListPresenter implements Presenter<DocListView>, DocList.Listener, Doc.StateListener {
 
@@ -58,21 +56,10 @@ public class DocListPresenter implements Presenter<DocListView>, DocList.Listene
 			}
 		});
 		
-		// Override right click selection
-		final MouseListener m = tabbedPane.getMouseListeners()[0];
-		tabbedPane.removeMouseListener(m);
-		tabbedPane.addMouseListener(new MouseAdapter() {
-			public void mousePressed(MouseEvent e) {
-				if (e.getButton() == MouseEvent.BUTTON1)
-					m.mousePressed(e);
-			}
-		});
-		
-		
 		final ActionGroup actionGroup = actionManager.createActionGroup("tab-context-menu");
-		
+
 		JPopupMenu jpm = new MenuFactory().buildPopup(actionGroup, null);
-		
+
 		PopupUtils.bind(jpm, tabbedPane, false, new PopupUtils.PopupListener() {
             public void show(MouseEvent e) {
                 int tabIndex = tabbedPane.indexAtLocation((int) e.getPoint().getX(), (int) e.getPoint().getY());
