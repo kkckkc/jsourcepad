@@ -61,6 +61,11 @@ public class SubstanceTheme implements Theme {
     }
 
     @Override
+    public boolean isAvailable() {
+        return true;
+    }
+
+    @Override
     public String getId() {
         return "theme-substance";
     }

@@ -5,6 +5,7 @@ import kkckkc.jsourcepad.model.SettingsPanel;
 import kkckkc.jsourcepad.model.ThemeSettings;
 import kkckkc.jsourcepad.theme.Theme;
 import kkckkc.jsourcepad.util.BeanFactoryLoader;
+import kkckkc.utils.Os;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -25,6 +26,11 @@ public class GtkTheme implements Theme {
     @Override
     public SettingsPanel getSettingsPanel() {
         return null;
+    }
+
+    @Override
+    public boolean isAvailable() {
+        return Os.isLinux();
     }
 
     @Override

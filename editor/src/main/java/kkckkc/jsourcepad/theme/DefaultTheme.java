@@ -25,8 +25,13 @@ public class DefaultTheme implements Theme {
     }
 
     @Override
+    public boolean isAvailable() {
+        return true;
+    }
+
+    @Override
     public String getId() {
-        return "theme.default";
+        return "theme-default";
     }
 
     @Override

@@ -14,9 +14,9 @@
 [ ] Cygwin testing
 [x] Substance tab bug
 [ ] Repackaging
-[ ] Disable themes on certain platforms
+[x] Disable themes on certain platforms
 [x] Install Bundles doesnt look right on substance
-
+[ ] Testing on Linux
 
 [ ] Install bundles don't reload bundles
 [ ] What happends when adding items to a bundle menu that was previously empty

@@ -6,6 +6,7 @@ import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.SettingsManager;
 import kkckkc.jsourcepad.model.SettingsPanel;
 import kkckkc.jsourcepad.model.ThemeSettings;
+import kkckkc.jsourcepad.theme.DefaultTheme;
 import kkckkc.jsourcepad.theme.Theme;
 
 import javax.swing.*;
@@ -19,8 +20,10 @@ public class ThemeSettingsPanel implements SettingsPanel {
     public ThemeSettingsPanel() {
         this.view = new ThemeSettingsPanelView();
 
+        view.getThemes().addItem(new DefaultTheme().getId());
         for (Plugin p : PluginManager.getAllPlugins()) {
             if (! (p instanceof Theme)) continue;
+            if (! ((Theme) p).isAvailable()) continue;
 
             view.getThemes().addItem(((Theme) p).getId());
         }
@@ -53,7 +56,7 @@ public class ThemeSettingsPanel implements SettingsPanel {
             }
         }
 
-        return null;
+        return new DefaultTheme();
     }
 
     @Override
