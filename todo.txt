@@ -11,20 +11,19 @@
 [x] Tab completion when line ends with whitespace
 [x] launch4j
 [x] Open with on Windows
-[ ] Cygwin testing
 [x] Substance tab bug
 [x] Repackaging
 [x] Disable themes on certain platforms
 [x] Install Bundles doesnt look right on substance
 [ ] Testing on Linux
 [ ] Test on Mac
-[ ] Default filtering
+[ ] Tab completion on windows
 
+[ ] Cygwin testing
 [ ] Install bundles don't reload bundles
 [ ] What happends when adding items to a bundle menu that was previously empty
 [ ] Plugin adding removing from menus in a better way
 [ ] Move bundle installation stuff to bundle editor
-
 [ ] Don't print performance log issues in packaged app
 [ ] Logging for packaged app
 [ ] Select Bundle Item should filter out unavailable due to scope
