@@ -45,8 +45,6 @@ public class DocPresenter implements Presenter<DocView> {
     public void init() {
 		sourcePane = view.getSourcePane();
 
-        doc.getDocList().getWindow().topic(Buffer.SelectionListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, ACTION_CONTEXT_UPDATER);
-        doc.getDocList().getWindow().topic(Doc.StateListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, ACTION_CONTEXT_UPDATER);
 
  		doc.getActiveBuffer().bind(sourcePane.getEditorPane());
 
@@ -82,6 +80,9 @@ public class DocPresenter implements Presenter<DocView> {
         actionContext.put(ActionContextKeys.FOCUSED_COMPONENT, doc);
         actionContext.commit();
 
+        doc.getDocList().getWindow().topic(Buffer.SelectionListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, ACTION_CONTEXT_UPDATER);
+        doc.getDocList().getWindow().topic(Doc.StateListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, ACTION_CONTEXT_UPDATER);
+        
         ActionContext.set(view.getComponent(), actionContext);
 
     }

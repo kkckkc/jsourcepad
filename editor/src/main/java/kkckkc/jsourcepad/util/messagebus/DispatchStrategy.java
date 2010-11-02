@@ -17,6 +17,15 @@ public interface DispatchStrategy {
     		EventQueue.invokeLater(runnable);
     	}
     };
+    public static final DispatchStrategy EVENT = new DispatchStrategy() {
+        public void execute(Runnable runnable) {
+            if (EventQueue.isDispatchThread()) {
+                runnable.run();
+            } else {
+                EventQueue.invokeLater(runnable);
+            }
+        }
+    };
 	public static final DispatchStrategy ASYNC = new DispatchStrategy() {
     	public void execute(Runnable runnable) {
     		__EXECUTOR.execute(runnable);
@@ -27,5 +36,5 @@ public interface DispatchStrategy {
             0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
 
 
-	public void execute(Runnable runnable);
+    public void execute(Runnable runnable);
 }

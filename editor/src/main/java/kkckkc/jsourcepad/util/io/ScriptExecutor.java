@@ -106,7 +106,7 @@ public class ScriptExecutor {
 	}
 	
 
-	private ProcessBuilder getProcess(Execution execution, Map<String, String> environment) throws IOException {
+	protected ProcessBuilder getProcess(Execution execution, Map<String, String> environment) throws IOException {
 		execution.tempScriptFile = FileUtils.newTempFile("jsourcepad", ".sh");
 		execution.tempScriptFile.setExecutable(true);
         execution.script = script;

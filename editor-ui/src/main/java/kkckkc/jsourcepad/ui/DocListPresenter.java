@@ -46,8 +46,8 @@ public class DocListPresenter implements Presenter<DocListView>, DocList.Listene
 
 	@PostConstruct
     public void init() throws Exception {
-		docList.getWindow().topic(DocList.Listener.class).subscribe(DispatchStrategy.SYNC, this);
-		docList.getWindow().topic(Doc.StateListener.class).subscribe(DispatchStrategy.SYNC, this);
+		docList.getWindow().topic(DocList.Listener.class).subscribe(DispatchStrategy.EVENT, this);
+		docList.getWindow().topic(Doc.StateListener.class).subscribe(DispatchStrategy.EVENT, this);
 		
 		tabbedPane = docListView.getTabbedPane();
 		

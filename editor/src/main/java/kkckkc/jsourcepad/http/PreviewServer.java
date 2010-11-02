@@ -116,9 +116,14 @@ public class PreviewServer {
 
                     exchange.sendResponseHeaders(204, 0);
 
+                    System.out.println("httpPath = " + httpPath);
+                    System.out.println("cmd = " + cmd);
+
                     if ("open".equals(cmd)) {
                         String url = params.get("url");
                         url = StringUtils.removePrefix(url, "http://localhost:" + Config.getHttpPort() + "/files");
+
+                        System.out.println("url = " + url);
 
                         Window window = null;
                         if (params.containsKey("windowId")) {

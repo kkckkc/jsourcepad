@@ -2,6 +2,7 @@ package kkckkc.jsourcepad.os.windows;
 
 import kkckkc.jsourcepad.Plugin;
 import kkckkc.jsourcepad.util.BeanFactoryLoader;
+import kkckkc.utils.Os;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -19,7 +20,7 @@ public class WindowsPlugin implements Plugin {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return Os.isWindows();
     }
 
     @Override

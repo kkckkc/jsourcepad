@@ -4,5 +4,6 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
 	default-autowire="constructor">
 	<bean class="kkckkc.jsourcepad.os.windows.CygwinSettingsPanel" lazy-init="true" />
+	<bean class="kkckkc.jsourcepad.os.windows.FileAssociationsSettingsPanel" lazy-init="true" />
 
 </beans>

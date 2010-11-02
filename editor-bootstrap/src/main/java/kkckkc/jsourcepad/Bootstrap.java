@@ -39,7 +39,7 @@ public class Bootstrap implements Runnable {
     private static void contactApplication(String... args) {
         for (String arg : args) {
             try {
-                URL url = new URL("http://localhost:" + Config.getHttpPort() + "/cmd/open?url=" + arg);
+                URL url = new URL("http://localhost:" + Config.getHttpPort() + "/cmd/open?url=" + arg.replace('\\', '/').replace(" ", "+"));
                 URLConnection conn = url.openConnection();
                 conn.connect();
 

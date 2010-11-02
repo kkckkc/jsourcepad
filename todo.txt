@@ -6,12 +6,14 @@
 
 [x] Someway to install themes, bundles etc. Check at first start.
 [x] Fix when running cygwin
-[ ] OS specific plugins
+[x] OS specific plugins
 [x] Cygwin settings
 [x] Tab completion when line ends with whitespace
 [x] launch4j
-[ ] Open with on Windows
+[x] Open with on Windows
 [ ] Cygwin testing
+[ ] Substance tab bug
+[ ] Repackaging
 [x] Install Bundles doesnt look right on substance
 
 
