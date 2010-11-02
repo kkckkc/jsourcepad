@@ -13,10 +13,12 @@
 [x] Open with on Windows
 [ ] Cygwin testing
 [x] Substance tab bug
-[ ] Repackaging
+[x] Repackaging
 [x] Disable themes on certain platforms
 [x] Install Bundles doesnt look right on substance
 [ ] Testing on Linux
+[ ] Test on Mac
+[ ] Default filtering
 
 [ ] Install bundles don't reload bundles
 [ ] What happends when adding items to a bundle menu that was previously empty

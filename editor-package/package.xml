@@ -23,8 +23,25 @@
             </chainedmapper>
         </copy>
 
+        <available file="target/share" property="share.present"/>
+        <antcall target="checkout-share" />
+
         <antcall target="build-mac-app" />
         <antcall target="build-zip-app" />
+    </target>
+
+    <target name="checkout-share"
+            depends="checkout-share-checkout,checkout-share-update"/>
+
+    <target name="checkout-share-checkout" unless="share.present">
+        <mkdir dir="target/share" />
+        <exec dir="target/share" command="svn checkout http://svn.textmate.org/trunk/Themes" />
+        <exec dir="target/share" command="svn checkout http://svn.textmate.org/trunk/Support" />
+    </target>
+
+    <target name="checkout-share-update" if="share.present">
+        <exec command="svn update target/share/Themes" />
+        <exec command="svn update target/share/Support" />
     </target>
 
     <target name="build-mac-app">
@@ -61,6 +78,13 @@
             <fileset dir="target/package/lib" />
         </copy>
 
+        <copy todir="target/package/mac/JSourcePad.app/Contents/Resources/Shared">
+            <fileset dir="target/share">
+                <exclude name="**/LaTeXUtils.rb" />
+                <exclude name="**/.svn" />
+            </fileset>
+        </copy>
+
         <exec command="/Developer/Tools/SetFile -a B target/package/mac/JSourcePad.app" />
     </target>
 
@@ -89,9 +113,6 @@
             </mapper>
         </pathconvert>
 
-
-
-
         <copy todir="target/package/zip-app">
              <fileset dir="zip/contents" />
              <filterset>
@@ -112,6 +133,10 @@
 
         <zip file="target/package/jsourcepad.zip">
             <zipfileset dir="target/package/zip-app" prefix="jsourcepad" />
+            <zipfileset dir="target/share" prefix="jsourcepad/Shared">
+                <exclude name="**/LaTeXUtils.rb" />
+                <exclude name="**/.svn" />
+            </zipfileset>
         </zip>
     </target>
 
