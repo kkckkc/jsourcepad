@@ -152,7 +152,7 @@ public class ScriptExecutor {
 		ProcessBuilder pb = new ProcessBuilder(argList);
 		pb.environment().putAll(environment);
 
-        if (directory != null) {
+        if (directory != null && ! Os.isWindows()) {
             pb.directory(directory);
         }
 

@@ -17,6 +17,7 @@ import org.xml.sax.InputSource;
 
 import javax.annotation.PostConstruct;
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.StringReader;
@@ -26,6 +27,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 
 public class BundleInstallerDialog implements Dialog<BundleInstallerDialogView> {
     private BundleInstallerDialogView view;
@@ -199,19 +201,27 @@ public class BundleInstallerDialog implements Dialog<BundleInstallerDialogView> 
                 close();
             }
 
-            private void installBundle(BundleTableModel.Entry entry) {
+            private void installBundle(final BundleTableModel.Entry entry) {
                 try {
                     // TODO: Show progress
                     StatusCallback statusCallback = new StatusCallback();
 
-                    ScriptExecutor se = new ScriptExecutor("git clone " + entry.getUrl() + ".git", Application.get().getThreadPool());
+                    ScriptExecutor se = new ScriptExecutor("git clone " + entry.getUrl().replaceAll("https:", "http:") + ".git", Application.get().getThreadPool());
                     se.setDirectory(Config.getBundlesFolder());
-                    ScriptExecutor.Execution execution = se.execute(statusCallback, new StringReader(""), System.getenv());
+                    final ScriptExecutor.Execution execution = se.execute(statusCallback, new StringReader(""), System.getenv());
                     execution.waitForCompletion();
                         
                     if (! statusCallback.isSuccessful()) {
-                        JOptionPane.showMessageDialog(view.getJDialog(), "Cannot install bundle " + entry.getName(),
-                                "Error installing bundle", JOptionPane.ERROR_MESSAGE);
+                        final CountDownLatch cdl = new CountDownLatch(1);
+                        EventQueue.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                JOptionPane.showMessageDialog(view.getJDialog(), "Cannot install bundle " + entry.getName(),
+                                        "Error installing bundle", JOptionPane.ERROR_MESSAGE);
+                                cdl.countDown();
+                            }
+                        });
+                        cdl.await();
                     }
                 } catch (Exception e) {
                     throw new RuntimeException(e);
@@ -221,7 +231,7 @@ public class BundleInstallerDialog implements Dialog<BundleInstallerDialogView> 
 
     }
 
-    static class StatusCallback extends ScriptExecutor.CallbackAdapter {
+    public static class StatusCallback extends ScriptExecutor.CallbackAdapter {
         boolean successful = false;
 
         @Override
