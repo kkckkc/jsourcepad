@@ -77,7 +77,7 @@ public class TextUtils {
         if (currentLine.length() > 0)
             dest.add(currentLine.toString());
 
-        return dest.toArray(new String[] {});
+        return dest.toArray(new String[dest.size()]);
     }
 
 }

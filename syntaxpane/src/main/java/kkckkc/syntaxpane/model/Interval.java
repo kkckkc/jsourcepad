@@ -63,7 +63,9 @@ public class Interval implements Comparable<Interval> {
 	}
 
 	public final int compareTo(Interval o) {
-		return start - o.start;
+        if (start > o.start) return 1;
+        if (start < o.start) return -1;
+        return 0;
 	}
 
 	public final int getLength() {

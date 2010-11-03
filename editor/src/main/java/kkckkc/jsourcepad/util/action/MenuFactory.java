@@ -55,7 +55,7 @@ public class MenuFactory {
 
             jMenu.addMenuListener(new MenuListener() {
                 private void loadIfRequired() {
-                    if (items.size() == 0) {
+                    if (items.isEmpty()) {
                         loadMenu(items, actionGroup, jMenu, itemBuilder, lazy);
                     }
                 }

@@ -157,7 +157,7 @@ public class ActionGroup extends AbstractAction implements List<Action> {
 	    		b.append(indent).append(((ActionGroup) o).getValue(Action.NAME)).append("\n");
 	    		((ActionGroup) o).toPrettyString(b, i + 1);
 	    	} else {
-	    		b.append(indent).append(o.toString() + "\n");
+                b.append(indent).append(o.toString()).append("\n");
 	    	}
 	    }
     }

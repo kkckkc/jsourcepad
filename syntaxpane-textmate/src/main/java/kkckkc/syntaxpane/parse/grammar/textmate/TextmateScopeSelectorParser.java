@@ -43,7 +43,7 @@ public class TextmateScopeSelectorParser {
             }
         }
 
-        return new ScopeSelector.Rule(positiveRule.size() == 0 ? null : positiveRule, negativeRule.size() == 0 ? null : negativeRule);
+        return new ScopeSelector.Rule(positiveRule.isEmpty() ? null : positiveRule, negativeRule.isEmpty() ? null : negativeRule);
     }
 
 }

@@ -41,8 +41,8 @@ public class SettingsManagerImpl implements SettingsManager {
 		if (t == null) {
 			try {
 				t = type.newInstance();
-				Method method = type.getMethod("getDefault", null);
-				t = (T) method.invoke(t, null);
+				Method method = type.getMethod("getDefault");
+				t = (T) method.invoke(t);
 			} catch (Exception e) {
 				System.err.println(e.getMessage());
 			}

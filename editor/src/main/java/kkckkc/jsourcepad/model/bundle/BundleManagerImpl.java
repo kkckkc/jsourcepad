@@ -185,7 +185,7 @@ public class BundleManagerImpl implements BundleManager {
             for (Bundle b : oldBundles) {
                 boolean found = false;
                 for (Bundle nb : this.bundles) {
-                    if (nb.getDir().equals(b)) {
+                    if (nb.getDir().equals(b.getDir())) {
                         found = true;
                     }
                 }

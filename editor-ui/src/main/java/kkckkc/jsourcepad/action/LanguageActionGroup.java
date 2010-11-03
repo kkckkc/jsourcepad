@@ -41,7 +41,7 @@ public class LanguageActionGroup extends ActionGroup implements BundleListener {
         }
 
         for (Map.Entry<String, ActionGroup> entry : keyedActionGroups.entrySet()) {
-            if (entry.getValue().size() > 0) {
+            if (! entry.getValue().isEmpty()) {
                 add(entry.getValue());
             }
         }

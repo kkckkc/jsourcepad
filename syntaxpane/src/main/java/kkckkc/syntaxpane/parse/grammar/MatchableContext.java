@@ -26,7 +26,7 @@ public abstract class MatchableContext extends CompoundContext {
 		if (unnestedChildren == null) {
 			List<Context> unnested = new ArrayList<Context>();
 			unnest(unnested);
-			this.unnestedChildren = unnested.toArray(new Context[] {});
+			this.unnestedChildren = unnested.toArray(new Context[unnested.size()]);
 		}
 		return unnestedChildren;
 	}

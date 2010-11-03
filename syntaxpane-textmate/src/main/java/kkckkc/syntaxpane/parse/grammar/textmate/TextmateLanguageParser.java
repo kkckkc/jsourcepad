@@ -55,7 +55,7 @@ public class TextmateLanguageParser {
 		if (fileTypes != null && ! fileTypes.isEmpty()) {
 			StringBuilder fileTypePattern = new StringBuilder();
 			for (String s : fileTypes) {
-				fileTypePattern.append("(.*\\." + s + ")|");
+                fileTypePattern.append("(.*\\.").append(s).append(")|");
 			}
 			fileTypePattern.setLength(fileTypePattern.length() - 1);
 
@@ -83,7 +83,7 @@ public class TextmateLanguageParser {
 				if (c instanceof ContextList) {
 					((ContextList) c).setBegin(null);
 				} else {
-					throw new RuntimeException("Unsupported context type " + c);
+					throw new RuntimeException("Unsupported context type " + c.getClass().getName() + " / " + c.getId());
 				}
 				contexts.add(c);
 			}

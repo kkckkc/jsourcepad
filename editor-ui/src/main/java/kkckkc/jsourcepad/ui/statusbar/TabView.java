@@ -117,7 +117,7 @@ public class TabView extends JLabel implements DocList.Listener, ActionListener,
 		setEnabled(true);
 
 		StringBuilder b = new StringBuilder();
-		b.append("Tab Width: " + settings.getTabSize());
+        b.append("Tab Width: ").append(settings.getTabSize());
 		if (settings.isSoftTabs()) {
 			b.append(" (soft)");
 		}

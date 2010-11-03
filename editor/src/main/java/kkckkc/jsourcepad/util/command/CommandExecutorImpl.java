@@ -34,7 +34,7 @@ public class CommandExecutorImpl implements CommandExecutor {
                 
                 Field f = c.getDeclaredField(pd.getName());
                 f.setAccessible(true);
-                b.append(pd.getName() + " = " + f.get(command));
+                b.append(pd.getName()).append(" = ").append(f.get(command));
                 b.append(", ");
             }
             if (b.length() > 0) {

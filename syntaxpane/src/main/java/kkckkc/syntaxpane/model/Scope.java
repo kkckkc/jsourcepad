@@ -93,7 +93,7 @@ public class Scope extends Interval {
 	public StringBuilder toXml(CharSequence s) {
 		StringBuilder b = new StringBuilder();
 		b.append("<").append(context.getId()).append(">");
-		if (children == null || children.size() == 0) {
+		if (children == null || children.isEmpty()) {
 			int end = getEnd();
 			if (end == -1) {
 				b.append(safesubstring(s, start, s.length()));

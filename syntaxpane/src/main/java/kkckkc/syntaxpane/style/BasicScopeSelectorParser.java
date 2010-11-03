@@ -28,7 +28,7 @@ public class BasicScopeSelectorParser {
             positiveRule.add(i);
         }
 
-        return new ScopeSelector.Rule(positiveRule.size() == 0 ? null : positiveRule, null);
+        return new ScopeSelector.Rule(positiveRule.isEmpty() ? null : positiveRule, null);
     }
 
 }
