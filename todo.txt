@@ -17,7 +17,7 @@
 [x] Install Bundles doesnt look right on substance
 [ ] Testing on Linux
 [ ] Test on Mac
-[ ] Tab completion on windows
+[x] Tab completion on windows
 
 [ ] Cygwin testing
 [ ] Install bundles don't reload bundles

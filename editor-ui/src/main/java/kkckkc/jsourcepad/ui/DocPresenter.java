@@ -45,35 +45,39 @@ public class DocPresenter implements Presenter<DocView> {
     public void init() {
 		sourcePane = view.getSourcePane();
 
-
  		doc.getActiveBuffer().bind(sourcePane.getEditorPane());
 
 		Application app = Application.get();
 		
 		app.getSettingsManager().subscribe(new SettingsListener(), false, app, doc);
 
-		sourcePane.getEditorPane().getKeymap().addActionForKeyStroke(
-				KeyStroke.getKeyStroke((char) KeyEvent.VK_ENTER), new IndentAction(doc));
+        // This seems to be needed because some lnfs overwrite the key bindings at display time
+        EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                sourcePane.getEditorPane().getKeymap().addActionForKeyStroke(
+                        KeyStroke.getKeyStroke((char) KeyEvent.VK_ENTER), new IndentAction(doc));
 
-		sourcePane.getEditorPane().getKeymap().removeKeyStrokeBinding(
-				KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0));
-		sourcePane.getEditorPane().getKeymap().addActionForKeyStroke(
-				KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), new TabAction(doc));
+                sourcePane.getEditorPane().getKeymap().removeKeyStrokeBinding(
+                        KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0));
+                sourcePane.getEditorPane().getKeymap().addActionForKeyStroke(
+                        KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), new TabAction(doc));
 
-        sourcePane.getEditorPane().getKeymap().addActionForKeyStroke(
-                KeyStroke.getKeyStroke(KeyEvent.VK_HOME, 0),
-                sourcePane.getEditorPane().getActionMap().get("caret-begin-line"));
-        sourcePane.getEditorPane().getKeymap().addActionForKeyStroke(
-                KeyStroke.getKeyStroke(KeyEvent.VK_END, 0),
-                sourcePane.getEditorPane().getActionMap().get("caret-end-line"));
+                sourcePane.getEditorPane().getKeymap().addActionForKeyStroke(
+                        KeyStroke.getKeyStroke(KeyEvent.VK_HOME, 0),
+                        sourcePane.getEditorPane().getActionMap().get("caret-begin-line"));
+                sourcePane.getEditorPane().getKeymap().addActionForKeyStroke(
+                        KeyStroke.getKeyStroke(KeyEvent.VK_END, 0),
+                        sourcePane.getEditorPane().getActionMap().get("caret-end-line"));
 
-		sourcePane.getEditorPane().requestFocus();
+                sourcePane.getEditorPane().requestFocus();
+
+                wrapClipboardAction("copy", sourcePane);
+                wrapClipboardAction("cut", sourcePane);
+            }
+        });
 		
 		sourcePane.setFont(Application.get().getSettingsManager().get(FontSettings.class).asFont());
-
-        wrapClipboardAction("copy", sourcePane);
-        wrapClipboardAction("cut", sourcePane);
-
 
         actionContext = new ActionContext();
         actionContext.put(ActionContextKeys.ACTIVE_DOC, doc);
@@ -141,9 +145,11 @@ public class DocPresenter implements Presenter<DocView> {
         return this.sourcePane.getEditorPane().getCaret().getMagicCaretPosition();
     }
 
+    public void postInit() {
+    }
 
-	
-	@SuppressWarnings("unchecked")
+
+    @SuppressWarnings("unchecked")
     private final class SettingsListener implements Listener {
 	    private SettingsListener() {
 		    // Init
