@@ -141,7 +141,7 @@ public class BundleDocImpl extends DocImpl {
     }
 
     private void savePreferences() throws IOException {
-        plist.put("settings", (Map) new NIOLegacyPListReader().read(this.buffer.getCompleteDocument().getText().getBytes("utf-8")));
+        plist.put("settings", new NIOLegacyPListReader().read(this.buffer.getCompleteDocument().getText().getBytes("utf-8")));
     }
 
     private void loadCommand() throws IOException {
@@ -174,7 +174,7 @@ public class BundleDocImpl extends DocImpl {
     }
 
     private void saveMacro() throws IOException {
-        plist.put("commands", (Map) new NIOLegacyPListReader().read(this.buffer.getCompleteDocument().getText().getBytes("utf-8")));
+        plist.put("commands", new NIOLegacyPListReader().read(this.buffer.getCompleteDocument().getText().getBytes("utf-8")));
     }
 
     private void loadSyntax() throws IOException {

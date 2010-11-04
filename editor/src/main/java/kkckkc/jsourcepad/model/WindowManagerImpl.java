@@ -100,13 +100,13 @@ public class WindowManagerImpl implements WindowManager {
 
     @Override
     public void minimize(Window window) {
-        JFrame c = (JFrame) window.getContainer();
+        JFrame c = window.getContainer();
         c.setState(JFrame.ICONIFIED);
     }
 
     @Override
     public void maximize(Window window) {
-        JFrame c = (JFrame) window.getContainer();
+        JFrame c = window.getContainer();
         if (c.getState() == JFrame.MAXIMIZED_BOTH) {
             c.setState(JFrame.NORMAL);
         } else {

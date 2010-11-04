@@ -118,13 +118,11 @@ public class BundleInstallerDialog implements Dialog<BundleInstallerDialogView> 
             throw new RuntimeException(ioe);
         }
 
-        view.getJDialog().show();
+        view.getJDialog().setVisible(true);
     }
 
     private boolean verifyGit() {
         try {
-
-
             StatusCallback statusCallback = new StatusCallback();
 
             ScriptExecutor se = new ScriptExecutor("git --version", Application.get().getThreadPool());
@@ -157,7 +155,7 @@ public class BundleInstallerDialog implements Dialog<BundleInstallerDialogView> 
         final Collection<BundleTableModel.Entry> entriesToInstall = Collections2.filter(bundles, new Predicate<BundleTableModel.Entry>() {
             @Override
             public boolean apply(BundleTableModel.Entry entry) {
-                return ! entry.isDisabled() && entry.isSelected();
+                return entry.isEnabled() && entry.isSelected();
             }
         });
 

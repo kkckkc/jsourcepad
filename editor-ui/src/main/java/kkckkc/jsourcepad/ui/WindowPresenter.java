@@ -47,7 +47,7 @@ public class WindowPresenter implements Presenter<WindowView>, DocList.Listener 
 
 	@PostConstruct
     public void init() throws Exception {
-		frame = (JFrame) window.getContainer();
+		frame = window.getContainer();
 
         Toolkit toolkit = Toolkit.getDefaultToolkit();
         

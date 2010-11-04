@@ -67,8 +67,8 @@ class BundleTableModel extends AbstractTableModel {
             return selected;
         }
 
-        public boolean isDisabled() {
-            return disabled;
+        public boolean isEnabled() {
+            return !disabled;
         }
 
         public String getName() {

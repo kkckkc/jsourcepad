@@ -25,7 +25,7 @@ public class ThemeSettingsPanel implements SettingsPanel {
             if (! (p instanceof Theme)) continue;
             if (! ((Theme) p).isAvailable()) continue;
 
-            view.getThemes().addItem(((Theme) p).getId());
+            view.getThemes().addItem(p.getId());
         }
 
         view.getThemes().addItemListener(new ItemListener() {

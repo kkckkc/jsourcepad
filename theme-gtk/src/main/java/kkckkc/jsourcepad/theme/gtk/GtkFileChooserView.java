@@ -114,9 +114,8 @@ public class GtkFileChooserView implements FileChooserView {
 		Field peerField = Component.class.getDeclaredField("peer");
 		peerField.setAccessible(true);
 		Class<?> xWindowPeerClass = Class.forName("sun.awt.X11.XWindowPeer");
-		Method getWindowMethod = xWindowPeerClass.getMethod("getWindow", new Class[0]);
-		long windowId = (Long) getWindowMethod.invoke(peerField.get(parent), new Object[0]);
-		return windowId;
+		Method getWindowMethod = xWindowPeerClass.getMethod("getWindow");
+        return (Long) getWindowMethod.invoke(peerField.get(parent));
 	}	
 	
 	private String readOutput(Process p) throws IOException {

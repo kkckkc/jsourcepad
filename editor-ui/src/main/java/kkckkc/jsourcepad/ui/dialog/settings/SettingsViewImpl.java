@@ -13,7 +13,7 @@ public class SettingsViewImpl extends BaseJDialog implements SettingsView {
     private JButton cancelButton;
 
     public SettingsViewImpl() {
-        super((Frame) null, true);
+        super(null, true);
         setLocationRelativeTo(null);
         initComponents();
     }

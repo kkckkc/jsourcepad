@@ -41,9 +41,9 @@ public class Registry {
                 int c;
                 while ((c = is.read()) != -1)
                     sw.write(c);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-            catch (IOException e) {
-        }
         }
 
         public String getResult() {

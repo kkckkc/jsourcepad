@@ -60,7 +60,7 @@ public class ViewFullscreenAction extends BaseAction {
 		boolean setFull = !MAXIMIZED;
 
 		if (setFull != MAXIMIZED) {
-			final JFrame jf = (JFrame) w.getContainer();
+			final JFrame jf = w.getContainer();
 			// stop processing window events now
 			PROCESS_WINDOW_EVENTS = false;
 			final boolean wasVisible = jf.isVisible();

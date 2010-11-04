@@ -26,7 +26,7 @@ class InstalledFlagCellRenderer extends JCheckBox implements TableCellRenderer, 
             setBackground(table.getBackground());
         }
         setSelected((value != null && ((BundleTableModel.Entry) value).isSelected()));
-        setEnabled((value != null && ! ((BundleTableModel.Entry) value).isDisabled()));
+        setEnabled((value != null && ((BundleTableModel.Entry) value).isEnabled()));
 
         if (hasFocus) {
             setBorder(UIManager.getBorder("Table.focusCellHighlightBorder"));

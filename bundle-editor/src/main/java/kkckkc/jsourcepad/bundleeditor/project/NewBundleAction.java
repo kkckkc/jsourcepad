@@ -11,7 +11,6 @@ import kkckkc.jsourcepad.util.action.BaseAction;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.io.File;
 
 public class NewBundleAction extends BaseAction {
 
@@ -21,7 +20,7 @@ public class NewBundleAction extends BaseAction {
             @Override
             public boolean shouldBeEnabled(ActionContext actionContext) {
                 Object[] tp = actionContext.get(ActionContextKeys.SELECTION);
-                return ((File) tp[0]).equals(Config.getBundlesFolder());
+                return tp[0].equals(Config.getBundlesFolder());
             }
         });
     }
