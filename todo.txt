@@ -24,6 +24,7 @@
 [x] Goto line dialog. Previously entered text is pre-selected
 [x] New windows are shown in location selected by platform and thus not in the exact same spot as the previous window
 [x] Fullscreen restore issue with Substance lnf
+[x] Potential fix for firewall issue
 [ ] Proxy issue
 [ ] Cygwin testing
 [ ] Install bundles don't reload bundles
