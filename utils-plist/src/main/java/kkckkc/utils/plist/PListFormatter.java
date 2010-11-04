@@ -16,7 +16,7 @@ public class PListFormatter {
 
 	private void format(Object o, StringBuilder dest, int i, boolean shortNotation) {
 	    if (o instanceof Map) {
-	    	formatMap((Map) o, dest, i, shortNotation);
+	    	formatMap((Map<String, Object>) o, dest, i, shortNotation);
 	    } else if (o instanceof List) {
 	    	formatList((List) o, dest, i, shortNotation);
 	    } else if (o instanceof String) {
@@ -54,12 +54,11 @@ public class PListFormatter {
         }
     }
 
-	private void formatMap(Map m, StringBuilder dest, int i, boolean shortNotation) {
-        if (m.size() == 1 && ! (m.values().iterator().next() instanceof Map || m.values().iterator().next() instanceof List)) {
+	private void formatMap(Map<String, Object> map, StringBuilder dest, int i, boolean shortNotation) {
+        if (map.size() == 1 && ! (map.values().iterator().next() instanceof Map || map.values().iterator().next() instanceof List)) {
             dest.append("{ ");
             if (! shortNotation) dest.append("  ");
-            Set<Map.Entry> s = m.entrySet();
-            for (Map.Entry e : s) {
+            for (Map.Entry<String, Object> e : map.entrySet()) {
                 dest.append(e.getKey()).append(" = ");
                 format(e.getValue(), dest, i + 1, true);
                 dest.append("; ");
@@ -72,17 +71,16 @@ public class PListFormatter {
             if (dest.indexOf("=") >= 0) dest.append("\n");
 
             if (mapKeyComparator == null) {
-                Set<Map.Entry> s = m.entrySet();
-                for (Map.Entry e : s) {
+                for (Map.Entry<String, Object> e : map.entrySet()) {
                     formatMapEntry(dest, i, line, e.getKey(), e.getValue());
                     line++;
                 }
             } else {
-                List<String> keys = new ArrayList(m.keySet());
+                List<String> keys = new ArrayList<String>(map.keySet());
                 Collections.sort(keys, mapKeyComparator);
 
                 for (String key : keys) {
-                    formatMapEntry(dest, i, line, key, m.get(key));
+                    formatMapEntry(dest, i, line, key, map.get(key));
                     line++;
                 }
             }
@@ -100,34 +98,16 @@ public class PListFormatter {
 
 
     private String indent(int i) {
-	    StringBuilder b = new StringBuilder();
+	    StringBuilder buf = new StringBuilder();
 		for (int j = 0; j < i; j++) {
-			b.append("    ");
+			buf.append("    ");
 		}
-		return b.toString();
+		return buf.toString();
     }
 
 	public String format(Object read) {
-	    StringBuilder b = new StringBuilder();
-	    format(read, b);
-	    return b.toString();
-    }
-
-
-
-    public static void main(String... args) {
-        Map m = new HashMap();
-        m.put("a", "kalle");
-
-        Map m2 = new HashMap();
-        m.put("o", m2);
-
-        m2.put("k", "olle");
-        m2.put("j", "olle");
-
-        Object o = m;
-
-        PListFormatter formatter = new PListFormatter();
-        System.out.println(formatter.format(o));
+	    StringBuilder buf = new StringBuilder();
+	    format(read, buf);
+	    return buf.toString();
     }
 }

@@ -53,7 +53,7 @@ public class CommandBundleDocPresenter extends BasicBundleDocPresenter {
 
         BundleDocImpl bDoc = (BundleDocImpl) doc;
         CommandBundleDocViewImpl cView = (CommandBundleDocViewImpl) view;
-        Map plist = bDoc.getPlist();
+        Map<String, Object> plist = bDoc.getPlist();
 
         cView.getSecondayInput().setSelectedIndex(0);
         cView.getInput().setSelectedIndex(0);

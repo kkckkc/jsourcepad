@@ -19,13 +19,11 @@ public class PListUtils {
 		
 		if (o instanceof Map) {
 			if (! (key instanceof String)) {
-//				System.out.println(o + " " + key);
 				return null;
 			}
 			return ((Map) o).get(key);
 		} else if (o instanceof List) {
 			if (! (key instanceof Integer)) {
-//				System.out.println(o + " " + key);
 				return null;
 			}
 			return ((List) o).get((Integer) key);

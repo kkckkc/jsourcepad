@@ -2,7 +2,6 @@ package kkckkc.utils.plist;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class GeneralPListReader implements PListReader {
@@ -20,14 +19,17 @@ public class GeneralPListReader implements PListReader {
 	}
 
 
-	private byte[] readBytes(File file) throws FileNotFoundException, IOException {
+	private byte[] readBytes(File file) throws IOException {
 		FileInputStream fis = new FileInputStream(file);
+        try {
+            byte[] dest = new byte[fis.available()];
+            fis.read(dest);
+            fis.close();
 
-		byte[] dest = new byte[fis.available()];
-		fis.read(dest);
-		fis.close();
-		
-		return dest;
+            return dest;
+        } finally {
+            fis.close();
+        }
     }
 
 }

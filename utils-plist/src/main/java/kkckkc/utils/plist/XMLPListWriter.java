@@ -4,7 +4,6 @@ import nanoxml.XMLElement;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class XMLPListWriter {
     private XMLElement root;
@@ -22,7 +21,7 @@ public class XMLPListWriter {
 
     private void write(XMLElement parent, Object o) {
         if (o instanceof Map) {
-            write(parent, (Map) o);
+            write(parent, (Map<String, Object>) o);
         } else if (o instanceof List) {
             write(parent, (List) o);
         } else if (o instanceof String) {
@@ -36,15 +35,15 @@ public class XMLPListWriter {
         }
     }
 
-    private void write(XMLElement parent, Map o) {
+    private void write(XMLElement parent, Map<String, Object> o) {
         XMLElement dict = new XMLElement();
         dict.setName("dict");
         parent.addChild(dict);
 
-        for (Map.Entry entry : (Set<Map.Entry>) o.entrySet()) {
+        for (Map.Entry<String, Object> entry : o.entrySet()) {
             XMLElement key = new XMLElement();
             key.setName("key");
-            key.setContent((String) entry.getKey());
+            key.setContent(entry.getKey());
             dict.addChild(key);
 
             write(dict, entry.getValue());
@@ -61,29 +60,27 @@ public class XMLPListWriter {
     }
 
     private void write(XMLElement parent, String s) {
-        XMLElement string = new XMLElement();
-        string.setName("string");
-        string.setContent(s);
-        parent.addChild(string);
+        XMLElement stringElement = new XMLElement();
+        stringElement.setName("stringElement");
+        stringElement.setContent(s);
+        parent.addChild(stringElement);
     }
 
-    private void write(XMLElement parent, Integer s) {
-        XMLElement string = new XMLElement();
-        string.setName("integer");
-        string.setContent(s.toString());
-        parent.addChild(string);
+    private void write(XMLElement parent, Integer i) {
+        XMLElement integerElement = new XMLElement();
+        integerElement.setName("integer");
+        integerElement.setContent(i.toString());
+        parent.addChild(integerElement);
     }
 
-    private void write(XMLElement parent, Boolean s) {
-        if (s) {
-            XMLElement string = new XMLElement();
-            string.setName("true");
-            parent.addChild(string);
+    private void write(XMLElement parent, Boolean boolenValue) {
+        XMLElement booleanElement = new XMLElement();
+        if (boolenValue) {
+            booleanElement.setName("true");
         } else {
-            XMLElement string = new XMLElement();
-            string.setName("false");
-            parent.addChild(string);
+            booleanElement.setName("false");
         }
+        parent.addChild(booleanElement);
     }
 
     public String getString() {

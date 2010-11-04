@@ -21,7 +21,7 @@ import java.util.UUID;
 
 public class BundleDocImpl extends DocImpl {
 
-    private Map plist;
+    private Map<String, Object> plist;
     
     private BundleStructure.Type type;
     private String keyEquivalent;
@@ -73,7 +73,7 @@ public class BundleDocImpl extends DocImpl {
         return keyEquivalent;
     }
 
-    public Map getPlist() {
+    public Map<String, Object> getPlist() {
         return plist;
     }
 
@@ -91,7 +91,7 @@ public class BundleDocImpl extends DocImpl {
         this.backingFile = file;
 
         GeneralPListReader pl = new GeneralPListReader();
-        plist = (Map) pl.read(file);
+        plist = (Map<String, Object>) pl.read(file);
 
         this.uuid = (String) plist.get("uuid");
         this.keyEquivalent = (String) plist.get("keyEquivalent");
@@ -281,8 +281,8 @@ public class BundleDocImpl extends DocImpl {
         return this.modified || super.isModified();
     }
 
-    public void setModified(boolean b) {
-        this.modified = b;
+    public void setModified(boolean modified) {
+        this.modified = modified;
 
         getDocList().getWindow().topic(Doc.StateListener.class).post().modified(this, true, false);
 
