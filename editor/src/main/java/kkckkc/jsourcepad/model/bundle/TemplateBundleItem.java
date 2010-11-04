@@ -2,6 +2,7 @@ package kkckkc.jsourcepad.model.bundle;
 
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
+import kkckkc.jsourcepad.util.Cygwin;
 import kkckkc.jsourcepad.util.io.ScriptExecutor;
 import kkckkc.jsourcepad.util.io.UISupportCallback;
 import kkckkc.utils.io.FileUtils;
@@ -32,9 +33,9 @@ public class TemplateBundleItem implements BundleItem<File> {
         scriptExecutor.setDirectory(bundleItemSupplier.getFile().getParentFile());
 
         Map<String, String> environment = EnvironmentProvider.getEnvironment(window, bundleItemSupplier);
-        environment.put("TM_NEW_FILE", file.getCanonicalPath());
-        environment.put("TM_NEW_FILE_BASENAME", FileUtils.getBaseName(file));
-        environment.put("TM_NEW_FILE_DIRECTORY", file.getParentFile().getName());
+        environment.put("TM_NEW_FILE", Cygwin.makePathForEnvironmentUsage(file.getCanonicalPath()));
+        environment.put("TM_NEW_FILE_BASENAME", Cygwin.makePathForEnvironmentUsage(FileUtils.getBaseName(file)));
+        environment.put("TM_NEW_FILE_DIRECTORY", Cygwin.makePathForEnvironmentUsage(file.getParentFile().getName()));
 
         scriptExecutor.execute(new UISupportCallback(window.getContainer()) {
             public void onAfterSuccess(final ScriptExecutor.Execution execution) {

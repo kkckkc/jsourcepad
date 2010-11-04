@@ -118,30 +118,25 @@ public class ScriptExecutor {
         List<String> argList = new ArrayList(Arrays.asList(settingsManager.get(ExecutionSettings.class).getArgs()));
 
         if (Os.isWindows()) {
-            path = Cygwin.makePath(path);
+            path = Cygwin.makePathForDirectUsage(path);
         }
 
         List<String> lines = Lists.newArrayList();
         Iterables.addAll(lines, Splitter.on("\n").split(script));
         String firstLine = lines.get(0);
-        String cygwinPrefix = "cd " + Cygwin.makePath(directory == null ? new File(".").getCanonicalPath() : directory.getPath()) + "; ";
+        String cygwinPrefix = "cd " + Cygwin.makePathForDirectUsage(directory == null ? new File(".").getCanonicalPath() : directory.getPath()) + "; ";
+        String cygwinSuffix = "";
         if (firstLine.startsWith("#!")) {
             // Remove shebang
             firstLine = firstLine.substring(2);
             if (Os.isWindows()) {
-                argList.add(cygwinPrefix + firstLine.trim() + " " + path);
+                argList.add(cygwinPrefix + firstLine.trim() + " " + path + cygwinSuffix);
             } else {
                 argList.add(firstLine.trim() + " " + path);
             }
-        } else if (lines.size() == 1) {
-            if (Os.isWindows()) {
-                argList.add(cygwinPrefix + firstLine.trim());
-            } else {
-                argList.add(firstLine.trim());
-            }
         } else {
             if (Os.isWindows()) {
-                argList.add(cygwinPrefix + path);
+                argList.add(cygwinPrefix + path + cygwinSuffix);
             } else {
                 argList.add(path);
             }

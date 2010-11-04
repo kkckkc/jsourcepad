@@ -25,6 +25,7 @@
 [x] New windows are shown in location selected by platform and thus not in the exact same spot as the previous window
 [x] Fullscreen restore issue with Substance lnf
 [x] Potential fix for firewall issue
+[x] Fixed problem with new file from template on Cygwin
 [ ] Proxy issue
 [ ] Cygwin testing
 [ ] Install bundles don't reload bundles

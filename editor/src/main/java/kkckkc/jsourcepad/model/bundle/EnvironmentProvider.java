@@ -120,7 +120,7 @@ public class EnvironmentProvider {
 
     private static String formatPath(String s) {
         if (Os.isWindows()) {
-            return Cygwin.makePath(s);
+            return Cygwin.makePathForEnvironmentUsage(s);
         }
         return s;
     }

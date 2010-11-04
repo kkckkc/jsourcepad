@@ -51,7 +51,7 @@ public class UISupportCallback implements Callback {
 			public void run() {
 				if (dialog != null)
 					dialog.close();
-				
+
 				onAfterFailure(execution);
 				onAfterDone();
 

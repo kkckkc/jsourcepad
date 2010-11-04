@@ -27,26 +27,6 @@ public class ProjectNewFileAction extends BaseAction {
         } else {
             newFileDialog.show(file.getParentFile());
         }
-/*
-        String name = JOptionPane.showInputDialog("File Name:");
-
-
-        File f;
-        if (file.isDirectory()) {
-            f = new File(file, name);
-        } else {
-            f = new File(file.getParentFile(), name);
-        }
-
-        try {
-            f.createNewFile();
-        } catch (IOException e1) {
-            throw new RuntimeException(e1);
-        }
-        
-        window.getProject().refresh(f.getParentFile());
-        window.getDocList().open(f);
-        */
 	}
 
 }
