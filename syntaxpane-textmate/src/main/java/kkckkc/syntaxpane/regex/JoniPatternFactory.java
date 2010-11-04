@@ -14,7 +14,7 @@ import static org.joni.constants.MetaChar.INEFFECTIVE_META_CHAR;
 public class JoniPatternFactory implements PatternFactory {
 
 	private static final int MAX_ENTRIES = 100;
-	private static Map<String, JoniPattern> CACHE = new LinkedHashMap<String, JoniPattern>(MAX_ENTRIES, .75F, true) {  
+	private static final Map<String, JoniPattern> CACHE = new LinkedHashMap<String, JoniPattern>(MAX_ENTRIES, .75F, true) {
 	    protected boolean removeEldestEntry(Map.Entry<String, JoniPattern> eldest) {  
 	      return size() > MAX_ENTRIES;  
 	    }  

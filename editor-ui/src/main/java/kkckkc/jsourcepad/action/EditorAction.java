@@ -1,11 +1,8 @@
 package kkckkc.jsourcepad.action;
 
 import kkckkc.jsourcepad.command.TextComponentCommand;
-import kkckkc.jsourcepad.model.Buffer;
-import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.util.action.BaseAction;
 
-import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 public class EditorAction extends BaseAction {

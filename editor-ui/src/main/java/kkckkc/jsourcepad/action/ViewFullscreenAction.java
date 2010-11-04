@@ -1,26 +1,14 @@
 package kkckkc.jsourcepad.action;
 
-import java.awt.AWTEvent;
-import java.awt.Container;
-import java.awt.Cursor;
-import java.awt.EventQueue;
-import java.awt.Image;
-import java.awt.Insets;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
+import kkckkc.jsourcepad.model.Window;
+import kkckkc.jsourcepad.util.action.BaseAction;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.AWTEventListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.MemoryImageSource;
-
-import javax.swing.AbstractAction;
-import javax.swing.JFrame;
-import javax.swing.Timer;
-
-import kkckkc.jsourcepad.model.Application;
-import kkckkc.jsourcepad.model.Window;
-import kkckkc.jsourcepad.util.action.BaseAction;
 
 // see http://code.google.com/p/bookjar-utils/source/browse/BookJar-utils/src/util/swing/components/FullScreenFrame.java?r=152&spec=svn194
 public class ViewFullscreenAction extends BaseAction {

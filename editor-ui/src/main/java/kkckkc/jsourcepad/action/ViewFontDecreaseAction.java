@@ -1,13 +1,11 @@
 package kkckkc.jsourcepad.action;
 
-import java.awt.event.ActionEvent;
-
-import javax.swing.AbstractAction;
-
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.FontSettings;
 import kkckkc.jsourcepad.model.SettingsManager;
 import kkckkc.jsourcepad.util.action.BaseAction;
+
+import java.awt.event.ActionEvent;
 
 public class ViewFontDecreaseAction extends BaseAction {
 

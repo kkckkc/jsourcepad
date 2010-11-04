@@ -1,15 +1,13 @@
 package kkckkc.jsourcepad.action;
 
-import java.awt.event.ActionEvent;
-import javax.swing.Action;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JMenuItem;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.EditModeSettings;
 import kkckkc.jsourcepad.model.SettingsManager;
-import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.util.action.BaseAction;
 import kkckkc.jsourcepad.util.action.Presenter;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
 
 public class EditModeOverwriteModeAction extends BaseAction implements Presenter.Menu {
 	public EditModeOverwriteModeAction() {

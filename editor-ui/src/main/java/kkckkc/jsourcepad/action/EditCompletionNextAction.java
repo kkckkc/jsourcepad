@@ -1,7 +1,6 @@
 package kkckkc.jsourcepad.action;
 
 import kkckkc.jsourcepad.command.CompletionCommand;
-import kkckkc.jsourcepad.model.Buffer;
 import kkckkc.jsourcepad.util.action.BaseAction;
 
 import java.awt.event.ActionEvent;

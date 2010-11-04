@@ -30,7 +30,7 @@ public class ProjectImpl implements Project, DocList.Listener, Window.FocusListe
 	private File projectDir;
 	private Window window;
 
-	private Set<File> cache = Sets.newHashSet();
+	private final Set<File> cache = Sets.newHashSet();
 	
 	private DefaultFileMonitor fileMonitor;
 	private List<File> selectedFiles = Lists.newArrayList();

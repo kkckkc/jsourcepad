@@ -13,8 +13,8 @@ import java.util.Map;
 
 public class BundleMenuProvider {
 
-    private static Map<String, Action> itemActions = Maps.newHashMap();
-    private static Map<String, ActionGroup> actionGroups = Maps.newHashMap();
+    private static final Map<String, Action> itemActions = Maps.newHashMap();
+    private static final Map<String, ActionGroup> actionGroups = Maps.newHashMap();
 
     public static Action getActionForItem(String uuid) {
         return itemActions.get(uuid);
