@@ -63,6 +63,7 @@ public class WindowPresenter implements Presenter<WindowView>, DocList.Listener 
 		frame.setTitle("JSourcePad");
 		
 		frame.setLocationRelativeTo(null);
+        frame.setLocationByPlatform(true);
 		frame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				Application.get().getWindowManager().closeWindow(window);
