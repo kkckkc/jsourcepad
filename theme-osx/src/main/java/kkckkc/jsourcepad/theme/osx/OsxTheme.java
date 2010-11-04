@@ -3,6 +3,7 @@ package kkckkc.jsourcepad.theme.osx;
 import kkckkc.jsourcepad.model.SettingsManager;
 import kkckkc.jsourcepad.model.SettingsPanel;
 import kkckkc.jsourcepad.model.ThemeSettings;
+import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.theme.Theme;
 import kkckkc.jsourcepad.util.BeanFactoryLoader;
 import kkckkc.utils.Os;
@@ -64,7 +65,10 @@ public class OsxTheme implements Theme {
 
     @Override
     public <P, C> void init(BeanFactoryLoader.Scope<P, C> scope, P parent, C context, BeanFactory container) {
-
+        if (scope == BeanFactoryLoader.WINDOW) {
+            Window window = container.getBean(Window.class);
+            OsxMenu.init(container, window);
+        }
     }
 
 }

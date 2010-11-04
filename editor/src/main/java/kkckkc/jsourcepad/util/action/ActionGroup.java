@@ -1,22 +1,23 @@
 package kkckkc.jsourcepad.util.action;
 
 import com.google.common.collect.Lists;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.lang.ref.WeakReference;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
-public class ActionGroup extends AbstractAction implements List<Action> {
+public class ActionGroup extends AbstractAction implements BeanFactoryAware {
 	private static final long serialVersionUID = 1L;
 
 	protected List<Action> items = Lists.newArrayList();
 	protected List<WeakReference<JComponent>> derivedComponents = Lists.newArrayList();
+    private BeanFactory beanFactory;
 
-	public ActionGroup() { 	
+    public ActionGroup() {
 	}
 	
 	public ActionGroup(String name) {
@@ -30,7 +31,25 @@ public class ActionGroup extends AbstractAction implements List<Action> {
 	public void actionPerformed(ActionEvent e) {
 	}
 
-	
+
+    public void removeAction(String actionId) {
+        BaseAction found = null;
+        for (Action a : items) {
+            if (a instanceof BaseAction) {
+                BaseAction ba = (BaseAction) a;
+                if (("action-" + actionId).equals(ba.getId())) {
+                    found = ba;
+                }
+            }
+        }
+
+        if (found != null) items.remove(found);
+
+        if (items.get(items.size() - 1) == null) {
+            items.remove(items.size() - 1);
+        }
+    }
+
 	
 	
 	/* ********************************************************************************
@@ -46,96 +65,12 @@ public class ActionGroup extends AbstractAction implements List<Action> {
 		items.add(location, object);
 	}
 
-	public boolean addAll(Collection<? extends Action> collection) {
-		return items.addAll(collection);
-	}
-
-	public boolean addAll(int location, Collection<? extends Action> collection) {
-		return items.addAll(location, collection);
-	}
-
-	public void clear() {
-		items.clear();
-	}
-
-	public boolean contains(Object object) {
-		return items.contains(object);
-	}
-
-	public boolean containsAll(Collection<?> collection) {
-		return items.containsAll(collection);
-	}
-
-	public boolean equals(Object object) {
-		return items.equals(object);
-	}
-
-	public Action get(int location) {
-		return items.get(location);
-	}
-
-	public int hashCode() {
-		return items.hashCode();
-	}
-
-	public int indexOf(Object object) {
-		return items.indexOf(object);
-	}
-
-	public boolean isEmpty() {
-		return items.isEmpty();
-	}
-
-	public Iterator<Action> iterator() {
-		return items.iterator();
-	}
-
-	public int lastIndexOf(Object object) {
-		return items.lastIndexOf(object);
-	}
-
-	public ListIterator<Action> listIterator() {
-		return items.listIterator();
-	}
-
-	public ListIterator<Action> listIterator(int location) {
-		return items.listIterator(location);
-	}
-
 	public Action remove(int location) {
 		return items.remove(location);
 	}
 
-	public boolean remove(Object object) {
-		return items.remove(object);
-	}
-
-	public boolean removeAll(Collection<?> collection) {
-		return items.removeAll(collection);
-	}
-
-	public boolean retainAll(Collection<?> collection) {
-		return items.retainAll(collection);
-	}
-
-	public Action set(int location, Action object) {
-		return items.set(location, object);
-	}
-
 	public int size() {
 		return items.size();
-	}
-
-	public List<Action> subList(int start, int end) {
-		return items.subList(start, end);
-	}
-
-	public Object[] toArray() {
-		return items.toArray();
-	}
-
-	public <T> T[] toArray(T[] array) {
-		return items.toArray(array);
 	}
 
 	public String toPrettyString() {
@@ -204,5 +139,26 @@ public class ActionGroup extends AbstractAction implements List<Action> {
             MenuFactory mf = new MenuFactory();
             mf.loadMenu(Lists.<JMenuItem>newArrayList(), this, jm, null, false);
         }
+    }
+
+    @Override
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+        this.beanFactory = beanFactory;
+    }
+
+    public void addLast(Action item) {
+        add(size() - 1, item);
+    }
+
+    public List<Action> getItems() {
+        return items;
+    }
+
+    public void clear() {
+        items.clear();
+    }
+
+    public void remove(Action item) {
+        items.remove(item);
     }
 }

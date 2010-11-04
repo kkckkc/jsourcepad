@@ -77,7 +77,7 @@ public class GlobalKeyEventDispatcher implements KeyEventDispatcher {
                     }
                 });
             } else {
-                tempActionGroup.get(0).actionPerformed(new ActionEvent(e.getComponent(), 1, null));
+                tempActionGroup.getItems().get(0).actionPerformed(new ActionEvent(e.getComponent(), 1, null));
             }
             e.consume();
             return true;

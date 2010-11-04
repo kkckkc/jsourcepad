@@ -27,7 +27,7 @@ public class InstallerMenu {
         };
         showInstallerAction.putValue(AbstractAction.NAME, "Install Bundles...");
 
-        ag.add(ag.size() - 1, showInstallerAction);
+        ag.addLast(showInstallerAction);
 
     }
 

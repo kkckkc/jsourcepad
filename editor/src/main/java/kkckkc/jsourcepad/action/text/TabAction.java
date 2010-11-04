@@ -59,7 +59,7 @@ public final class TabAction extends AbstractAction {
 				
 			} else {
 				doc.getActiveBuffer().remove(new Interval(ip.getPosition() - token.length(), ip.getPosition()));
-				tempActionGroup.get(0).actionPerformed(
+				tempActionGroup.getItems().get(0).actionPerformed(
 						new ActionEvent(e.getSource(), 1, null));
 				
 			}

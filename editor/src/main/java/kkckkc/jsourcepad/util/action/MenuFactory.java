@@ -12,7 +12,7 @@ public class MenuFactory {
 		final List<JMenuItem> items = Lists.newArrayList();
 
 		JPopupMenu jp = new JPopupMenu();
-		for (Action a : actionGroup) {
+		for (Action a : actionGroup.getItems()) {
 			if (a == null) {
 				jp.addSeparator();
 			} else if (a instanceof ActionGroup) {
@@ -29,7 +29,7 @@ public class MenuFactory {
 	}
 
 	public void loadMenu(List<JMenuItem> items, ActionGroup actionGroup, JMenu jMenu, ItemBuilder itemBuilder, boolean lazy) {
-		for (Action a : actionGroup) {
+		for (Action a : actionGroup.getItems()) {
 			if (a == null) {
 				jMenu.addSeparator();
 			} else if (a instanceof ActionGroup) {

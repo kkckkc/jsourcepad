@@ -109,7 +109,7 @@ public class WindowPresenter implements Presenter<WindowView>, DocList.Listener 
                 menuFactory.buildMenu(navigationMenu, window.getActionManager().getActionGroup("navigation-menu"), null, false);
 
                 ActionGroup bundlesAg = window.getActionManager().getActionGroup("bundles-menu");
-                for (Action o : BundleMenuProvider.getBundleActionGroup()) {
+                for (Action o : BundleMenuProvider.getBundleActionGroup().getItems()) {
                     bundlesAg.add(o);
                 }
                 menuFactory.buildMenu(bundleMenu, bundlesAg, new MenuFactory.ItemBuilder() {
