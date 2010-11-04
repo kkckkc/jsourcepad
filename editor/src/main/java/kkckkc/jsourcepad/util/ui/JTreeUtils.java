@@ -92,7 +92,7 @@ public class JTreeUtils {
 
     public interface Merger {
         public boolean merge(DefaultMutableTreeNode destination, DefaultMutableTreeNode source);
-        public boolean equals(DefaultMutableTreeNode one, DefaultMutableTreeNode two);
+        public boolean equals(DefaultMutableTreeNode node, DefaultMutableTreeNode compareTo);
     }
 
 }

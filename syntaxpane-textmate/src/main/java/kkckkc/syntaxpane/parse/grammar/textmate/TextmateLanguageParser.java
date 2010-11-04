@@ -106,7 +106,7 @@ public class TextmateLanguageParser {
     }
 
 	private Context buildContainerList(Map entry, String id) {
-	    ContextList cc = new ContextList(factory);
+	    ContextList contextList = new ContextList(factory);
 
 	    if (entry.containsKey("name") || entry.containsKey("begin") || entry.containsKey("match")) {
 	    	Context c = parseContext(entry);
@@ -114,10 +114,10 @@ public class TextmateLanguageParser {
 		    	c.setId(id);
 		    	c.setName(id);
 	    	}
-			cc.setChildReferences(new Context[] { c });
+			contextList.setChildReferences(new Context[]{c});
 	    } else {
-	    	cc.setName(id);
-	    	cc.setId(id);
+	    	contextList.setName(id);
+	    	contextList.setId(id);
 	    	
 			List<Map> patterns = (List<Map>) entry.get("patterns");
 			List<Context> contexts = new ArrayList<Context>();
@@ -127,10 +127,10 @@ public class TextmateLanguageParser {
 				}
 			}
 			
-			cc.setChildReferences(contexts.toArray(new Context[] {}));
+			contextList.setChildReferences(contexts.toArray(new Context[]{}));
 	    }
 	    
-	    return cc;
+	    return contextList;
     }
 
 	private Context parseIncludeContext(Map entry) {

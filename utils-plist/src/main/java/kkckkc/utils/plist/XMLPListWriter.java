@@ -2,7 +2,9 @@ package kkckkc.utils.plist;
 
 import nanoxml.XMLElement;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class XMLPListWriter {
     private XMLElement root;
@@ -89,14 +91,5 @@ public class XMLPListWriter {
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n" +
                 this.root.toString().replaceAll("VERSION=\"1\\.0\"", "version=\"1.0\"");
-    }
-
-    public static void main(String... args) {
-        Map m = new HashMap();
-        m.put("test", Arrays.asList("Lorem", "Ipsum", Boolean.TRUE, new Integer(5)));
-
-        XMLPListWriter xmlpListWriter = new XMLPListWriter();
-        xmlpListWriter.setPropertyList(m);
-        System.out.println(xmlpListWriter.getString());
     }
 }

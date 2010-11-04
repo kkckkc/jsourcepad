@@ -403,9 +403,9 @@ public class BufferImpl implements Buffer {
         doc.getActiveBuffer().insertText(position, indent, null);
     }
 
-	private boolean matches(String pattern, CharSequence string) {
+	private boolean matches(String pattern, CharSequence charSequence) {
 		JoniPatternFactory factory = new JoniPatternFactory();
-	    return pattern != null && factory.create(pattern).matcher(string).matches();
+	    return pattern != null && factory.create(pattern).matcher(charSequence).matches();
     }
 	
 	@Override

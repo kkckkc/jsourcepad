@@ -65,8 +65,8 @@ public abstract class BaseAction extends AbstractAction implements BeanNameAware
     }
 
     @Override
-    public void setBeanName(String string) {
-        this.action = string;
+    public void setBeanName(String beanName) {
+        this.action = beanName;
     }
 
     public void setActionContext(ActionContext actionContext) {
