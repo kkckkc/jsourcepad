@@ -30,7 +30,7 @@
 [ ] Install bundles don't reload bundles
 [ ] What happends when adding items to a bundle menu that was previously empty
 [x] Plugin adding removing from menus in a better way
-[ ] Move bundle installation stuff to bundle editor
+[x] Move bundle installation stuff to bundle editor
 [x] Don't print performance log issues in packaged app
 [ ] Logging for packaged app
 [ ] Select Bundle Item should filter out unavailable due to scope

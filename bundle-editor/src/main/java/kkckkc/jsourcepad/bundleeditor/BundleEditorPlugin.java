@@ -1,6 +1,7 @@
 package kkckkc.jsourcepad.bundleeditor;
 
 import kkckkc.jsourcepad.Plugin;
+import kkckkc.jsourcepad.bundleeditor.installer.InstallerMenu;
 import kkckkc.jsourcepad.model.Project;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.bundle.BundleStructure;
@@ -39,6 +40,8 @@ public class BundleEditorPlugin implements Plugin {
             if (BundleStructure.isBundleDir((File) context)) {
                 return new ClassPathResource("window-bundle-editor.xml");
             }
+        } else if (scope == BeanFactoryLoader.APPLICATION) {
+            return new ClassPathResource("application-bundle-editor.xml");
         }
         return null;  
     }
@@ -46,11 +49,12 @@ public class BundleEditorPlugin implements Plugin {
     @Override
     public <P, C> void init(BeanFactoryLoader.Scope<P, C> scope, P parent, C context, BeanFactory container) {
         if (scope == BeanFactoryLoader.WINDOW) {
+            Window window = container.getBean(Window.class);
             if (BundleStructure.isBundleDir((File) context)) {
                 BundleEditorContextMenu.init(container);
-                Window window = container.getBean(Window.class);
                 window.topic(Project.FileChangeListener.class).subscribe(DispatchStrategy.ASYNC, new BundleFileChangeListener());
             }
+            InstallerMenu.init(container, window);
         }
     }
 }

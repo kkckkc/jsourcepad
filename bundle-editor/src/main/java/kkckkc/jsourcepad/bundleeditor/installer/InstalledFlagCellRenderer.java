@@ -1,4 +1,4 @@
-package kkckkc.jsourcepad.installer.bundle;
+package kkckkc.jsourcepad.bundleeditor.installer;
 
 import javax.swing.*;
 import javax.swing.border.Border;

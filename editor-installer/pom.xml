@@ -17,5 +17,10 @@
             <artifactId>editor</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>kkckkc.jsourcepad</groupId>
+            <artifactId>bundle-editor</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>

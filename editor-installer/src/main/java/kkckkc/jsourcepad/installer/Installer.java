@@ -2,7 +2,7 @@ package kkckkc.jsourcepad.installer;
 
 import com.google.common.base.Function;
 import com.google.common.io.Files;
-import kkckkc.jsourcepad.installer.bundle.BundleInstallerDialog;
+import kkckkc.jsourcepad.bundleeditor.installer.BundleInstallerDialog;
 import kkckkc.jsourcepad.util.Config;
 import org.springframework.beans.factory.annotation.Autowired;
 
