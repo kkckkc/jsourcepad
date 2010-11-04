@@ -21,6 +21,7 @@
 
 [x] Linux shell argument
 [x] Shift right / shift left issue
+[x] Goto line dialog. Previously entered text is pre-selected
 [ ] Cygwin testing
 [ ] Install bundles don't reload bundles
 [ ] What happends when adding items to a bundle menu that was previously empty
