@@ -19,8 +19,8 @@
 [x] Test on Mac
 [x] Tab completion on windows
 
-[ ] Linux shell argument
-
+[x] Linux shell argument
+[x] Shift right / shift left issue
 [ ] Cygwin testing
 [ ] Install bundles don't reload bundles
 [ ] What happends when adding items to a bundle menu that was previously empty
