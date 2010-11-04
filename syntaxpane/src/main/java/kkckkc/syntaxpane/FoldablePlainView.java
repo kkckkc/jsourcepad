@@ -1,23 +1,11 @@
 package kkckkc.syntaxpane;
 
-import java.awt.Graphics;
-import java.awt.Rectangle;
-import java.awt.Shape;
-
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
-import javax.swing.text.Element;
-import javax.swing.text.Highlighter;
-import javax.swing.text.JTextComponent;
-import javax.swing.text.LayeredHighlighter;
-import javax.swing.text.PlainView;
-import javax.swing.text.Position;
-import javax.swing.text.Segment;
-import javax.swing.text.Utilities;
-
 import kkckkc.syntaxpane.model.FoldManager;
 import kkckkc.syntaxpane.model.Interval;
 import kkckkc.syntaxpane.model.SourceDocument;
+
+import javax.swing.text.*;
+import java.awt.*;
 
 
 
@@ -212,9 +200,7 @@ public abstract class FoldablePlainView extends PlainView {
 		
 		int lineIndex = map.getElementIndex(pos);
 
-		Rectangle lineArea = null;
-
-		lineArea = lineToRect(a, lineIndex);
+		Rectangle lineArea = lineToRect(a, lineIndex);
 
 		// determine span from the start of the line
 		tabBase = lineArea.x;

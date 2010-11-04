@@ -2,7 +2,6 @@ package kkckkc.jsourcepad.model.bundle;
 
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
-import kkckkc.jsourcepad.model.WindowManager;
 import kkckkc.jsourcepad.util.io.ScriptExecutor;
 import kkckkc.jsourcepad.util.io.UISupportCallback;
 import kkckkc.utils.io.FileUtils;
@@ -31,8 +30,6 @@ public class TemplateBundleItem implements BundleItem<File> {
     public void execute(final Window window, final File file) throws Exception {
 		ScriptExecutor scriptExecutor = new ScriptExecutor(command, Application.get().getThreadPool());
         scriptExecutor.setDirectory(bundleItemSupplier.getFile().getParentFile());
-
-		WindowManager wm = Application.get().getWindowManager();
 
         Map<String, String> environment = EnvironmentProvider.getEnvironment(window, bundleItemSupplier);
         environment.put("TM_NEW_FILE", file.getCanonicalPath());

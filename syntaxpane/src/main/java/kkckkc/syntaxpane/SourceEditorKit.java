@@ -1,20 +1,14 @@
 package kkckkc.syntaxpane;
 
+import kkckkc.syntaxpane.model.SourceDocument;
+import kkckkc.syntaxpane.parse.grammar.Language;
+import kkckkc.syntaxpane.parse.grammar.LanguageManager;
+
+import javax.swing.text.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
-
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultEditorKit;
-import javax.swing.text.Document;
-import javax.swing.text.Element;
-import javax.swing.text.View;
-import javax.swing.text.ViewFactory;
-
-import kkckkc.syntaxpane.model.SourceDocument;
-import kkckkc.syntaxpane.parse.grammar.Language;
-import kkckkc.syntaxpane.parse.grammar.LanguageManager;
 
 
 
@@ -66,7 +60,7 @@ public class SourceEditorKit extends DefaultEditorKit {
 		document.setLanguage(language);
 		
 		int offset = 0;
-		String line = null;
+		String line;
 		while ((line = br.readLine()) != null) {
 			document.insertString(offset, line + "\n", null);
 			offset += line.length() + 1;

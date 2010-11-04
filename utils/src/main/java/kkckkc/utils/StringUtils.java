@@ -8,7 +8,7 @@ public class StringUtils {
 		final StringBuilder dest = new StringBuilder(s.length() + replacement.length() * 10);
 
 		int from = 0;
-		int to = 0;
+		int to;
 		while ((to = s.indexOf(pattern, from)) >= 0) {
 			dest.append(s.substring(from, to));
 			dest.append(replacement);

@@ -1,13 +1,10 @@
 package kkckkc.jsourcepad.ui.dialog.filechooser;
 
-import java.io.File;
-
+import kkckkc.jsourcepad.Dialog;
+import kkckkc.jsourcepad.model.Window;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import kkckkc.jsourcepad.Dialog;
-import kkckkc.jsourcepad.model.Application;
-import kkckkc.jsourcepad.model.Window;
-import kkckkc.jsourcepad.model.WindowManager;
+import java.io.File;
 
 public class FileSaveDialog implements Dialog<FileChooserView> {
 	private FileChooserView view;
@@ -24,7 +21,6 @@ public class FileSaveDialog implements Dialog<FileChooserView> {
 	}
 	
     public void show(File pwd, FileChooserCallback fileChooserCallback, boolean confirmOverwrite) {
-    	WindowManager wm = Application.get().getWindowManager();
     	view.saveFile(window.getContainer(), pwd, fileChooserCallback, confirmOverwrite);
     }
 

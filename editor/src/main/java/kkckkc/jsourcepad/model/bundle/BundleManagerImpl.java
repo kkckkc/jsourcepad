@@ -221,8 +221,7 @@ public class BundleManagerImpl implements BundleManager {
 			Map m = (Map) r.read(bundleFile); 
 
 			String name = (String) m.get("name");
-			String defaultScopeSelector = (String) m.get("defaultScopeSelector");
-		
+
 			Map menu = (Map) m.get("mainMenu");
 			if (menu == null) {
 				menu = Maps.newHashMap();

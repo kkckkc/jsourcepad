@@ -125,7 +125,7 @@ public class PreviewServer {
 
                         System.out.println("url = " + url);
 
-                        Window window = null;
+                        Window window;
                         if (params.containsKey("windowId")) {
                             int windowId = Integer.parseInt(params.get("windowId"));
 

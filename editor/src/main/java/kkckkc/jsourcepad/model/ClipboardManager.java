@@ -1,7 +1,7 @@
 
 package kkckkc.jsourcepad.model;
 
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -44,15 +44,18 @@ public class ClipboardManager {
             DataFlavor df = DataFlavor.selectBestTextFlavor(transferable.getTransferDataFlavors());
 
             BufferedReader r = new BufferedReader(df.getReaderForText(transferable));
+            try {
+                StringBuilder builder = new StringBuilder();
 
-            StringBuilder b = new StringBuilder();
+                String line;
+                while ((line = r.readLine()) != null) {
+                    builder.append(line).append("\n");
+                }
 
-            String line = null;
-            while ((line = r.readLine()) != null) {
-                b.append(line).append("\n");
+                return builder.toString();
+            } finally {
+                r.close();
             }
-
-            return b.toString();
         } catch (UnsupportedFlavorException ex) {
             throw new RuntimeException(ex);
         } catch (IOException ex) {

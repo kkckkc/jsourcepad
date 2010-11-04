@@ -2,7 +2,9 @@ package kkckkc.jsourcepad.model.bundle.snippet;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import kkckkc.jsourcepad.model.*;
+import kkckkc.jsourcepad.model.Anchor;
+import kkckkc.jsourcepad.model.Application;
+import kkckkc.jsourcepad.model.Buffer;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.bundle.BundleItemSupplier;
 import kkckkc.jsourcepad.model.bundle.EnvironmentProvider;
@@ -236,8 +238,6 @@ public class Snippet {
 
 	    @Override
 	    public void visit(Script script) {
-	    	WindowManager wm = Application.get().getWindowManager();
-	    	
 	        ScriptExecutor scriptExecutor = new ScriptExecutor(script.getBody(), Application.get().getThreadPool());
 	        try {
 	            Execution ex = scriptExecutor.execute(new UISupportCallback(window.getContainer()), 

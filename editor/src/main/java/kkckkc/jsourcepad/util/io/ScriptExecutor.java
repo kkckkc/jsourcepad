@@ -114,10 +114,8 @@ public class ScriptExecutor {
 
         String path = execution.tempScriptFile.getPath();
 
-        List<String> argList = Lists.newArrayList();
-
         SettingsManager settingsManager = Application.get().getSettingsManager();
-        argList = new ArrayList(Arrays.asList(settingsManager.get(ExecutionSettings.class).getArgs()));
+        List<String> argList = new ArrayList(Arrays.asList(settingsManager.get(ExecutionSettings.class).getArgs()));
 
         if (Os.isWindows()) {
             path = Cygwin.makePath(path);

@@ -18,7 +18,6 @@ public class Registry {
         reader.start();
         p.waitFor();
         reader.join();
-        String output = reader.getResult();
 
         p.waitFor();
     }

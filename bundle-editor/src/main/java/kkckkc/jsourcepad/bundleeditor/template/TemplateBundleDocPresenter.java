@@ -1,7 +1,6 @@
 package kkckkc.jsourcepad.bundleeditor.template;
 
 import kkckkc.jsourcepad.bundleeditor.BasicBundleDocPresenter;
-import kkckkc.jsourcepad.bundleeditor.command.CommandBundleDocViewImpl;
 import kkckkc.jsourcepad.bundleeditor.model.BundleDocImpl;
 import kkckkc.jsourcepad.model.bundle.CommandBundleItem;
 
@@ -14,7 +13,6 @@ public class TemplateBundleDocPresenter extends BasicBundleDocPresenter {
         super.saveCallback();
 
         BundleDocImpl bDoc = (BundleDocImpl) doc;
-        CommandBundleDocViewImpl cView = (CommandBundleDocViewImpl) view;
         Map plist = bDoc.getPlist();
 
         plist.put("output", CommandBundleItem.OUTPUT_AFTER_SELECTED_TEXT);

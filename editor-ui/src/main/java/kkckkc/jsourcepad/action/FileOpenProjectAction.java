@@ -32,7 +32,7 @@ public class FileOpenProjectAction extends BaseAction {
 			@Override
 			public void select(File selectedFile) {
                 WindowManager wm = Application.get().getWindowManager();
-		        Window w = wm.newWindow(selectedFile);
+		        wm.newWindow(selectedFile);
 			}
 		});
 	}

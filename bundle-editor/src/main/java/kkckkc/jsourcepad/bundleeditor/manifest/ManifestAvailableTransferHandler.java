@@ -9,8 +9,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.IOException;
 import java.util.Comparator;
 
 class ManifestAvailableTransferHandler extends ManifestTransferHandler {
@@ -25,18 +23,11 @@ class ManifestAvailableTransferHandler extends ManifestTransferHandler {
     @Override
     protected void exportDone(JComponent source, Transferable data, int action) {
         if (action == MOVE) {
-            try {
-                String s = (String) data.getTransferData(BundleTransferable.DATAFLOVOR);
-                DefaultMutableTreeNode node = (DefaultMutableTreeNode) ((JTree) source).getSelectionPath().getLastPathComponent();
-                DefaultMutableTreeNode parent = (DefaultMutableTreeNode) node.getParent();
-                int idx = parent.getIndex(node);
-                parent.remove(node);
-                availableModel.nodesWereRemoved(parent, new int[] { idx }, new Object[] { node });
-            } catch (UnsupportedFlavorException e) {
-                throw new RuntimeException(e);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) ((JTree) source).getSelectionPath().getLastPathComponent();
+            DefaultMutableTreeNode parent = (DefaultMutableTreeNode) node.getParent();
+            int idx = parent.getIndex(node);
+            parent.remove(node);
+            availableModel.nodesWereRemoved(parent, new int[] { idx }, new Object[] { node });
         }
 
         super.exportDone(source, data, action);

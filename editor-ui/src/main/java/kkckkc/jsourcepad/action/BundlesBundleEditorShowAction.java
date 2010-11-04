@@ -22,7 +22,7 @@ public class BundlesBundleEditorShowAction extends BaseAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
         WindowManager wm = Application.get().getWindowManager();
-		Window w = wm.newWindow(Config.getBundlesFolder());
+		wm.newWindow(Config.getBundlesFolder());
 	}
 
 }
