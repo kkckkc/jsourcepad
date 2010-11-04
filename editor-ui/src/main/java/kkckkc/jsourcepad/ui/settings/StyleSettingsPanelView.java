@@ -5,7 +5,6 @@ import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import java.text.NumberFormat;
-import java.text.ParseException;
 
 public class StyleSettingsPanelView extends JPanel implements SettingsPanel.View {
     private JComboBox fonts;
@@ -13,14 +12,10 @@ public class StyleSettingsPanelView extends JPanel implements SettingsPanel.View
     private JComboBox styles;
 
     public StyleSettingsPanelView() {
-        try {
-            initComponents();
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
+        initComponents();
     }
 
-    private void initComponents() throws ParseException {
+    private void initComponents() {
         setOpaque(false);
         setLayout(new MigLayout("insets panel,fillx", "[right]r[grow]", "[]r[]u[]"));
 

@@ -117,7 +117,7 @@ public class CommandBundleItem implements BundleItem<Void> {
 	    return outputMethod;
     }
 	
-	private String getInput(Window window) throws IOException, BadLocationException {
+	private String getInput(Window window) throws BadLocationException {
 		String text;
 		if (! INPUT_NONE.equals(input)) {
 			text = getTextForInput(input, window);
@@ -131,7 +131,7 @@ public class CommandBundleItem implements BundleItem<Void> {
 		return text;
     }
 
-	private String getTextForInput(String type, Window window) throws BadLocationException {
+	private String getTextForInput(String type, Window window) {
         virtualSelection = null;
 
 		Buffer buffer = window.getDocList().getActiveDoc().getActiveBuffer();

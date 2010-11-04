@@ -22,7 +22,7 @@ public class InstallerMenu {
             public void actionPerformed(ActionEvent e) {
                 BundleInstallerDialog dialog = window.getPresenter(BundleInstallerDialog.class);
                 
-                dialog.show();;
+                dialog.show();
             }
         };
         showInstallerAction.putValue(AbstractAction.NAME, "Install Bundles...");

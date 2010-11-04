@@ -92,7 +92,7 @@ public class NIOBinaryPListReader {
         }
     }
 
-	private Object readInteger(int data, ByteBuffer raf) throws IOException {
+	private Object readInteger(int data, ByteBuffer raf) {
 		int byteCount = 1 << (data & 0xf);
 		int dest = 0;
 		for (int i = 0; i < byteCount; i++) {
@@ -128,7 +128,7 @@ public class NIOBinaryPListReader {
 		return new RefCollection(RefCollection.ARRAY, dest);
 	}
 
-	private int readCount(int data, ByteBuffer raf) throws IOException {
+	private int readCount(int data, ByteBuffer raf) {
 		int count = (data & 0xF); 
 		if (count == 15) {
 			int m = fb(raf.get());
@@ -225,7 +225,7 @@ public class NIOBinaryPListReader {
 		return new RefCollection(RefCollection.DICTIONARY, refs);
 	}
 
-	private String readAsciiString(ByteBuffer buf, int offset, int length) throws IOException {
+	private String readAsciiString(ByteBuffer buf, int offset, int length) {
 		byte[] bytes = new byte[length];
 		buf.position(offset);
 		buf.get(bytes);

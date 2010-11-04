@@ -12,10 +12,8 @@ public class NIOXMLPListReader {
         XMLElement xmlElement = new XMLElement();
         xmlElement.parseString(new String(bytes, "utf-8"));
 
-        for (XMLElement xe : ((Collection<XMLElement>) xmlElement.getChildren())) {
-            return parseElement(xe);
-        }
-		throw new RuntimeException("Cannot parse file, no root element");
+        XMLElement xe = (XMLElement) xmlElement.getChildren().iterator().next();
+        return parseElement(xe);
 	}
 
 	private Object parseElement(XMLElement e) {

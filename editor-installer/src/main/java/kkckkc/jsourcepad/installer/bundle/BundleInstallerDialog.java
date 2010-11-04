@@ -247,5 +247,5 @@ public class BundleInstallerDialog implements Dialog<BundleInstallerDialogView> 
         public boolean isSuccessful() {
             return successful;
         }
-    };
+    }
 }

@@ -1,19 +1,18 @@
 package kkckkc.utils.plist;
 
-import java.io.IOException;
+import kkckkc.utils.plist.NIOLegacyPListReader.Tokenizer.Token;
+import kkckkc.utils.plist.NIOLegacyPListReader.Tokenizer.Token.Type;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import kkckkc.utils.plist.NIOLegacyPListReader.Tokenizer.Token;
-import kkckkc.utils.plist.NIOLegacyPListReader.Tokenizer.Token.Type;
-
 
 
 public class NIOLegacyPListReader {
 	
-	public Object read(byte[] bytearr) throws IOException {
+	public Object read(byte[] bytearr) {
 		// Start parsing
 		String s = new String(bytearr);
 		Tokenizer tokenizer = new Tokenizer(s);
@@ -64,9 +63,9 @@ public class NIOLegacyPListReader {
 		private CharSequence buffer;
 		private int position;
 
-		public static enum State { INITIAL, INSTRING };
-		
-		private State state = State.INITIAL;
+		public static enum State { INITIAL, INSTRING }
+
+        private State state = State.INITIAL;
 		private Queue<Token> tokenQueue = new ConcurrentLinkedQueue<Token>();
 		
 		public Tokenizer(CharSequence buffer) {
@@ -133,9 +132,9 @@ public class NIOLegacyPListReader {
 		}
 
 		static class Token {
-			static enum Type { LEFT_BRACE, RIGHT_BRACE, QUOTE, SEMICOLON, EQUALS, STRING};
-			
-			private Type type;
+			static enum Type { LEFT_BRACE, RIGHT_BRACE, QUOTE, SEMICOLON, EQUALS, STRING}
+
+            private Type type;
 			private CharSequence value;
 			private int position;
 			

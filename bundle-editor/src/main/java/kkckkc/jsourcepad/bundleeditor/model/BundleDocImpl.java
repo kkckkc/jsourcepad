@@ -151,7 +151,7 @@ public class BundleDocImpl extends DocImpl {
         this.buffer.setText(languageManager.getLanguage(s, new File("")), new BufferedReader(new StringReader(s)));
     }
     
-    private void saveCommand() throws IOException {
+    private void saveCommand() {
         plist.put("command", this.buffer.getCompleteDocument().getText());
     }
 
@@ -161,7 +161,7 @@ public class BundleDocImpl extends DocImpl {
         this.buffer.setText(languageManager.getLanguage(s, new File("")), new BufferedReader(new StringReader(s)));
     }
 
-    private void saveSnippet() throws IOException {
+    private void saveSnippet() {
         plist.put("content", this.buffer.getCompleteDocument().getText());
     }
 

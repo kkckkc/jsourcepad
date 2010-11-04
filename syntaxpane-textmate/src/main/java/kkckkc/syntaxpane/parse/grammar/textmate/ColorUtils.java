@@ -1,6 +1,6 @@
 package kkckkc.syntaxpane.parse.grammar.textmate;
 
-import java.awt.Color;
+import java.awt.*;
 
 public class ColorUtils {
 	public static Color offset(Color base) {
@@ -42,7 +42,7 @@ public class ColorUtils {
 				Math.min(adjust(b, 1 / FACTOR), 255));
 	}
 
-	private static final int adjust(int color, double factor, double gamma) {
+	private static int adjust(int color, double factor, double gamma) {
 		double c = ((double) color) / 255;
 		double gammaCorrectedC = Math.pow(c, gamma);
 		double gammaCorrectedAdjusted = gammaCorrectedC * factor;
@@ -50,7 +50,7 @@ public class ColorUtils {
 		return (int) (adjusted * 255);
 	}
 		
-	private static final int adjust(int color, double factor) {
+	private static int adjust(int color, double factor) {
 		return adjust(color, factor, 1 / 2.2);
 	}
 	
