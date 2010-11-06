@@ -7,6 +7,7 @@ import kkckkc.jsourcepad.ui.statusbar.CurrentPosition;
 import kkckkc.jsourcepad.ui.statusbar.LanguageView;
 import kkckkc.jsourcepad.ui.statusbar.SymbolView;
 import kkckkc.jsourcepad.ui.statusbar.TabView;
+import net.miginfocom.swing.MigLayout;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
@@ -59,13 +60,14 @@ public class WindowViewImpl implements WindowView {
 		
 		JPanel statusBarPanel = createStatusBar();
 
-		statusBarPanel.add(processStatusBarView(new LanguageView(window)));
-		statusBarPanel.add(delimiter());
-		statusBarPanel.add(processStatusBarView(new CurrentPosition(window)));
-		statusBarPanel.add(delimiter());
-		statusBarPanel.add(processStatusBarView(new TabView(window)));
-		statusBarPanel.add(delimiter());
-		statusBarPanel.add(processStatusBarView(new SymbolView(window)));
+        statusBarPanel.add(new JButton("File Filter"));
+		statusBarPanel.add(processStatusBarView(new LanguageView(window)), "split 8,gapx 10");
+		statusBarPanel.add(delimiter(), "gapx 10");
+		statusBarPanel.add(processStatusBarView(new CurrentPosition(window)), "gapx 10");
+		statusBarPanel.add(delimiter(), "gapx 10");
+		statusBarPanel.add(processStatusBarView(new TabView(window)), "gapx 10");
+		statusBarPanel.add(delimiter(), "gapx 10");
+		statusBarPanel.add(processStatusBarView(new SymbolView(window)), "gapx 10");
 		
 		frame.add(statusBarPanel, BorderLayout.SOUTH);
 	}
@@ -75,7 +77,8 @@ public class WindowViewImpl implements WindowView {
 	}
 
 	protected JPanel createStatusBar() {
-		JPanel statusBarPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING, 15, 0));
+		//JPanel statusBarPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING, 15, 0));
+        JPanel statusBarPanel = new JPanel(new MigLayout("insets 0 0 0 5", "[left][right,grow]"));
 		statusBarPanel.setBorder(new EmptyBorder(0, 0, 0, 0));
 		return statusBarPanel;
 	}
@@ -129,6 +132,7 @@ public class WindowViewImpl implements WindowView {
 	    JLabel jl = new JLabel("");
 		jl.setBorder(new EtchedBorder(EtchedBorder.RAISED));
 		jl.setPreferredSize(new Dimension(1, 20));
+		jl.setMaximumSize(new Dimension(1, 200));
 	    return jl;
     }
 
