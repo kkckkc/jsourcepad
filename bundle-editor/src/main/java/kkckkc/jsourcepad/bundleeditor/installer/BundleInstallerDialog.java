@@ -3,13 +3,17 @@ package kkckkc.jsourcepad.bundleeditor.installer;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import kkckkc.jsourcepad.Dialog;
 import kkckkc.jsourcepad.model.Application;
+import kkckkc.jsourcepad.model.ProxySettings;
 import kkckkc.jsourcepad.model.bundle.BundleManager;
 import kkckkc.jsourcepad.util.Config;
+import kkckkc.jsourcepad.util.Network;
 import kkckkc.jsourcepad.util.io.ScriptExecutor;
 import kkckkc.utils.DomUtil;
+import kkckkc.utils.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -23,10 +27,8 @@ import java.awt.event.ActionListener;
 import java.io.StringReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
 public class BundleInstallerDialog implements Dialog<BundleInstallerDialogView> {
@@ -204,9 +206,29 @@ public class BundleInstallerDialog implements Dialog<BundleInstallerDialogView> 
                     // TODO: Show progress
                     StatusCallback statusCallback = new StatusCallback();
 
-                    ScriptExecutor se = new ScriptExecutor("git clone " + entry.getUrl().replaceAll("https:", "http:") + ".git", Application.get().getThreadPool());
+                    Map<String, String> env = Maps.newHashMap();
+                    env.putAll(System.getenv());
+
+
+                    StringBuilder command = new StringBuilder();
+                    command.append("git ");
+
+                    ProxySettings proxySettings = Application.get().getSettingsManager().get(ProxySettings.class);
+                    if (proxySettings.getProxyType() != ProxySettings.ProxyType.NO_PROXY) {
+                        Pair<String, Integer> proxy = Network.getProxy("http://github.com");
+                        if (proxy != null) {
+                            env.put("http_proxy", proxy.getFirst() + ":" + proxy.getSecond());
+                        }
+                    }
+
+                    command.append("clone ");
+                    command.append(entry.getUrl().replaceAll("https:", "http:")).append(".git");
+
+                    System.out.println("command.toString = " + command.toString());
+
+                    ScriptExecutor se = new ScriptExecutor(command.toString(), Application.get().getThreadPool());
                     se.setDirectory(Config.getBundlesFolder());
-                    final ScriptExecutor.Execution execution = se.execute(statusCallback, new StringReader(""), System.getenv());
+                    final ScriptExecutor.Execution execution = se.execute(statusCallback, new StringReader(""), env);
                     execution.waitForCompletion();
                         
                     if (! statusCallback.isSuccessful()) {

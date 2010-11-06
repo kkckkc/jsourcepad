@@ -6,6 +6,7 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -124,6 +125,16 @@ public class ActionGroup extends AbstractAction implements BeanFactoryAware {
     }
 
     public void updateDerivedComponents() {
+        if (! EventQueue.isDispatchThread()) {
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    updateDerivedComponents();
+                }
+            });
+            return;
+        }
+
         for (WeakReference<JComponent> ref : derivedComponents) {
             if (ref == null) continue;
 

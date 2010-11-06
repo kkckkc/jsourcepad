@@ -26,7 +26,7 @@
 [x] Fullscreen restore issue with Substance lnf
 [x] Potential fix for firewall issue
 [x] Fixed problem with new file from template on Cygwin
-[ ] Proxy issue
+[x] Proxy issue
 [ ] Cygwin testing
 [ ] Install bundles don't reload bundles
 [ ] What happends when adding items to a bundle menu that was previously empty

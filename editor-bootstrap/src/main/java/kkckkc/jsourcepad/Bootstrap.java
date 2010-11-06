@@ -4,6 +4,7 @@ import com.google.common.base.Function;
 import com.sun.net.httpserver.HttpServer;
 import kkckkc.jsourcepad.http.PreviewServer;
 import kkckkc.jsourcepad.model.Application;
+import kkckkc.jsourcepad.model.ProxySettings;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.bundle.BundleManager;
 import kkckkc.jsourcepad.util.Config;
@@ -171,6 +172,9 @@ public class Bootstrap implements Runnable {
 			public void run() {
                 Application.get();
                 Application.get().getBeanFactory().getBean("applicationController");
+
+                // Set proxy settings
+                Application.get().getSettingsManager().get(ProxySettings.class).apply();
 
                 if (isFirstStart()) {
                     Function<Runnable, Boolean> installer =

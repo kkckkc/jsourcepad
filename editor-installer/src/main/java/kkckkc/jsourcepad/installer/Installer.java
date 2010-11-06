@@ -4,6 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.io.Files;
 import kkckkc.jsourcepad.bundleeditor.installer.BundleInstallerDialog;
 import kkckkc.jsourcepad.util.Config;
+import kkckkc.jsourcepad.util.Network;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
@@ -48,7 +49,16 @@ public class Installer implements Function<Runnable, Boolean> {
                     new String[] { "Yes, Run Bundle Installer Now", "No, I'll Run it Later" },
                     "Yes, Run Bundle Installer Now");
             if (option == 0) {
-                bundleInstallerDialog.show();
+                if (! Network.checkConnectivity()) {
+                    JOptionPane.showMessageDialog(null,
+                        "It seems that the Internet is not reachable. It might be due to network connectivity\n" +
+                        "problems. It can also that you need to enter proxy server details before connecting. \n" +
+                        "Proxy settings can be configured from the Preferences dialog and you can install bundles later.",
+                        "Network Connectivity",
+                        JOptionPane.ERROR_MESSAGE);
+                } else {
+                    bundleInstallerDialog.show();
+                }
             }
 
             continuation.run();
