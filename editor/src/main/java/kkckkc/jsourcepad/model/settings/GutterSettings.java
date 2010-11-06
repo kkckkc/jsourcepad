@@ -1,8 +1,6 @@
-package kkckkc.jsourcepad.model;
+package kkckkc.jsourcepad.model.settings;
 
-import kkckkc.jsourcepad.model.SettingsManager.Setting;
-
-public class GutterSettings implements Setting {
+public class GutterSettings implements SettingsManager.Setting {
 
     private boolean lineNumbers;
     private boolean foldings;
@@ -24,7 +22,7 @@ public class GutterSettings implements Setting {
     }
 
     @Override
-    public Setting getDefault() {
+    public SettingsManager.Setting getDefault() {
         GutterSettings s = new GutterSettings();
         s.lineNumbers = true;
         s.foldings = true;

@@ -2,7 +2,7 @@ package kkckkc.jsourcepad.ui.dialog.settings;
 
 import com.google.common.collect.Lists;
 import kkckkc.jsourcepad.Dialog;
-import kkckkc.jsourcepad.model.SettingsPanel;
+import kkckkc.jsourcepad.model.settings.SettingsPanel;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;

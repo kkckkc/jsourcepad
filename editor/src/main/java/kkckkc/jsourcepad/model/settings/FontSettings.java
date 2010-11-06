@@ -1,11 +1,10 @@
-package kkckkc.jsourcepad.model;
+package kkckkc.jsourcepad.model.settings;
 
-import kkckkc.jsourcepad.model.SettingsManager.Setting;
 import kkckkc.utils.Os;
 
 import java.awt.*;
 
-public class FontSettings implements Setting {
+public class FontSettings implements SettingsManager.Setting {
 
 	private String font;
 	private int style;

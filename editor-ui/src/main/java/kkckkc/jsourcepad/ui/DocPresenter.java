@@ -4,9 +4,13 @@ import kkckkc.jsourcepad.Presenter;
 import kkckkc.jsourcepad.action.ActionContextKeys;
 import kkckkc.jsourcepad.action.text.IndentAction;
 import kkckkc.jsourcepad.action.text.TabAction;
-import kkckkc.jsourcepad.model.*;
-import kkckkc.jsourcepad.model.SettingsManager.Listener;
-import kkckkc.jsourcepad.model.SettingsManager.Setting;
+import kkckkc.jsourcepad.model.Application;
+import kkckkc.jsourcepad.model.Buffer;
+import kkckkc.jsourcepad.model.Doc;
+import kkckkc.jsourcepad.model.Window;
+import kkckkc.jsourcepad.model.settings.*;
+import kkckkc.jsourcepad.model.settings.SettingsManager.Listener;
+import kkckkc.jsourcepad.model.settings.SettingsManager.Setting;
 import kkckkc.jsourcepad.util.action.ActionContext;
 import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
 import kkckkc.syntaxpane.ScrollableSourcePane;
@@ -26,7 +30,8 @@ public class DocPresenter implements Presenter<DocView> {
 	
 	// Collaborators
 	protected DocView view;
-
+    protected Window window;
+    
 	@Autowired
     public void setView(DocView view) {
 	    this.view = view;
@@ -35,8 +40,13 @@ public class DocPresenter implements Presenter<DocView> {
 	public DocView getView() {
 	    return view;
     }
-	
-	@Autowired
+
+    @Autowired
+    public void setWindow(Window window) {
+        this.window = window;
+    }
+
+    @Autowired
 	public void setDoc(Doc doc) {
 	    this.doc = doc;
     }
@@ -45,20 +55,24 @@ public class DocPresenter implements Presenter<DocView> {
     public void init() {
 		sourcePane = view.getSourcePane();
 
-
  		doc.getActiveBuffer().bind(sourcePane.getEditorPane());
 
 		Application app = Application.get();
-		
+
 		app.getSettingsManager().subscribe(new SettingsListener(), false, app, doc);
+        if (window.getProject() != null) {
+            window.getProject().getSettingsManager().subscribe(new ProjectSettingsListener(window.getProject().getSettingsManager()), false, app, doc);
+        } else {
+            app.getSettingsManager().subscribe(new ProjectSettingsListener(app.getSettingsManager()), false, app, doc);
+        }
 
 		sourcePane.getEditorPane().getKeymap().addActionForKeyStroke(
 				KeyStroke.getKeyStroke((char) KeyEvent.VK_ENTER), new IndentAction(doc));
 
 		sourcePane.getEditorPane().getKeymap().removeKeyStrokeBinding(
-				KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0));
+                KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0));
 		sourcePane.getEditorPane().getKeymap().addActionForKeyStroke(
-				KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), new TabAction(doc));
+                KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), new TabAction(doc));
 
         sourcePane.getEditorPane().getKeymap().addActionForKeyStroke(
                 KeyStroke.getKeyStroke(KeyEvent.VK_HOME, 0),
@@ -147,19 +161,14 @@ public class DocPresenter implements Presenter<DocView> {
     private final class SettingsListener implements Listener {
 	    private SettingsListener() {
 		    // Init
-			settingUpdated(Application.get().getSettingsManager().get(TabSettings.class));
 			settingUpdated(Application.get().getSettingsManager().get(StyleSettings.class));
 			settingUpdated(Application.get().getSettingsManager().get(FontSettings.class));
-			settingUpdated(Application.get().getSettingsManager().get(EditModeSettings.class));
             settingUpdated(Application.get().getSettingsManager().get(GutterSettings.class));
 	    }
 
 	    @Override
 	    public void settingUpdated(Setting settings) {
-	        if (settings instanceof TabSettings) {
-	        	TabSettings tabSettings = (TabSettings) settings;
-	        	view.updateTabSize(tabSettings.getTabSize());
-	        } else if (settings instanceof StyleSettings) {
+	        if (settings instanceof StyleSettings) {
 	        	StyleSettings styleSettings = (StyleSettings) settings;
 	        	view.getSourcePane().setStyleScheme(Application.get().getStyleScheme(styleSettings));
                 view.getSourcePane().setShowInvisibles(styleSettings.isShowInvisibles());
@@ -167,9 +176,6 @@ public class DocPresenter implements Presenter<DocView> {
 	        } else if (settings instanceof FontSettings) {
 	        	FontSettings fontSettings = (FontSettings) settings;
 	        	view.getSourcePane().setFont(fontSettings.asFont());
-	        } else if (settings instanceof EditModeSettings) {
-	        	EditModeSettings editModeSettings = (EditModeSettings) settings;
-	        	view.getSourcePane().setOverwriteMode(editModeSettings.isOverwriteMode());
 	        } else if (settings instanceof GutterSettings) {
 	        	GutterSettings gutterSettings = (GutterSettings) settings;
 	        	view.getSourcePane().setFoldings(gutterSettings.isFoldings());
@@ -181,7 +187,26 @@ public class DocPresenter implements Presenter<DocView> {
 	    }
     }
 
+    private final class ProjectSettingsListener implements Listener {
+	    private ProjectSettingsListener(SettingsManager settingsManager) {
+		    // Init
+			settingUpdated(settingsManager.get(TabProjectSettings.class));
+			settingUpdated(settingsManager.get(EditModeProjectSettings.class));
+	    }
 
+	    @Override
+	    public void settingUpdated(Setting settings) {
+	        if (settings instanceof TabProjectSettings) {
+	        	TabProjectSettings tabSettings = (TabProjectSettings) settings;
+	        	view.updateTabSize(tabSettings.getTabSize());
+	        } else if (settings instanceof EditModeProjectSettings) {
+	        	EditModeProjectSettings editModeProjectSettings = (EditModeProjectSettings) settings;
+	        	view.getSourcePane().setOverwriteMode(editModeProjectSettings.isOverwriteMode());
+	        }
+
+	        view.redraw();
+	    }
+    }
 
     private class ActionContextUpdater implements Doc.StateListener, Buffer.SelectionListener {
         @Override

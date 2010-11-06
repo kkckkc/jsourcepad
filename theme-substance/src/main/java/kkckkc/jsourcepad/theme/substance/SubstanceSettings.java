@@ -1,6 +1,6 @@
 package kkckkc.jsourcepad.theme.substance;
 
-import kkckkc.jsourcepad.model.SettingsManager;
+import kkckkc.jsourcepad.model.settings.SettingsManager;
 
 public class SubstanceSettings implements SettingsManager.Setting {
 

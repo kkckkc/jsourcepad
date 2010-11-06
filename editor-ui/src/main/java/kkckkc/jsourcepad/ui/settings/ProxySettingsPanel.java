@@ -1,9 +1,9 @@
 package kkckkc.jsourcepad.ui.settings;
 
 import kkckkc.jsourcepad.model.Application;
-import kkckkc.jsourcepad.model.ProxySettings;
-import kkckkc.jsourcepad.model.SettingsManager;
-import kkckkc.jsourcepad.model.SettingsPanel;
+import kkckkc.jsourcepad.model.settings.ProxySettings;
+import kkckkc.jsourcepad.model.settings.SettingsManager;
+import kkckkc.jsourcepad.model.settings.SettingsPanel;
 import kkckkc.jsourcepad.util.Network;
 
 import javax.swing.*;

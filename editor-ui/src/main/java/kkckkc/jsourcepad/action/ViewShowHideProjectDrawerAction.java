@@ -1,8 +1,8 @@
 package kkckkc.jsourcepad.action;
 
 import kkckkc.jsourcepad.model.Application;
-import kkckkc.jsourcepad.model.SettingsManager;
-import kkckkc.jsourcepad.model.WindowSettings;
+import kkckkc.jsourcepad.model.settings.SettingsManager;
+import kkckkc.jsourcepad.model.settings.WindowSettings;
 import kkckkc.jsourcepad.util.action.BaseAction;
 import kkckkc.jsourcepad.util.action.Presenter;
 

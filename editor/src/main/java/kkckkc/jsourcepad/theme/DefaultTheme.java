@@ -1,6 +1,6 @@
 package kkckkc.jsourcepad.theme;
 
-import kkckkc.jsourcepad.model.SettingsPanel;
+import kkckkc.jsourcepad.model.settings.SettingsPanel;
 import kkckkc.jsourcepad.util.BeanFactoryLoader;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.core.io.Resource;

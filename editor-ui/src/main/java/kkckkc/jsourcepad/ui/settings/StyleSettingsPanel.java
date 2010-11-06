@@ -1,6 +1,10 @@
 package kkckkc.jsourcepad.ui.settings;
 
-import kkckkc.jsourcepad.model.*;
+import kkckkc.jsourcepad.model.Application;
+import kkckkc.jsourcepad.model.settings.FontSettings;
+import kkckkc.jsourcepad.model.settings.SettingsManager;
+import kkckkc.jsourcepad.model.settings.SettingsPanel;
+import kkckkc.jsourcepad.model.settings.StyleSettings;
 
 import javax.swing.*;
 import java.awt.*;

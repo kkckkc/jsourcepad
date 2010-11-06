@@ -1,9 +1,6 @@
+package kkckkc.jsourcepad.model.settings;
 
-package kkckkc.jsourcepad.model;
-
-import kkckkc.jsourcepad.model.SettingsManager.Setting;
-
-public class EditModeSettings implements Setting {
+public class EditModeProjectSettings implements SettingsManager.ProjectSetting {
 
     private boolean overwriteMode;
     private boolean freehandMode;
@@ -25,8 +22,8 @@ public class EditModeSettings implements Setting {
     }
 
     @Override
-    public Setting getDefault() {
-        EditModeSettings s = new EditModeSettings();
+    public SettingsManager.Setting getDefault() {
+        EditModeProjectSettings s = new EditModeProjectSettings();
         return s;
     }
 

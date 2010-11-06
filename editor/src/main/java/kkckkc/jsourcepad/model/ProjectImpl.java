@@ -6,6 +6,8 @@ import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
+import kkckkc.jsourcepad.model.settings.ProjectSettingsManager;
+import kkckkc.jsourcepad.model.settings.SettingsManager;
 import kkckkc.jsourcepad.util.DefaultFileMonitor;
 import kkckkc.jsourcepad.util.FileMonitor;
 import kkckkc.jsourcepad.util.QueryUtils;
@@ -34,6 +36,7 @@ public class ProjectImpl implements Project, DocList.Listener, Window.FocusListe
 	
 	private DefaultFileMonitor fileMonitor;
 	private List<File> selectedFiles = Lists.newArrayList();
+    private SettingsManager settingsManager;
 	
 	@Autowired
 	public void setWindow(Window window) {
@@ -57,6 +60,8 @@ public class ProjectImpl implements Project, DocList.Listener, Window.FocusListe
                     return ! input.getName().endsWith(".class");
                 }
             });
+
+            settingsManager = new ProjectSettingsManager(window, projectDir);
         }
 	}
 	
@@ -192,5 +197,9 @@ public class ProjectImpl implements Project, DocList.Listener, Window.FocusListe
 	    this.selectedFiles = paths;
     }
 
+    @Override
+    public SettingsManager getSettingsManager() {
+        return settingsManager;
+    }
 
 }

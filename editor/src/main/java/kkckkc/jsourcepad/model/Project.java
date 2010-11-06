@@ -1,5 +1,7 @@
 package kkckkc.jsourcepad.model;
 
+import kkckkc.jsourcepad.model.settings.SettingsManager;
+
 import java.io.File;
 import java.util.List;
 
@@ -23,5 +25,7 @@ public interface Project {
 	
 	public List<File> getSelectedFiles();
 	public void setSelectedFiles(List<File> paths);
+
+    public SettingsManager getSettingsManager();
 
 }

@@ -1,4 +1,4 @@
-package kkckkc.jsourcepad.model;
+package kkckkc.jsourcepad.model.settings;
 
 import kkckkc.utils.Os;
 

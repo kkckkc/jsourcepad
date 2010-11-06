@@ -1,9 +1,8 @@
-package kkckkc.jsourcepad.model;
+package kkckkc.jsourcepad.model.settings;
 
-import kkckkc.jsourcepad.model.SettingsManager.Setting;
 import kkckkc.utils.Os;
 
-public class ExecutionSettings implements Setting {
+public class ExecutionSettings implements SettingsManager.Setting {
 
 	private String[] args;
 

@@ -1,16 +1,16 @@
 /**
  * 
  */
-package kkckkc.jsourcepad.model;
+package kkckkc.jsourcepad.model.settings;
 
-public class TabSettings implements SettingsManager.Setting {
+public class TabProjectSettings implements SettingsManager.ProjectSetting {
 	private boolean softTabs;
 	private int tabSize;
 
-	public TabSettings() {
+	public TabProjectSettings() {
 	}
 	
-	public TabSettings(boolean softTabs, int tabSize) {
+	public TabProjectSettings(boolean softTabs, int tabSize) {
         this.softTabs = softTabs;
         this.tabSize = tabSize;
     }
@@ -32,7 +32,7 @@ public class TabSettings implements SettingsManager.Setting {
     }
 
 	@Override
-    public TabSettings getDefault() {
-        return new TabSettings(false, 4);
+    public TabProjectSettings getDefault() {
+        return new TabProjectSettings(false, 4);
     }
 }

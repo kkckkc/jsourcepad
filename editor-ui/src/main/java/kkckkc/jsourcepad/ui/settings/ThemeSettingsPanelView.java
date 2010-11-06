@@ -1,6 +1,6 @@
 package kkckkc.jsourcepad.ui.settings;
 
-import kkckkc.jsourcepad.model.SettingsPanel;
+import kkckkc.jsourcepad.model.settings.SettingsPanel;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;

@@ -1,9 +1,9 @@
 package kkckkc.jsourcepad.theme.osx;
 
-import kkckkc.jsourcepad.model.SettingsManager;
-import kkckkc.jsourcepad.model.SettingsPanel;
-import kkckkc.jsourcepad.model.ThemeSettings;
 import kkckkc.jsourcepad.model.Window;
+import kkckkc.jsourcepad.model.settings.SettingsManager;
+import kkckkc.jsourcepad.model.settings.SettingsPanel;
+import kkckkc.jsourcepad.model.settings.ThemeSettings;
 import kkckkc.jsourcepad.theme.Theme;
 import kkckkc.jsourcepad.util.BeanFactoryLoader;
 import kkckkc.utils.Os;

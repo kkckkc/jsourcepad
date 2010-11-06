@@ -2,8 +2,8 @@ package kkckkc.jsourcepad.action;
 
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Buffer;
-import kkckkc.jsourcepad.model.StyleSettings;
 import kkckkc.jsourcepad.model.Window;
+import kkckkc.jsourcepad.model.settings.StyleSettings;
 import kkckkc.jsourcepad.util.action.BaseAction;
 import kkckkc.syntaxpane.model.TextInterval;
 

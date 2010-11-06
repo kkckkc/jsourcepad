@@ -1,7 +1,7 @@
 package kkckkc.jsourcepad.theme.substance;
 
 import kkckkc.jsourcepad.model.Application;
-import kkckkc.jsourcepad.model.SettingsPanel;
+import kkckkc.jsourcepad.model.settings.SettingsPanel;
 import net.miginfocom.swing.MigLayout;
 import org.pushingpixels.substance.api.SubstanceLookAndFeel;
 import org.pushingpixels.substance.api.SubstanceSkin;

@@ -4,6 +4,8 @@ import kkckkc.jsourcepad.Plugin;
 import kkckkc.jsourcepad.PluginManager;
 import kkckkc.jsourcepad.ScopeRoot;
 import kkckkc.jsourcepad.model.bundle.BundleManager;
+import kkckkc.jsourcepad.model.settings.SettingsManager;
+import kkckkc.jsourcepad.model.settings.StyleSettings;
 import kkckkc.jsourcepad.theme.DefaultTheme;
 import kkckkc.jsourcepad.theme.Theme;
 import kkckkc.jsourcepad.util.BeanFactoryLoader;

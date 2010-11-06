@@ -1,6 +1,6 @@
-package kkckkc.jsourcepad.model;
+package kkckkc.jsourcepad.model.settings;
 
-import kkckkc.jsourcepad.model.SettingsManager.Setting;
+import kkckkc.jsourcepad.model.settings.SettingsManager.Setting;
 
 public class StyleSettings implements Setting {
 

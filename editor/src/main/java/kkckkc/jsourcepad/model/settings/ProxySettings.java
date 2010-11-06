@@ -1,4 +1,4 @@
-package kkckkc.jsourcepad.model;
+package kkckkc.jsourcepad.model.settings;
 
 public class ProxySettings implements SettingsManager.Setting {
 

@@ -1,4 +1,4 @@
-package kkckkc.jsourcepad.model;
+package kkckkc.jsourcepad.model.settings;
 
 import kkckkc.jsourcepad.util.messagebus.MessageBus;
 
@@ -6,6 +6,8 @@ public interface SettingsManager {
 	public interface Setting { 
 		public Setting getDefault();
 	}
+
+    public interface ProjectSetting extends Setting { }
 	
 	public interface Listener<U extends Setting> {
 		public void settingUpdated(U settings);
@@ -19,5 +21,5 @@ public interface SettingsManager {
 	public <T extends Setting> void subscribe(Listener<?> listener, boolean fireAtInit, MessageBus... messageBus);
 
 
-    public static SettingsManager GLOBAL = new SettingsManagerImpl(); 
+    public static SettingsManager GLOBAL = new GlobalSettingsManager();
 }

@@ -1,8 +1,8 @@
 package kkckkc.jsourcepad.action;
 
 import kkckkc.jsourcepad.model.Application;
-import kkckkc.jsourcepad.model.FontSettings;
-import kkckkc.jsourcepad.model.SettingsManager;
+import kkckkc.jsourcepad.model.settings.FontSettings;
+import kkckkc.jsourcepad.model.settings.SettingsManager;
 import kkckkc.jsourcepad.util.action.BaseAction;
 
 import java.awt.event.ActionEvent;

@@ -3,9 +3,9 @@ package kkckkc.jsourcepad.os.windows;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import kkckkc.jsourcepad.model.Application;
-import kkckkc.jsourcepad.model.ExecutionSettings;
-import kkckkc.jsourcepad.model.SettingsManager;
-import kkckkc.jsourcepad.model.SettingsPanel;
+import kkckkc.jsourcepad.model.settings.ExecutionSettings;
+import kkckkc.jsourcepad.model.settings.SettingsManager;
+import kkckkc.jsourcepad.model.settings.SettingsPanel;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;

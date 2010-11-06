@@ -27,6 +27,9 @@
 [x] Potential fix for firewall issue
 [x] Fixed problem with new file from template on Cygwin
 [x] Proxy issue
+[x]ÊWindow/project specific settings - for instance for overwrite mode and tab size
+[ ] Project filtering
+[ ] Loading huge projects is slow
 [ ] Cygwin testing
 [ ] Install bundles don't reload bundles
 [ ] What happends when adding items to a bundle menu that was previously empty
@@ -35,7 +38,6 @@
 [x] Don't print performance log issues in packaged app
 [ ] Logging for packaged app
 [ ] Select Bundle Item should filter out unavailable due to scope
-[ ] Project filtering
 [ ] Themes shouldn't really be plugins directly. Also add themes for native, metal etc
 
 [ ] Implement proper completion
@@ -64,7 +66,6 @@
 [ ] Move actions to plist format
 [ ] Window menu
 [ ] Replacement for keystrokes that are impossible on non-us keyboards
-[ ]ÊWindow/project specific settings - for instance for overwrite mode and tab size
 [ ] Freehanded editing
 [ ] Bookmarks
 [ ] Rework FoldManager and support fold level actions

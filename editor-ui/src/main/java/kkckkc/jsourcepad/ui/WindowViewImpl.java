@@ -2,7 +2,7 @@ package kkckkc.jsourcepad.ui;
 
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
-import kkckkc.jsourcepad.model.WindowSettings;
+import kkckkc.jsourcepad.model.settings.WindowSettings;
 import kkckkc.jsourcepad.ui.statusbar.CurrentPosition;
 import kkckkc.jsourcepad.ui.statusbar.LanguageView;
 import kkckkc.jsourcepad.ui.statusbar.SymbolView;

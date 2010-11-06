@@ -1,28 +1,21 @@
 package kkckkc.jsourcepad.ui.statusbar;
 
+import com.google.common.collect.Maps;
+import kkckkc.jsourcepad.model.Application;
+import kkckkc.jsourcepad.model.Doc;
+import kkckkc.jsourcepad.model.DocList;
+import kkckkc.jsourcepad.model.Window;
+import kkckkc.jsourcepad.model.settings.SettingsManager;
+import kkckkc.jsourcepad.model.settings.TabProjectSettings;
+import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
+import kkckkc.jsourcepad.util.ui.PopupUtils;
+
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Map;
 
-import javax.swing.ButtonGroup;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JLabel;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.JRadioButtonMenuItem;
-
-import kkckkc.jsourcepad.model.Application;
-import kkckkc.jsourcepad.model.Doc;
-import kkckkc.jsourcepad.model.DocList;
-import kkckkc.jsourcepad.model.SettingsManager;
-import kkckkc.jsourcepad.model.TabSettings;
-import kkckkc.jsourcepad.model.Window;
-import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
-import kkckkc.jsourcepad.util.ui.PopupUtils;
-
-import com.google.common.collect.Maps;
-
-public class TabView extends JLabel implements DocList.Listener, ActionListener, SettingsManager.Listener<TabSettings> {
+public class TabView extends JLabel implements DocList.Listener, ActionListener, SettingsManager.Listener<TabProjectSettings> {
 
 	private Window window;
 
@@ -53,7 +46,7 @@ public class TabView extends JLabel implements DocList.Listener, ActionListener,
 		
 		PopupUtils.bind(popupMenu, this, true);
 		
-		Application.get().getSettingsManager().subscribe(TabSettings.class, this, false, Application.get());
+		Application.get().getSettingsManager().subscribe(TabProjectSettings.class, this, false, Application.get());
 	}
 
 	private JMenuItem makeTabSizeButton(ButtonGroup tabSizeGroup, Integer size) {
@@ -73,7 +66,7 @@ public class TabView extends JLabel implements DocList.Listener, ActionListener,
 
 	@Override
     public void created(Doc doc) { 
-		Application.get().getSettingsManager().subscribe(TabSettings.class, this, false, doc);
+		Application.get().getSettingsManager().subscribe(TabProjectSettings.class, this, false, doc);
 	}
 
 	@Override
@@ -86,7 +79,7 @@ public class TabView extends JLabel implements DocList.Listener, ActionListener,
 			setEnabled(false);
 		    setText("--");
 		} else {
-			updateLabel(new TabSettings(
+			updateLabel(new TabProjectSettings(
 					doc.getTabManager().isSoftTabs(), 
 					doc.getTabManager().getTabSize()));
 		}
@@ -96,24 +89,37 @@ public class TabView extends JLabel implements DocList.Listener, ActionListener,
     public void actionPerformed(ActionEvent e) {
 		Doc doc = window.getDocList().getActiveDoc();
 		
-		TabSettings newSettings;
+		TabProjectSettings newSettings;
 		if (e.getSource() == softTabsCheck) {
 			boolean isChecked = ((JCheckBoxMenuItem) e.getSource()).isSelected();
-			newSettings = new TabSettings(isChecked, doc.getTabManager().getTabSize());
+			newSettings = new TabProjectSettings(isChecked, doc.getTabManager().getTabSize());
 		} else {
 			int size = Integer.parseInt(((JRadioButtonMenuItem) e.getSource()).getText());
-			newSettings = new TabSettings(doc.getTabManager().isSoftTabs(), size);
+			newSettings = new TabProjectSettings(doc.getTabManager().isSoftTabs(), size);
 		}
+
+        getSettingsManager().update(newSettings);
 		
 		doc.topic(SettingsManager.Listener.class).post().settingUpdated(newSettings);
     }
 
+
+    private SettingsManager getSettingsManager() {
+        SettingsManager settingsManager;
+        if (window.getProject() != null) {
+            settingsManager = window.getProject().getSettingsManager();
+        } else {
+            settingsManager = Application.get().getSettingsManager();
+        }
+        return settingsManager;
+    }
+
 	@Override
-    public void settingUpdated(TabSettings settings) {
+    public void settingUpdated(TabProjectSettings settings) {
 		updateLabel(settings);
     }
 
-	private void updateLabel(TabSettings settings) {
+	private void updateLabel(TabProjectSettings settings) {
 		setEnabled(true);
 
 		StringBuilder b = new StringBuilder();

@@ -3,9 +3,9 @@ package kkckkc.jsourcepad.ui.settings;
 import kkckkc.jsourcepad.Plugin;
 import kkckkc.jsourcepad.PluginManager;
 import kkckkc.jsourcepad.model.Application;
-import kkckkc.jsourcepad.model.SettingsManager;
-import kkckkc.jsourcepad.model.SettingsPanel;
-import kkckkc.jsourcepad.model.ThemeSettings;
+import kkckkc.jsourcepad.model.settings.SettingsManager;
+import kkckkc.jsourcepad.model.settings.SettingsPanel;
+import kkckkc.jsourcepad.model.settings.ThemeSettings;
 import kkckkc.jsourcepad.theme.DefaultTheme;
 import kkckkc.jsourcepad.theme.Theme;
 

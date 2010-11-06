@@ -1,6 +1,6 @@
 package kkckkc.jsourcepad.os.windows;
 
-import kkckkc.jsourcepad.model.SettingsPanel;
+import kkckkc.jsourcepad.model.settings.SettingsPanel;
 import kkckkc.jsourcepad.os.windows.registry.Registry;
 import kkckkc.utils.Os;
 import net.miginfocom.swing.MigLayout;
