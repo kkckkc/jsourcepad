@@ -1,5 +1,6 @@
 package kkckkc.jsourcepad.model;
 
+import com.google.common.base.Predicate;
 import kkckkc.jsourcepad.model.settings.SettingsManager;
 
 import java.io.File;
@@ -27,5 +28,7 @@ public interface Project {
 	public void setSelectedFiles(List<File> paths);
 
     public SettingsManager getSettingsManager();
+
+    public Predicate<File> getFilePredicate();
 
 }

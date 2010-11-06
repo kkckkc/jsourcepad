@@ -2,10 +2,10 @@ package kkckkc.jsourcepad.model;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
+import kkckkc.jsourcepad.model.settings.IgnorePatternProjectSettings;
 import kkckkc.jsourcepad.model.settings.ProjectSettingsManager;
 import kkckkc.jsourcepad.model.settings.SettingsManager;
 import kkckkc.jsourcepad.util.DefaultFileMonitor;
@@ -19,6 +19,7 @@ import org.springframework.util.StringUtils;
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class ProjectImpl implements Project, DocList.Listener, Window.FocusListener, FileMonitor.Listener {
 	private static final int MAX_ENTRIES = 20;
@@ -37,7 +38,9 @@ public class ProjectImpl implements Project, DocList.Listener, Window.FocusListe
 	private DefaultFileMonitor fileMonitor;
 	private List<File> selectedFiles = Lists.newArrayList();
     private SettingsManager settingsManager;
-	
+
+    private Predicate<File> predicate;
+
 	@Autowired
 	public void setWindow(Window window) {
 	    this.window = window;
@@ -51,17 +54,22 @@ public class ProjectImpl implements Project, DocList.Listener, Window.FocusListe
 	@PostConstruct
 	public void init() {
         if (projectDir != null) {
+            settingsManager = new ProjectSettingsManager(window, projectDir);
+
+            IgnorePatternProjectSettings ignorePatternProjectSettings = getSettingsManager().get(IgnorePatternProjectSettings.class);
+            final Pattern pattern = Pattern.compile(ignorePatternProjectSettings.getPattern());
+
             window.topic(Window.FocusListener.class).subscribe(DispatchStrategy.ASYNC, this);
-            
+
+            predicate = new Predicate<File>() {
+                public boolean apply(File input) {
+                    return ! pattern.matcher(input.getName()).matches();
+                }
+            };
+
             fileMonitor = new DefaultFileMonitor(Application.get().getThreadPool());
             fileMonitor.addListener(this);
-            fileMonitor.registerRecursively(getProjectDir(), new Predicate<File>() {
-                public boolean apply(File input) {
-                    return ! input.getName().endsWith(".class");
-                }
-            });
-
-            settingsManager = new ProjectSettingsManager(window, projectDir);
+            fileMonitor.registerRecursively(getProjectDir(), predicate);
         }
 	}
 	
@@ -120,7 +128,7 @@ public class ProjectImpl implements Project, DocList.Listener, Window.FocusListe
 	private void populateCacheIfEmpty() {
 		synchronized (cache) {
 			if (cache.isEmpty()) {
-		    	populateCacheRecusively(Predicates.<File>alwaysTrue(), projectDir, 10000);
+		    	populateCacheRecusively(predicate, projectDir, 10000);
 		    }
 		}
     }
@@ -200,6 +208,11 @@ public class ProjectImpl implements Project, DocList.Listener, Window.FocusListe
     @Override
     public SettingsManager getSettingsManager() {
         return settingsManager;
+    }
+
+    @Override
+    public Predicate<File> getFilePredicate() {
+        return predicate;
     }
 
 }

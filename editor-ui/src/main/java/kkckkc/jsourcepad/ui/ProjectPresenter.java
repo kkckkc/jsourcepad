@@ -16,6 +16,7 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 import java.io.File;
+import java.io.FileFilter;
 import java.util.List;
 
 public class ProjectPresenter implements Presenter<ProjectView>, Project.FileChangeListener, ProjectImpl.RefreshListener {
@@ -23,8 +24,14 @@ public class ProjectPresenter implements Presenter<ProjectView>, Project.FileCha
 	private ProjectView view;
 	private Window window;
     private ActionContext actionContext;
+    private Project project;
 
-	@Autowired
+    @Autowired
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
+    @Autowired
     public void setView(ProjectView view) {
 	    this.view = view;
     }
@@ -36,7 +43,14 @@ public class ProjectPresenter implements Presenter<ProjectView>, Project.FileCha
 	
 	@PostConstruct
 	public void init() {
-		window.topic(Project.FileChangeListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, this);
+        view.setModel(new FileTreeModel(project.getProjectDir(), new FileFilter() {
+            @Override
+            public boolean accept(File pathname) {
+                return project.getFilePredicate().apply(pathname);
+            }
+        }));
+
+        window.topic(Project.FileChangeListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, this);
 		window.topic(ProjectImpl.RefreshListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, this);
 
 		((JTree) view).getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
@@ -61,6 +75,7 @@ public class ProjectPresenter implements Presenter<ProjectView>, Project.FileCha
         actionContext.commit();
 
         ActionContext.set(view.getJComponent(), actionContext);
+
 	}
 
     @Override

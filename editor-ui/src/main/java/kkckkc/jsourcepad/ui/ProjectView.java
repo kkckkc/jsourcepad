@@ -1,10 +1,10 @@
 package kkckkc.jsourcepad.ui;
 
-import java.io.File;
-
-import javax.swing.JComponent;
-
 import kkckkc.jsourcepad.View;
+
+import javax.swing.*;
+import javax.swing.tree.TreeModel;
+import java.io.File;
 
 public interface ProjectView extends View {
 
@@ -18,4 +18,5 @@ public interface ProjectView extends View {
 
     void revealFile(File file);
 
+    void setModel(TreeModel treeModel);
 }
