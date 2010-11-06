@@ -1,6 +1,6 @@
 package kkckkc.jsourcepad.installer;
 
-import kkckkc.jsourcepad.installer.bundle.BundleInstallerDialog;
+import kkckkc.jsourcepad.bundleeditor.installer.BundleInstallerDialog;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.util.action.ActionGroup;
 import kkckkc.jsourcepad.util.action.ActionManager;
