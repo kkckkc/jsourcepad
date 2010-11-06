@@ -24,7 +24,7 @@ public class DocListPresenter implements Presenter<DocListView>, DocList.Listene
 
 	// Collaborators
 	private DocListView docListView;
-	private DocList docList;
+	protected DocList docList;
 	private ActionManager actionManager;
 
 	@Autowired

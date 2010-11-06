@@ -28,6 +28,7 @@ public class BundleDocListPresenter extends DocListPresenter {
 
             CommandBundleDocPresenter presenter = new CommandBundleDocPresenter();
             presenter.setDoc(doc);
+            presenter.setWindow(docList.getWindow());
             presenter.setView(new CommandBundleDocViewImpl());
             presenter.init();
 
@@ -37,6 +38,7 @@ public class BundleDocListPresenter extends DocListPresenter {
 
            TemplateBundleDocPresenter presenter = new TemplateBundleDocPresenter();
            presenter.setDoc(doc);
+           presenter.setWindow(docList.getWindow());
            presenter.setView(new TemplateBundleDocViewImpl());
            presenter.init();
 
@@ -46,6 +48,7 @@ public class BundleDocListPresenter extends DocListPresenter {
 
             ManifestBundleDocPresenter presenter = new ManifestBundleDocPresenter();
             presenter.setDoc(doc);
+            presenter.setWindow(docList.getWindow());
             presenter.setView(new ManifestBundleDocViewImpl());
             presenter.init();
 
@@ -56,6 +59,7 @@ public class BundleDocListPresenter extends DocListPresenter {
 
             BasicBundleDocPresenter presenter = new BasicBundleDocPresenter();
             presenter.setDoc(doc);
+            presenter.setWindow(docList.getWindow());
             presenter.setView(new BasicBundleDocViewImpl());
             presenter.init();
 
