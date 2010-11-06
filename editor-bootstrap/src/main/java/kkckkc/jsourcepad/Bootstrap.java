@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import javax.script.ScriptException;
 import java.awt.*;
 import java.io.*;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.URL;
 import java.net.URLConnection;
@@ -98,7 +99,7 @@ public class Bootstrap implements Runnable {
         boolean portTaken = false;
         ServerSocket socket = null;
         try {
-            socket = new ServerSocket(Config.getHttpPort());
+            socket = new ServerSocket(Config.getHttpPort(), 50, InetAddress.getLocalHost());
         } catch (IOException e) {
             portTaken = true;
         } finally {
