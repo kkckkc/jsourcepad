@@ -25,8 +25,13 @@ public final class TabAction extends AbstractAction {
 
     public void actionPerformed(final ActionEvent e) {
     	InsertionPoint ip = doc.getActiveBuffer().getInsertionPoint();
-    	
-    	String s = doc.getActiveBuffer().getCurrentLine().getText(); 
+
+        if (doc.getActiveBuffer().getCurrentLine() == null) {
+            insertTab(ip);
+            return;
+        }
+
+    	String s = doc.getActiveBuffer().getCurrentLine().getText();
     	
     	String token = SnippetUtils.getSnippet(s);
     	
@@ -34,8 +39,8 @@ public final class TabAction extends AbstractAction {
 		
 		Collection<BundleItemSupplier> items = Application.get().getBundleManager().getItemsForTabTrigger(token, scope);
 		if (items.isEmpty()) {
-			doc.getActiveBuffer().insertText(ip.getPosition(), doc.getTabManager().createIndent(1), null);
-		} else {
+            insertTab(ip);
+        } else {
 			final ActionGroup tempActionGroup = new ActionGroup();
 			
 			for (BundleItemSupplier r : items) {
@@ -66,4 +71,8 @@ public final class TabAction extends AbstractAction {
 		}
 		
 	}
+
+    private void insertTab(InsertionPoint ip) {
+        doc.getActiveBuffer().insertText(ip.getPosition(), doc.getTabManager().createIndent(1), null);
+    }
 }

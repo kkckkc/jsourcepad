@@ -28,6 +28,7 @@
 [x] Fixed problem with new file from template on Cygwin
 [x] Proxy issue
 [x]ÊWindow/project specific settings - for instance for overwrite mode and tab size
+[x] Bug fix - tabs on first line
 [ ] Project filtering
 [ ] Loading huge projects is slow
 [ ] Cygwin testing
