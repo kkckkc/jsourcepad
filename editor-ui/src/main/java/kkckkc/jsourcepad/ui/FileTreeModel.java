@@ -18,7 +18,6 @@ public class FileTreeModel implements TreeModel {
             return f1.getName().compareTo(f2.getName());
         }
     };
-
     private final EventListenerList listeners = new EventListenerList();
 
     private final File root;
@@ -106,9 +105,22 @@ public class FileTreeModel implements TreeModel {
         }
     }
 
+    private File[] cacheChildren;
+    private File cacheParent;
+    private long cacheAccess;
+
     private File[] getChildren(final File parent) {
+        if (cacheChildren != null && cacheParent.equals(parent) && (System.currentTimeMillis() - cacheAccess) < 50) {
+            return cacheChildren;
+        }
+
         File[] children = parent.listFiles(filter);
         if (children != null) Arrays.sort(children, COMPARATOR);
+
+        cacheParent = parent;
+        cacheChildren = children;
+        cacheAccess = System.currentTimeMillis();
+
         return children;
     }
 

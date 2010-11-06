@@ -69,7 +69,7 @@ public class ProjectImpl implements Project, DocList.Listener, Window.FocusListe
 
             fileMonitor = new DefaultFileMonitor(Application.get().getThreadPool());
             fileMonitor.addListener(this);
-            fileMonitor.registerRecursively(getProjectDir(), predicate);
+            fileMonitor.register(getProjectDir(), predicate);
         }
 	}
 	
@@ -178,6 +178,9 @@ public class ProjectImpl implements Project, DocList.Listener, Window.FocusListe
 	@Override
     public void focusGained(Window window) {
 		fileMonitor.requestRescan();
+        synchronized (cache) {
+            cache.clear();
+        }
     }
 
 	@Override
@@ -213,6 +216,16 @@ public class ProjectImpl implements Project, DocList.Listener, Window.FocusListe
     @Override
     public Predicate<File> getFilePredicate() {
         return predicate;
+    }
+
+    @Override
+    public void register(File file) {
+        fileMonitor.register(file, predicate);
+    }
+
+    @Override
+    public void unregister(File file) {
+        fileMonitor.unregister(file);
     }
 
 }

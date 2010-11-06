@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
 import javax.swing.*;
+import javax.swing.event.TreeExpansionEvent;
+import javax.swing.event.TreeExpansionListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
@@ -69,6 +71,20 @@ public class ProjectPresenter implements Presenter<ProjectView>, Project.FileCha
                 actionContext.commit();
 			}
 		});
+
+        ((JTree) view).addTreeExpansionListener(new TreeExpansionListener() {
+            @Override
+            public void treeExpanded(TreeExpansionEvent event) {
+                File file = (File) event.getPath().getLastPathComponent();
+                project.register(file);
+            }
+
+            @Override
+            public void treeCollapsed(TreeExpansionEvent event) {
+                File file = (File) event.getPath().getLastPathComponent();
+                project.unregister(file);
+            }
+        });
 
         actionContext = new ActionContext();
         actionContext.put(ActionContextKeys.FOCUSED_COMPONENT, window.getProject());

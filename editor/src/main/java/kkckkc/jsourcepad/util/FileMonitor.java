@@ -1,13 +1,13 @@
 package kkckkc.jsourcepad.util;
 
-import java.io.File;
-
 import com.google.common.base.Predicate;
+
+import java.io.File;
 
 public interface FileMonitor {
 	public void register(File file, Predicate<File> predicate);
-	public void registerRecursively(File file, Predicate<File> predicate);
-	
+	public void unregister(File file);
+
 	public void addListener(Listener listener);
 
 	public void requestRescan();

@@ -17,7 +17,6 @@ public interface Project {
         public void refresh(File file);
     }
 
-    
 	public List<File> findFile(String query);
 	public File getProjectDir();
 	public void refresh(File file);
@@ -31,4 +30,6 @@ public interface Project {
 
     public Predicate<File> getFilePredicate();
 
+    public void register(File file);
+    public void unregister(File file);
 }

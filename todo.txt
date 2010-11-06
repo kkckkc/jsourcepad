@@ -29,8 +29,9 @@
 [x] Proxy issue
 [x]ÊWindow/project specific settings - for instance for overwrite mode and tab size
 [x] Bug fix - tabs on first line
-[ ] Project filtering
-[ ] Loading huge projects is slow
+[x] Project filtering
+[ ] Configurable project filtering
+[x] Loading huge projects is slow
 [ ] Cygwin testing
 [ ] Install bundles don't reload bundles
 [ ] What happends when adding items to a bundle menu that was previously empty
