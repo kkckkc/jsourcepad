@@ -19,19 +19,25 @@
 [x] Test on Mac
 [x] Tab completion on windows
 
-[ ] Linux shell argument
-
+[x] Linux shell argument
+[x] Shift right / shift left issue
+[x] Goto line dialog. Previously entered text is pre-selected
+[x] New windows are shown in location selected by platform and thus not in the exact same spot as the previous window
+[x] Fullscreen restore issue with Substance lnf
+[x] Potential fix for firewall issue
+[ ] Proxy issue
 [ ] Cygwin testing
 [ ] Install bundles don't reload bundles
 [ ] What happends when adding items to a bundle menu that was previously empty
-[ ] Plugin adding removing from menus in a better way
-[ ] Move bundle installation stuff to bundle editor
-[ ] Don't print performance log issues in packaged app
+[x] Plugin adding removing from menus in a better way
+[x] Move bundle installation stuff to bundle editor
+[x] Don't print performance log issues in packaged app
 [ ] Logging for packaged app
 [ ] Select Bundle Item should filter out unavailable due to scope
 [ ] Project filtering
-[ ] Implement proper completion
+[ ] Themes shouldn't really be plugins directly. Also add themes for native, metal etc
 
+[ ] Implement proper completion
 [ ] Debugging for commands
 
 [x]ÊEnable/disable actions

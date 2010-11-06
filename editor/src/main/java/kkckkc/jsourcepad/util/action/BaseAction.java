@@ -69,6 +69,10 @@ public abstract class BaseAction extends AbstractAction implements BeanNameAware
         this.action = beanName;
     }
 
+    public String getId() {
+        return action;
+    }
+
     public void setActionContext(ActionContext actionContext) {
         if (this.actionContext == actionContext) return;
 

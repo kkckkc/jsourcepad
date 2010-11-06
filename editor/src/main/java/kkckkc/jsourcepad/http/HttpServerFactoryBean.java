@@ -11,7 +11,7 @@ public class HttpServerFactoryBean implements FactoryBean<HttpServer> {
 
 	@Override
     public HttpServer getObject() throws Exception {
-		InetSocketAddress addr = new InetSocketAddress(Config.getHttpPort());
+		InetSocketAddress addr = new InetSocketAddress("localhost", Config.getHttpPort());
 		HttpServer server = HttpServer.create(addr, 0);
 		server.setExecutor(Executors.newCachedThreadPool());
 		server.start();

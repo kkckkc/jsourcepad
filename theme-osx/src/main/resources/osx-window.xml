@@ -7,10 +7,8 @@
 	<bean id="docView" class="kkckkc.jsourcepad.theme.osx.OsxDocViewImpl" />
 	<bean id="docListView" class="kkckkc.jsourcepad.theme.osx.OsxDocListViewImpl" />
  	<bean id="projectView" class="kkckkc.jsourcepad.theme.osx.OsxProjectViewImpl" />
-	<bean id="windowView" class="kkckkc.jsourcepad.theme.osx.OsxWindowViewImpl" depends-on="osxMenu" />
+	<bean id="windowView" class="kkckkc.jsourcepad.theme.osx.OsxWindowViewImpl" />
 	
 	<bean id="fileChooser" class="kkckkc.jsourcepad.theme.osx.AWTFileChooserView" />
-
-    <bean id="osxMenu" class="kkckkc.jsourcepad.theme.osx.OsxMenu" lazy-init="false" />
 
 </beans>

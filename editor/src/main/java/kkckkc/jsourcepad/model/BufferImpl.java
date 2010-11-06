@@ -417,16 +417,18 @@ public class BufferImpl implements Buffer {
 		int end = interval.getEnd();
 		String indent = doc.getTabManager().createIndent(Math.abs(length));
 		while (true) {
+            if (line.getStart() >= end) break;
+
 			if (length > 0) {
 				insertText(line.getStart(), indent, null);
+                end = end + indent.length();
 			} else {
 				if (doc.getTabManager().getTabCount(line.getCharSequence(false)) > 0) {
 	                remove(Interval.createWithLength(line.getStart(), indent.length()));
 	                end = end - indent.length();
 				}   
 			}
-			
-			if (line.getStart() >= end) break;
+
 			line = lm.getNext(line);
 			if (line == null) break;
 		}

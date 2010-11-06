@@ -81,7 +81,9 @@ public class Bootstrap implements Runnable {
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
-                PerformanceLogger.get().dump();
+                if ("development".equals(System.getProperty("jsourcepad.mode"))) {
+                    PerformanceLogger.get().dump();
+                }
             }
         });
 

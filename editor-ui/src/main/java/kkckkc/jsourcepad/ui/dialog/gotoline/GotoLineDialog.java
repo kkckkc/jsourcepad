@@ -33,6 +33,8 @@ public class GotoLineDialog implements Dialog<GotoLineDialogView>, ActionListene
         view.getLineNumberField().requestFocusInWindow();
         view.getLineNumberField().addKeyListener(this);
 
+        view.getLineNumberField().selectAll();
+
         view.getOKButton().addActionListener(this);
 
         view.getJDialog().setVisible(true);

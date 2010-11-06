@@ -1,7 +1,6 @@
 package kkckkc.jsourcepad.installer;
 
 import kkckkc.jsourcepad.Plugin;
-import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.util.BeanFactoryLoader;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -15,7 +14,7 @@ public class InstallerPlugin implements Plugin {
 
     @Override
     public String[] getDependsOn() {
-        return null;
+        return new String[] { "bundle-editor" };
     }
 
     @Override
@@ -33,9 +32,6 @@ public class InstallerPlugin implements Plugin {
 
     @Override
     public <P, C> void init(BeanFactoryLoader.Scope<P, C> scope, P parent, C context, BeanFactory container) {
-        if (scope == BeanFactoryLoader.WINDOW) {
-            Window window = container.getBean(Window.class);
-            InstallerMenu.init(container, window);
-        }
+        
     }
 }
