@@ -47,6 +47,8 @@ public class ProjectSettingsPanel implements SettingsPanel {
     public boolean save() {
         Window window = WindowLocator.get();
 
+        if (window.getProject() == null) return false;
+        
         IgnorePatternProjectSettings setting = window.getProject().getSettingsManager().get(IgnorePatternProjectSettings.class);
         setting.setPattern(view.getExcludePattern().getText());
 
