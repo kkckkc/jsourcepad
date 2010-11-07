@@ -45,7 +45,15 @@ public class BundleMenuProvider {
                     actionGroups.put(bundle.getName(), newActionGroup);
                     createMenu(newActionGroup, bundle.getMenu());
 
-                    root.add(newActionGroup);
+                    int i;
+                    for (i = 0; i < root.getItems().size(); i++) {
+                        if (((String) root.getItems().get(i).getValue(Action.NAME)).compareTo(bundle.getName()) >= 0) {
+                            break;
+                        }
+                    }
+                    root.add(i, newActionGroup);
+
+                    //root.add(newActionGroup);
                     root.updateDerivedComponents();
                 }
             }

@@ -16,6 +16,7 @@ public class ActionGroup extends AbstractAction implements BeanFactoryAware {
 
 	protected List<Action> items = Lists.newArrayList();
 	protected List<WeakReference<JComponent>> derivedComponents = Lists.newArrayList();
+	protected List<Runnable> derivedComponentsListeners = Lists.newArrayList();
     private BeanFactory beanFactory;
 
     public ActionGroup() {
@@ -124,6 +125,10 @@ public class ActionGroup extends AbstractAction implements BeanFactoryAware {
         derivedComponents.add(new WeakReference<JComponent>(component));
     }
 
+    public void registerListener(Runnable runnable) {
+        derivedComponentsListeners.add(runnable);
+    }
+
     public void updateDerivedComponents() {
         if (! EventQueue.isDispatchThread()) {
             EventQueue.invokeLater(new Runnable() {
@@ -135,6 +140,10 @@ public class ActionGroup extends AbstractAction implements BeanFactoryAware {
             return;
         }
 
+        for (Runnable r : derivedComponentsListeners) {
+            r.run();
+        }
+
         for (WeakReference<JComponent> ref : derivedComponents) {
             if (ref == null) continue;
 
@@ -144,8 +153,7 @@ public class ActionGroup extends AbstractAction implements BeanFactoryAware {
 
             // Clear menu
             JMenu jm = (JMenu) comp;
-            while (jm.getItemCount() > 0)
-                jm.remove(jm.getItem(0));
+            jm.removeAll();
 
             MenuFactory mf = new MenuFactory();
             mf.loadMenu(Lists.<JMenuItem>newArrayList(), this, jm, null, false);
@@ -172,4 +180,5 @@ public class ActionGroup extends AbstractAction implements BeanFactoryAware {
     public void remove(Action item) {
         items.remove(item);
     }
+
 }

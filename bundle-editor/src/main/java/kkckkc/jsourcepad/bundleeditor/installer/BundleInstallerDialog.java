@@ -24,6 +24,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.StringReader;
 import java.net.URL;
 import java.net.URLConnection;
@@ -195,7 +196,7 @@ public class BundleInstallerDialog implements Dialog<BundleInstallerDialogView> 
 
             @Override
             protected void done() {
-                Application.get().getBundleManager().reload();
+//                Application.get().getBundleManager().reload();
 
                 progressMonitor.close();
                 close();
@@ -224,8 +225,6 @@ public class BundleInstallerDialog implements Dialog<BundleInstallerDialogView> 
                     command.append("clone ");
                     command.append(entry.getUrl().replaceAll("https:", "http:")).append(".git");
 
-                    System.out.println("command.toString = " + command.toString());
-
                     ScriptExecutor se = new ScriptExecutor(command.toString(), Application.get().getThreadPool());
                     se.setDirectory(Config.getBundlesFolder());
                     final ScriptExecutor.Execution execution = se.execute(statusCallback, new StringReader(""), env);
@@ -243,6 +242,8 @@ public class BundleInstallerDialog implements Dialog<BundleInstallerDialogView> 
                         });
                         cdl.await();
                     }
+
+                    Application.get().getBundleManager().addBundle(new File(Config.getBundlesFolder(), entry.getName()));
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
