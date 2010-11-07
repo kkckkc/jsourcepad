@@ -10,7 +10,7 @@ public interface SettingsPanel {
     public int getOrder();
     public String getName();
 
-    public void load();
+    public boolean load();
     public boolean save();
 
     public interface View {

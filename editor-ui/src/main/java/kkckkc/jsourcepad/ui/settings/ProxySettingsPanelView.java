@@ -27,13 +27,13 @@ public class ProxySettingsPanelView extends JPanel implements SettingsPanel.View
 
         type = new JComboBox(new String[] { NO_PROXY, SYSTEM_PROXY, MANUAL_PROXY });
 
-        add(new JLabel("Proxy Type:"), "");
+        add(new JLabel("Type:"), "");
         add(type, "growx,wrap");
 
-        add(new JLabel("Proxy Host:"), "");
+        add(new JLabel("Host:"), "");
         add(host, "width 8cm,growx,wrap");
 
-        add(new JLabel("Proxy Port:"), "");
+        add(new JLabel("Port:"), "");
         add(port, "width 2cm,wrap");
 
         add(new JSeparator(JSeparator.HORIZONTAL), "wrap,span,growx");

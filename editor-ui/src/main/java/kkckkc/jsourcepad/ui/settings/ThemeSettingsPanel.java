@@ -75,13 +75,15 @@ public class ThemeSettingsPanel implements SettingsPanel {
     }
 
     @Override
-    public void load() {
+    public boolean load() {
         view.getThemes().setSelectedItem(Application.get().getTheme().getId());
 
         if (getSelectedTheme().getSettingsPanel() != null) {
             getSelectedTheme().getSettingsPanel().load();
             view.getThemePanel().add(getSelectedTheme().getSettingsPanel().getView().getJPanel());
         }
+
+        return true;
     }
 
     @Override

@@ -44,7 +44,7 @@ public class FileAssociationsSettingsPanel extends JPanel implements SettingsPan
     }
 
     @Override
-    public void load() {
+    public boolean load() {
         if (Os.isWindows()) {
             try {
                 boolean exists = Registry.exits("HKCU\\Software\\Classes\\*\\shell\\Edit with JSourcepad");
@@ -56,6 +56,7 @@ public class FileAssociationsSettingsPanel extends JPanel implements SettingsPan
             }
         }
 
+        return true;
     }
 
     @Override

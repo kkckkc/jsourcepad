@@ -73,7 +73,7 @@ public class SubstanceSettingsPanel extends JPanel implements SettingsPanel, Set
     }
 
     @Override
-    public void load() {
+    public boolean load() {
         SubstanceSkin skin = SubstanceLookAndFeel.getCurrentSkin();
         if (skin != null) {
             for (SkinInfo si : SubstanceLookAndFeel.getAllSkins().values()) {
@@ -86,6 +86,8 @@ public class SubstanceSettingsPanel extends JPanel implements SettingsPanel, Set
         final SubstanceSettings ss = Application.get().getSettingsManager().get(SubstanceSettings.class);
         fontSizeSlider.setValue(ss.getFontSizeAdjustment());
         keepMenuFontSize.setSelected(ss.isKeepMenuSize());
+
+        return true;
     }
 
     @Override

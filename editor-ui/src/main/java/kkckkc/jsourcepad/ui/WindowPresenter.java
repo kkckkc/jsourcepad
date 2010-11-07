@@ -4,9 +4,7 @@ import com.google.common.io.Resources;
 import kkckkc.jsourcepad.Presenter;
 import kkckkc.jsourcepad.action.bundle.BundleAction;
 import kkckkc.jsourcepad.action.bundle.BundleJMenuItem;
-import kkckkc.jsourcepad.model.Application;
-import kkckkc.jsourcepad.model.Doc;
-import kkckkc.jsourcepad.model.DocList;
+import kkckkc.jsourcepad.model.*;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.bundle.BundleManager;
 import kkckkc.jsourcepad.model.bundle.BundleMenuProvider;
@@ -80,6 +78,7 @@ public class WindowPresenter implements Presenter<WindowView>, DocList.Listener 
 			}
 			
 			public void windowGainedFocus(WindowEvent e) {
+                WindowLocator.set(window);
 				window.topic(Window.FocusListener.class).post().focusGained(window);
 			}
 		});

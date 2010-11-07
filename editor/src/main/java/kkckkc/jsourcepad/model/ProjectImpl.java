@@ -21,7 +21,7 @@ import java.io.File;
 import java.util.*;
 import java.util.regex.Pattern;
 
-public class ProjectImpl implements Project, DocList.Listener, Window.FocusListener, FileMonitor.Listener {
+public class ProjectImpl implements Project, DocList.Listener, Window.FocusListener, FileMonitor.Listener, SettingsManager.Listener<IgnorePatternProjectSettings> {
 	private static final int MAX_ENTRIES = 20;
 	private Map<File, Long> lru = new LinkedHashMap<File, Long>(MAX_ENTRIES, .75F, true) {
 		protected boolean removeEldestEntry(Map.Entry<File, Long> eldest) {
@@ -54,22 +54,11 @@ public class ProjectImpl implements Project, DocList.Listener, Window.FocusListe
 	@PostConstruct
 	public void init() {
         if (projectDir != null) {
-            settingsManager = new ProjectSettingsManager(window, projectDir);
-
-            IgnorePatternProjectSettings ignorePatternProjectSettings = getSettingsManager().get(IgnorePatternProjectSettings.class);
-            final Pattern pattern = Pattern.compile(ignorePatternProjectSettings.getPattern());
 
             window.topic(Window.FocusListener.class).subscribe(DispatchStrategy.ASYNC, this);
 
-            predicate = new Predicate<File>() {
-                public boolean apply(File input) {
-                    return ! pattern.matcher(input.getName()).matches();
-                }
-            };
-
-            fileMonitor = new DefaultFileMonitor(Application.get().getThreadPool());
-            fileMonitor.addListener(this);
-            fileMonitor.register(getProjectDir(), predicate);
+            settingsManager = new ProjectSettingsManager(window, projectDir);
+            settingsManager.subscribe(IgnorePatternProjectSettings.class, this, true, window);
         }
 	}
 	
@@ -228,4 +217,20 @@ public class ProjectImpl implements Project, DocList.Listener, Window.FocusListe
         fileMonitor.unregister(file);
     }
 
+    @Override
+    public void settingUpdated(IgnorePatternProjectSettings settings) {
+        IgnorePatternProjectSettings ignorePatternProjectSettings = getSettingsManager().get(IgnorePatternProjectSettings.class);
+        final Pattern pattern = Pattern.compile(ignorePatternProjectSettings.getPattern());
+
+        predicate = new Predicate<File>() {
+            public boolean apply(File input) {
+                return ! pattern.matcher(input.getName()).matches();
+            }
+        };
+
+        // TODO: Reregister all open files
+        fileMonitor = new DefaultFileMonitor(Application.get().getThreadPool());
+        fileMonitor.addListener(this);
+        fileMonitor.register(getProjectDir(), predicate);
+    }
 }

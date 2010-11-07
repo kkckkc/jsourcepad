@@ -50,9 +50,11 @@ public class CygwinSettingsPanel extends JPanel implements SettingsPanel, Settin
     }
 
     @Override
-    public void load() {
+    public boolean load() {
         ExecutionSettings settings = Application.get().getSettingsManager().get(ExecutionSettings.class);
         location.setText(Joiner.on(" ").join(settings.getArgs()));
+
+        return true;
     }
 
     @Override

@@ -46,6 +46,15 @@ public class SettingsViewImpl extends BaseJDialog implements SettingsView {
     }
 
     @Override
+    public void setSettingsPanelEnabledState(String name, boolean enabled) {
+        for (int i = 0; i < tabbedPane.getTabCount(); i++) {
+            if (tabbedPane.getTitleAt(i).equals(name)) {
+                tabbedPane.setEnabledAt(i, enabled);
+            }
+        }
+    }
+
+    @Override
     public JDialog getJDialog() {
         return this;
     }

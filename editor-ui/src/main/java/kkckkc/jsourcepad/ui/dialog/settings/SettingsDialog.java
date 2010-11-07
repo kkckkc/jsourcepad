@@ -98,7 +98,8 @@ public class SettingsDialog implements Dialog<SettingsView>, BeanFactoryAware {
 
     public void show() {
         for (SettingsPanel panel : panels) {
-            panel.load();
+            boolean enabled = panel.load();
+            view.setSettingsPanelEnabledState(panel.getName(), enabled);
         }
         view.getJDialog().pack();
         view.getJDialog().setVisible(true);

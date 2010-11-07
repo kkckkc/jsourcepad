@@ -65,7 +65,7 @@ public class StyleSettingsPanel implements SettingsPanel {
     }
 
     @Override
-    public void load() {
+    public boolean load() {
         FontSettings fontSettings = settingsManager.get(FontSettings.class);
 
         view.getFonts().setSelectedItem(fontSettings.getFont());
@@ -75,6 +75,8 @@ public class StyleSettingsPanel implements SettingsPanel {
         StyleSettings styleSettings = settingsManager.get(StyleSettings.class);
 
         view.getStyles().setSelectedItem(styleSettings.getThemeLocation());
+
+        return true;
     }
 
     @Override

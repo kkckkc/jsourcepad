@@ -14,7 +14,7 @@ public class IgnorePatternProjectSettings implements SettingsManager.ProjectSett
     @Override
     public SettingsManager.Setting getDefault() {
         IgnorePatternProjectSettings ignore = new IgnorePatternProjectSettings();
-        ignore.setPattern("\\..+|target|.+\\.class|.+\\.o");
+        ignore.setPattern("\\..+|.+\\.class|.+\\.o");
         return ignore;
     }
 }

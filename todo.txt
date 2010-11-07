@@ -30,9 +30,8 @@
 [x]ÊWindow/project specific settings - for instance for overwrite mode and tab size
 [x] Bug fix - tabs on first line
 [x] Project filtering
-[ ] Configurable project filtering
+[x] Configurable project filtering
 [x] Loading huge projects is slow
-[ ] Cygwin testing
 [ ] Install bundles don't reload bundles
 [ ] What happends when adding items to a bundle menu that was previously empty
 [x] Plugin adding removing from menus in a better way
@@ -42,6 +41,7 @@
 [ ] Select Bundle Item should filter out unavailable due to scope
 [ ] Themes shouldn't really be plugins directly. Also add themes for native, metal etc
 
+[ ] Cygwin testing
 [ ] Implement proper completion
 [ ] Debugging for commands
 

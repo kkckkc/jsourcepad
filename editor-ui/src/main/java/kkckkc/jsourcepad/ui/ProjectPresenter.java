@@ -6,6 +6,8 @@ import kkckkc.jsourcepad.action.ActionContextKeys;
 import kkckkc.jsourcepad.model.Project;
 import kkckkc.jsourcepad.model.ProjectImpl;
 import kkckkc.jsourcepad.model.Window;
+import kkckkc.jsourcepad.model.settings.IgnorePatternProjectSettings;
+import kkckkc.jsourcepad.model.settings.SettingsManager;
 import kkckkc.jsourcepad.util.action.ActionContext;
 import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +23,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.util.List;
 
-public class ProjectPresenter implements Presenter<ProjectView>, Project.FileChangeListener, ProjectImpl.RefreshListener {
+public class ProjectPresenter implements Presenter<ProjectView>, Project.FileChangeListener, ProjectImpl.RefreshListener, SettingsManager.Listener<IgnorePatternProjectSettings> {
 
 	private ProjectView view;
 	private Window window;
@@ -92,6 +94,8 @@ public class ProjectPresenter implements Presenter<ProjectView>, Project.FileCha
 
         ActionContext.set(view.getJComponent(), actionContext);
 
+        if (project.getSettingsManager() != null)
+            project.getSettingsManager().subscribe(IgnorePatternProjectSettings.class, this, false, window);
 	}
 
     @Override
@@ -124,5 +128,15 @@ public class ProjectPresenter implements Presenter<ProjectView>, Project.FileCha
 
     public void revealFile(File file) {
         view.revealFile(file);
+    }
+
+    @Override
+    public void settingUpdated(IgnorePatternProjectSettings settings) {
+        view.setModel(new FileTreeModel(project.getProjectDir(), new FileFilter() {
+            @Override
+            public boolean accept(File pathname) {
+                return project.getFilePredicate().apply(pathname);
+            }
+        }));
     }
 }

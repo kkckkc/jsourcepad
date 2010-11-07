@@ -71,7 +71,7 @@ public class ProxySettingsPanel implements SettingsPanel {
     }
 
     @Override
-    public void load() {
+    public boolean load() {
         ProxySettings proxySettings = settingsManager.get(ProxySettings.class);
         switch (proxySettings.getProxyType()) {
             case NO_PROXY:
@@ -86,6 +86,8 @@ public class ProxySettingsPanel implements SettingsPanel {
                 view.getPort().setText(proxySettings.getProxyPort());
                 break;
         }
+
+        return true;
     }
 
     @Override
@@ -96,7 +98,7 @@ public class ProxySettingsPanel implements SettingsPanel {
 
         settingsManager.update(proxySettings);
 
-        return true;
+        return false;
     }
 
     private void updateSettings(ProxySettings proxySettings) {
