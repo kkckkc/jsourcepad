@@ -11,5 +11,6 @@
         <minVersion>1.6.0</minVersion>
         <opt>-Dlaunch4j.exedir="%EXEDIR%"</opt>
         <opt>-Dlaunch4j.exefile="%EXEFILE%"</opt>
+        <opt>-Djava.util.logging.config.class=kkckkc.jsourcepad.BootstrapLogger</opt>
     </jre>
 </launch4jConfig>
