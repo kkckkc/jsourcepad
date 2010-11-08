@@ -21,6 +21,7 @@ import java.net.ServerSocket;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.concurrent.CountDownLatch;
+import java.util.logging.Level;
 
 
 @SuppressWarnings("restriction")
@@ -71,6 +72,8 @@ public class Bootstrap implements Runnable {
 
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             public void uncaughtException(Thread t, final Throwable e) {
+                java.util.logging.Logger l = java.util.logging.Logger.getLogger("exceptions");
+                l.log(Level.WARNING, "Uncaught Exception", e);
                 EventQueue.invokeLater(new Runnable() {
                     @Override
                     public void run() {
@@ -83,7 +86,7 @@ public class Bootstrap implements Runnable {
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
-                if ("development".equals(System.getProperty("jsourcepad.mode"))) {
+                if (Config.getMode() == Config.MODE_DEVELOPMENT) {
                     PerformanceLogger.get().dump();
                 }
             }

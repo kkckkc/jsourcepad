@@ -5,10 +5,18 @@ import kkckkc.utils.Os;
 import java.io.File;
 
 public class Config {
+    public static final int MODE_PRODUCTION = 1;
+    public static final int MODE_DEVELOPMENT= 2;
+
     private static final String HTTP_PORT = "http.port";
     private static final String APPLICATION_FOLDER = "application.folder";
 
     private static boolean useCorrectMacLocations = true;
+
+    public static int getMode() {
+        if ("development".equals(System.getProperty("jsourcepad.mode"))) return MODE_DEVELOPMENT;
+        return MODE_PRODUCTION;
+    }
 
     public static int getHttpPort() {
         if (System.getProperty(HTTP_PORT) != null) {
@@ -55,6 +63,14 @@ public class Config {
     public static File getCacheFolder() {
         if (useCorrectMacLocations && Os.isMac()) {
             return new File(System.getProperty("user.home"), "Library/Caches/JSourcePad");
+        } else {
+            return new File(System.getProperty("user.home"), ".jsourcepad");
+        }
+    }
+
+    public static File getLogFolder() {
+        if (useCorrectMacLocations && Os.isMac()) {
+            return new File(System.getProperty("user.home"), "Library/Logs/JSourcePad");
         } else {
             return new File(System.getProperty("user.home"), ".jsourcepad");
         }
