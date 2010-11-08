@@ -152,11 +152,11 @@ public class ActionGroup extends AbstractAction implements BeanFactoryAware {
             if (! (comp instanceof JMenu)) continue;
 
             // Clear menu
-            JMenu jm = (JMenu) comp;
+            final JMenu jm = (JMenu) comp;
             jm.removeAll();
 
             MenuFactory mf = new MenuFactory();
-            mf.loadMenu(Lists.<JMenuItem>newArrayList(), this, jm, null, false);
+            mf.loadMenu(Lists.<JMenuItem>newArrayList(), ActionGroup.this, jm, (MenuFactory.ItemBuilder) getValue("itemBuilder"), false);
         }
     }
 

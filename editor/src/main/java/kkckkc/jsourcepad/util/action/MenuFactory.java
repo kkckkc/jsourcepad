@@ -29,6 +29,12 @@ public class MenuFactory {
 	}
 
 	public void loadMenu(List<JMenuItem> items, ActionGroup actionGroup, JMenu jMenu, ItemBuilder itemBuilder, boolean lazy) {
+        for (MenuListener ml : jMenu.getMenuListeners()) {
+            if (ml instanceof LazyLoadingMenuListener) {
+                jMenu.removeMenuListener(ml);
+            }
+        }
+
 		for (Action a : actionGroup.getItems()) {
 			if (a == null) {
 				jMenu.addSeparator();
@@ -52,28 +58,7 @@ public class MenuFactory {
         if (! lazy) {
             loadMenu(items, actionGroup, jMenu, itemBuilder, lazy);
         } else {
-
-            jMenu.addMenuListener(new MenuListener() {
-                private void loadIfRequired() {
-                    if (items.isEmpty()) {
-                        loadMenu(items, actionGroup, jMenu, itemBuilder, lazy);
-                    }
-                }
-
-                @Override
-                public void menuSelected(MenuEvent e) {
-                    loadIfRequired();
-                }
-
-                @Override
-                public void menuDeselected(MenuEvent e) {
-                }
-
-                @Override
-                public void menuCanceled(MenuEvent e) {
-                }
-            });
-
+            jMenu.addMenuListener(new LazyLoadingMenuListener(items, actionGroup, jMenu, itemBuilder, lazy));
         }
 
         actionGroup.registerDerivedComponent(jMenu);
@@ -89,4 +74,39 @@ public class MenuFactory {
 	public interface ItemBuilder {
 		public JMenuItem build(Action action);
 	}
+
+    public class LazyLoadingMenuListener implements MenuListener {
+        private final List<JMenuItem> items;
+        private final ActionGroup actionGroup;
+        private final JMenu jMenu;
+        private final ItemBuilder itemBuilder;
+        private final boolean lazy;
+
+        public LazyLoadingMenuListener(List<JMenuItem> items, ActionGroup actionGroup, JMenu jMenu, ItemBuilder itemBuilder, boolean lazy) {
+            this.items = items;
+            this.actionGroup = actionGroup;
+            this.jMenu = jMenu;
+            this.itemBuilder = itemBuilder;
+            this.lazy = lazy;
+        }
+
+        private void loadIfRequired() {
+            if (items.isEmpty()) {
+                loadMenu(items, actionGroup, jMenu, itemBuilder, lazy);
+            }
+        }
+
+        @Override
+        public void menuSelected(MenuEvent e) {
+            loadIfRequired();
+        }
+
+        @Override
+        public void menuDeselected(MenuEvent e) {
+        }
+
+        @Override
+        public void menuCanceled(MenuEvent e) {
+        }
+    }
 }

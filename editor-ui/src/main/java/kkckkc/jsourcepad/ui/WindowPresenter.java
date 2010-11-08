@@ -113,14 +113,7 @@ public class WindowPresenter implements Presenter<WindowView>, DocList.Listener 
                 menuFactory.buildMenu(navigationMenu, window.getActionManager().getActionGroup("navigation-menu"), null, false);
 
                 ActionGroup bundlesAg = window.getActionManager().getActionGroup("bundles-menu");
-/*                for (Action o : BundleMenuProvider.getBundleActionGroup().getItems()) {
-                    bundlesAg.add(o);
-                }
-                BundleMenuProvider.getBundleActionGroup().registerDerivedComponent(bundleMenu);*/
-
-
-
-                menuFactory.buildMenu(bundleMenu, new CompoundActionGroup(bundlesAg, BundleMenuProvider.getBundleActionGroup()), new MenuFactory.ItemBuilder() {
+                MenuFactory.ItemBuilder itemBuilder = new MenuFactory.ItemBuilder() {
                     public JMenuItem build(Action action) {
                         if (action instanceof BundleAction) {
                             return new BundleJMenuItem((BundleAction) action);
@@ -128,7 +121,9 @@ public class WindowPresenter implements Presenter<WindowView>, DocList.Listener 
                             return new JMenuItem(action);
                         }
                     }
-                }, true);
+                };
+                bundlesAg.putValue("itemBuilder", itemBuilder);
+                menuFactory.buildMenu(bundleMenu, new CompoundActionGroup(bundlesAg, BundleMenuProvider.getBundleActionGroup()), itemBuilder, true);
                 menuFactory.buildMenu(windowMenu, window.getActionManager().getActionGroup("window-menu"), null, false);
             }
         });

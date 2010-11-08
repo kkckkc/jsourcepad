@@ -53,7 +53,6 @@ public class BundleMenuProvider {
                     }
                     root.add(i, newActionGroup);
 
-                    //root.add(newActionGroup);
                     root.updateDerivedComponents();
                 }
             }

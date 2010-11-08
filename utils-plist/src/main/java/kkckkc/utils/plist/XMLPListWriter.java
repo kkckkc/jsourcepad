@@ -61,7 +61,7 @@ public class XMLPListWriter {
 
     private void write(XMLElement parent, String s) {
         XMLElement stringElement = new XMLElement();
-        stringElement.setName("stringElement");
+        stringElement.setName("string");
         stringElement.setContent(s);
         parent.addChild(stringElement);
     }
