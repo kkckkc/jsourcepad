@@ -306,8 +306,6 @@ public class BufferImpl implements Buffer {
 
 		document.setLanguage(language);
 
-        long start = System.currentTimeMillis();
-
         doc.getDocList().getWindow().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
         StringBuilder builder = new StringBuilder();
@@ -317,15 +315,12 @@ public class BufferImpl implements Buffer {
                 builder.append(line).append("\n");
 			}
 
-            System.out.println("**"  + (System.currentTimeMillis() - start));
             document.insertString(0, builder.toString(), null);
 		} catch (BadLocationException e) {
 			throw new RuntimeException(e);
 		}
 
 		clearModified();
-
-        System.out.println(System.currentTimeMillis() - start);
 
         doc.getDocList().getWindow().hideCursor();
 
