@@ -11,8 +11,8 @@ import javax.swing.*;
 public class DefaultTheme implements Theme {
 
     @Override
-	public LookAndFeel getLookAndFeel() {
-		return null;
+	public Object getLookAndFeel() {
+		return UIManager.getSystemLookAndFeelClassName();
 	}
 
     @Override
