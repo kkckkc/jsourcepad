@@ -40,7 +40,7 @@ public class ScrollableSourcePane extends JPanel {
 		editorPane.setOpaque(false);
 		editorPane.setEditorKit(editorKit);
 		editorPane.setUI(new javax.swing.plaf.basic.BasicEditorPaneUI());
-		
+
 		Wiring.wire(this, editorPane, "font", "background", "foreground");
 		
 		foldMargin = new FoldMargin(editorPane);
@@ -121,6 +121,8 @@ public class ScrollableSourcePane extends JPanel {
 		foldMargin.setForeground(this.styleScheme.getLineNumberStyle().getColor());
 		foldMargin.setBorderColor(this.styleScheme.getLineNumberStyle().getBorder());
 
+        editorPane.setStyleScheme(styleScheme);
+
         updateCurrentLineHighlighter();
 
         if (styleSchemeChanged) {
@@ -173,6 +175,7 @@ public class ScrollableSourcePane extends JPanel {
     public void setWrapColumn(int wrapColumn) {
         if (this.wrapColumn == wrapColumn) return;
         this.wrapColumn = wrapColumn;
+        editorPane.setWrapColumn(wrapColumn);
         updateCurrentLineHighlighter();
         repaint();
     }
@@ -181,10 +184,29 @@ public class ScrollableSourcePane extends JPanel {
         return wrapColumn;
     }
 
-    private final class SourceJEditorPane extends JEditorPane {
+    private static final class SourceJEditorPane extends JEditorPane {
         private boolean overwriteMode;
-		
-	    @Override
+
+        private StyleScheme styleScheme;
+        private int wrapColumn;
+
+        public StyleScheme getStyleScheme() {
+            return styleScheme;
+        }
+
+        public void setStyleScheme(StyleScheme styleScheme) {
+            this.styleScheme = styleScheme;
+        }
+
+        public int getWrapColumn() {
+            return wrapColumn;
+        }
+
+        public void setWrapColumn(int wrapColumn) {
+            this.wrapColumn = wrapColumn;
+        }
+
+        @Override
 	    public void paint(Graphics graphics) {
 	    	Graphics2D graphics2d = (Graphics2D) graphics;
 

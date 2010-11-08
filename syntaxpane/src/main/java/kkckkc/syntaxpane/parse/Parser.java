@@ -10,11 +10,14 @@ import kkckkc.syntaxpane.regex.Matcher;
 import kkckkc.utils.Pair;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 
 public class Parser {
 	public enum ChangeEvent { ADD, UPDATE, REMOVE }
-	
+
+    private Logger logger = Logger.getLogger(Parser.class.getName());        
+
 	private MutableLineManager lineManager;
 	private Language language;
 	private MutableFoldManager foldManager;
@@ -35,20 +38,20 @@ public class Parser {
 			Pair<Line, Line> linePair = lineManager.removeInterval(new Interval(start, end));
 			line = linePair.getFirst();
 			
-			foldChanges |= foldManager.removeLines(new Interval(linePair.getFirst().getIdx(), linePair.getSecond().getIdx()));
+			foldChanges = foldManager.removeLines(new Interval(linePair.getFirst().getIdx(), linePair.getSecond().getIdx()));
 			
 		} else if (event == ChangeEvent.ADD) {
 			List<Line> lines = lineManager.addInterval(new Interval(start, end));
 
 			if (lines.size() > 1) {
-				foldChanges |= foldManager.addLines(new Interval(lines.get(0).getIdx(), lines.get(lines.size() - 1).getIdx()));
+				foldChanges = foldManager.addLines(new Interval(lines.get(0).getIdx(), lines.get(lines.size() - 1).getIdx()));
 			}
 			
 			line = lineManager.getLineByPosition(start);
 		} else {
 			line = lineManager.getLineByPosition(start);
 		}
-		
+
 		LineManager.Line previous = lineManager.getPrevious(line);
 		Scope scope = previous == null ? null : previous.getScope();
 		while (line != null) {
@@ -75,7 +78,7 @@ public class Parser {
 				break;
 			}
 		}
-		
+
 		if (foldChanges) {
 			foldManager.fireFoldUpdated();
 		}
