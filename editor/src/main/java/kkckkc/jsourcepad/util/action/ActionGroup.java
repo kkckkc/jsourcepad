@@ -181,4 +181,26 @@ public class ActionGroup extends AbstractAction implements BeanFactoryAware {
         items.remove(item);
     }
 
+    public boolean containsName(String name) {
+        for (int i = 0; i < getItems().size(); i++) {
+            String n = (String) getItems().get(i).getValue(Action.NAME);
+            if (n.toLowerCase().equals(name.toLowerCase())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public void insertSorted(String name, Action ag) {
+        int i;
+        for (i = 0; i < getItems().size(); i++) {
+            String n = (String) getItems().get(i).getValue(Action.NAME);
+            if (n.toLowerCase().compareTo(name.toLowerCase()) >= 0) {
+                break;
+            }
+        }
+
+        add(i, ag);
+    }
 }

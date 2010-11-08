@@ -43,15 +43,12 @@ public class BundleMenuProvider {
 
                     ActionGroup newActionGroup = new ActionGroup(bundle.getName());
                     actionGroups.put(bundle.getName(), newActionGroup);
+
+                    if (bundle.getMenu().isEmpty()) return;
+
                     createMenu(newActionGroup, bundle.getMenu());
 
-                    int i;
-                    for (i = 0; i < root.getItems().size(); i++) {
-                        if (((String) root.getItems().get(i).getValue(Action.NAME)).compareTo(bundle.getName()) >= 0) {
-                            break;
-                        }
-                    }
-                    root.add(i, newActionGroup);
+                    root.insertSorted(bundle.getName(), newActionGroup);
 
                     root.updateDerivedComponents();
                 }
@@ -73,12 +70,27 @@ public class BundleMenuProvider {
 
             @Override
             public void bundleUpdated(Bundle bundle) {
-                ActionGroup bundleActionGroup = actionGroups.get(bundle.getName());
-                if (bundleActionGroup == null) return;
+                ActionGroup root = actionGroups.get(null);
 
-                bundleActionGroup.clear();
-                createMenu(bundleActionGroup, bundle.getMenu());
-                bundleActionGroup.updateDerivedComponents();
+                boolean found = root.containsName(bundle.getName());
+
+                if (! found) {
+                    ActionGroup newActionGroup = new ActionGroup(bundle.getName());
+                    actionGroups.put(bundle.getName(), newActionGroup);
+
+                    createMenu(newActionGroup, bundle.getMenu());
+                    root.insertSorted(bundle.getName(), newActionGroup);
+
+                    root.updateDerivedComponents();
+                } else {
+                    ActionGroup bundleActionGroup = actionGroups.get(bundle.getName());
+                    if (bundleActionGroup == null) return;
+
+                    bundleActionGroup.clear();
+                    createMenu(bundleActionGroup, bundle.getMenu());
+
+                    bundleActionGroup.updateDerivedComponents();
+                }
             }
 
             @Override
