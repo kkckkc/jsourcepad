@@ -102,7 +102,7 @@ public class Bootstrap implements Runnable {
         boolean portTaken = false;
         ServerSocket socket = null;
         try {
-            socket = new ServerSocket(Config.getHttpPort(), 50, InetAddress.getLocalHost());
+            socket = new ServerSocket(Config.getHttpPort(), 50, InetAddress.getByName(Config.getLocalhost()));
         } catch (IOException e) {
             portTaken = true;
         } finally {
