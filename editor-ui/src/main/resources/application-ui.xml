@@ -14,7 +14,7 @@
     <bean id="proxySettings" class="kkckkc.jsourcepad.ui.settings.ProxySettingsPanel" lazy-init="true"/>
     <bean id="projectSettings" class="kkckkc.jsourcepad.ui.settings.ProjectSettingsPanel" lazy-init="true"/>
 
-    <bean id="errorDialog" class="kkckkc.jsourcepad.ui.dialog.error.ErrorDialogImpl" />
-    <bean id="errorDialogView" class="kkckkc.jsourcepad.ui.dialog.error.ErrorDialogViewImpl" autowire="constructor"/>
+    <bean id="errorDialog" class="kkckkc.jsourcepad.ui.dialog.error.ErrorDialogImpl" lazy-init="true"/>
+    <bean id="errorDialogView" class="kkckkc.jsourcepad.ui.dialog.error.ErrorDialogViewImpl" autowire="constructor" lazy-init="true"/>
     
 </beans>

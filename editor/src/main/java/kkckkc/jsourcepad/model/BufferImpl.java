@@ -72,6 +72,12 @@ public class BufferImpl implements Buffer {
         this.completionManager = new CompletionManager(this);
     }
 
+    public void close() {
+        System.out.println("BufferImpl.close");
+        textComponent.getCaret().deinstall(textComponent);
+        textComponent.setDocument(new SourceDocument());
+    }
+
 	@Override
 	public void bind(final JTextComponent jtc) {
 		jtc.setDocument(document);
@@ -299,20 +305,31 @@ public class BufferImpl implements Buffer {
 		documentStateListener.disable();
 
 		document.setLanguage(language);
-		
+
+        long start = System.currentTimeMillis();
+
+        doc.getDocList().getWindow().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        StringBuilder builder = new StringBuilder();
 		try {
-			int offset = 0;
 			String line;
 			while ((line = br.readLine()) != null) {
-				document.insertString(offset, line + "\n", null);
-				offset += line.length() + 1;
-			}		
+                builder.append(line).append("\n");
+			}
+
+            System.out.println("**"  + (System.currentTimeMillis() - start));
+            document.insertString(0, builder.toString(), null);
 		} catch (BadLocationException e) {
 			throw new RuntimeException(e);
 		}
 
 		clearModified();
-		
+
+        System.out.println(System.currentTimeMillis() - start);
+
+        doc.getDocList().getWindow().hideCursor();
+
+
 		documentStateListener.enable();
 
 		if (caret != null) {

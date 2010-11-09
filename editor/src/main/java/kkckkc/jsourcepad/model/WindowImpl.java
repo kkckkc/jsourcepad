@@ -16,6 +16,7 @@ import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.swing.*;
+import java.awt.*;
 
 
 public class WindowImpl extends AbstractMessageBus implements Window, MessageBus, ScopeRoot {
@@ -54,6 +55,20 @@ public class WindowImpl extends AbstractMessageBus implements Window, MessageBus
 
     public int getId() {
         return id;
+    }
+
+    @Override
+    public void setCursor(Cursor cursor) {
+        RootPaneContainer root = (RootPaneContainer)container;
+        root.getGlassPane().setCursor(cursor);
+        root.getGlassPane().setVisible(true);
+    }
+
+    @Override
+    public void hideCursor() {
+        RootPaneContainer root = (RootPaneContainer)container;
+        root.getGlassPane().setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        root.getGlassPane().setVisible(false);
     }
 
     public void setId(int id) {

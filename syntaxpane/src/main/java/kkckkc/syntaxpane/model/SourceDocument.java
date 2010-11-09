@@ -27,7 +27,15 @@ public class SourceDocument extends PlainDocument {
 
 		putProperty(PlainDocument.tabSizeAttribute, 4);
 	}
-	
+
+    public void close() {
+        this.parser = null;
+        this.lineManager = null;
+        this.foldManager = null;
+
+        setDocumentFilter(null);
+    }
+
 	public void setLanguage(Language lang) {
 		logger.debug("Changing to language: " + lang.getName());
 		

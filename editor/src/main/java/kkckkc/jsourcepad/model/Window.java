@@ -9,10 +9,14 @@ import kkckkc.jsourcepad.util.messagebus.MessageBus;
 
 import javax.script.ScriptEngine;
 import javax.swing.*;
+import java.awt.*;
 
 
 public interface Window extends MessageBus, ScopeRoot {
     public int getId();
+
+    public void setCursor(Cursor cursor);
+    public void hideCursor();
 
     public interface FocusListener {
 		public void focusGained(Window window);

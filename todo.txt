@@ -43,6 +43,7 @@
 [ ] Cygwin testing
 [ ] Implement proper completion
 [ ] Debugging for commands
+[ ] Disposable
 
 [x]ÊEnable/disable actions
 [x]ÊEnable/disable undo/redo

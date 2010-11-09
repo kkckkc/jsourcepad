@@ -12,6 +12,7 @@ import kkckkc.syntaxpane.parse.grammar.LanguageManager;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
 import java.io.*;
 
@@ -23,13 +24,15 @@ public class DocImpl extends AbstractMessageBus implements Doc, ScopeRoot {
 	protected File backingFile;
 	protected Buffer buffer;
 	private TabManager tabManager;
-	private BeanFactory container;
+	private DefaultListableBeanFactory container;
+    private SourceDocument sourceDocument;
 
-	@Autowired
+    @Autowired
 	public DocImpl(final Window window, DocList docList, LanguageManager languageManager) {
 		this.docList = docList;
 
-		this.buffer = new BufferImpl(new SourceDocument(), this, window);
+        sourceDocument = new SourceDocument();
+        this.buffer = new BufferImpl(sourceDocument, this, window);
 		this.buffer.setLanguage(languageManager.getLanguage(null));
 		
 		this.window = window;
@@ -67,6 +70,15 @@ public class DocImpl extends AbstractMessageBus implements Doc, ScopeRoot {
 	@Override
 	public void close() {
 		docList.close(this);
+
+        this.sourceDocument.close();
+        this.sourceDocument = null;
+
+        this.buffer.close();
+        this.buffer = null;
+
+        this.container.destroySingletons();
+        this.container = null;
 	}
 
 	@Override
@@ -162,7 +174,7 @@ public class DocImpl extends AbstractMessageBus implements Doc, ScopeRoot {
 
     @Override
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-	    this.container = beanFactory;
+	    this.container = (DefaultListableBeanFactory) beanFactory;
     }
 	
 	@Override

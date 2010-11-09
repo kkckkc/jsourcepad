@@ -47,6 +47,7 @@ public class ProjectPresenter implements Presenter<ProjectView>, Project.FileCha
 	
 	@PostConstruct
 	public void init() {
+        if (project.getProjectDir() == null) return;
         view.setModel(new FileTreeModel(project.getProjectDir(), new FileFilter() {
             @Override
             public boolean accept(File pathname) {
