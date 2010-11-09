@@ -44,6 +44,7 @@
 [ ] Implement proper completion
 [ ] Debugging for commands
 [ ] Disposable
+[ ] Faster script executor
 
 [x]ÊEnable/disable actions
 [x]ÊEnable/disable undo/redo

@@ -6,6 +6,7 @@ import kkckkc.syntaxpane.model.LineManager;
 import kkckkc.syntaxpane.model.TextInterval;
 import kkckkc.syntaxpane.parse.grammar.Language;
 import kkckkc.syntaxpane.style.Style;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -45,7 +46,8 @@ public interface Buffer {
 	// Positions and intervals
 	public InsertionPoint getInsertionPoint();
 	public TextInterval getSelection();
-	public TextInterval getSelectionOrCurrentLine();
+
+    @NotNull public TextInterval getSelectionOrCurrentLine();
     public TextInterval getSelectionOrCurrentParagraph();
     public TextInterval getCurrentLine();
 	public TextInterval getCompleteDocument();
