@@ -1,4 +1,4 @@
-Build
+Build 2010110901
 ------------------------------------------------------------------------------------------------------------------------
 
 Features
@@ -21,7 +21,7 @@ Bugfixes
  - Potential fix for firewall issue (windows)
  - Fixed problem with new file from template on Cygwin (windows)
  - Install bundles don't reload bundles
-
+ - Removed memory leak when closing files
 
 
 
