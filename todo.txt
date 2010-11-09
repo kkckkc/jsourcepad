@@ -40,11 +40,15 @@
 [x] Logging for packaged app
 [ ] Select Bundle Item should filter out unavailable due to scope
 
+[x] Support all missing input and output methods in CommandBundleDocPresenter
+[ ] Disposable
+[ ] Faster script executor
+
+[ ] Multiple invocations of select current scope should make it bigger
+
 [ ] Cygwin testing
 [ ] Implement proper completion
 [ ] Debugging for commands
-[ ] Disposable
-[ ] Faster script executor
 
 [x]ÊEnable/disable actions
 [x]ÊEnable/disable undo/redo
@@ -75,7 +79,6 @@
 [ ] Text > Move Selection
 [ ] Text > Edit Each Line in Selection
 [ ] Macros
-[ ] Support all missing (commented) input and output methods in CommandBundleDocPresenter
 [ ] Change actions to work with active buffer instead of active document where applicable
 [ ] Style navigation dialog on mac
 

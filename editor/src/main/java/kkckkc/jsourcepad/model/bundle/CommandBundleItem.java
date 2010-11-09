@@ -30,6 +30,8 @@ public class CommandBundleItem implements BundleItem<Void> {
 	public static final String OUTPUT_SHOW_AS_TOOLTIP = "showAsTooltip";
 	public static final String OUTPUT_INSERT_AS_SNIPPET = "insertAsSnippet";
 	public static final String OUTPUT_AFTER_SELECTED_TEXT = "afterSelectedText";
+    public static final String OUTPUT_CREATE_NEW_DOCUMENT = "openAsNewDocument";
+    public static final String OUTPUT_REPLACE_DOCUMENT = "replaceDocument";
 
 	public static final String INPUT_NONE = "none";
 	public static final String INPUT_DOCUMENT = "document";
@@ -37,6 +39,7 @@ public class CommandBundleItem implements BundleItem<Void> {
     public static final String INPUT_CHARACTER = "character";
     public static final String INPUT_LINE = "line";
     public static final String INPUT_WORD = "word";
+    public static final String INPUT_SCOPE = "scope";
 
     public static final String BEFORE_SAVE_ALL = "saveModifiedFiles";
     public static final String BEFORE_SAVE_ACTIVE = "saveActiveFile";
@@ -151,6 +154,10 @@ public class CommandBundleItem implements BundleItem<Void> {
         } else if (INPUT_WORD.equals(type)) {
             virtualSelection = buffer.getCurrentWord();
             return buffer.getText(virtualSelection);
+        } else if (INPUT_SCOPE.equals(type)) {
+            virtualSelection = buffer.getCurrentScope();
+            return buffer.getText(virtualSelection);
+
 		} else if (type == null) {
 			return null;
 		} else {
@@ -271,6 +278,15 @@ public class CommandBundleItem implements BundleItem<Void> {
                         }
 
                         buffer.insertText(selection.getEnd(), s, null);
+
+                    } else if (OUTPUT_REPLACE_DOCUMENT.equals(output)) {
+                        Buffer buffer = window.getDocList().getActiveDoc().getActiveBuffer();
+        				Interval selection = buffer.getCompleteDocument();
+                        buffer.replaceText(selection, s, null);
+
+                    } else if (OUTPUT_CREATE_NEW_DOCUMENT.equals(output)) {
+                        Doc doc = window.getDocList().create();
+                        doc.getActiveBuffer().insertText(0, s, null);
 
         			} else if (OUTPUT_DISCARD.equals(output)) {
         				// Do nothing

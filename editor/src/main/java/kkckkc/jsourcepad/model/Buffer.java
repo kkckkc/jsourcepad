@@ -18,6 +18,7 @@ import java.io.IOException;
 public interface Buffer {
     public void close();
 
+
     public interface InsertionPointListener {
 		public void update(InsertionPoint insertionPoint);
 	}
@@ -52,6 +53,7 @@ public interface Buffer {
     public TextInterval getCurrentLine();
 	public TextInterval getCompleteDocument();
     public TextInterval getCurrentWord();
+    public TextInterval getCurrentScope();
 
     public void setSelection(Interval interval);
     public int getLength();

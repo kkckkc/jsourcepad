@@ -576,7 +576,40 @@ public class BufferImpl implements Buffer {
 		return null;
     }
 
-	@Override
+    @Override
+    public TextInterval getCurrentScope() {
+        Scope scope = insertionPoint.getScope();
+        String path = scope.getPath();
+        Line line = getLineManager().getLineByPosition(insertionPoint.getPosition());
+
+        while (scope.getStart() == Integer.MIN_VALUE) {
+            line = getLineManager().getPrevious(line);
+            scope = document.getScopeForPosition(line.getEnd());
+            while (! scope.getPath().equals(path)) {
+                scope = scope.getParent();
+            }
+        }
+
+        int start = line.getStart() + scope.getStart();
+
+
+        scope = insertionPoint.getScope();
+        line = getLineManager().getLineByPosition(insertionPoint.getPosition());
+
+        while (scope.getEnd() == Integer.MAX_VALUE) {
+            line = getLineManager().getNext(line);
+            scope = document.getScopeForPosition(line.getStart());
+            while (! scope.getPath().equals(path)) {
+                scope = scope.getParent();
+            }
+        }
+
+        int end = line.getStart() + scope.getEnd();
+
+        return new BufferTextInterval(start, end);
+    }
+
+    @Override
     public Highlight highlight(final Interval interval, final HighlightType type, final Style style, final boolean isTransient) {
 	    try {
 			final Object o = textComponent.getHighlighter().addHighlight(interval.getStart(), interval.getEnd(), new HighlightPainter() {

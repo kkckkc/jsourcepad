@@ -30,14 +30,14 @@ public class CommandBundleDocPresenter extends BasicBundleDocPresenter {
         secondaryInputMap.put(CommandBundleDocViewImpl.INPUT2_DOCUMENT, CommandBundleItem.INPUT_DOCUMENT);
         secondaryInputMap.put(CommandBundleDocViewImpl.INPUT2_LINE, CommandBundleItem.INPUT_LINE);
         secondaryInputMap.put(CommandBundleDocViewImpl.INPUT2_NOTHING, "nop");
-//        secondaryInputMap.put(CommandBundleDocViewImpl.INPUT2_SCOPE, CommandBundleItem);
+        secondaryInputMap.put(CommandBundleDocViewImpl.INPUT2_SCOPE, CommandBundleItem.INPUT_SCOPE);
         secondaryInputMap.put(CommandBundleDocViewImpl.INPUT2_WORD, CommandBundleItem.INPUT_WORD);
 
         outputMap.put(CommandBundleDocViewImpl.OUTPUT_INSERT_AS_TEXT, CommandBundleItem.OUTPUT_AFTER_SELECTED_TEXT);
-//        outputMap.put(CommandBundleDocViewImpl.OUTPUT_CREATE_NEW_DOCUMENT, CommandBundleItem.);
+        outputMap.put(CommandBundleDocViewImpl.OUTPUT_CREATE_NEW_DOCUMENT, CommandBundleItem.OUTPUT_CREATE_NEW_DOCUMENT);
         outputMap.put(CommandBundleDocViewImpl.OUTPUT_DISCARD, CommandBundleItem.OUTPUT_DISCARD);
         outputMap.put(CommandBundleDocViewImpl.OUTPUT_INSERT_AS_SNIPPET, CommandBundleItem.OUTPUT_INSERT_AS_SNIPPET);
-//        outputMap.put(CommandBundleDocViewImpl.OUTPUT_REPLACE_DOCUMENT, CommandBundleItem.);
+        outputMap.put(CommandBundleDocViewImpl.OUTPUT_REPLACE_DOCUMENT, CommandBundleItem.OUTPUT_REPLACE_DOCUMENT);
         outputMap.put(CommandBundleDocViewImpl.OUTPUT_REPLACE_SELECTED_TEXT, CommandBundleItem.OUTPUT_REPLACE_SELECTED_TEXT);
         outputMap.put(CommandBundleDocViewImpl.OUTPUT_SHOW_AS_HTML, CommandBundleItem.OUTPUT_SHOW_AS_HTML);
         outputMap.put(CommandBundleDocViewImpl.OUTPUT_SHOW_AS_TOOLTIP, CommandBundleItem.OUTPUT_SHOW_AS_TOOLTIP);
