@@ -37,12 +37,14 @@ public class TemplateBundleItem implements BundleItem<File> {
         environment.put("TM_NEW_FILE_BASENAME", Cygwin.makePathForEnvironmentUsage(FileUtils.getBaseName(file)));
         environment.put("TM_NEW_FILE_DIRECTORY", Cygwin.makePathForEnvironmentUsage(file.getParentFile().getName()));
 
-        scriptExecutor.execute(new UISupportCallback(window.getContainer()) {
+        ScriptExecutor.Execution execution = scriptExecutor.execute(new UISupportCallback(window.getContainer()) {
             public void onAfterSuccess(final ScriptExecutor.Execution execution) {
                 String s = execution.getStdout();
                 if (s == null) s = "";
             }
         }, new StringReader(""), environment);
+
+        execution.waitForCompletion();
     }
 
     @Override

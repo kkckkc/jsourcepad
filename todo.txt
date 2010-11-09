@@ -39,12 +39,12 @@
 [x] Don't print performance log issues in packaged app
 [x] Logging for packaged app
 [ ] Select Bundle Item should filter out unavailable due to scope
-[ ] Themes shouldn't really be plugins directly. Also add themes for native, metal etc
 
 [ ] Cygwin testing
 [ ] Implement proper completion
 [ ] Debugging for commands
 [ ] Disposable
+[ ] Faster script executor
 
 [x]ÊEnable/disable actions
 [x]ÊEnable/disable undo/redo

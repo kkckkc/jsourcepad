@@ -11,6 +11,7 @@ import kkckkc.syntaxpane.parse.grammar.Language;
 import kkckkc.syntaxpane.regex.JoniPatternFactory;
 import kkckkc.syntaxpane.style.Style;
 import kkckkc.utils.CharSequenceUtils;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -203,9 +204,12 @@ public class BufferImpl implements Buffer {
 	
 	@Override
 	public TextInterval getSelection() {
+    // TODO: Investigate if we should enable the following
+//        if (selection == null || selection.isEmpty()) return null;
 		return selection;
 	}
 
+    @NotNull
     @Override
 	public TextInterval getSelectionOrCurrentLine() {
 		if (selection != null && ! selection.isEmpty()) return selection;

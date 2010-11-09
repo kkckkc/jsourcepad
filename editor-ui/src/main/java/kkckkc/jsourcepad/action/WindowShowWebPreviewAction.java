@@ -35,7 +35,7 @@ public class WindowShowWebPreviewAction extends BaseAction {
 
 
         try {
-            Desktop.getDesktop().browse(new URI("http://localhost:" + server.getAddress().getPort() + path));
+            Desktop.getDesktop().browse(new URI("http://localhost:" + server.getAddress().getPort() + path.replace("\\", "/")));
         } catch (IOException e1) {
             e1.printStackTrace();  
         } catch (URISyntaxException e1) {

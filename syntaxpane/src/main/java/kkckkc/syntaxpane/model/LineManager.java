@@ -1,6 +1,8 @@
 package kkckkc.syntaxpane.model;
 
 import kkckkc.syntaxpane.parse.CharProvider;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
 import java.util.TreeSet;
@@ -13,15 +15,20 @@ public abstract class LineManager {
 		this.charProvider = charProvider;
 	}
 
+    @NotNull
 	public Line getLineByPosition(int position) {
-		return lines.floor(new Line(0, position, position));
+		Line line = lines.floor(new Line(0, position, position));
+        if (line != null) return line;
+        return new Line(0, 0, 0);
 	}
 
-	public Line getPrevious(Line line) {
+    @Nullable
+	public Line getPrevious(@NotNull Line line) {
 		return lines.lower(line);
 	}
 
-	public Line getNext(Line line) {
+    @Nullable
+	public Line getNext(@NotNull Line line) {
 		return lines.higher(line);
 	}
 

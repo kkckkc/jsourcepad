@@ -1,5 +1,6 @@
 package kkckkc.jsourcepad.util;
 
+import com.google.common.base.Objects;
 import kkckkc.utils.Os;
 
 import java.io.File;
@@ -9,6 +10,7 @@ public class Config {
     public static final int MODE_DEVELOPMENT= 2;
 
     private static final String HTTP_PORT = "http.port";
+    private static final String HTTP_LOCALHOST = "http.localhost";
     private static final String APPLICATION_FOLDER = "application.folder";
 
     private static boolean useCorrectMacLocations = true;
@@ -74,5 +76,9 @@ public class Config {
         } else {
             return new File(System.getProperty("user.home"), ".jsourcepad");
         }
+    }
+
+    public static String getLocalhost() {
+        return Objects.firstNonNull(System.getProperty(HTTP_LOCALHOST), "localhost");
     }
 }

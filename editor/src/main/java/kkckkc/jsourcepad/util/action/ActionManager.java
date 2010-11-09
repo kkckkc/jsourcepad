@@ -57,6 +57,8 @@ public class ActionManager implements BeanFactoryAware {
             public void propertyChange(PropertyChangeEvent e) {
                 String prop = e.getPropertyName();
                 if ("focusOwner".equals(prop)) {
+                    if (! (e.getNewValue() instanceof JComponent)) return;
+
                     JComponent c = (JComponent) e.getNewValue();
                     if (c == null) return;
          
