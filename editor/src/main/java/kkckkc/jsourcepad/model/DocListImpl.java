@@ -5,6 +5,7 @@ import kkckkc.jsourcepad.util.BeanFactoryLoader;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -58,7 +59,15 @@ public class DocListImpl implements DocList {
 			}
 			i++;
 		}
-		
+
+        if (file.length() > (2L * 1024 * 1024)) {
+            JOptionPane.showMessageDialog(WindowLocator.get().getContainer(),
+                    "Can't open files larger than 2mb",
+                    "Can't open",
+                    JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+
 		Doc doc = createDoc(file);
 		try {
 			doc.open(file);

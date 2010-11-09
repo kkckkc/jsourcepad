@@ -12,6 +12,8 @@ Improvements
  - Goto line dialog. Previously entered text is pre-selected
  - New windows are shown in location selected by platform and thus not in the exact same spot as the previous window
  - Loading huge projects are significantly faster
+ - 25% performance improvement in loading large files
+ - Temporary restriction - not possible to open files larger than 2mb
 
 Bugfixes
  - Shift left / right shifted the current line plus the next

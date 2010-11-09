@@ -130,7 +130,7 @@ public class DocImpl extends AbstractMessageBus implements Doc, ScopeRoot {
 	@Override
 	public void open(File file) throws IOException {
 		this.backingFile = file;
-		
+
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		br.mark(1024);
 		
