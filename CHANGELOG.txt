@@ -1,0 +1,25 @@
+Build
+------------------------------------------------------------------------------------------------------------------------
+
+Features
+ - Proxy configuration
+ - Project specific configurations - overwrite mode and tab size
+ - Filtering files to show in project
+ - Logging
+
+Improvements
+ - jsourcepad.sh now supports sending arguments (linux)
+ - Goto line dialog. Previously entered text is pre-selected
+ - New windows are shown in location selected by platform and thus not in the exact same spot as the previous window
+ - Loading huge projects are significantly faster
+
+Bugfixes
+ - Shift left / right shifted the current line plus the next
+ - Fullscreen restore issue with Substance lnf
+ - Potential fix for firewall issue (windows)
+ - Fixed problem with new file from template on Cygwin (windows)
+ - Install bundles don't reload bundles
+
+
+
+
