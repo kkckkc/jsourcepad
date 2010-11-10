@@ -2,7 +2,6 @@ package kkckkc.jsourcepad.ui.settings;
 
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
-import kkckkc.jsourcepad.model.WindowLocator;
 import kkckkc.jsourcepad.model.settings.IgnorePatternProjectSettings;
 import kkckkc.jsourcepad.model.settings.SettingsManager;
 import kkckkc.jsourcepad.model.settings.SettingsPanel;
@@ -33,7 +32,7 @@ public class ProjectSettingsPanel implements SettingsPanel {
 
     @Override
     public boolean load() {
-        Window window = WindowLocator.get();
+        Window window = Application.get().getWindowManager().getFocusedWindow();
 
         if (window.getProject() == null) return false;
 
@@ -45,7 +44,7 @@ public class ProjectSettingsPanel implements SettingsPanel {
 
     @Override
     public boolean save() {
-        Window window = WindowLocator.get();
+        Window window = Application.get().getWindowManager().getFocusedWindow();
 
         if (window.getProject() == null) return false;
         

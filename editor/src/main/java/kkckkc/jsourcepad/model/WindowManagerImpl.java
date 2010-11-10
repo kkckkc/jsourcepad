@@ -8,6 +8,8 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 import java.io.File;
 import java.util.Collection;
 import java.util.Map;
@@ -17,6 +19,7 @@ import java.util.Properties;
 public class WindowManagerImpl implements WindowManager {
 	private Map<Container, Window> openWindows = Maps.newHashMap();
 	private int lastId = 0;
+    private Window focusedWindow;
 
 	// Collaborators
 	private Application app;
@@ -46,44 +49,45 @@ public class WindowManagerImpl implements WindowManager {
 		return openWindows.get(ComponentUtils.getToplevelAncestor(c));
 	}
 
-	@Override
+    @Override
+    public Window getFocusedWindow() {
+        return focusedWindow;
+    }
+
+    @Override
 	public Window newWindow(File file) {
         Properties props = new Properties();
         props.put("projectDir", file == null ? "" : file.toString());
 
-        // TODO: Clean this method
-        if (file != null && file.isDirectory()) {
-            DefaultListableBeanFactory container =
-                beanFactoryLoader.load(BeanFactoryLoader.WINDOW, app, file, props);
+        DefaultListableBeanFactory container =
+            beanFactoryLoader.load(BeanFactoryLoader.WINDOW, app, file, props);
 
-            Window window = container.getBean("window", Window.class);
-            ((WindowImpl) window).setId(++lastId);
+        final Window window = container.getBean("window", Window.class);
+        ((WindowImpl) window).setId(++lastId);
 
-            Container frame = window.getContainer();
-            container.registerSingleton("frame", frame);
+        JFrame frame = window.getContainer();
+        container.registerSingleton("frame", frame);
 
-            openWindows.put(frame, window);
-            app.topic(Listener.class).post().created(window);
-            return window;
-        } else {
-            DefaultListableBeanFactory container =
-                beanFactoryLoader.load(BeanFactoryLoader.WINDOW, app, file, props);
+        openWindows.put(frame, window);
+        app.topic(Listener.class).post().created(window);
 
-            Window window = container.getBean("window", Window.class);
-            ((WindowImpl) window).setId(++lastId);
+        if (file != null && ! file.isDirectory()) {
+            window.getDocList().open(file);
+        }
 
-            Container frame = window.getContainer();
-            container.registerSingleton("frame", frame);
-            
-            openWindows.put(frame, window);
-            app.topic(Listener.class).post().created(window);
-
-            if (file != null) {
-                window.getDocList().open(file);
+        frame.addWindowFocusListener(new WindowFocusListener() {
+            @Override
+            public void windowGainedFocus(WindowEvent e) {
+                focusedWindow = window;
             }
 
-            return window;
-        }
+            @Override
+            public void windowLostFocus(WindowEvent e) {
+            }
+        });
+        focusedWindow = window;
+
+        return window;
 	}
 
 	@Override

@@ -8,6 +8,7 @@ public class OsxApplication {
 
     @PostConstruct
     public void init() {
+        System.out.println("OsxApplication.init");
         Application.getApplication().addPreferencesMenuItem();
         Application.getApplication().addApplicationListener(new OsxApplicationListener());
         Application.getApplication().setEnabledPreferencesMenu(true);

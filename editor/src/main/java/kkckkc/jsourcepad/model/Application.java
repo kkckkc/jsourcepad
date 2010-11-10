@@ -72,6 +72,8 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
 
         // Load application controller
 		beanFactory.getBean("applicationController");
+
+        beanFactory.preInstantiateSingletons();
 	}
 
     private static Theme initTheme() {

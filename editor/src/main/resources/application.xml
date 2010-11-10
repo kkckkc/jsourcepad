@@ -9,7 +9,7 @@
 		<constructor-arg ref="languageManager" />
 	</bean>
 	
-	<bean id="languageManager" class="kkckkc.syntaxpane.parse.grammar.LanguageManager" lazy-init="true" autowire="byType"/>
+	<bean id="languageManager" class="kkckkc.syntaxpane.parse.grammar.LanguageManager" lazy-init="true"/>
 
 	<bean id="styleParser" class="kkckkc.syntaxpane.parse.grammar.textmate.TextmateStyleParser" />
     <bean id="clipboardManager" class="kkckkc.jsourcepad.model.ClipboardManager" />

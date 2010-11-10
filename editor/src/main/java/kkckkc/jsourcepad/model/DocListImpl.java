@@ -61,7 +61,7 @@ public class DocListImpl implements DocList {
 		}
 
         if (file.length() > (2L * 1024 * 1024)) {
-            JOptionPane.showMessageDialog(WindowLocator.get().getContainer(),
+            JOptionPane.showMessageDialog(Application.get().getWindowManager().getFocusedWindow().getContainer(),
                     "Can't open files larger than 2mb",
                     "Can't open",
                     JOptionPane.ERROR_MESSAGE);
