@@ -35,7 +35,6 @@ public class WindowManagerImpl implements WindowManager {
 	    this.beanFactoryLoader = beanFactoryLoader;
     }
 
-
     @Override
     public Window getWindow(int id) {
         for (Window window : openWindows.values()) {
@@ -102,7 +101,6 @@ public class WindowManagerImpl implements WindowManager {
     public Collection<Window> getWindows() {
 	    return openWindows.values();
     }
-
 
     @Override
     public void minimize(Window window) {
