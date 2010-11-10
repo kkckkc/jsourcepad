@@ -38,11 +38,11 @@
 [x] Move bundle installation stuff to bundle editor
 [x] Don't print performance log issues in packaged app
 [x] Logging for packaged app
-[ ] Select Bundle Item should filter out unavailable due to scope
 
 [x] Support all missing input and output methods in CommandBundleDocPresenter
+[x] Faster script executor
+[ ] Select Bundle Item should filter out unavailable due to scope
 [ ] Disposable
-[ ] Faster script executor
 
 [ ] Multiple invocations of select current scope should make it bigger
 
