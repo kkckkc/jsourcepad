@@ -4,17 +4,18 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import kkckkc.jsourcepad.action.ActionContextKeys;
 import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.util.Cygwin;
 import kkckkc.jsourcepad.util.action.ActionManager;
+import kkckkc.jsourcepad.util.io.SystemEnvironmentHelper;
 import kkckkc.syntaxpane.model.Interval;
 import kkckkc.utils.Os;
 
 import java.io.File;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +28,9 @@ public class EnvironmentProvider {
     };
 
     public static Map<String, String> getEnvironment(Window window, BundleItemSupplier bundleItemSupplier) {
-		Map<String, String> environment = Maps.newHashMap();
+        Map<String, String> systemEnvironment = SystemEnvironmentHelper.getSystemEnvironment();
+
+		Map<String, String> environment = new HashMap<String, String>(systemEnvironment);
 		Doc activeDoc = window.getDocList().getActiveDoc();
 
 		if (activeDoc != null) {
@@ -106,14 +109,9 @@ public class EnvironmentProvider {
 		    environment.put("TM_TAB_SIZE", Integer.toString(activeDoc.getTabManager().getTabSize()));
         }
 
-		// Build path
-        if (Os.isWindows()) {
-            environment.put("PATH", Joiner.on(File.pathSeparator).join(Collections2.transform(paths, FILE_TO_STRING)));
-        } else {
-            environment.put("PATH",
-                    System.getenv("PATH") + File.pathSeparator +
-                        Joiner.on(File.pathSeparator).join(Collections2.transform(paths, FILE_TO_STRING)));
-        }
+        environment.put("PATH",
+                    systemEnvironment.get("PATH") + File.pathSeparator +
+                    Joiner.on(File.pathSeparator).join(Collections2.transform(paths, FILE_TO_STRING)));
 
 	    return environment;
     }

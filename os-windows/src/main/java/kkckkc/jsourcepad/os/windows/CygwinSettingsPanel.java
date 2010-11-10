@@ -1,9 +1,8 @@
 package kkckkc.jsourcepad.os.windows;
 
-import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import kkckkc.jsourcepad.model.Application;
-import kkckkc.jsourcepad.model.settings.ExecutionSettings;
+import kkckkc.jsourcepad.model.settings.ScriptExecutionSettings;
 import kkckkc.jsourcepad.model.settings.SettingsManager;
 import kkckkc.jsourcepad.model.settings.SettingsPanel;
 import net.miginfocom.swing.MigLayout;
@@ -26,12 +25,8 @@ public class CygwinSettingsPanel extends JPanel implements SettingsPanel, Settin
 
         setLayout(new MigLayout("insets panel,fillx", "[right]r[grow]", "[]u[]u[]"));
 
-        add(new JLabel("Cygwin bash command line:"), "");
+        add(new JLabel("Cygwin bash.exe location:"), "");
         add(location, "grow,wrap");
-/*
-        add(new JSeparator(JSeparator.HORIZONTAL), "span,grow,wrap");
-
-        add(new JButton("Test"), "skip");*/
     }
 
     @Override
@@ -51,8 +46,8 @@ public class CygwinSettingsPanel extends JPanel implements SettingsPanel, Settin
 
     @Override
     public boolean load() {
-        ExecutionSettings settings = Application.get().getSettingsManager().get(ExecutionSettings.class);
-        location.setText(Joiner.on(" ").join(settings.getArgs()));
+        ScriptExecutionSettings settings = Application.get().getSettingsManager().get(ScriptExecutionSettings.class);
+        location.setText(settings.getShellCommandLine()[0]);
 
         return true;
     }
@@ -60,10 +55,11 @@ public class CygwinSettingsPanel extends JPanel implements SettingsPanel, Settin
     @Override
     public boolean save() {
         SettingsManager settingsManager = Application.get().getSettingsManager();
-        ExecutionSettings settings = settingsManager.get(ExecutionSettings.class);
+        ScriptExecutionSettings settings = settingsManager.get(ScriptExecutionSettings.class);
 
         String s = location.getText();
-        settings.setArgs(split(s).toArray(new String[] {}));
+        settings.setShellCommandLine(new String[] { s, "-c" });
+        settings.setEnvironmentCommandLine(new String[]{s, "--login", "-c", "set; exit"});
 
         settingsManager.update(settings);
 

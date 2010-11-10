@@ -9,6 +9,7 @@ import kkckkc.jsourcepad.model.bundle.BundleManager;
 import kkckkc.jsourcepad.model.settings.ProxySettings;
 import kkckkc.jsourcepad.util.Config;
 import kkckkc.jsourcepad.util.io.ErrorDialog;
+import kkckkc.jsourcepad.util.io.SystemEnvironmentHelper;
 import kkckkc.utils.PerformanceLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -167,8 +168,15 @@ public class Bootstrap implements Runnable {
                 KeyboardFocusManager focusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
                 focusManager.addKeyEventDispatcher(new GlobalKeyEventDispatcher(bundleManager));
 
-                HttpServer server = Application.get().getHttpServer();
-                PreviewServer ps = Application.get().getBeanFactory().getBean(PreviewServer.class);
+                // Initialize in background
+                Application.get().getThreadPool().submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        HttpServer server = Application.get().getHttpServer();
+                        PreviewServer ps = Application.get().getBeanFactory().getBean(PreviewServer.class);
+                        SystemEnvironmentHelper.getSystemEnvironment();
+                    }
+                });
             }
         };
 

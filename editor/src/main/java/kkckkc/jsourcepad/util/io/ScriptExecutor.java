@@ -4,10 +4,9 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.google.common.io.CharStreams;
 import com.google.common.io.Files;
 import kkckkc.jsourcepad.model.Application;
-import kkckkc.jsourcepad.model.settings.ExecutionSettings;
+import kkckkc.jsourcepad.model.settings.ScriptExecutionSettings;
 import kkckkc.jsourcepad.model.settings.SettingsManager;
 import kkckkc.jsourcepad.util.Cygwin;
 import kkckkc.utils.Os;
@@ -45,7 +44,7 @@ public class ScriptExecutor {
 		return execute(new Execution(callback, input, stdoutHandler, stderrHandler), environment);
 	}
 	
-	private Execution execute(final Execution execution, Map<String, String> environment) throws IOException { 
+	private Execution execute(final Execution execution, Map<String, String> environment) throws IOException {
 		final ProcessBuilder pb = getProcess(execution, environment);
         final Process p = pb.start();
 
@@ -115,7 +114,7 @@ public class ScriptExecutor {
         String path = execution.tempScriptFile.getPath();
 
         SettingsManager settingsManager = Application.get().getSettingsManager();
-        List<String> argList = new ArrayList(Arrays.asList(settingsManager.get(ExecutionSettings.class).getArgs()));
+        List<String> argList = new ArrayList<String>(Arrays.asList(settingsManager.get(ScriptExecutionSettings.class).getShellCommandLine()));
 
         if (Os.isWindows()) {
             path = Cygwin.makePathForDirectUsage(path);
@@ -227,26 +226,8 @@ public class ScriptExecutor {
 	        stderrFuture.get();
         }
 	}
-	
-	static class GobblerRunnable implements Runnable {
-		private InputStream is;
-		private Writer w;
-		
-		public GobblerRunnable(InputStream is, Writer w) {
-			this.is = is;
-			this.w = w;
-		}
 
-		public void run() {
-            try {
-                CharStreams.copy(new InputStreamReader(is, "utf-8"), w);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-	}
-
-	public static Reader noInput() {
+    public static Reader noInput() {
 	    return new StringReader("");
     }
 
