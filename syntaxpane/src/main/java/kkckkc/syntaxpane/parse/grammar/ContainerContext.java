@@ -114,11 +114,15 @@ public class ContainerContext extends MatchableContext {
 
 	public Matcher getMatcher(CharSequence s) {
         if (disabled) {
-            return factory.create("a$b").matcher(s);
+            return getDisabledMatcher(s);
         } else {
 		    return beginPattern.matcher(s);
         }
 	}
+
+    private Matcher getDisabledMatcher(CharSequence s) {
+        return factory.create("a$b").matcher(s);
+    }
 
     public void setDisabled(boolean b) {
         this.disabled = b;

@@ -103,40 +103,14 @@ public class Parser {
 			MatchableContext def = (MatchableContext) scope.getContext();
 
 			// Resolve contexts 
-			int i = 0;
-			Context[] children = def.getUnnestedChildren();
-			MatchableContext[] contexts = new MatchableContext[children.length];
-			for (Context ctx : children) {
-				if (ctx instanceof MatchableContext) {
-					contexts[i++] =	(MatchableContext) ctx;
-				}
-			}
+            MatchableContext[] contexts = findMatchableContexts(def);
 			
 			// Make sure the matchers are in order as follows
 			//  1. extend parent
 			//  2. end matcher for parent
 			//  3. rest
-			int rootMatcherIdx = 0;
-			Matcher[] matchers = new Matcher[contexts.length + 1];
-			for (i = 0; i < contexts.length; i++) {
-				if (contexts[i] == null) continue;
-				if (contexts[i].isExtendParent()) {
-					matchers[rootMatcherIdx++] = contexts[i].getMatcher(seq);
-				}
-			}
-			if (def instanceof ContainerContext) {
-				matchers[rootMatcherIdx] = ((ContainerContext) def).getEndMatcher(seq, scope);
-			} else {
-				matchers[rootMatcherIdx] = null;
-			}
-			for (i = 0; i < contexts.length; i++) {
-				if (contexts[i] == null) continue;
-				if (contexts[i].isExtendParent()) continue;
-				
-				if (! (contexts[i].isFirstLineOnly() && line.getIdx() > 0)) {
-					matchers[i + 1] = contexts[i].getMatcher(seq);
-				}
-			}
+            Matcher[] matchers = new Matcher[contexts.length + 1];
+            int rootMatcherIdx = buildMatchers(scope, line, seq, def, contexts, matchers);
 			
 			MatcherCollectionIterator iterator = new MatcherCollectionIterator(matchers);
 			iterator.setPosition(position);
@@ -185,7 +159,43 @@ public class Parser {
 		return scope;
 	}
 
-	private Scope copyScopeOfPreviousLine(Scope scope) {
+    private int buildMatchers(Scope scope, Line line, CharSequence seq, MatchableContext def, MatchableContext[] contexts, Matcher[] matchers) {
+        int rootMatcherIdx = 0;
+        for (int i = 0; i < contexts.length; i++) {
+            if (contexts[i] == null) continue;
+            if (contexts[i].isExtendParent()) {
+                matchers[rootMatcherIdx++] = contexts[i].getMatcher(seq);
+            }
+        }
+        if (def instanceof ContainerContext) {
+            matchers[rootMatcherIdx] = ((ContainerContext) def).getEndMatcher(seq, scope);
+        } else {
+            matchers[rootMatcherIdx] = null;
+        }
+        for (int i = 0; i < contexts.length; i++) {
+            if (contexts[i] == null) continue;
+            if (contexts[i].isExtendParent()) continue;
+
+            if (! (contexts[i].isFirstLineOnly() && line.getIdx() > 0)) {
+                matchers[i + 1] = contexts[i].getMatcher(seq);
+            }
+        }
+        return rootMatcherIdx;
+    }
+
+    private MatchableContext[] findMatchableContexts(MatchableContext def) {
+        int i = 0;
+        Context[] children = def.getUnnestedChildren();
+        MatchableContext[] contexts = new MatchableContext[children.length];
+        for (Context ctx : children) {
+            if (ctx instanceof MatchableContext) {
+                contexts[i++] =	(MatchableContext) ctx;
+            }
+        }
+        return contexts;
+    }
+
+    private Scope copyScopeOfPreviousLine(Scope scope) {
 	    scope = scope.copy(Integer.MIN_VALUE, Integer.MAX_VALUE);
 	    
 	    // Remove all that ends at line end
