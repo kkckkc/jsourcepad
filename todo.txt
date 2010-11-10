@@ -1,50 +1,5 @@
-[x] Error reporting
-[x] Error reporting for commands
-[x] contentName functionality needs replacement. Check entities.txt
-[x] perl highlighting problem
-[x] windows and linux packaging
-
-[x] Someway to install themes, bundles etc. Check at first start.
-[x] Fix when running cygwin
-[x] OS specific plugins
-[x] Cygwin settings
-[x] Tab completion when line ends with whitespace
-[x] launch4j
-[x] Open with on Windows
-[x] Substance tab bug
-[x] Repackaging
-[x] Disable themes on certain platforms
-[x] Install Bundles doesnt look right on substance
-[x] Testing on Linux
-[x] Test on Mac
-[x] Tab completion on windows
-
-[x] Linux shell argument
-[x] Shift right / shift left issue
-[x] Goto line dialog. Previously entered text is pre-selected
-[x] New windows are shown in location selected by platform and thus not in the exact same spot as the previous window
-[x] Fullscreen restore issue with Substance lnf
-[x] Potential fix for firewall issue
-[x] Fixed problem with new file from template on Cygwin
-[x] Proxy issue
-[x]ÊWindow/project specific settings - for instance for overwrite mode and tab size
-[x] Bug fix - tabs on first line
-[x] Project filtering
-[x] Configurable project filtering
-[x] Loading huge projects is slow
-[x] Install bundles don't reload bundles
-[x] What happends when adding items to a bundle menu that was previously empty
-[x] Plugin adding removing from menus in a better way
-[x] Move bundle installation stuff to bundle editor
-[x] Don't print performance log issues in packaged app
-[x] Logging for packaged app
-
-[x] Support all missing input and output methods in CommandBundleDocPresenter
-[x] Faster script executor
-
 [ ] Select Bundle Item should filter out unavailable due to scope
-[ ] Disposable
-
+[-] Disposable
 [ ] Multiple invocations of select current scope should make it bigger
 
 [ ] Cygwin testing
@@ -53,26 +8,6 @@
 
 [ ] Buffer should be DI
 
-[x]ÊEnable/disable actions
-[x]ÊEnable/disable undo/redo
-[x]ÊDouble exit actions
-[x] Test to remove lazy actions and see if it improves performance
-[x] Fold indicator alignment on OSX
-[x] Line numbers alignment on OSX
-[x]ÊRegister clipboard operations even when using keyboard shortcuts
-[x]ÊAdd persistence mechanism. Store find history and clipboard history
-
-[x] Dialogs close on escape, harmonize minimize etc
-[x] Package per theme
-[x] Buffer.replaceText - one undo operation
-[x] Joni replaceAll, removed NamedPatternFactory, check body
-[x]ÊHome button
-[x] Snippet moving backwards, shift tab. See for instance movie
-[x] ScopeSelector and Rule.parse should be moved into specific classes in either syntaxpane-gtksourceview or syntaxpane-textmate
-[x] Templates
-[x] Support contentName
-[x] Fix python unittest color coding
-[x] Italic fonts, for instance in python unittest
 [ ] Move actions to plist format
 [ ] Window menu
 [ ] Replacement for keystrokes that are impossible on non-us keyboards
@@ -84,12 +19,3 @@
 [ ] Macros
 [ ] Change actions to work with active buffer instead of active document where applicable
 [ ] Style navigation dialog on mac
-
-HTML bundle
-[x] Embedded javascript syntax colors
-[x] beforeRunningCommand
-[x] Wrap Each Selected Line in Open/Close Tag
-[x] movie, fieldset etc, i.e. same tabstop in wrong order
-
-[x] Bundle menu
-[x] Bundle editor
