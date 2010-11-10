@@ -22,7 +22,7 @@ public class DocImpl extends AbstractMessageBus implements Doc, ScopeRoot {
 	private DocList docList;
 	protected Window window;
 	protected File backingFile;
-	protected Buffer buffer;
+	protected BufferImpl buffer;
 	private TabManager tabManager;
 	private DefaultListableBeanFactory container;
     private SourceDocument sourceDocument;
@@ -178,7 +178,7 @@ public class DocImpl extends AbstractMessageBus implements Doc, ScopeRoot {
     }
 	
 	@Override
-	public BeanFactory getBeanFactory() {
+	public DefaultListableBeanFactory getBeanFactory() {
 	    return container;
 	}
 	

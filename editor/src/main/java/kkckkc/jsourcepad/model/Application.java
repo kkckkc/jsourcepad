@@ -140,8 +140,8 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
     }
 
 	@Override
-    public BeanFactory getBeanFactory() {
-	    return this.beanFactory;
+    public DefaultListableBeanFactory getBeanFactory() {
+	    return (DefaultListableBeanFactory) this.beanFactory;
     }
 
     public ClipboardManager getClipboardManager() {

@@ -50,6 +50,8 @@
 [ ] Implement proper completion
 [ ] Debugging for commands
 
+[ ] Buffer should be DI
+
 [x]ÊEnable/disable actions
 [x]ÊEnable/disable undo/redo
 [x]ÊDouble exit actions

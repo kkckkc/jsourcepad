@@ -16,9 +16,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 
 public interface Buffer {
-    public void close();
-
-
     public interface InsertionPointListener {
 		public void update(InsertionPoint insertionPoint);
 	}

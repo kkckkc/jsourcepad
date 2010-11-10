@@ -10,6 +10,7 @@ import kkckkc.jsourcepad.util.messagebus.MessageBus;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
 import javax.script.Bindings;
 import javax.script.ScriptContext;
@@ -22,7 +23,7 @@ import java.awt.*;
 public class WindowImpl extends AbstractMessageBus implements Window, MessageBus, ScopeRoot {
 
     private int id;
-	private BeanFactory beanFactory;
+	private DefaultListableBeanFactory beanFactory;
 
 	// Collaborators
 	private ActionManager actionManager;
@@ -99,7 +100,7 @@ public class WindowImpl extends AbstractMessageBus implements Window, MessageBus
 
 	@Override
 	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-		this.beanFactory = beanFactory;
+		this.beanFactory = (DefaultListableBeanFactory) beanFactory;
 	}
 
 	@Override
@@ -112,7 +113,7 @@ public class WindowImpl extends AbstractMessageBus implements Window, MessageBus
         return beanFactory.getBean(AcceleratorManager.class);
     }
 
-    public BeanFactory getBeanFactory() {
+    public DefaultListableBeanFactory getBeanFactory() {
 	    return beanFactory;
     }
 

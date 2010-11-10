@@ -87,5 +87,4 @@ public class TopicImpl<T> implements Topic<T, Pair<Method, Object[]>> {
 		}
 		
 	}
-
 }

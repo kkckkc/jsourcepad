@@ -74,9 +74,15 @@ public class BufferImpl implements Buffer {
     }
 
     public void close() {
-        System.out.println("BufferImpl.close");
         textComponent.getCaret().deinstall(textComponent);
         textComponent.setDocument(new SourceDocument());
+
+        for (DocumentListener dl : document.getDocumentListeners()) {
+            document.removeDocumentListener(dl);
+        }
+
+        this.caret.deinstall(textComponent);
+        document.setDocumentFilter(null);
     }
 
 	@Override

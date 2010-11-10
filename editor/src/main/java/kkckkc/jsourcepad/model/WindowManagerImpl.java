@@ -88,6 +88,8 @@ public class WindowManagerImpl implements WindowManager {
 
 	@Override
 	public void closeWindow(Window window) {
+        window.getBeanFactory().destroySingletons();
+
 		openWindows.remove(window.getContainer());
 		app.getMessageBus().topic(Listener.class).post().destroyed(window);
 	}
