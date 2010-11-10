@@ -1,6 +1,9 @@
 Build trunk
 ------------------------------------------------------------------------------------------------------------------------
 
+Features
+ - Bundle Installer can download bundles using HTTP
+
 Improvements
  - Big performance improvement on launching commands by avoiding login shell by caching environment
  - Command bundles now support all output and input methods supported in TextMate

@@ -5,13 +5,17 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.google.common.io.Files;
+import com.google.common.io.InputSupplier;
 import kkckkc.jsourcepad.Dialog;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.bundle.BundleManager;
 import kkckkc.jsourcepad.model.settings.ProxySettings;
 import kkckkc.jsourcepad.util.Config;
+import kkckkc.jsourcepad.util.Cygwin;
 import kkckkc.jsourcepad.util.Network;
 import kkckkc.jsourcepad.util.io.ScriptExecutor;
+import kkckkc.jsourcepad.util.io.SystemEnvironmentHelper;
 import kkckkc.utils.DomUtil;
 import kkckkc.utils.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +29,14 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
 public class BundleInstallerDialog implements Dialog<BundleInstallerDialogView> {
     private BundleInstallerDialogView view;
@@ -61,14 +67,6 @@ public class BundleInstallerDialog implements Dialog<BundleInstallerDialogView> 
     public void show() {
         final BundleManager bundleManager = Application.get().getBundleManager();
         bundles = Lists.newArrayList();
-
-        if (! verifyGit()) {
-            JOptionPane.showMessageDialog(null,
-                    "Git is not found. Please make sure git is installed (in cygwin if running on windows).",
-                    "Git is not found",
-                    JOptionPane.ERROR_MESSAGE);
-            return;
-        }
 
         try {
             new SwingWorker<Void, Object>() {
@@ -129,7 +127,7 @@ public class BundleInstallerDialog implements Dialog<BundleInstallerDialogView> 
             StatusCallback statusCallback = new StatusCallback();
 
             ScriptExecutor se = new ScriptExecutor("git --version", Application.get().getThreadPool());
-            ScriptExecutor.Execution execution = se.execute(statusCallback, new StringReader(""), System.getenv());
+            ScriptExecutor.Execution execution = se.execute(statusCallback, new StringReader(""), SystemEnvironmentHelper.getSystemEnvironment());
             execution.waitForCompletion();
 
             if (! statusCallback.isSuccessful()) {
@@ -162,6 +160,16 @@ public class BundleInstallerDialog implements Dialog<BundleInstallerDialogView> 
             }
         });
 
+        if (view.getDownloadMethod().getSelectedItem().toString().startsWith("SCM")) {
+            if (! verifyGit()) {
+                JOptionPane.showMessageDialog(null,
+                        "Git is not found. Please make sure git is installed (in cygwin if running on windows).",
+                        "Git is not found",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        }
+
         final ProgressMonitor progressMonitor = new ProgressMonitor(view.getJDialog(),
                                       "Installing bundles",
                                       "", 0, entriesToInstall.size());
@@ -176,7 +184,11 @@ public class BundleInstallerDialog implements Dialog<BundleInstallerDialogView> 
                     setProgress(i++);
                     publish(entry);
 
-                    installBundle(entry);
+                    if (view.getDownloadMethod().getSelectedItem().toString().startsWith("SCM")) {
+                        installBundleUsingGit(entry);
+                    } else {
+                        installBundleUsingHttp(entry);
+                    }
 
                     if (progressMonitor.isCanceled()) {
                         return null;
@@ -196,20 +208,71 @@ public class BundleInstallerDialog implements Dialog<BundleInstallerDialogView> 
 
             @Override
             protected void done() {
-//                Application.get().getBundleManager().reload();
-
                 progressMonitor.close();
                 close();
             }
 
-            private void installBundle(final BundleTableModel.Entry entry) {
+            private void installBundleUsingHttp(final BundleTableModel.Entry entry) {
+                try {
+                    URL url = new URL(entry.getUrl() + "/tarball/master");
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+                    while (connection.getResponseCode() == 302) {
+                        connection = (HttpURLConnection) new URL(connection.getHeaderField("Location")).openConnection();    
+                    }
+
+                    System.out.println(connection.getResponseCode());
+                    System.out.println(connection.getHeaderField("Location"));
+
+                    File tmp = File.createTempFile(entry.getName(), "tgz");
+                    tmp.deleteOnExit();
+
+                    final InputStream is = connection.getInputStream();
+                    Files.copy(new InputSupplier<InputStream>() {
+
+                        @Override
+                        public InputStream getInput() throws IOException {
+                            return is;
+                        }
+                    }, tmp);
+
+
+                    StatusCallback statusCallback = new StatusCallback();
+
+                    File folder = new File(Config.getBundlesFolder(), entry.getName());
+                    folder.mkdir();
+
+                    ScriptExecutor se = new ScriptExecutor("gzip -d " + Cygwin.makePathForDirectUsage(tmp.getCanonicalPath()) + " | tar --extract --strip-components=1 -f -", Application.get().getThreadPool());
+                    se.setDirectory(folder);
+                    final ScriptExecutor.Execution execution = se.execute(statusCallback, new StringReader(""),
+                            SystemEnvironmentHelper.getSystemEnvironment());
+                    execution.waitForCompletion();
+
+                    if (! statusCallback.isSuccessful()) {
+                        EventQueue.invokeAndWait(new Runnable() {
+                            @Override
+                            public void run() {
+                                JOptionPane.showMessageDialog(view.getJDialog(), "Cannot install bundle " + entry.getName(),
+                                        "Error installing bundle", JOptionPane.ERROR_MESSAGE);
+                            }
+                        });
+                    }
+
+                    tmp.deleteOnExit();
+
+                    Application.get().getBundleManager().addBundle(new File(Config.getBundlesFolder(), entry.getName()));
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            private void installBundleUsingGit(final BundleTableModel.Entry entry) {
                 try {
                     // TODO: Show progress
                     StatusCallback statusCallback = new StatusCallback();
 
                     Map<String, String> env = Maps.newHashMap();
-                    env.putAll(System.getenv());
-
+                    env.putAll(SystemEnvironmentHelper.getSystemEnvironment());
 
                     StringBuilder command = new StringBuilder();
                     command.append("git ");
@@ -231,16 +294,13 @@ public class BundleInstallerDialog implements Dialog<BundleInstallerDialogView> 
                     execution.waitForCompletion();
                         
                     if (! statusCallback.isSuccessful()) {
-                        final CountDownLatch cdl = new CountDownLatch(1);
-                        EventQueue.invokeLater(new Runnable() {
+                        EventQueue.invokeAndWait(new Runnable() {
                             @Override
                             public void run() {
                                 JOptionPane.showMessageDialog(view.getJDialog(), "Cannot install bundle " + entry.getName(),
                                         "Error installing bundle", JOptionPane.ERROR_MESSAGE);
-                                cdl.countDown();
                             }
                         });
-                        cdl.await();
                     }
 
                     Application.get().getBundleManager().addBundle(new File(Config.getBundlesFolder(), entry.getName()));

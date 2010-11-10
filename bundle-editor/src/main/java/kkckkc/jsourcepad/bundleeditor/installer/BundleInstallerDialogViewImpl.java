@@ -11,6 +11,7 @@ public class BundleInstallerDialogViewImpl extends BaseJDialog implements Bundle
     private JButton cancelButton;
     private JButton installButton;
     private JLabel label;
+    private JComboBox downloadMethod;
 
     public BundleInstallerDialogViewImpl() {
         this(null);
@@ -34,18 +35,27 @@ public class BundleInstallerDialogViewImpl extends BaseJDialog implements Bundle
         cancelButton = new JButton("Cancel");
         label = new JLabel("Available bundles:");
 
+        downloadMethod = new JComboBox(new String[] { "SCM (using git, svn etc.)", "HTTP" });
 
         Container p = getContentPane();
-        p.setLayout(new MigLayout("insets dialog", "[grow]", "[]r[grow]u:push[]"));
+        p.setLayout(new MigLayout("insets dialog", "[grow]", "[]r[grow]u[]r[]u:push[]"));
 
         p.add(label, "wrap");
 
         p.add(new JScrollPane(table), "grow,wrap");
 
+        p.add(new JLabel("Downloading using:"), "wrap");
+        p.add(downloadMethod, "wrap");
+
         p.add(installButton, "split,tag ok");
         p.add(cancelButton, "tag cancel");
 
         pack();
+    }
+
+    @Override
+    public JComboBox getDownloadMethod() {
+        return downloadMethod;
     }
 
     @Override

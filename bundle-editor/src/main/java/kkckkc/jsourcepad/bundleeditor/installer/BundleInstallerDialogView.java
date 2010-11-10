@@ -16,4 +16,6 @@ public interface BundleInstallerDialogView extends View {
     void setModel(BundleTableModel model);
 
     JLabel getLabel();
+
+    JComboBox getDownloadMethod();
 }
