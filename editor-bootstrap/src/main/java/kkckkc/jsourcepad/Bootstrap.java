@@ -76,7 +76,6 @@ public class Bootstrap implements Runnable {
                 java.util.logging.Logger l = java.util.logging.Logger.getLogger("exceptions");
                 l.log(Level.WARNING, "Uncaught Exception", e);
 
-                System.exit(1);
                 EventQueue.invokeLater(new Runnable() {
                     @Override
                     public void run() {

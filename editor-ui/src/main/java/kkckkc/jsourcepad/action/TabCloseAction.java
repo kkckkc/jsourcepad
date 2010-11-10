@@ -1,14 +1,13 @@
 package kkckkc.jsourcepad.action;
 
-import java.awt.event.ActionEvent;
-
-import javax.swing.JOptionPane;
-
 import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.DocList;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.WindowManager;
 import kkckkc.jsourcepad.util.action.BaseAction;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
 
 
 
@@ -26,6 +25,7 @@ public class TabCloseAction extends BaseAction {
 	public void actionPerformed(ActionEvent e) {
         Integer tabIndex = actionContext.get(ActionContextKeys.TAB_INDEX);
 		if (tabIndex == null) {
+            if (docList.getActiveDoc() == null) return;
 			if (docList.getActiveDoc().isModified()) {
 				int j = JOptionPane.showConfirmDialog(window.getContainer(), "Not saved");
 				if (j == JOptionPane.CANCEL_OPTION) return;

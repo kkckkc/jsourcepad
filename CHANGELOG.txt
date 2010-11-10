@@ -10,6 +10,7 @@ Improvements
 
 Bugfixes
  - Select Current Scope didn't work with cross line scopes
+ - Invoking close tab when all tabs were closed
 
 
 Build 2010110901
