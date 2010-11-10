@@ -11,13 +11,14 @@ import kkckkc.syntaxpane.parse.grammar.Language;
 import kkckkc.syntaxpane.parse.grammar.LanguageManager;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
 import java.io.*;
 
 
-public class DocImpl extends AbstractMessageBus implements Doc, ScopeRoot {
+public class DocImpl extends AbstractMessageBus implements Doc, ScopeRoot, BeanFactoryAware {
 	protected LanguageManager languageManager;
 	private DocList docList;
 	protected Window window;

@@ -63,7 +63,7 @@ public class WindowManagerImpl implements WindowManager {
             container.registerSingleton("frame", frame);
 
             openWindows.put(frame, window);
-            app.getMessageBus().topic(Listener.class).post().created(window);
+            app.topic(Listener.class).post().created(window);
             return window;
         } else {
             DefaultListableBeanFactory container =
@@ -76,7 +76,7 @@ public class WindowManagerImpl implements WindowManager {
             container.registerSingleton("frame", frame);
             
             openWindows.put(frame, window);
-            app.getMessageBus().topic(Listener.class).post().created(window);
+            app.topic(Listener.class).post().created(window);
 
             if (file != null) {
                 window.getDocList().open(file);
@@ -91,7 +91,7 @@ public class WindowManagerImpl implements WindowManager {
         window.getBeanFactory().destroySingletons();
 
 		openWindows.remove(window.getContainer());
-		app.getMessageBus().topic(Listener.class).post().destroyed(window);
+		app.topic(Listener.class).post().destroyed(window);
 	}
 
 	@Override

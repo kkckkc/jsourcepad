@@ -1,6 +1,6 @@
 package kkckkc.jsourcepad.theme.substance;
 
-import kkckkc.jsourcepad.model.settings.SettingsManager;
+import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.settings.SettingsPanel;
 import kkckkc.jsourcepad.model.settings.ThemeSettings;
 import kkckkc.jsourcepad.theme.Theme;
@@ -23,7 +23,7 @@ public class SubstanceTheme implements Theme {
 	public Object getLookAndFeel() {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                final SubstanceSettings ss = SettingsManager.GLOBAL.get(SubstanceSettings.class);
+                final SubstanceSettings ss = Application.get().getSettingsManager().get(SubstanceSettings.class);
                 if (ss.getSkin() != null) {
                     SubstanceLookAndFeel.setSkin(ss.getSkin());
 
@@ -77,7 +77,7 @@ public class SubstanceTheme implements Theme {
 
     @Override
     public boolean isEnabled() {
-        ThemeSettings ts = SettingsManager.GLOBAL.get(ThemeSettings.class);
+        ThemeSettings ts = Application.get().getSettingsManager().get(ThemeSettings.class);
         return ts.getThemeId() != null && ts.getThemeId().equals(getId());
     }
 

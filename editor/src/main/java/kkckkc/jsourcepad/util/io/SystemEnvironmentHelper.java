@@ -30,7 +30,7 @@ public class SystemEnvironmentHelper {
     private static synchronized void loadSystemEnvironment(ExecutorService executor) {
         systemEnvironment = Maps.newHashMap();
 
-        SettingsManager settingsManager = SettingsManager.GLOBAL;
+        SettingsManager settingsManager = Application.get().getSettingsManager();
         ScriptExecutionSettings settings = settingsManager.get(ScriptExecutionSettings.class);
         if (settings.getEnvironmentCommandLine() == null || settings.getEnvironmentCommandLine().length == 0) {
             return;

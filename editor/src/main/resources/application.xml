@@ -4,15 +4,12 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
 	<bean id="windowManager" class="kkckkc.jsourcepad.model.WindowManagerImpl" />
-	<bean id="application" class="kkckkc.jsourcepad.model.Application" />
 
 	<bean id="bundleManager" class="kkckkc.jsourcepad.model.bundle.BundleManagerImpl">
 		<constructor-arg ref="languageManager" />
 	</bean>
 	
-	<bean id="persistenceManager" class="kkckkc.jsourcepad.model.PersistenceManagerImpl" />
-
-	<bean id="languageManager" class="kkckkc.syntaxpane.parse.grammar.LanguageManager" lazy-init="true" />
+	<bean id="languageManager" class="kkckkc.syntaxpane.parse.grammar.LanguageManager" lazy-init="true" autowire="byType"/>
 
 	<bean id="styleParser" class="kkckkc.syntaxpane.parse.grammar.textmate.TextmateStyleParser" />
     <bean id="clipboardManager" class="kkckkc.jsourcepad.model.ClipboardManager" />

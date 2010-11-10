@@ -75,6 +75,8 @@ public class Bootstrap implements Runnable {
             public void uncaughtException(Thread t, final Throwable e) {
                 java.util.logging.Logger l = java.util.logging.Logger.getLogger("exceptions");
                 l.log(Level.WARNING, "Uncaught Exception", e);
+
+                System.exit(1);
                 EventQueue.invokeLater(new Runnable() {
                     @Override
                     public void run() {
@@ -182,8 +184,7 @@ public class Bootstrap implements Runnable {
 
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-                Application.get();
-                Application.get().getBeanFactory().getBean("applicationController");
+                Application.init();
 
                 // Set proxy settings
                 Application.get().getSettingsManager().get(ProxySettings.class).apply();

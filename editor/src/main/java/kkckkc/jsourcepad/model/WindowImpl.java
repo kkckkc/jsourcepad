@@ -9,6 +9,7 @@ import kkckkc.jsourcepad.util.messagebus.AbstractMessageBus;
 import kkckkc.jsourcepad.util.messagebus.MessageBus;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
@@ -20,7 +21,7 @@ import javax.swing.*;
 import java.awt.*;
 
 
-public class WindowImpl extends AbstractMessageBus implements Window, MessageBus, ScopeRoot {
+public class WindowImpl extends AbstractMessageBus implements Window, MessageBus, ScopeRoot, BeanFactoryAware {
 
     private int id;
 	private DefaultListableBeanFactory beanFactory;

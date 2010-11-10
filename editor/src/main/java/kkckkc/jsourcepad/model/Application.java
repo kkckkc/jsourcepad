@@ -4,6 +4,7 @@ import kkckkc.jsourcepad.Plugin;
 import kkckkc.jsourcepad.PluginManager;
 import kkckkc.jsourcepad.ScopeRoot;
 import kkckkc.jsourcepad.model.bundle.BundleManager;
+import kkckkc.jsourcepad.model.settings.GlobalSettingsManager;
 import kkckkc.jsourcepad.model.settings.SettingsManager;
 import kkckkc.jsourcepad.model.settings.StyleSettings;
 import kkckkc.jsourcepad.theme.DefaultTheme;
@@ -17,7 +18,6 @@ import kkckkc.syntaxpane.parse.grammar.LanguageManager;
 import kkckkc.syntaxpane.style.StyleParser;
 import kkckkc.syntaxpane.style.StyleScheme;
 import kkckkc.utils.io.FileUtils;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
@@ -30,7 +30,7 @@ import java.util.concurrent.Executors;
 
 
 public class Application extends AbstractMessageBus implements MessageBus, ScopeRoot {
-	private static Application application;
+	private static Application application = new Application();
 
 	private static Theme theme;
 
@@ -38,41 +38,59 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
 
 	private ExecutorService threadPool;
 	private StyleScheme cachedStyleScheme;
+    
+    private GlobalSettingsManager settingsManager;
+    private PersistenceManagerImpl persistenceManager;
+
+    protected Application() {
+        this.threadPool = Executors.newCachedThreadPool();
+        this.settingsManager = new GlobalSettingsManager();
+        this.persistenceManager = new PersistenceManagerImpl();
+    }
 
 	public static Application get() {
-		if (application == null) {
-			application = init();
-
-            ((DefaultListableBeanFactory) application.beanFactory).preInstantiateSingletons();
-		}
 		return application;
 	}
-	
-	private static synchronized Application init() {
-		BeanFactoryLoader loader = new BeanFactoryLoader();
-		DefaultListableBeanFactory beanFactory = loader.load(BeanFactoryLoader.APPLICATION);
-		
-		theme = initTheme();
-		beanFactory.registerSingleton("theme", theme);
-		beanFactory.registerSingleton("beanFactoryLoader", loader);
 
-		return beanFactory.getBean(Application.class);
+	public static synchronized void init() {
+		BeanFactoryLoader loader = new BeanFactoryLoader();
+
+        DefaultListableBeanFactory beanFactory = loader.load(BeanFactoryLoader.APPLICATION);
+
+        // Bootstrapped bean
+        beanFactory.registerSingleton("settingsManager", application.getSettingsManager());
+        beanFactory.registerSingleton("persistenceManager", application.getPersistenceManager());
+		beanFactory.registerSingleton("beanFactoryLoader", loader);
+		beanFactory.registerSingleton("application", application);
+
+        application.beanFactory = beanFactory;
+
+        theme = initTheme();
+        theme.activate();
+
+        beanFactory.registerSingleton("theme", theme);
+
+        // Load application controller
+		beanFactory.getBean("applicationController");
 	}
 
-	private static Theme initTheme() {
+    private static Theme initTheme() {
         for (Plugin p : PluginManager.getActivePlugins()) {
             if (! (p instanceof Theme)) continue;
-
-            ((Theme) p).activate();
             return (Theme) p;
         }
 
         return new DefaultTheme();
-	}
+    }
 
-	protected Application() {
-		this.threadPool = Executors.newCachedThreadPool();
-	}
+
+    public PersistenceManager getPersistenceManager() {
+        return persistenceManager;
+    }
+
+    public SettingsManager getSettingsManager() {
+        return settingsManager;
+    }
 
 	@SuppressWarnings("restriction")
     public com.sun.net.httpserver.HttpServer getHttpServer() {
@@ -87,14 +105,6 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
 		return beanFactory.getBean(WindowManager.class);
 	}
 
-	public MessageBus getMessageBus() {
-		return beanFactory.getBean(MessageBus.class);
-	}
-
-	public SettingsManager getSettingsManager() {
-		return SettingsManager.GLOBAL;
-	}
-	
 	public LanguageManager getLanguageManager() {
         return beanFactory.getBean(LanguageManager.class);
     }
@@ -122,21 +132,12 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
         });
     }
 
-	@Override
-	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-		this.beanFactory = beanFactory;
-	}
-
 	public BundleManager getBundleManager() {
 		return beanFactory.getBean(BundleManager.class);   
     }
 
 	public Theme getTheme() {
 		return theme;   
-    }
-
-    public PersistenceManager getPersistenceManager() {
-        return beanFactory.getBean(PersistenceManager.class);
     }
 
 	@Override
@@ -148,6 +149,9 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
         return beanFactory.getBean(ClipboardManager.class);
     }
 
+    public ErrorDialog getErrorDialog() {
+        return beanFactory.getBean(ErrorDialog.class);
+    }
 
     public Window open(File file) throws IOException {
         WindowManager wm = getWindowManager();
@@ -185,7 +189,4 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
         }
     }
 
-    public ErrorDialog getErrorDialog() {
-        return beanFactory.getBean(ErrorDialog.class);
-    }
 }

@@ -1,6 +1,6 @@
 package kkckkc.jsourcepad.theme.gtk;
 
-import kkckkc.jsourcepad.model.settings.SettingsManager;
+import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.settings.SettingsPanel;
 import kkckkc.jsourcepad.model.settings.ThemeSettings;
 import kkckkc.jsourcepad.theme.Theme;
@@ -45,7 +45,7 @@ public class GtkTheme implements Theme {
 
     @Override
     public boolean isEnabled() {
-        ThemeSettings ts = SettingsManager.GLOBAL.get(ThemeSettings.class);
+        ThemeSettings ts = Application.get().getSettingsManager().get(ThemeSettings.class);
         return ts.getThemeId() != null && ts.getThemeId().equals(getId());
     }
 
