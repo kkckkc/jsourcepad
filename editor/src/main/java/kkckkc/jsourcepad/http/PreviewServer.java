@@ -178,6 +178,13 @@ public class PreviewServer {
 
                     File f = new File(httpPath);
 
+                    if (! f.exists()) {
+                        exchange.sendResponseHeaders(404, 0);
+                        responseBody.flush();
+                        responseBody.close();
+                        return;
+                    }
+
                     responseHeaders.set("Content-Type", getMimeEncoding(f));
                     exchange.sendResponseHeaders(200, 0);
 
