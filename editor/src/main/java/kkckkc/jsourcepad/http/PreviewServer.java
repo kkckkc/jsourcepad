@@ -171,6 +171,7 @@ public class PreviewServer {
                 if (requestMethod.equalsIgnoreCase("GET")) {
                     String httpPath = exchange.getRequestURI().toString();
                     httpPath = httpPath.substring(path.length());
+                    httpPath = URLDecoder.decode(httpPath, "utf-8");
 
                     OutputStream responseBody = exchange.getResponseBody();
                     Headers responseHeaders = exchange.getResponseHeaders();
