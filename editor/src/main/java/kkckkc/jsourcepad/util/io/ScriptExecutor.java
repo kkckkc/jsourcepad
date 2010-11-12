@@ -58,10 +58,8 @@ public class ScriptExecutor {
 		execution.processFuture = this.executorService.submit(new Runnable() {
             public void run() {
 	            try {
-	                p.waitFor();
-	                
-	                int exitCode = p.exitValue();
-	                
+	                int exitCode = p.waitFor();
+
 	                stdoutFuture.get();
 	                stderrFuture.get();
 
@@ -138,9 +136,9 @@ public class ScriptExecutor {
             }
         } else {
             if (Os.isWindows()) {
-                argList.add(cygwinPrefix + prefix + path + cygwinSuffix);
+                argList.add(cygwinPrefix + prefix + ". " + path + cygwinSuffix);
             } else {
-                argList.add(prefix + path);
+                argList.add(prefix + ". " + path);
             }
         }
 

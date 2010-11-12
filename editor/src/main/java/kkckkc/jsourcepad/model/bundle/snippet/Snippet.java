@@ -61,13 +61,13 @@ public class Snippet {
         
         StringBuilder b = new StringBuilder();
 		for (SnippetParser.Node node : nodes) {
-			node.accept(new CompilingVisitor(window, b, primaryVariables, variableDefaults));
+			node.accept(new CompilingVisitor(window, b, primaryVariables, variableDefaults, false));
 		}
 
         b = new StringBuilder();
         constituents.clear();
 		for (SnippetParser.Node node : nodes) {
-			node.accept(new CompilingVisitor(window, b, primaryVariables, variableDefaults));
+			node.accept(new CompilingVisitor(window, b, primaryVariables, variableDefaults, true));
 		}
 
 		String str = b.toString();
@@ -167,12 +167,14 @@ public class Snippet {
 	    private final StringBuilder b;
         private Map<Integer, String> variableDefaults;
         private Map<Integer, Variable> primaryVariables;
+        private boolean executeScripts;
 
-        private CompilingVisitor(Window window, StringBuilder b, Map<Integer, Variable> primaryVariables, Map<Integer, String> variableDefaults) {
+        private CompilingVisitor(Window window, StringBuilder b, Map<Integer, Variable> primaryVariables, Map<Integer, String> variableDefaults, boolean executeScripts) {
 		    this.window = window;
 		    this.b = b;
 		    this.primaryVariables = primaryVariables;
             this.variableDefaults = variableDefaults;
+            this.executeScripts = executeScripts;
 	    }
 
 	    @Override
@@ -238,23 +240,27 @@ public class Snippet {
 
 	    @Override
 	    public void visit(Script script) {
-	        ScriptExecutor scriptExecutor = new ScriptExecutor(script.getBody(), Application.get().getThreadPool());
-	        try {
-	            Execution ex = scriptExecutor.execute(new UISupportCallback(window.getContainer()), 
-	            		new StringReader(""), 
-	            		environment);
-	            
-	            ex.waitForCompletion();
-	            
-	            b.append(ex.getStdout());
-	            
-	        } catch (IOException e) {
-	            throw new RuntimeException(e);
-	        } catch (InterruptedException e) {
-	            throw new RuntimeException(e);
-	        } catch (ExecutionException e) {
-	            throw new RuntimeException(e);
-	        }
+            if (executeScripts) {
+                ScriptExecutor scriptExecutor = new ScriptExecutor(script.getBody(), Application.get().getThreadPool());
+                try {
+                    Execution ex = scriptExecutor.execute(new UISupportCallback(window.getContainer()),
+                            new StringReader(""),
+                            environment);
+
+                    ex.waitForCompletion();
+
+                    b.append(ex.getStdout());
+
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                } catch (ExecutionException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                b.append("");
+            }
 	    }
     }
 
