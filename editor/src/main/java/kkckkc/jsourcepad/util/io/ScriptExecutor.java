@@ -125,7 +125,7 @@ public class ScriptExecutor {
         List<String> lines = Lists.newArrayList();
         Iterables.addAll(lines, Splitter.on("\n").split(script));
         String firstLine = lines.get(0);
-        String prefix = ". " + Cygwin.makePathForDirectUsage(Config.getSupportFolder().getPath()) + "/lib/bash_init.sh;";
+        String prefix = ". " + Cygwin.makePathForDirectUsage(Config.getSupportFolder().getCanonicalPath()) + "/lib/bash_init.sh;";
         String cygwinPrefix = "cd " + Cygwin.makePathForDirectUsage(directory == null ? new File(".").getCanonicalPath() : directory.getPath()) + "; ";
         String cygwinSuffix = "";
         if (firstLine.startsWith("#!")) {
