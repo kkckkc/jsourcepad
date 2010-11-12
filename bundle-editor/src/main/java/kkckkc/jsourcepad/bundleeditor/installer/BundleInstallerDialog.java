@@ -78,7 +78,7 @@ public class BundleInstallerDialog implements Dialog<BundleInstallerDialogView> 
                         preSelectedBundles.addAll(Arrays.asList(
                                 "bundle-development", "c", "css", "html", "java", "javascript", "markdown",
                                 "php", "perl", "python", "ruby", "sql", "shellscript", "source", "text",
-                                "textmate", "xml"));
+                                "textmate", "todo", "xml"));
                     }
 
                     URL url = new URL("http://github.com/api/v2/xml/repos/show/textmate");
@@ -97,6 +97,8 @@ public class BundleInstallerDialog implements Dialog<BundleInstallerDialogView> 
                                     preSelectedBundles.contains(name.substring(0, name.lastIndexOf("."))),
                                 bundleManager.getBundleByDirName(name) != null, name, DomUtil.getChildText(e, "url")));
                     }
+
+                    Collections.sort(bundles);
 
                     return null;
                 }

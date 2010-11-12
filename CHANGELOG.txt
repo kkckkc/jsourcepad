@@ -4,6 +4,7 @@ Build
 Features
 
 Improvements
+ - Install bundles dialog now shows bundles sorted alphabetically
 
 Bugfixes
  - HTTP delivery of files containing spaces

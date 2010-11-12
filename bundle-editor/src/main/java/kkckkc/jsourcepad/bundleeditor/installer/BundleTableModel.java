@@ -46,7 +46,7 @@ class BundleTableModel extends AbstractTableModel {
         fireTableCellUpdated(row, col);
     }
 
-    static class Entry {
+    static class Entry implements Comparable {
         boolean selected;
         boolean disabled;
         String name;
@@ -77,6 +77,11 @@ class BundleTableModel extends AbstractTableModel {
 
         public void setSelected(Boolean selected) {
             this.selected = selected;
+        }
+
+        @Override
+        public int compareTo(Object o) {
+            return getName().compareTo(((Entry) o).getName());
         }
     }
 }
