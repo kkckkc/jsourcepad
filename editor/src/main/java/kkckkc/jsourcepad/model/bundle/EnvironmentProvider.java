@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import kkckkc.jsourcepad.action.ActionContextKeys;
 import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.Window;
+import kkckkc.jsourcepad.util.Config;
 import kkckkc.jsourcepad.util.Cygwin;
 import kkckkc.jsourcepad.util.action.ActionManager;
 import kkckkc.jsourcepad.util.io.SystemEnvironmentHelper;
@@ -75,9 +76,9 @@ public class EnvironmentProvider {
 		}
 		
         if (System.getProperty("supportPath") != null) {
-    		environment.put("TM_SUPPORT_PATH", System.getProperty("supportPath"));
-            paths.add(new File(System.getProperty("supportPath") + "/bin"));
-            paths.add(new File(System.getProperty("supportPath") + "/" + System.getProperty("os.name") + "/bin"));
+    		environment.put("TM_SUPPORT_PATH", formatPath(Config.getSupportFolder().getPath()));
+            paths.add(new File(Config.getSupportFolder(), "bin"));
+            paths.add(new File(Config.getSupportFolder(), System.getProperty("os.name") + "/bin"));
 
             // TODO: This is a hack. Add binary with proper error message
             environment.put("DIALOG", "/Applications/Installed/TextMate.app/Contents/PlugIns/Dialog2.tmplugin/Contents/Resources/tm_dialog2");
