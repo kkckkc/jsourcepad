@@ -75,14 +75,12 @@ public class EnvironmentProvider {
 			paths.add(new File(bundleItemSupplier.getFile().getParentFile().getParentFile(), "Support/bin"));
 		}
 		
-        if (System.getProperty("supportPath") != null) {
-    		environment.put("TM_SUPPORT_PATH", formatPath(Config.getSupportFolder().getPath()));
-            paths.add(new File(Config.getSupportFolder(), "bin"));
-            paths.add(new File(Config.getSupportFolder(), System.getProperty("os.name") + "/bin"));
+        environment.put("TM_SUPPORT_PATH", formatPath(Config.getSupportFolder().getPath()));
+        paths.add(new File(Config.getSupportFolder(), "bin"));
+        paths.add(new File(Config.getSupportFolder(), System.getProperty("os.name") + "/bin"));
 
-            // TODO: This is a hack. Add binary with proper error message
-            environment.put("DIALOG", "/Applications/Installed/TextMate.app/Contents/PlugIns/Dialog2.tmplugin/Contents/Resources/tm_dialog2");
-        }
+        // TODO: This is a hack. Add binary with proper error message
+        environment.put("DIALOG", "/Applications/Installed/TextMate.app/Contents/PlugIns/Dialog2.tmplugin/Contents/Resources/tm_dialog2");
 
 		List<File> files = Lists.newArrayList();
         ActionManager actionManager = window.getActionManager();
