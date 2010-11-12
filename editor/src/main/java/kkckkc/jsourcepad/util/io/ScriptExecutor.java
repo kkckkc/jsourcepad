@@ -8,6 +8,7 @@ import com.google.common.io.Files;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.settings.ScriptExecutionSettings;
 import kkckkc.jsourcepad.model.settings.SettingsManager;
+import kkckkc.jsourcepad.util.Config;
 import kkckkc.jsourcepad.util.Cygwin;
 import kkckkc.utils.Os;
 import kkckkc.utils.io.FileUtils;
@@ -63,8 +64,9 @@ public class ScriptExecutor {
 	                
 	                stdoutFuture.get();
 	                stderrFuture.get();
-	                
-	                if (exitCode == 0) {
+
+                    execution.exitCode = exitCode;
+	                if (exitCode == 0 || (exitCode >= 200 && exitCode <= 207)) {
 	                	execution.callback.onSuccess(execution);
 	                } else {
 	                	execution.callback.onFailure(execution);
@@ -123,21 +125,22 @@ public class ScriptExecutor {
         List<String> lines = Lists.newArrayList();
         Iterables.addAll(lines, Splitter.on("\n").split(script));
         String firstLine = lines.get(0);
+        String prefix = ". " + Cygwin.makePathForDirectUsage(Config.getSupportFolder().getPath()) + "/lib/bash_init.sh;";
         String cygwinPrefix = "cd " + Cygwin.makePathForDirectUsage(directory == null ? new File(".").getCanonicalPath() : directory.getPath()) + "; ";
         String cygwinSuffix = "";
         if (firstLine.startsWith("#!")) {
             // Remove shebang
             firstLine = firstLine.substring(2);
             if (Os.isWindows()) {
-                argList.add(cygwinPrefix + firstLine.trim() + " " + path + cygwinSuffix);
+                argList.add(cygwinPrefix + prefix + firstLine.trim() + " " + path + cygwinSuffix);
             } else {
-                argList.add(firstLine.trim() + " " + path);
+                argList.add(prefix + firstLine.trim() + " " + path);
             }
         } else {
             if (Os.isWindows()) {
-                argList.add(cygwinPrefix + path + cygwinSuffix);
+                argList.add(cygwinPrefix + prefix + path + cygwinSuffix);
             } else {
-                argList.add(path);
+                argList.add(prefix + path);
             }
         }
 
@@ -180,12 +183,17 @@ public class ScriptExecutor {
 		private Reader input;
 		private boolean cancelled = false;
         private String script;
+        public int exitCode;
 
         public Execution(Callback callback, Reader input, Writer stdout, Writer stderr) {
 	        this.callback = callback;
 	        this.stdout = stdout;
 	        this.stderr = stderr;
 	        this.input = input;
+        }
+
+        public int getExitCode() {
+            return exitCode;
         }
 
         public String getScript() {

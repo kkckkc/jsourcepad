@@ -28,7 +28,7 @@
 			<artifactId>slf4j-jdk14</artifactId>
 			<version>1.5.10</version>
 		</dependency>
-		<dependency>
+		<dependency> 
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>3.8.1</version>
@@ -38,7 +38,7 @@
 		<dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>r03</version>
+            <version>r07</version>
         </dependency>
         <dependency>
 			<groupId>kkckkc.jsourcepad</groupId>

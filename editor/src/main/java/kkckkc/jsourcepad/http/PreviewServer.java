@@ -1,6 +1,7 @@
 package kkckkc.jsourcepad.http;
 
 import com.google.common.collect.Maps;
+import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
 import com.sun.net.httpserver.*;
 import kkckkc.jsourcepad.model.*;
@@ -32,6 +33,22 @@ public class PreviewServer {
         initPreview();
         initFile();
         initCmd();
+        initDialog();
+    }
+
+    private void initDialog() {
+        final String path = "/dialog";
+
+        final HttpContext context = httpServer.createContext(path);
+        context.setHandler(new HttpHandler() {
+            public void handle(HttpExchange exchange) throws IOException {
+                String requestMethod = exchange.getRequestMethod();
+                System.out.println(URLDecoder.decode(new String(ByteStreams.toByteArray(exchange.getRequestBody())), "utf-8"));
+                System.out.println(exchange.getRequestURI());
+
+                exchange.close();
+            }
+        });
     }
 
     private void initPreview() {
