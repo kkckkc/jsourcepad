@@ -210,9 +210,9 @@ public class CommandBundleItem implements BundleItem<Void> {
     					}, new StringReader(input),
                                 new TransformingWriter(writer, TransformingWriter.CHUNK_BY_LINE, new Function<String, String>() {
                                     public String apply(String s) {
-                                        s = s.replaceAll("txmt://open/\\?([^'\" \\t\\n\\x0B\\f\\r]+)",
+                                        s = s.replaceAll("txmt://open/?\\?([^'\" \\t\\n\\x0B\\f\\r]+)",
                                                 "http://localhost:" + Config.getHttpPort() + "/cmd/open?windowId=" + window.getId() + "&$1");
-                                        s = s.replaceAll("file://", "http://localhost:" + Config.getHttpPort() + "/files");
+                                        s = s.replaceAll("file://(?!localhost)", "http://localhost:" + Config.getHttpPort() + "/files");
                                         return s;
                                     }
                                 }), environment);
