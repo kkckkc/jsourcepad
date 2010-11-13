@@ -6,6 +6,7 @@ import com.google.common.io.Files;
 import com.sun.net.httpserver.*;
 import kkckkc.jsourcepad.model.*;
 import kkckkc.jsourcepad.util.Config;
+import kkckkc.jsourcepad.util.Cygwin;
 import kkckkc.syntaxpane.model.Interval;
 import kkckkc.syntaxpane.model.LineManager;
 import kkckkc.utils.StringUtils;
@@ -193,7 +194,7 @@ public class PreviewServer {
                     OutputStream responseBody = exchange.getResponseBody();
                     Headers responseHeaders = exchange.getResponseHeaders();
 
-                    File f = new File(httpPath);
+                    File f = new File(Cygwin.toFile(httpPath));
 
                     if (! f.exists()) {
                         exchange.sendResponseHeaders(404, 0);
