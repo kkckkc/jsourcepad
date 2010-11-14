@@ -99,7 +99,7 @@
             <mapper>
                 <chainedmapper>
                 <flattenmapper/>
-                <regexpmapper from="^(.*)\.jar$$" to="lib/\1.jar" />
+                <regexpmapper from="^(.*)\.jar$$" to="%~dp0lib/\1.jar" />
                 </chainedmapper>
             </mapper>
         </pathconvert>

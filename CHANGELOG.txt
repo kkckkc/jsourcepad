@@ -8,6 +8,8 @@ Improvements
 
 Bugfixes
  - HTTP delivery of files containing spaces
+ - Edit with JSourcepad
+ - File Association dialog registers bat if launched with bat file and exe if launched with exe file
 
 
 Build 2010111001
