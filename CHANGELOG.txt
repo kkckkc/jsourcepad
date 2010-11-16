@@ -9,6 +9,7 @@ Improvements
 
 Bugfixes
  - HTTP delivery of files containing spaces
+ - Fixed problem where snippet expansion sometimes didn't work
 
 
 Build 2010111001

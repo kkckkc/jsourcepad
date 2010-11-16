@@ -88,8 +88,9 @@ public class Snippet {
 			Interval snippetInterval = new Interval(position + firstLineLength + 1, endPosition);
 			buffer.shift(snippetInterval, tabCount);
 		}
-		
-		buffer.beginRestrictedEditing(new SnippetRestrictedEditor());
+
+        SnippetRestrictedEditor restrictedEditor = new SnippetRestrictedEditor();
+        buffer.beginRestrictedEditing(restrictedEditor);
 		this.changeTrackingEnabled = true;
 
 		currentTabStop = -1;
@@ -99,8 +100,9 @@ public class Snippet {
 			buffer.setSelection(new Interval(
 					nextConstituent.getBounds().getFirst().getPosition(),
 					nextConstituent.getBounds().getSecond().getPosition()));
+            if (currentTabStop == 0) restrictedEditor.destroy();
 		} else {
-			buffer.endRestrictedEditing();
+			restrictedEditor.destroy();
 		}
 	}
 
