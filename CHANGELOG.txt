@@ -5,6 +5,7 @@ Features
 
 Improvements
  - Install bundles dialog now shows bundles sorted alphabetically
+ - Removed non-breaking space in some of the bundle item names as this cannot be displayed properly on Windows
 
 Bugfixes
  - HTTP delivery of files containing spaces

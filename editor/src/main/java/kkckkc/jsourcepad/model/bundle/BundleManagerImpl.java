@@ -324,9 +324,13 @@ public class BundleManagerImpl implements BundleManager {
 					ks = new TextmateKeystrokeEncoding().parse(keyEq);
 				}
 
+                // Hack to remove strange characters from macosx
+                String name = (String) data.get("name");
+                name = name.replaceAll(Character.toString((char) 0x202F), "");
+
 				uuidToItem.put((String) data.get("uuid"),
 						new BundleItemSupplier(
-								file, (String) data.get("uuid"), (String) data.get("name"), 
+								file, (String) data.get("uuid"), name,
 								new Activator(ks, tabTrigger, 
 									scope != null ? TextmateScopeSelectorParser.parse(scope) : null	
 								),
