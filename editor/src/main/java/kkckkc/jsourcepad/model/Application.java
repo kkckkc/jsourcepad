@@ -167,7 +167,9 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
                 }
             }
 
-            return wm.newWindow(file);
+            Window window = wm.newWindow(file);
+            window.getContainer().toFront();
+            return window;
         } else {
             Window windowToUse = null;
 
@@ -186,6 +188,7 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
             }
 
             windowToUse.getDocList().open(file);
+            windowToUse.getContainer().toFront();
 
             return windowToUse;
         }

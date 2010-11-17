@@ -19,7 +19,7 @@
     </condition>
 
     <target name="all">
-        <delete dir="target/package" />
+        <delete dir="target/package" quiet="true"/>
 
         <!-- Remove current module classpath -->
         <restrict id="test">

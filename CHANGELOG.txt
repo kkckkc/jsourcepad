@@ -21,6 +21,7 @@ Features
 Improvements
  - Big performance improvement on launching commands by avoiding login shell by caching environment
  - Command bundles now support all output and input methods supported in TextMate
+ - Focus on window when opening from external app
 
 Bugfixes
  - Select Current Scope didn't work with cross line scopes
