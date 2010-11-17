@@ -7,8 +7,11 @@ Improvements
  - Install bundles dialog now shows bundles sorted alphabetically
  - Removed non-breaking space in some of the bundle item names as this cannot be displayed properly on Windows
 
+ 
 Bugfixes
  - HTTP delivery of files containing spaces
+ - Edit with JSourcepad
+ - File Association dialog registers bat if launched with bat file and exe if launched with exe file
  - Fixed problem where snippet expansion sometimes didn't work
 
 

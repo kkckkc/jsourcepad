@@ -64,7 +64,7 @@ public class FileAssociationsSettingsPanel extends JPanel implements SettingsPan
         if (Os.isWindows()) {
             try {
                 if (contextMenu.isSelected()) {
-                    Registry.add("HKCU\\Software\\Classes\\*\\shell\\Edit with JSourcepad\\command", "\\\"" + new File(".").getCanonicalPath() + "\\jsourcepad.exe" + "\\\" \\\"%1\\\"");
+                    Registry.add("HKCU\\Software\\Classes\\*\\shell\\Edit with JSourcepad\\command", "\\\"" + new File(".").getCanonicalPath() + "\\" + System.getProperty("executableName") + "\\\" \\\"%1\\\"");
                 } else {
                     Registry.remove("HKCU\\Software\\Classes\\*\\shell\\Edit with JSourcepad");
                 }
