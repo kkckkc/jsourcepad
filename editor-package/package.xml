@@ -1,6 +1,23 @@
 <project name="package" default="all" basedir="."
          xmlns:rsel="antlib:org.apache.tools.ant.types.resources.selectors">
 
+    <property file="${basedir}/build.properties" />
+    <property file="${basedir}/build.properties.sample" />
+
+    <property name="revision" value="11961" />
+
+    <condition property="isMac">
+        <os family="mac" />
+    </condition>
+
+    <condition property="isWindows">
+        <os family="windows" />
+    </condition>
+
+    <condition property="isUnix">
+        <os family="unix" />
+    </condition>
+
     <target name="all">
         <delete dir="target/package" />
 
@@ -35,18 +52,25 @@
 
     <target name="checkout-share-checkout" unless="share.present">
         <mkdir dir="target/share" />
-        <exec dir="target/share" command="svn checkout http://svn.textmate.org/trunk/Themes" />
-        <exec dir="target/share" command="svn checkout http://svn.textmate.org/trunk/Support" />
+        <exec dir="target/share" executable="${svn}">
+            <arg value="checkout" />
+            <arg value="http://svn.textmate.org/trunk/Themes" />
+        </exec>
+        <exec dir="target/share" executable="${svn}">
+            <arg value="checkout" />
+            <arg value="-r" />
+            <arg value="${revision}" />
+            <arg value="http://svn.textmate.org/trunk/Support" />
+        </exec>
     </target>
 
     <target name="checkout-share-update" if="share.present">
-        <exec command="svn update target/share/Themes" />
-        <exec command="svn update target/share/Support" />
+        <exec command="${svn} update target/share/Themes" />
+        <exec command="${svn} update -r ${revision} target/share/Support" />
     </target>
 
-    <target name="build-mac-app">
+    <target name="build-mac-app" if="isMac">
         <mkdir dir="target/package/mac" />
-
 
         <path id="lib-classpath">
             <fileset dir="target/package/lib" includes="*.jar" />
@@ -125,11 +149,7 @@
             <fileset dir="target/package/lib" />
         </copy>
 
-        <property name="launch4j.dir" location="/Users/magnus/Desktop/launch4j" />
-        <taskdef name="launch4j"
-            classname="net.sf.launch4j.ant.Launch4jTask"
-            classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar" />
-        <launch4j configFile="zip/launch4j.xml" outfile="target/package/zip-app/jsourcepad.exe" />
+        <antcall target="build-exe" />
 
         <zip file="target/package/jsourcepad.zip">
             <zipfileset dir="target/package/zip-app" prefix="jsourcepad" />
@@ -138,6 +158,13 @@
                 <exclude name="**/.svn" />
             </zipfileset>
         </zip>
+    </target>
+
+    <target name="build-exe" if="launch4j.dir">
+        <taskdef name="launch4j"
+            classname="net.sf.launch4j.ant.Launch4jTask"
+            classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar" />
+        <launch4j configFile="zip/launch4j.xml" outfile="target/package/zip-app/jsourcepad.exe" />
     </target>
 
 </project>

@@ -13,7 +13,6 @@
 		<module>editor</module>
 		<module>theme-gtk</module>
 		<module>editor-package</module>
-		<module>theme-osx</module>
 		<module>dev-tools</module>
         <module>syntaxpane-gtksourceview</module>
         <module>syntaxpane-textmate</module>
@@ -27,6 +26,22 @@
         <module>os-windows</module>
         <module>dialog-commit-dialog</module>
     </modules>
+
+
+    <profiles>
+        <profile>
+            <id>osx</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                </os>
+            </activation>
+            <modules>
+                <module>theme-osx</module>
+            </modules>
+        </profile>
+    </profiles>
+
 
 	<build>
 		<plugins>
