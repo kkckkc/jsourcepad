@@ -48,7 +48,13 @@
     </target>
 
     <target name="checkout-share"
-            depends="checkout-share-checkout,checkout-share-update"/>
+            depends="checkout-share-checkout,checkout-share-update">
+        <copy todir="target/share/Support" overwrite="true">
+            <fileset dir="Support">
+                <include name="**/*.*" />
+            </fileset>
+        </copy>
+    </target>
 
     <target name="checkout-share-checkout" unless="share.present">
         <mkdir dir="target/share" />
