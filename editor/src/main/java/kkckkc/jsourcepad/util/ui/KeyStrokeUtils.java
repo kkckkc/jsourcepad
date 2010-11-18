@@ -26,7 +26,7 @@ public class KeyStrokeUtils {
 			keyCode != 0 &&
 			(keyStroke.getKeyCode() == keyCode ||
 					(keyChar != KeyEvent.CHAR_UNDEFINED && Character.toLowerCase(keyStroke.getKeyChar()) == keyChar) ||
-                    (KeyEvent.getKeyText(keyCode).charAt(0) == keyStroke.getKeyChar()));
+                    (KeyEvent.getKeyText(keyCode).length() == 1 && KeyEvent.getKeyText(keyCode).charAt(0) == keyStroke.getKeyChar()));
     }
 
 }
