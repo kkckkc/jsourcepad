@@ -47,6 +47,14 @@ public class PreviewServer {
                 System.out.println(URLDecoder.decode(new String(ByteStreams.toByteArray(exchange.getRequestBody())), "utf-8"));
                 System.out.println(exchange.getRequestURI());
 
+                exchange.getResponseHeaders().add("X-ResponseCode", "2");
+
+                exchange.sendResponseHeaders(200, 0);
+
+                OutputStream body = exchange.getResponseBody();
+                body.write((int) ' ');
+                body.flush();
+
                 exchange.close();
             }
         });

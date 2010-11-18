@@ -1,0 +1,17 @@
+#!/usr/bin/ruby
+
+require 'net/http'
+require 'uri'
+
+uri = "http://localhost:8171/dialog"
+
+postArgs = { "dialog" => "CommitWindow" }
+ARGV.each_with_index { |value, idx| postArgs["arg#{idx}"] = value }
+res = Net::HTTP.post_form(URI.parse(uri), postArgs)
+
+puts res.body
+
+exitCode = Integer(res['X-ResponseCode'])
+if exitCode != 0
+	exit(exitCode)
+end
