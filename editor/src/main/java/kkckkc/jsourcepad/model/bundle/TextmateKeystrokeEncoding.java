@@ -95,7 +95,7 @@ public class TextmateKeystrokeEncoding {
 
     public static String toString(KeyStroke ks) {
         StringBuilder b = new StringBuilder();
-        
+
         if ((ks.getModifiers() & KeyEvent.CTRL_MASK) != 0) b.append("^");
         if ((ks.getModifiers() & KeyEvent.ALT_MASK) != 0) b.append("~");
         if ((ks.getModifiers() & KeyEvent.META_MASK) != 0) b.append("@");
@@ -185,10 +185,15 @@ public class TextmateKeystrokeEncoding {
                 break;
 
             default:
+                char c = ks.getKeyChar();
+                if (! Character.isDefined(c)) {
+                    c = (char) ks.getKeyCode();
+                }
+
                 if (uppercase) {
-                    b.append(Character.toUpperCase(ks.getKeyChar()));
+                    b.append(Character.toUpperCase(c));
                 } else {
-                    b.append(Character.toLowerCase(ks.getKeyChar()));
+                    b.append(Character.toLowerCase(c));
                 }
                 break;
         }
