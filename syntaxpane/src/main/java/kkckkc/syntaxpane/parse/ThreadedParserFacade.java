@@ -3,7 +3,6 @@ package kkckkc.syntaxpane.parse;
 import kkckkc.syntaxpane.model.Interval;
 import kkckkc.utils.Pair;
 
-import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.ExecutorService;
@@ -15,7 +14,6 @@ public class ThreadedParserFacade {
 
     private static AtomicLong clock = new AtomicLong(0);
 
-    private static Set<Entry> parsedFragments = new ConcurrentSkipListSet<Entry>();
     private static Set<Entry> parseQueue = new ConcurrentSkipListSet<Entry>();
 
     private static ExecutorService executorService = Executors.newFixedThreadPool(1);
@@ -38,31 +36,17 @@ public class ThreadedParserFacade {
         
         Pair<Interval, Interval> parseState = parser.parse(entry.getInterval().getStart(), entry.getInterval().getEnd(), entry.getChangeEvent());
         Interval parsed = parseState.getFirst();
-        if (entry.getChangeEvent() == Parser.ChangeEvent.ADD) {
-            parsedFragments.add(new Entry(entry.getGroup(), entry.getParser(), parsed, null, clock.getAndIncrement()));
-            notifyParsedFragment(entry.getGroup(), parsed);
-        }
+        notifyParsedFragment(entry.getGroup(), parsed);
 
         Interval remaining = parseState.getSecond();
         if (remaining != null) {
-            parseQueue.add(new Entry(entry.getGroup(), entry.getParser(), remaining, entry.getChangeEvent(), timestamp));
+            parseQueue.add(new Entry(entry.getGroup(), entry.getParser(), remaining, Parser.ChangeEvent.UPDATE, timestamp));
             executorService.execute(new ParseFragmentRunnable());
         }
-
-        purgeParsedFragments(entry.getGroup(), timestamp);
     }
 
     private static void notifyParsedFragment(Object group, Interval parsed) {
         // TODO: Implement
-    }
-
-    private static void purgeParsedFragments(Object group, long timestamp) {
-        Iterator<Entry> it = parsedFragments.iterator();
-        while (it.hasNext()) {
-            Entry e = it.next();
-            if (e.getGroup() != group) continue;
-            if (e.getTimestamp() < timestamp) it.remove();
-        }
     }
 
     private static void parseNextEntry() {
@@ -99,7 +83,7 @@ public class ThreadedParserFacade {
         parse(foundEntry);
     }
 
-    private static class Entry {
+    private static class Entry implements Comparable {
         private Object group;
         private Parser parser;
         private Interval interval;
@@ -132,6 +116,15 @@ public class ThreadedParserFacade {
 
         public Parser.ChangeEvent getChangeEvent() {
             return changeEvent;
+        }
+
+        @Override
+        public int compareTo(Object o) {
+            int i1 = System.identityHashCode(this);
+            int i2 = System.identityHashCode(o);
+            if (i1 < i2) return -1;
+            if (i1 == i2) return 0;
+            return 1;
         }
     }
 

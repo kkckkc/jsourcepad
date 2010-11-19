@@ -3,6 +3,7 @@ package kkckkc.syntaxpane.model;
 import kkckkc.syntaxpane.model.MutableFoldManager.FoldListener;
 import kkckkc.syntaxpane.parse.ContentCharProvider;
 import kkckkc.syntaxpane.parse.Parser;
+import kkckkc.syntaxpane.parse.ThreadedParserFacade;
 import kkckkc.syntaxpane.parse.grammar.Language;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,19 +46,22 @@ public class SourceDocument extends PlainDocument {
 	
 	@Override
 	protected void fireChangedUpdate(DocumentEvent e) {
-		parser.parse(e.getOffset(), e.getOffset() + e.getLength(), Parser.ChangeEvent.UPDATE);
+        ThreadedParserFacade.parse(null, parser, e.getOffset(), e.getOffset() + e.getLength(), Parser.ChangeEvent.UPDATE);
+		//parser.parse(e.getOffset(), e.getOffset() + e.getLength(), Parser.ChangeEvent.UPDATE);
 		super.fireChangedUpdate(e);
 	}
 
 	@Override
 	protected void fireInsertUpdate(DocumentEvent e) {
-		parser.parse(e.getOffset(), e.getOffset() + e.getLength(), Parser.ChangeEvent.ADD);
+        ThreadedParserFacade.parse(null, parser, e.getOffset(), e.getOffset() + e.getLength(), Parser.ChangeEvent.ADD);
+//		parser.parse(e.getOffset(), e.getOffset() + e.getLength(), Parser.ChangeEvent.ADD);
 		super.fireInsertUpdate(e);
 	}
 
 	@Override
 	protected void fireRemoveUpdate(DocumentEvent e) {
-		parser.parse(e.getOffset(), e.getOffset() + e.getLength(), Parser.ChangeEvent.REMOVE);
+        ThreadedParserFacade.parse(null, parser, e.getOffset(), e.getOffset() + e.getLength(), Parser.ChangeEvent.REMOVE);
+//		parser.parse(e.getOffset(), e.getOffset() + e.getLength(), Parser.ChangeEvent.REMOVE);
 		super.fireRemoveUpdate(e);
 	}
 	

@@ -1,6 +1,7 @@
 package kkckkc.syntaxpane.model;
 
 import kkckkc.syntaxpane.parse.CharProvider;
+import kkckkc.syntaxpane.parse.grammar.RootContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,6 +63,7 @@ public abstract class LineManager {
 		}
 
 		public Scope getScope() {
+            if (scope == null) return new Scope(0, end - start, new RootContext(), null);
 			return scope;
 		}
 

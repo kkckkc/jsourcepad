@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 public class Parser {
 	public enum ChangeEvent { ADD, UPDATE, REMOVE }
 
-    private static long MAX_PARSE_TIME = 200 * 1000L;
+    private static long MAX_PARSE_TIME = 200 * 1000L * 1000L;
     private static int SAMPLE_INTERVAL = 100;
 
     private Logger logger = Logger.getLogger(Parser.class.getName());        
@@ -77,7 +77,7 @@ public class Parser {
 			
 			line = lineManager.getNext(line);
 
-            if ((i++ % SAMPLE_INTERVAL) == 0) {
+            if ((++i % SAMPLE_INTERVAL) == 0) {
                 if (System.nanoTime() - startTimestamp > MAX_PARSE_TIME) {
                     partialParse = true;
                     break;
@@ -98,8 +98,8 @@ public class Parser {
 		}
 
         return new Pair<Interval, Interval>(
-                new Interval(start, line.getStart() - 1),
-                partialParse ? new Interval(line.getStart(), end) : null);
+                new Interval(start, line == null ? Integer.MAX_VALUE : line.getStart()),
+                partialParse && line != null ? new Interval(line.getStart(), end) : null);
 	}
 	
 	private Scope parseLine(Scope scope, LineManager.Line line) {

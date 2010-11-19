@@ -1,6 +1,9 @@
 Build
 ------------------------------------------------------------------------------------------------------------------------
 
+Improvements
+ - First version of threaded parsing
+
 Bugfixes
  - Keystroke incorrectly saved in bundle editor on windows
 
