@@ -16,6 +16,9 @@ import java.util.logging.Logger;
 public class Parser {
 	public enum ChangeEvent { ADD, UPDATE, REMOVE }
 
+    private static long MAX_PARSE_TIME = 200 * 1000L;
+    private static int SAMPLE_INTERVAL = 100;
+
     private Logger logger = Logger.getLogger(Parser.class.getName());        
 
 	private MutableLineManager lineManager;
@@ -30,7 +33,7 @@ public class Parser {
 		this.foldManager.setFoldEndPattern(language.getFoldEnd());
 	}
 	
-	public void parse(int start, int end, ChangeEvent event) {
+	public Pair<Interval, Interval> parse(int start, int end, ChangeEvent event) {
 		boolean foldChanges = false;
 
 		LineManager.Line line;
@@ -52,6 +55,10 @@ public class Parser {
 			line = lineManager.getLineByPosition(start);
 		}
 
+        long startTimestamp = System.nanoTime();
+
+        int i = 0;
+        boolean partialParse = true;
 		LineManager.Line previous = lineManager.getPrevious(line);
 		Scope scope = previous == null ? null : previous.getScope();
 		while (line != null) {
@@ -70,6 +77,13 @@ public class Parser {
 			
 			line = lineManager.getNext(line);
 
+            if ((i++ % SAMPLE_INTERVAL) == 0) {
+                if (System.nanoTime() - startTimestamp > MAX_PARSE_TIME) {
+                    partialParse = true;
+                    break;
+                }
+            }
+
 			if (origScope == null) {
 				continue;
 			}
@@ -82,6 +96,10 @@ public class Parser {
 		if (foldChanges) {
 			foldManager.fireFoldUpdated();
 		}
+
+        return new Pair<Interval, Interval>(
+                new Interval(start, line.getStart() - 1),
+                partialParse ? new Interval(line.getStart(), end) : null);
 	}
 	
 	private Scope parseLine(Scope scope, LineManager.Line line) {
