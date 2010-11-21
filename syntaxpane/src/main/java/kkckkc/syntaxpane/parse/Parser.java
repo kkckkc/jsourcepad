@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 public class Parser {
 	public enum ChangeEvent { ADD, UPDATE, REMOVE }
 
-    private static long MAX_PARSE_TIME = 200 * 1000L * 1000L;
+    private static long MAX_PARSE_TIME = 50 * 1000L * 1000L;
     private static int SAMPLE_INTERVAL = 100;
 
     private Logger logger = Logger.getLogger(Parser.class.getName());        

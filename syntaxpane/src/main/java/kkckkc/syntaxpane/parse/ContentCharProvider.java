@@ -1,7 +1,7 @@
 package kkckkc.syntaxpane.parse;
 
-import javax.swing.text.BadLocationException;
 import javax.swing.text.AbstractDocument.Content;
+import javax.swing.text.BadLocationException;
 
 
 public class ContentCharProvider extends AbstractCharProvider {
@@ -22,7 +22,7 @@ public class ContentCharProvider extends AbstractCharProvider {
 		try {
 			return content.getString(start, end - start);
 		} catch (BadLocationException e) {
-			System.out.println(start + " - " + end);
+			System.out.println(start + " - " + end + " (" + content.length() + ")");
 			throw new RuntimeException(e);
 		}
 	}

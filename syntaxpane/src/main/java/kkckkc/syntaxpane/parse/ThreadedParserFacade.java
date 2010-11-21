@@ -9,16 +9,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class ThreadedParserFacade {
 
     private static AtomicLong clock = new AtomicLong(0);
-
     private static Set<Entry> parseQueue = new ConcurrentSkipListSet<Entry>();
-
     private static ExecutorService executorService = Executors.newFixedThreadPool(1);
-
     private static AtomicReference<Object> activeGroup = new AtomicReference<Object>(null);
+    private static ReentrantLock lock = new ReentrantLock(true);
 
     public static void parse(Object group, Parser parser, int start, int end, Parser.ChangeEvent changeEvent) {
         parse(new Entry(group, parser, new Interval(start, end), changeEvent, -1));
@@ -29,19 +28,38 @@ public class ThreadedParserFacade {
     }
 
     private static void parse(Entry entry) {
-        long timestamp = entry.getTimestamp();
-        if (timestamp == -1) timestamp = clock.getAndIncrement();
-        
-        Parser parser = entry.getParser();
-        
-        Pair<Interval, Interval> parseState = parser.parse(entry.getInterval().getStart(), entry.getInterval().getEnd(), entry.getChangeEvent());
-        Interval parsed = parseState.getFirst();
-        notifyParsedFragment(entry.getGroup(), parsed);
+        lock.lock();
+        try {
+            long timestamp = entry.getTimestamp();
+            if (timestamp == -1) timestamp = clock.getAndIncrement();
 
-        Interval remaining = parseState.getSecond();
-        if (remaining != null) {
-            parseQueue.add(new Entry(entry.getGroup(), entry.getParser(), remaining, Parser.ChangeEvent.UPDATE, timestamp));
-            executorService.execute(new ParseFragmentRunnable());
+            // Merge
+/*            Iterator<Entry> it = parseQueue.iterator();
+            while (it.hasNext()) {
+                Entry e = it.next();
+                if (e.getGroup() != entry.getGroup() || e.getParser() != entry.getParser()) continue;
+
+                boolean isClose = Math.abs(e.getInterval().getStart() - entry.getInterval().getStart()) < 100;
+                if (isClose) {
+                    entry.merge(e.getInterval());
+                    it.remove();
+                    break;
+                }
+            }
+*/
+            Parser parser = entry.getParser();
+
+            Pair<Interval, Interval> parseState = parser.parse(entry.getInterval().getStart(), entry.getInterval().getEnd(), entry.getChangeEvent());
+            Interval parsed = parseState.getFirst();
+            notifyParsedFragment(entry.getGroup(), parsed);
+
+            Interval remaining = parseState.getSecond();
+            if (remaining != null) {
+                parseQueue.add(new Entry(entry.getGroup(), entry.getParser(), remaining, Parser.ChangeEvent.UPDATE, timestamp));
+                executorService.execute(new ParseFragmentRunnable());
+            }
+        } finally {
+            lock.unlock();
         }
     }
 
@@ -76,7 +94,7 @@ public class ThreadedParserFacade {
         }
 
         if (foundEntry == null) {
-            throw new RuntimeException("This should not happen");
+            return;
         }
 
         parseQueue.remove(foundEntry);
@@ -125,6 +143,13 @@ public class ThreadedParserFacade {
             if (i1 < i2) return -1;
             if (i1 == i2) return 0;
             return 1;
+        }
+
+        public void merge(Interval i) {
+            System.out.println("ThreadedParserFacade$Entry.merge");
+            interval = new Interval(
+                    Math.min(interval.getStart(), i.getStart()),
+                    Math.max(interval.getEnd(), i.getEnd()));
         }
     }
 

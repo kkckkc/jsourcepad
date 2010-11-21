@@ -46,22 +46,19 @@ public class SourceDocument extends PlainDocument {
 	
 	@Override
 	protected void fireChangedUpdate(DocumentEvent e) {
-        ThreadedParserFacade.parse(null, parser, e.getOffset(), e.getOffset() + e.getLength(), Parser.ChangeEvent.UPDATE);
-		//parser.parse(e.getOffset(), e.getOffset() + e.getLength(), Parser.ChangeEvent.UPDATE);
+        ThreadedParserFacade.parse(this, parser, e.getOffset(), e.getOffset() + e.getLength(), Parser.ChangeEvent.UPDATE);
 		super.fireChangedUpdate(e);
 	}
 
 	@Override
 	protected void fireInsertUpdate(DocumentEvent e) {
-        ThreadedParserFacade.parse(null, parser, e.getOffset(), e.getOffset() + e.getLength(), Parser.ChangeEvent.ADD);
-//		parser.parse(e.getOffset(), e.getOffset() + e.getLength(), Parser.ChangeEvent.ADD);
+        ThreadedParserFacade.parse(this, parser, e.getOffset(), e.getOffset() + e.getLength(), Parser.ChangeEvent.ADD);
 		super.fireInsertUpdate(e);
 	}
 
 	@Override
 	protected void fireRemoveUpdate(DocumentEvent e) {
-        ThreadedParserFacade.parse(null, parser, e.getOffset(), e.getOffset() + e.getLength(), Parser.ChangeEvent.REMOVE);
-//		parser.parse(e.getOffset(), e.getOffset() + e.getLength(), Parser.ChangeEvent.REMOVE);
+        ThreadedParserFacade.parse(this, parser, e.getOffset(), e.getOffset() + e.getLength(), Parser.ChangeEvent.REMOVE);
 		super.fireRemoveUpdate(e);
 	}
 	
