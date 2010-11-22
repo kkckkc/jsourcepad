@@ -90,6 +90,7 @@ public class DocImpl extends AbstractMessageBus implements Doc, ScopeRoot, BeanF
 
 	@Override
 	public boolean isModified() {
+        if (getActiveBuffer() == null) return false;
 		return getActiveBuffer().isModified();
 	}
 

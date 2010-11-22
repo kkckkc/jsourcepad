@@ -1,8 +1,5 @@
 package kkckkc.jsourcepad.ui.statusbar;
 
-import javax.swing.JLabel;
-import javax.swing.JPopupMenu;
-
 import kkckkc.jsourcepad.model.Buffer;
 import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.DocList;
@@ -11,6 +8,8 @@ import kkckkc.jsourcepad.util.action.MenuFactory;
 import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
 import kkckkc.jsourcepad.util.ui.PopupUtils;
 import kkckkc.syntaxpane.parse.grammar.Language;
+
+import javax.swing.*;
 
 public class LanguageView extends JLabel implements DocList.Listener, Buffer.LanguageListener {
 
@@ -37,6 +36,7 @@ public class LanguageView extends JLabel implements DocList.Listener, Buffer.Lan
 
 	@Override
     public void selected(int index, Doc doc) {
+        if (doc.getActiveBuffer() == null) return;
 		Language l = doc.getActiveBuffer().getLanguage();
 		setEnabled(true);
 		setText(l.getName());
