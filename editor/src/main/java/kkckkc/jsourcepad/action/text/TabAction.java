@@ -17,17 +17,13 @@ import java.awt.event.ActionEvent;
 import java.util.Collection;
 
 public final class TabAction extends AbstractAction {
-    private final Doc doc;
-
-    public TabAction(Doc doc) {
-	    this.doc = doc;
-    }
-
     public void actionPerformed(final ActionEvent e) {
+        Doc doc = Application.get().getWindowManager().getFocusedWindow().getDocList().getActiveDoc();
+
     	InsertionPoint ip = doc.getActiveBuffer().getInsertionPoint();
 
         if (doc.getActiveBuffer().getCurrentLine() == null) {
-            insertTab(ip);
+            insertTab(doc, ip);
             return;
         }
 
@@ -39,7 +35,7 @@ public final class TabAction extends AbstractAction {
 		
 		Collection<BundleItemSupplier> items = Application.get().getBundleManager().getItemsForTabTrigger(token, scope);
 		if (items.isEmpty()) {
-            insertTab(ip);
+            insertTab(doc, ip);
         } else {
 			final ActionGroup tempActionGroup = new ActionGroup();
 			
@@ -72,7 +68,7 @@ public final class TabAction extends AbstractAction {
 		
 	}
 
-    private void insertTab(InsertionPoint ip) {
+    private void insertTab(Doc doc, InsertionPoint ip) {
         doc.getActiveBuffer().insertText(ip.getPosition(), doc.getTabManager().createIndent(1), null);
     }
 }

@@ -67,12 +67,12 @@ public class DocPresenter implements Presenter<DocView> {
         }
 
 		sourcePane.getEditorPane().getKeymap().addActionForKeyStroke(
-				KeyStroke.getKeyStroke((char) KeyEvent.VK_ENTER), new IndentAction(doc));
+                KeyStroke.getKeyStroke((char) KeyEvent.VK_ENTER), new IndentAction());
 
 		sourcePane.getEditorPane().getKeymap().removeKeyStrokeBinding(
                 KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0));
 		sourcePane.getEditorPane().getKeymap().addActionForKeyStroke(
-                KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), new TabAction(doc));
+                KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), new TabAction());
 
         sourcePane.getEditorPane().getKeymap().addActionForKeyStroke(
                 KeyStroke.getKeyStroke(KeyEvent.VK_HOME, 0),

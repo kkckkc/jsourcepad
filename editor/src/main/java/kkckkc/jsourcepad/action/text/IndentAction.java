@@ -1,21 +1,17 @@
 package kkckkc.jsourcepad.action.text;
 
-import java.awt.event.ActionEvent;
-
-import javax.swing.AbstractAction;
-
+import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.InsertionPoint;
 import kkckkc.syntaxpane.model.Interval;
 
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+
 public final class IndentAction extends AbstractAction {
-    private final Doc doc;
-
-    public IndentAction(Doc doc) {
-	    this.doc = doc;
-    }
-
     public void actionPerformed(ActionEvent e) {
+        Doc doc = Application.get().getWindowManager().getFocusedWindow().getDocList().getActiveDoc();
+
     	InsertionPoint ip = doc.getActiveBuffer().getInsertionPoint();
     	doc.getActiveBuffer().indent(Interval.createEmpty(ip.getPosition()));
     }

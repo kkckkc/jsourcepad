@@ -7,6 +7,7 @@ Improvements
 Bugfixes
  - Keystroke incorrectly saved in bundle editor on windows
  - Fixed exception when closing all tabs at once
+ - Fixed major bug with tab and enter when having multiple windows active
 
 
 Build 2010111701
