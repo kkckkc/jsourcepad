@@ -46,19 +46,19 @@ public class SourceDocument extends PlainDocument {
 	
 	@Override
 	protected void fireChangedUpdate(DocumentEvent e) {
-        ThreadedParserFacade.parse(this, parser, e.getOffset(), e.getOffset() + e.getLength(), Parser.ChangeEvent.UPDATE);
+        ThreadedParserFacade.get(this).parse(parser, e.getOffset(), e.getOffset() + e.getLength(), Parser.ChangeEvent.UPDATE);
 		super.fireChangedUpdate(e);
 	}
 
 	@Override
 	protected void fireInsertUpdate(DocumentEvent e) {
-        ThreadedParserFacade.parse(this, parser, e.getOffset(), e.getOffset() + e.getLength(), Parser.ChangeEvent.ADD);
+        ThreadedParserFacade.get(this).parse(parser, e.getOffset(), e.getOffset() + e.getLength(), Parser.ChangeEvent.ADD);
 		super.fireInsertUpdate(e);
 	}
 
 	@Override
 	protected void fireRemoveUpdate(DocumentEvent e) {
-        ThreadedParserFacade.parse(this, parser, e.getOffset(), e.getOffset() + e.getLength(), Parser.ChangeEvent.REMOVE);
+        ThreadedParserFacade.get(this).parse(parser, e.getOffset(), e.getOffset() + e.getLength(), Parser.ChangeEvent.REMOVE);
 		super.fireRemoveUpdate(e);
 	}
 	

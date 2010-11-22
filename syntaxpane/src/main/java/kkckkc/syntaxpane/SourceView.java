@@ -1,9 +1,11 @@
 package kkckkc.syntaxpane;
 
 import kkckkc.syntaxpane.model.FoldManager;
+import kkckkc.syntaxpane.model.Interval;
 import kkckkc.syntaxpane.model.LineManager.Line;
 import kkckkc.syntaxpane.model.Scope;
 import kkckkc.syntaxpane.model.SourceDocument;
+import kkckkc.syntaxpane.parse.ThreadedParserFacade;
 import kkckkc.syntaxpane.style.ScopeSelectorManager;
 import kkckkc.syntaxpane.style.TextStyle;
 import kkckkc.utils.Os;
@@ -14,7 +16,7 @@ import java.awt.*;
 
 
 
-public class SourceView extends FoldablePlainView {
+public class SourceView extends FoldablePlainView implements ThreadedParserFacade.Listener {
 
 	private ScopeSelectorManager scopeSelectorManager = new ScopeSelectorManager();
 	private SourceEditorKit editorKit;
@@ -24,16 +26,20 @@ public class SourceView extends FoldablePlainView {
 		super(elem);
 		this.editorKit = editorKit;
 		this.sourcePane = sourcePane;
+
+        ThreadedParserFacade.get(editorKit.getSourcePane().getDocument()).addListener(this);
 	}
 
-	
+	public void segmentParsed(Interval parsed) {
+        // TODO: Enable this, but check that interval is in view. Note this can be called from non-EDT
+        // editorKit.getSourcePane().getEditorPane().repaint();
+    }
+
 	@Override
 	protected void updateDamage(DocumentEvent changes, Shape a, ViewFactory f) {
 		super.updateDamage(changes, a, f);
 
-		// TODO: Can we improve performance here
-		java.awt.Component host = getContainer();
-		host.repaint();
+		editorKit.getSourcePane().getEditorPane().repaint();
 	}
 
 

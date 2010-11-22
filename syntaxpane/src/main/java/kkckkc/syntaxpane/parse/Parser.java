@@ -58,7 +58,7 @@ public class Parser {
         long startTimestamp = System.nanoTime();
 
         int i = 0;
-        boolean partialParse = true;
+        boolean partialParse = false;
 		LineManager.Line previous = lineManager.getPrevious(line);
 		Scope scope = previous == null ? null : previous.getScope();
 		while (line != null) {
@@ -99,7 +99,7 @@ public class Parser {
 
         return new Pair<Interval, Interval>(
                 new Interval(start, line == null ? Integer.MAX_VALUE : line.getStart()),
-                partialParse && line != null ? new Interval(line.getStart(), end) : null);
+                partialParse && line != null ? new Interval(line.getStart(), end < line.getStart() ? line.getStart() + 1 : end) : null);
 	}
 	
 	private Scope parseLine(Scope scope, LineManager.Line line) {

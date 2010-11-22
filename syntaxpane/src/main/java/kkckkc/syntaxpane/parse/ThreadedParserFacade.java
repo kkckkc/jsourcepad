@@ -3,161 +3,154 @@ package kkckkc.syntaxpane.parse;
 import kkckkc.syntaxpane.model.Interval;
 import kkckkc.utils.Pair;
 
-import java.util.Set;
-import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class ThreadedParserFacade {
 
-    private static AtomicLong clock = new AtomicLong(0);
-    private static Set<Entry> parseQueue = new ConcurrentSkipListSet<Entry>();
     private static ExecutorService executorService = Executors.newFixedThreadPool(1);
-    private static AtomicReference<Object> activeGroup = new AtomicReference<Object>(null);
+    private static Map<Object, ThreadedParserFacade> parserFacades = new WeakHashMap<Object, ThreadedParserFacade>();
     private static ReentrantLock lock = new ReentrantLock(true);
+    private List<Listener> listeners = new ArrayList<Listener>();
 
-    public static void parse(Object group, Parser parser, int start, int end, Parser.ChangeEvent changeEvent) {
-        parse(new Entry(group, parser, new Interval(start, end), changeEvent, -1));
+    public static ThreadedParserFacade get(Object object) {
+        synchronized (parserFacades) {
+            ThreadedParserFacade tpf = parserFacades.get(object);
+            if (tpf == null) {
+                tpf = new ThreadedParserFacade(object);
+                parserFacades.put(object, tpf);
+            }
+
+            return tpf;
+        }
     }
 
-    public static void setActiveGroup(Object group) {
-        activeGroup.lazySet(group);
+    private Entry activeEntry;
+    private Object scope;
+    private LinkedList<Entry> parseQueue = new LinkedList<Entry>();
+
+    public ThreadedParserFacade(Object scope) {
+        this.scope = scope;
     }
 
-    private static void parse(Entry entry) {
+    public void parse(Parser parser, int start, int end, Parser.ChangeEvent changeEvent) {
+        Entry e = activeEntry;
+        if (e != null) {
+            if (e.parser != parser) {
+                e.cancel();
+            }
+
+            // TODO: Merging, possibly?
+            // TODO: Check if only very little remains
+
+            //if (Math.abs(e.getInterval().getStart() - start) < 1000) {
+            //    e.cancel();
+            //    start = Math.min(e.getInterval().getStart(), start);
+            //}
+        }
+        parse(new Entry(parser, new Interval(start, end), changeEvent));
+    }
+
+    private void parse(Entry entry) {
         lock.lock();
         try {
-            long timestamp = entry.getTimestamp();
-            if (timestamp == -1) timestamp = clock.getAndIncrement();
+            activeEntry = entry;
 
-            // Merge
-/*            Iterator<Entry> it = parseQueue.iterator();
-            while (it.hasNext()) {
-                Entry e = it.next();
-                if (e.getGroup() != entry.getGroup() || e.getParser() != entry.getParser()) continue;
-
-                boolean isClose = Math.abs(e.getInterval().getStart() - entry.getInterval().getStart()) < 100;
-                if (isClose) {
-                    entry.merge(e.getInterval());
-                    it.remove();
-                    break;
-                }
-            }
-*/
             Parser parser = entry.getParser();
 
-            Pair<Interval, Interval> parseState = parser.parse(entry.getInterval().getStart(), entry.getInterval().getEnd(), entry.getChangeEvent());
+            Pair<Interval, Interval> parseState = parser.parse(entry.getRemaining().getStart(), entry.getRemaining().getEnd(), entry.getChangeEvent());
+
             Interval parsed = parseState.getFirst();
-            notifyParsedFragment(entry.getGroup(), parsed);
+            notifyParsedFragment(parsed);
 
             Interval remaining = parseState.getSecond();
             if (remaining != null) {
-                parseQueue.add(new Entry(entry.getGroup(), entry.getParser(), remaining, Parser.ChangeEvent.UPDATE, timestamp));
-                executorService.execute(new ParseFragmentRunnable());
+                entry.setRemaining(remaining);
+
+                parseQueue.add(entry);
+                executorService.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        parseNextEntry();
+                    }
+                });
             }
+
+            activeEntry = null;
         } finally {
             lock.unlock();
+            Thread.yield();
         }
     }
 
-    private static void notifyParsedFragment(Object group, Interval parsed) {
-        // TODO: Implement
+    private void notifyParsedFragment(Interval parsed) {
+        for (Listener l : listeners) {
+            l.segmentParsed(parsed);
+        }
     }
 
-    private static void parseNextEntry() {
-        // First try to find in same group
-        long smallestTimestamp = Long.MAX_VALUE;
-        Entry foundEntry = null;
-        for (Entry e : parseQueue) {
-            if (e.getGroup() != activeGroup) continue;
-            if (e.getTimestamp() < smallestTimestamp) {
-                foundEntry = e;
-                smallestTimestamp = e.getTimestamp();
-            }
-        }
+    private void parseNextEntry() {
+        Entry foundEntry = parseQueue.removeFirst();
 
-        if (foundEntry != null) {
-            parseQueue.remove(foundEntry);
-            parse(foundEntry);
+        if (foundEntry == null || foundEntry.isCancelled()) {
             return;
         }
 
-        // Now look through all
-        for (Entry e : parseQueue) {
-            if (e.getTimestamp() < smallestTimestamp) {
-                foundEntry = e;
-                smallestTimestamp = e.getTimestamp();
-            }
-        }
-
-        if (foundEntry == null) {
-            return;
-        }
-
-        parseQueue.remove(foundEntry);
         parse(foundEntry);
     }
 
-    private static class Entry implements Comparable {
-        private Object group;
-        private Parser parser;
-        private Interval interval;
-        private long timestamp;
-        private Parser.ChangeEvent changeEvent;
+    public void addListener(Listener listener) {
+        this.listeners.add(listener);
+    }
 
-        private Entry(Object group, Parser parser, Interval interval, Parser.ChangeEvent changeEvent, long timestamp) {
-            this.group = group;
+    public interface Listener {
+        public void segmentParsed(Interval parsed);
+    }
+
+    private static class Entry {
+        private Interval remaining;
+        private Interval interval;
+
+        private Parser parser;
+        private Parser.ChangeEvent changeEvent;
+        private boolean cancelled = false;
+
+        private Entry(Parser parser, Interval interval, Parser.ChangeEvent changeEvent) {
             this.parser = parser;
             this.interval = interval;
+            this.remaining = interval;
             this.changeEvent = changeEvent;
-            this.timestamp = timestamp;
-        }
-
-        public Object getGroup() {
-            return group;
-        }
-
-        public Parser getParser() {
-            return parser;
         }
 
         public Interval getInterval() {
             return interval;
         }
 
-        public long getTimestamp() {
-            return timestamp;
+        public void setRemaining(Interval remaining) {
+            this.remaining = remaining;
+            this.changeEvent = Parser.ChangeEvent.UPDATE;
+        }
+
+        public void cancel() {
+            this.cancelled = true;
+        }
+
+        public boolean isCancelled() {
+            return cancelled;
+        }
+
+        public Parser getParser() {
+            return parser;
+        }
+
+        public Interval getRemaining() {
+            return remaining;
         }
 
         public Parser.ChangeEvent getChangeEvent() {
             return changeEvent;
-        }
-
-        @Override
-        public int compareTo(Object o) {
-            int i1 = System.identityHashCode(this);
-            int i2 = System.identityHashCode(o);
-            if (i1 < i2) return -1;
-            if (i1 == i2) return 0;
-            return 1;
-        }
-
-        public void merge(Interval i) {
-            System.out.println("ThreadedParserFacade$Entry.merge");
-            interval = new Interval(
-                    Math.min(interval.getStart(), i.getStart()),
-                    Math.max(interval.getEnd(), i.getEnd()));
-        }
-    }
-
-
-    private static class ParseFragmentRunnable implements Runnable {
-        @Override
-        public void run() {
-            parseNextEntry();
         }
     }
 }
