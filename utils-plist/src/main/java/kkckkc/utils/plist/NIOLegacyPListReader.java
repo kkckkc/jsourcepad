@@ -3,9 +3,7 @@ package kkckkc.utils.plist;
 import kkckkc.utils.plist.NIOLegacyPListReader.Tokenizer.Token;
 import kkckkc.utils.plist.NIOLegacyPListReader.Tokenizer.Token.Type;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 
@@ -24,12 +22,27 @@ public class NIOLegacyPListReader {
 		switch (token.type) {
 		case LEFT_BRACE:
 			return parseDictionary(tokenizer, token);
+        case LEFT_PAR:
+            return parseList(tokenizer, token);
 		case QUOTE:
 			return parseString(tokenizer, token);
+        case LITERAL:
+            return token.getValue().toString();
 		default:
-			throw new RuntimeException("Unexpected token " + token);
+			throw new RuntimeException("Unexpected token " + token + "\n" + token.dumpNeighbourhood());
 		}
 	}
+
+    private List<Object> parseList(Tokenizer tokenizer, Token token) {
+        List<Object> dest = new ArrayList<Object>();
+        while (tokenizer.peekNextToken().getType() != Token.Type.RIGHT_PAR) {
+            dest.add(parseObject(tokenizer, tokenizer.nextToken()));
+            if (tokenizer.peekNextToken().getType() == Token.Type.COMMA)
+                tokenizer.nextToken(Token.Type.COMMA);
+        }
+        tokenizer.nextToken(Token.Type.RIGHT_PAR);
+        return dest;
+    }
 
 
 	private Map<Object, Object> parseDictionary(Tokenizer tokenizer, Token token) {
@@ -63,7 +76,7 @@ public class NIOLegacyPListReader {
 		private CharSequence buffer;
 		private int position;
 
-		public static enum State { INITIAL, INSTRING }
+		public static enum State { INITIAL, INSTRING, INDQSTRING }
 
         private State state = State.INITIAL;
 		private Queue<Token> tokenQueue = new ConcurrentLinkedQueue<Token>();
@@ -80,14 +93,15 @@ public class NIOLegacyPListReader {
 		public Token nextToken(Type type) {
 			Token t = nextToken();
 			if (t.type != type) {
-				throw new RuntimeException("Unexpected token " + t);
+				throw new RuntimeException("Unexpected token " + t + "\n" + t.dumpNeighbourhood());
 			}
 			return t;
 		}
 
 		public Token nextToken() {
 			if (tokenQueue.isEmpty()) fillTokenQueue();
-			return tokenQueue.poll();
+			Token t = tokenQueue.poll();
+            return t;
 		}
 
 		private void fillTokenQueue() {
@@ -98,14 +112,29 @@ public class NIOLegacyPListReader {
 				switch (state) {
 					
 					case INITIAL:
-						if (c == '{') tokenQueue.add(new Token(Token.Type.LEFT_BRACE, position, buffer.subSequence(position, position + 1)));
-						else if (c == '}') tokenQueue.add(new Token(Token.Type.RIGHT_BRACE, position, buffer.subSequence(position, position + 1)));
-						else if (c == ';') tokenQueue.add(new Token(Token.Type.SEMICOLON, position, buffer.subSequence(position, position + 1)));
-						else if (c == '=') tokenQueue.add(new Token(Token.Type.EQUALS, position, buffer.subSequence(position, position + 1)));
+						if (c == '{') tokenQueue.add(new Token(Token.Type.LEFT_BRACE, position, buffer, buffer.subSequence(position, position + 1)));
+						else if (c == '}') tokenQueue.add(new Token(Token.Type.RIGHT_BRACE, position, buffer, buffer.subSequence(position, position + 1)));
+                        else if (c == '(') tokenQueue.add(new Token(Token.Type.LEFT_PAR, position, buffer, buffer.subSequence(position, position + 1)));
+                        else if (c == ')') tokenQueue.add(new Token(Token.Type.RIGHT_PAR, position, buffer, buffer.subSequence(position, position + 1)));
+						else if (c == ';') tokenQueue.add(new Token(Token.Type.SEMICOLON, position, buffer, buffer.subSequence(position, position + 1)));
+                        else if (c == ',') tokenQueue.add(new Token(Token.Type.COMMA, position, buffer, buffer.subSequence(position, position + 1)));
+						else if (c == '=') tokenQueue.add(new Token(Token.Type.EQUALS, position, buffer, buffer.subSequence(position, position + 1)));
 						else if (c == '\'') {
-							tokenQueue.add(new Token(Token.Type.QUOTE, position, buffer.subSequence(position, position + 1)));
+							tokenQueue.add(new Token(Token.Type.QUOTE, position, buffer, buffer.subSequence(position, position + 1)));
 							state = State.INSTRING;
 							tokenQueueConsistent = false;
+                        } else if (c == '"') {
+                            tokenQueue.add(new Token(Token.Type.QUOTE, position, buffer, buffer.subSequence(position, position + 1)));
+                            state = State.INDQSTRING;
+                            tokenQueueConsistent = false;
+                        } else if (Character.isJavaIdentifierPart(c)) {
+                            int start = position;
+                            while (Character.isJavaIdentifierPart(buffer.charAt(position))) {
+                                position++;
+                            }
+                            tokenQueue.add(new Token(Token.Type.LITERAL, start, buffer, buffer.subSequence(start, position)));
+                            position--;
+
 						} else {
 							tokenQueueConsistent = true;
 						}
@@ -114,15 +143,29 @@ public class NIOLegacyPListReader {
 					case INSTRING:
 						if (c == '\'') {
 							Token startOfString = tokenQueue.peek();
-							tokenQueue.add(new Token(Token.Type.STRING, startOfString.getPosition() + 1, buffer.subSequence(startOfString.getPosition() + 1, position)));
-							tokenQueue.add(new Token(Token.Type.QUOTE, position, buffer.subSequence(position, position + 1)));
+							tokenQueue.add(new Token(Token.Type.STRING, startOfString.getPosition() + 1, buffer, buffer.subSequence(startOfString.getPosition() + 1, position)));
+							tokenQueue.add(new Token(Token.Type.QUOTE, position, buffer, buffer.subSequence(position, position + 1)));
 							state = State.INITIAL;
 							tokenQueueConsistent = true;
 						} else {
 							tokenQueueConsistent = false;
 						}
 						break;
-					
+
+                    case INDQSTRING:
+                        if (c == '\\') {
+                            position++;
+                            tokenQueueConsistent = false;
+                        } else if (c == '"') {
+                            Token startOfString = tokenQueue.peek();
+                            tokenQueue.add(new Token(Token.Type.STRING, startOfString.getPosition() + 1, buffer, unescape(buffer.subSequence(startOfString.getPosition() + 1, position))));
+                            tokenQueue.add(new Token(Token.Type.QUOTE, position, buffer, buffer.subSequence(position, position + 1)));
+                            state = State.INITIAL;
+                            tokenQueueConsistent = true;
+                        } else {
+                            tokenQueueConsistent = false;
+                        }
+                        break;
 				}
 				
 				position++;
@@ -131,17 +174,46 @@ public class NIOLegacyPListReader {
 			}
 		}
 
-		static class Token {
-			static enum Type { LEFT_BRACE, RIGHT_BRACE, QUOTE, SEMICOLON, EQUALS, STRING}
+        private CharSequence unescape(CharSequence charSequence) {
+            StringBuilder b = new StringBuilder();
+
+            boolean inEscape = false;
+            for (int i = 0; i < charSequence.length(); i++) {
+                char c = charSequence.charAt(i);
+                if (! inEscape) {
+                    if (c == '\\') inEscape = true;
+                    else b.append(c);
+                } else {
+                    if (c == '\\') b.append("\\");
+                    else if (c == '"') b.append("\"");
+                    else if (c == 'b') b.append("\b");
+                    else if (c == 'n') b.append("\n");
+                    else if (c == 'r') b.append("\r");
+                    else if (c == 't') b.append("\t");
+                    else {
+                        // TODO: Handle octal and hex escapes, see http://www.gnustep.org/resources/documentation/Developer/Base/Reference/NSPropertyList.html
+                        b.append(c);
+                    }
+                }
+            }
+
+            return b;
+        }
+
+        static class Token {
+            private CharSequence allText;
+
+            static enum Type { LEFT_BRACE, RIGHT_BRACE, LEFT_PAR, RIGHT_PAR, QUOTE, SEMICOLON, EQUALS, STRING, LITERAL, COMMA }
 
             private Type type;
 			private CharSequence value;
 			private int position;
 			
-			public Token(Type type, int position, CharSequence value) {
+			public Token(Type type, int position, CharSequence allText, CharSequence value) {
 				this.type = type;
 				this.position = position;
 				this.value = value;
+                this.allText = allText;
 			}
 			
 			public int getPosition() {
@@ -159,6 +231,20 @@ public class NIOLegacyPListReader {
 			public String toString() {
 				return type.toString() + " [" + value + "]";
 			}
+
+            public String dumpNeighbourhood() {
+                return allText.subSequence(Math.max(0, position - 40), position) +
+                        "|" +
+                        allText.subSequence(position, Math.min(allText.length() - 1, position + 40)).toString();
+            }
 		}
 	}
+
+
+    public static void main(String... args) {
+        Map m = (Map) new NIOLegacyPListReader().read(
+                ("{ begin = \"'\";\n" +
+                        "  end = \"'\"; }").getBytes());
+        System.out.println(m);
+    }
 }
