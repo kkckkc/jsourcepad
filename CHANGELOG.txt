@@ -8,7 +8,7 @@ Bugfixes
  - Keystroke incorrectly saved in bundle editor on windows
  - Fixed exception when closing all tabs at once
  - Fixed major bug with tab and enter when having multiple windows active
-
+ - Fixed incorrect syntax highlighting in ruby. Problem by contentName and backreferences in the end pattern
 
 Build 2010111701
 ------------------------------------------------------------------------------------------------------------------------

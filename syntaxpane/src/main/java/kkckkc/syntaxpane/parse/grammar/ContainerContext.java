@@ -91,13 +91,13 @@ public class ContainerContext extends MatchableContext {
 	}
 
 	public Matcher getEndMatcher(CharSequence segment, Scope scope) {
-		if (endPattern != null && scope.getAttributes() != null && endPatternExpression.indexOf("@start") >= 0) {
+		if (endPattern != null && endPatternExpression.indexOf("@start") >= 0) {
 			String p = endPatternExpression;
             if (contentNameContext) {
                 for (Map.Entry<String, String> entry : scope.getParent().getAttributes().entrySet()) {
                     p = StringUtils.replace(p, "\\%{" + entry.getKey() + "}", entry.getValue());
                 }
-            } else {
+            } else if (scope.getAttributes() != null) {
                 for (Map.Entry<String, String> entry : scope.getAttributes().entrySet()) {
                     p = StringUtils.replace(p, "\\%{" + entry.getKey() + "}", entry.getValue());
                 }
