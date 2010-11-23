@@ -13,5 +13,6 @@
         <opt>-Dlaunch4j.exefile="%EXEFILE%"</opt>
         <opt>-Djava.util.logging.config.class=kkckkc.jsourcepad.BootstrapLogger</opt>
         <opt>-DexecutableName=jsourcepad.exe</opt>
+        <opt>-Xmx256m</opt>
     </jre>
 </launch4jConfig>

@@ -27,7 +27,7 @@
         <key>WorkingDirectory</key>
         <string>$APP_PACKAGE/Contents/Resources/Java</string>
         <key>VMOptions</key>
-        <string>-client -Xms64m -Xdock:name=JSourcePad -d32 -XX:+UseTLAB -Xverify:none -Djava.util.logging.config.class=kkckkc.jsourcepad.BootstrapLogger -Dapplication.folder=$APP_PACKAGE/Contents/Resources -noclassgc</string>
+        <string>-client -Xms64m -Xmx256m -Xdock:name=JSourcePad -d32 -XX:+UseTLAB -Xverify:none -Djava.util.logging.config.class=kkckkc.jsourcepad.BootstrapLogger -Dapplication.folder=$APP_PACKAGE/Contents/Resources -noclassgc</string>
         <key>MainClass</key>
         <string>kkckkc.jsourcepad.Bootstrap</string>
         <key>Properties</key>
