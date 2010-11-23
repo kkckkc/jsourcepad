@@ -33,7 +33,8 @@ public class BundleEditorPlugin implements Plugin {
     public <P, C> Resource getOverridesLocation(BeanFactoryLoader.Scope<P, C> scope, P parent, C context) {
         if (scope == BeanFactoryLoader.DOCUMENT) {
             Window window = (Window) parent;
-            if (window.getProject() != null && BundleStructure.isBundleDir(window.getProject().getProjectDir())) {
+            File file = (File) context;
+            if (window.getProject() != null && BundleStructure.isOfAnyType(file)) {
                 return new ClassPathResource("document-bundle-editor.xml");
             }
         } else if (scope == BeanFactoryLoader.WINDOW) {

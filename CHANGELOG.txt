@@ -9,6 +9,7 @@ Bugfixes
  - Fixed exception when closing all tabs at once
  - Fixed major bug with tab and enter when having multiple windows active
  - Fixed incorrect syntax highlighting in ruby. Problem by contentName and backreferences in the end pattern
+ - Couldn't edit (save) not bundle item files in bundles
 
 Build 2010111701
 ------------------------------------------------------------------------------------------------------------------------
