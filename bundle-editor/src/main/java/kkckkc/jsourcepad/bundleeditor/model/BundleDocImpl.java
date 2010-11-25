@@ -134,14 +134,14 @@ public class BundleDocImpl extends DocImpl {
     }
 
     private void loadPreferences() throws IOException {
-        PListFormatter formatter = new PListFormatter();
+        PListFormatter formatter = new PListFormatter(true);
         String s = formatter.format(plist.get("settings"));
 
         this.buffer.setText(languageManager.getLanguage(""), new BufferedReader(new StringReader(s)));
     }
 
     private void savePreferences() throws IOException {
-        plist.put("settings", new NIOLegacyPListReader().read(this.buffer.getCompleteDocument().getText().getBytes("utf-8")));
+        plist.put("settings", new NIOLegacyPListReader(true).read(this.buffer.getCompleteDocument().getText().getBytes("utf-8")));
     }
 
     private void loadCommand() throws IOException {
@@ -166,7 +166,7 @@ public class BundleDocImpl extends DocImpl {
     }
 
     private void loadMacro() throws IOException {
-        PListFormatter formatter = new PListFormatter();
+        PListFormatter formatter = new PListFormatter(true);
         formatter.setMapKeyComparator(new MacroKeyComparator());
         String s = formatter.format(plist.get("commands"));
 
@@ -174,30 +174,30 @@ public class BundleDocImpl extends DocImpl {
     }
 
     private void saveMacro() throws IOException {
-        plist.put("commands", new NIOLegacyPListReader().read(this.buffer.getCompleteDocument().getText().getBytes("utf-8")));
+        plist.put("commands", new NIOLegacyPListReader(true).read(this.buffer.getCompleteDocument().getText().getBytes("utf-8")));
     }
 
     private void loadSyntax() throws IOException {
-        PListFormatter formatter = new PListFormatter();
+        PListFormatter formatter = new PListFormatter(true);
         formatter.setMapKeyComparator(new SyntaxesKeyComparator());
         String s = formatter.format(plist);
 
-        this.buffer.setText(languageManager.getLanguage(""), new BufferedReader(new StringReader(s)));
+        this.buffer.setText(languageManager.getLanguage("source.plist.tm-grammar"), new BufferedReader(new StringReader(s)));
     }
 
     private void saveSyntax() throws IOException {
-        plist = (Map) new NIOLegacyPListReader().read(this.buffer.getCompleteDocument().getText().getBytes("utf-8"));
+        plist = (Map) new NIOLegacyPListReader(true).read(this.buffer.getCompleteDocument().getText().getBytes("utf-8"));
     }
 
     private void loadDefault() throws IOException {
-        PListFormatter formatter = new PListFormatter();
+        PListFormatter formatter = new PListFormatter(true);
         String s = formatter.format(plist);
 
         this.buffer.setText(languageManager.getLanguage(""), new BufferedReader(new StringReader(s)));
     }
 
     private void saveDefault() throws IOException {
-        plist = (Map) new NIOLegacyPListReader().read(this.buffer.getCompleteDocument().getText().getBytes("utf-8"));
+        plist = (Map) new NIOLegacyPListReader(true).read(this.buffer.getCompleteDocument().getText().getBytes("utf-8"));
     }
 
 

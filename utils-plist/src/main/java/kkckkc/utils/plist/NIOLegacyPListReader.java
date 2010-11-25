@@ -1,15 +1,22 @@
 package kkckkc.utils.plist;
 
-import kkckkc.utils.plist.NIOLegacyPListReader.Tokenizer.Token;
-import kkckkc.utils.plist.NIOLegacyPListReader.Tokenizer.Token.Type;
-
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 
 
 public class NIOLegacyPListReader {
-	
+
+    private boolean textmateFormatting;
+
+    public NIOLegacyPListReader() {
+        this(false);
+    }
+    
+    public NIOLegacyPListReader(boolean textmateFormatting) {
+        this.textmateFormatting = textmateFormatting;
+    }
+    
 	public Object read(byte[] bytearr) {
 		// Start parsing
 		String s = new String(bytearr);
@@ -35,50 +42,50 @@ public class NIOLegacyPListReader {
 
     private List<Object> parseList(Tokenizer tokenizer, Token token) {
         List<Object> dest = new ArrayList<Object>();
-        while (tokenizer.peekNextToken().getType() != Token.Type.RIGHT_PAR) {
+        while (tokenizer.peekNextToken().getType() != TokenType.RIGHT_PAR) {
             dest.add(parseObject(tokenizer, tokenizer.nextToken()));
-            if (tokenizer.peekNextToken().getType() == Token.Type.COMMA)
-                tokenizer.nextToken(Token.Type.COMMA);
+            if (tokenizer.peekNextToken().getType() == TokenType.COMMA)
+                tokenizer.nextToken(TokenType.COMMA);
         }
-        tokenizer.nextToken(Token.Type.RIGHT_PAR);
+        tokenizer.nextToken(TokenType.RIGHT_PAR);
         return dest;
     }
 
 
 	private Map<Object, Object> parseDictionary(Tokenizer tokenizer, Token token) {
 		Map<Object, Object> dest = new LinkedHashMap<Object, Object>();
-		while (tokenizer.peekNextToken().getType() != Token.Type.RIGHT_BRACE) {
+		while (tokenizer.peekNextToken().getType() != TokenType.RIGHT_BRACE) {
 			parseDictionaryEntry(dest, tokenizer);
 		}
-		tokenizer.nextToken(Token.Type.RIGHT_BRACE);
+		tokenizer.nextToken(TokenType.RIGHT_BRACE);
 		return dest;
 	}
 
 
 	private void parseDictionaryEntry(Map<Object, Object> dest, Tokenizer tokenizer) {
 		Object key = parseObject(tokenizer, tokenizer.nextToken());
-		tokenizer.nextToken(Type.EQUALS);
+		tokenizer.nextToken(TokenType.EQUALS);
 		Object value = parseObject(tokenizer, tokenizer.nextToken());
-		tokenizer.nextToken(Type.SEMICOLON);
+		tokenizer.nextToken(TokenType.SEMICOLON);
 		dest.put(key, value);
 	}
 
 
 	private String parseString(Tokenizer tokenizer, Token token) {
-		Token stringContent = tokenizer.nextToken(Token.Type.STRING);
-		tokenizer.nextToken(Token.Type.QUOTE);
+		Token stringContent = tokenizer.nextToken(TokenType.STRING);
+		tokenizer.nextToken(TokenType.QUOTE);
 		return stringContent.getValue().toString();
 	}
 
 	
-	
-	static class Tokenizer {
+    static enum TokenizerState { INITIAL, INSTRING, INDQSTRING }
+    static enum TokenType { LEFT_BRACE, RIGHT_BRACE, LEFT_PAR, RIGHT_PAR, QUOTE, SEMICOLON, EQUALS, STRING, LITERAL, COMMA }
+
+	class Tokenizer {
 		private CharSequence buffer;
 		private int position;
 
-		public static enum State { INITIAL, INSTRING, INDQSTRING }
-
-        private State state = State.INITIAL;
+        private TokenizerState state = TokenizerState.INITIAL;
 		private Queue<Token> tokenQueue = new ConcurrentLinkedQueue<Token>();
 		
 		public Tokenizer(CharSequence buffer) {
@@ -90,7 +97,7 @@ public class NIOLegacyPListReader {
 			return tokenQueue.peek();
 		}
 
-		public Token nextToken(Type type) {
+		public Token nextToken(TokenType type) {
 			Token t = nextToken();
 			if (t.type != type) {
 				throw new RuntimeException("Unexpected token " + t + "\n" + t.dumpNeighbourhood());
@@ -101,6 +108,7 @@ public class NIOLegacyPListReader {
 		public Token nextToken() {
 			if (tokenQueue.isEmpty()) fillTokenQueue();
 			Token t = tokenQueue.poll();
+//            System.out.println(t);
             return t;
 		}
 
@@ -112,27 +120,27 @@ public class NIOLegacyPListReader {
 				switch (state) {
 					
 					case INITIAL:
-						if (c == '{') tokenQueue.add(new Token(Token.Type.LEFT_BRACE, position, buffer, buffer.subSequence(position, position + 1)));
-						else if (c == '}') tokenQueue.add(new Token(Token.Type.RIGHT_BRACE, position, buffer, buffer.subSequence(position, position + 1)));
-                        else if (c == '(') tokenQueue.add(new Token(Token.Type.LEFT_PAR, position, buffer, buffer.subSequence(position, position + 1)));
-                        else if (c == ')') tokenQueue.add(new Token(Token.Type.RIGHT_PAR, position, buffer, buffer.subSequence(position, position + 1)));
-						else if (c == ';') tokenQueue.add(new Token(Token.Type.SEMICOLON, position, buffer, buffer.subSequence(position, position + 1)));
-                        else if (c == ',') tokenQueue.add(new Token(Token.Type.COMMA, position, buffer, buffer.subSequence(position, position + 1)));
-						else if (c == '=') tokenQueue.add(new Token(Token.Type.EQUALS, position, buffer, buffer.subSequence(position, position + 1)));
+						if (c == '{') tokenQueue.add(new Token(TokenType.LEFT_BRACE, position, buffer, buffer.subSequence(position, position + 1)));
+						else if (c == '}') tokenQueue.add(new Token(TokenType.RIGHT_BRACE, position, buffer, buffer.subSequence(position, position + 1)));
+                        else if (c == '(') tokenQueue.add(new Token(TokenType.LEFT_PAR, position, buffer, buffer.subSequence(position, position + 1)));
+                        else if (c == ')') tokenQueue.add(new Token(TokenType.RIGHT_PAR, position, buffer, buffer.subSequence(position, position + 1)));
+						else if (c == ';') tokenQueue.add(new Token(TokenType.SEMICOLON, position, buffer, buffer.subSequence(position, position + 1)));
+                        else if (c == ',') tokenQueue.add(new Token(TokenType.COMMA, position, buffer, buffer.subSequence(position, position + 1)));
+						else if (c == '=') tokenQueue.add(new Token(TokenType.EQUALS, position, buffer, buffer.subSequence(position, position + 1)));
 						else if (c == '\'') {
-							tokenQueue.add(new Token(Token.Type.QUOTE, position, buffer, buffer.subSequence(position, position + 1)));
-							state = State.INSTRING;
+							tokenQueue.add(new Token(TokenType.QUOTE, position, buffer, buffer.subSequence(position, position + 1)));
+							state = TokenizerState.INSTRING;
 							tokenQueueConsistent = false;
                         } else if (c == '"') {
-                            tokenQueue.add(new Token(Token.Type.QUOTE, position, buffer, buffer.subSequence(position, position + 1)));
-                            state = State.INDQSTRING;
+                            tokenQueue.add(new Token(TokenType.QUOTE, position, buffer, buffer.subSequence(position, position + 1)));
+                            state = TokenizerState.INDQSTRING;
                             tokenQueueConsistent = false;
                         } else if (Character.isJavaIdentifierPart(c)) {
                             int start = position;
                             while (Character.isJavaIdentifierPart(buffer.charAt(position))) {
                                 position++;
                             }
-                            tokenQueue.add(new Token(Token.Type.LITERAL, start, buffer, buffer.subSequence(start, position)));
+                            tokenQueue.add(new Token(TokenType.LITERAL, start, buffer, buffer.subSequence(start, position)));
                             position--;
 
 						} else {
@@ -141,11 +149,14 @@ public class NIOLegacyPListReader {
 						break;
 						
 					case INSTRING:
-						if (c == '\'') {
+                        if (textmateFormatting && c == '\'' && buffer.charAt(position + 1) == '\'') {
+                            position += 1;
+                            tokenQueueConsistent = false;
+                        } else if (c == '\'') {
 							Token startOfString = tokenQueue.peek();
-							tokenQueue.add(new Token(Token.Type.STRING, startOfString.getPosition() + 1, buffer, buffer.subSequence(startOfString.getPosition() + 1, position)));
-							tokenQueue.add(new Token(Token.Type.QUOTE, position, buffer, buffer.subSequence(position, position + 1)));
-							state = State.INITIAL;
+							tokenQueue.add(new Token(TokenType.STRING, startOfString.getPosition() + 1, buffer, unescape(buffer.subSequence(startOfString.getPosition() + 1, position))));
+							tokenQueue.add(new Token(TokenType.QUOTE, position, buffer, buffer.subSequence(position, position + 1)));
+							state = TokenizerState.INITIAL;
 							tokenQueueConsistent = true;
 						} else {
 							tokenQueueConsistent = false;
@@ -158,9 +169,9 @@ public class NIOLegacyPListReader {
                             tokenQueueConsistent = false;
                         } else if (c == '"') {
                             Token startOfString = tokenQueue.peek();
-                            tokenQueue.add(new Token(Token.Type.STRING, startOfString.getPosition() + 1, buffer, unescape(buffer.subSequence(startOfString.getPosition() + 1, position))));
-                            tokenQueue.add(new Token(Token.Type.QUOTE, position, buffer, buffer.subSequence(position, position + 1)));
-                            state = State.INITIAL;
+                            tokenQueue.add(new Token(TokenType.STRING, startOfString.getPosition() + 1, buffer, unescape(buffer.subSequence(startOfString.getPosition() + 1, position))));
+                            tokenQueue.add(new Token(TokenType.QUOTE, position, buffer, buffer.subSequence(position, position + 1)));
+                            state = TokenizerState.INITIAL;
                             tokenQueueConsistent = true;
                         } else {
                             tokenQueueConsistent = false;
@@ -178,21 +189,36 @@ public class NIOLegacyPListReader {
             StringBuilder b = new StringBuilder();
 
             boolean inEscape = false;
-            for (int i = 0; i < charSequence.length(); i++) {
-                char c = charSequence.charAt(i);
-                if (! inEscape) {
-                    if (c == '\\') inEscape = true;
-                    else b.append(c);
-                } else {
-                    if (c == '\\') b.append("\\");
-                    else if (c == '"') b.append("\"");
-                    else if (c == 'b') b.append("\b");
-                    else if (c == 'n') b.append("\n");
-                    else if (c == 'r') b.append("\r");
-                    else if (c == 't') b.append("\t");
-                    else {
-                        // TODO: Handle octal and hex escapes, see http://www.gnustep.org/resources/documentation/Developer/Base/Reference/NSPropertyList.html
-                        b.append(c);
+            if (textmateFormatting) {
+                for (int i = 0; i < charSequence.length(); i++) {
+                    char c = charSequence.charAt(i);
+                    if (! inEscape) {
+                        if (c == '\'') inEscape = true;
+                        else b.append(c);
+                    } else {
+                        if (c == '\'') {
+                            b.append("'");
+                            inEscape = false;
+                        } else throw new RuntimeException("Cannot happen");
+                    }
+                }
+            } else {
+                for (int i = 0; i < charSequence.length(); i++) {
+                    char c = charSequence.charAt(i);
+                    if (! inEscape) {
+                        if (c == '\\') inEscape = true;
+                        else b.append(c);
+                    } else {
+                        if (c == '\\') b.append("\\");
+                        else if (c == '"') b.append("\"");
+                        else if (c == 'b') b.append("\b");
+                        else if (c == 'n') b.append("\n");
+                        else if (c == 'r') b.append("\r");
+                        else if (c == 't') b.append("\t");
+                        else {
+                            // TODO: Handle octal and hex escapes, see http://www.gnustep.org/resources/documentation/Developer/Base/Reference/NSPropertyList.html
+                            b.append(c);
+                        }
                     }
                 }
             }
@@ -200,51 +226,43 @@ public class NIOLegacyPListReader {
             return b;
         }
 
-        static class Token {
-            private CharSequence allText;
-
-            static enum Type { LEFT_BRACE, RIGHT_BRACE, LEFT_PAR, RIGHT_PAR, QUOTE, SEMICOLON, EQUALS, STRING, LITERAL, COMMA }
-
-            private Type type;
-			private CharSequence value;
-			private int position;
-			
-			public Token(Type type, int position, CharSequence allText, CharSequence value) {
-				this.type = type;
-				this.position = position;
-				this.value = value;
-                this.allText = allText;
-			}
-			
-			public int getPosition() {
-				return position;
-			}
-			
-			public Type getType() {
-				return type;
-			}
-			
-			public CharSequence getValue() {
-				return value;
-			}
-			
-			public String toString() {
-				return type.toString() + " [" + value + "]";
-			}
-
-            public String dumpNeighbourhood() {
-                return allText.subSequence(Math.max(0, position - 40), position) +
-                        "|" +
-                        allText.subSequence(position, Math.min(allText.length() - 1, position + 40)).toString();
-            }
-		}
 	}
 
+    static class Token {
+        private CharSequence allText;
 
-    public static void main(String... args) {
-        Map m = (Map) new NIOLegacyPListReader().read(
-                ("{ begin = \"'\";\n" +
-                        "  end = \"'\"; }").getBytes());
-        System.out.println(m);
+        private TokenType type;
+        private CharSequence value;
+        private int position;
+
+        public Token(TokenType type, int position, CharSequence allText, CharSequence value) {
+            this.type = type;
+            this.position = position;
+            this.value = value;
+            this.allText = allText;
+        }
+
+        public int getPosition() {
+            return position;
+        }
+
+        public TokenType getType() {
+            return type;
+        }
+
+        public CharSequence getValue() {
+            return value;
+        }
+
+        public String toString() {
+            return type.toString() + " [" + value + "]";
+        }
+
+        public String dumpNeighbourhood() {
+            return allText.subSequence(Math.max(0, position - 40), position) +
+                    "|" +
+                    allText.subSequence(position, Math.min(allText.length() - 1, position + 40)).toString();
+        }
     }
+
 }

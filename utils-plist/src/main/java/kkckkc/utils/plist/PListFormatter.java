@@ -4,7 +4,16 @@ import java.util.*;
 
 public class PListFormatter {
 
-    Comparator<String> mapKeyComparator;
+    private Comparator<String> mapKeyComparator;
+    private boolean useTextmateFormatting;
+
+    public PListFormatter(boolean useTextmateFormatting) {
+        this.useTextmateFormatting = useTextmateFormatting;
+    }
+
+    public PListFormatter() {
+        this(false);
+    }
 
     public void setMapKeyComparator(Comparator<String> mapKeyComparator) {
         this.mapKeyComparator = mapKeyComparator;
@@ -20,7 +29,11 @@ public class PListFormatter {
 	    } else if (o instanceof List) {
 	    	formatList((List) o, dest, i, shortNotation);
 	    } else if (o instanceof String) {
-	    	dest.append("\"").append(((String) o).replaceAll("\"", "\\\\\"")).append("\"");
+            if (useTextmateFormatting) {
+                dest.append("'").append(((String) o).replaceAll("'", "''")).append("'");
+            } else {
+	    	    dest.append("\"").append(((String) o).replaceAll("\"", "\\\\\"")).append("\"");
+            }
 	    } else if (o instanceof Number) {
 	    	dest.append(o);
 	    } else if (o instanceof Boolean) {

@@ -4,6 +4,7 @@ Build
 Improvements
  - First version of threaded parsing
  - Removed 2mb file size limit and increased max allocated memory to allow for bigger files
+ - Changed formatting of language syntax files as being edited in the bundle editor
 
 Bugfixes
  - Keystroke incorrectly saved in bundle editor on windows
