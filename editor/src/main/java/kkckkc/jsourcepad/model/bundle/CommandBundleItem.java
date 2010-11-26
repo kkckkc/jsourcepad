@@ -6,10 +6,8 @@ import kkckkc.jsourcepad.model.*;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.bundle.snippet.Snippet;
 import kkckkc.jsourcepad.util.Config;
-import kkckkc.jsourcepad.util.io.ScriptExecutor;
+import kkckkc.jsourcepad.util.io.*;
 import kkckkc.jsourcepad.util.io.ScriptExecutor.Execution;
-import kkckkc.jsourcepad.util.io.TransformingWriter;
-import kkckkc.jsourcepad.util.io.UISupportCallback;
 import kkckkc.syntaxpane.model.Interval;
 
 import javax.swing.*;
@@ -20,6 +18,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("restriction")
 public class CommandBundleItem implements BundleItem<Void> {
@@ -72,23 +71,91 @@ public class CommandBundleItem implements BundleItem<Void> {
 
 	
 	public interface ExecutionMethod {
-		public void start(ScriptExecutor scriptExecutor, String input, Map<String, String> environment) throws IOException, URISyntaxException;
-	}
+        Writer getWriter();
+
+        void preExecute();
+        void postExecute();
+
+        void processResult(String s);
+    }
 	
 	
-	public void execute(Window window, Void context) throws Exception {
+	public void execute(final Window window, Void context) throws Exception {
         beforeRunning(window);
 
 		ScriptExecutor scriptExecutor = new ScriptExecutor(command, Application.get().getThreadPool());
 
-		WindowManager wm = Application.get().getWindowManager();
+		final WindowManager wm = Application.get().getWindowManager();
 
         String inputText = getInput(window);
 
         if (inputText == null) return;
 
-		ExecutionMethod executionMethod = createExecutionMethod(window, wm);
-		executionMethod.start(scriptExecutor, inputText, EnvironmentProvider.getEnvironment(window, bundleItemSupplier));
+        final StringWriter stdoutWriter = new StringWriter();
+
+		final ExecutionMethod executionMethod = createExecutionMethod(window, wm, output);
+        executionMethod.preExecute();
+
+        UISupportCallback callback = new UISupportCallback(window.getContainer()) {
+            @Override
+            public void onAfterDone() {
+                executionMethod.postExecute();
+            }
+
+            @Override
+            public void onAfterSuccess(Execution execution) {
+                if (execution.getExitCode() >= 200 && execution.getExitCode() <= 207) {
+                    String out = null;
+                    switch (execution.getExitCode()) {
+                        case 200:
+                            out = OUTPUT_DISCARD;
+                            break;
+                        case 201:
+                            out = OUTPUT_REPLACE_SELECTED_TEXT;
+                            break;
+                        case 202:
+                            out = OUTPUT_REPLACE_DOCUMENT;
+                            break;
+                        case 203:
+                            out = OUTPUT_AFTER_SELECTED_TEXT;
+                            break;
+                        case 204:
+                            out = OUTPUT_INSERT_AS_SNIPPET;
+                            break;
+                        case 205:
+                            out = OUTPUT_SHOW_AS_HTML;
+                            break;
+                        case 206:
+                            out = OUTPUT_SHOW_AS_TOOLTIP;
+                            break;
+                        case 207:
+                            out = OUTPUT_CREATE_NEW_DOCUMENT;
+                            break;
+                    }
+
+                    String stdoutAsString = stdoutWriter.toString();
+
+                    ExecutionMethod delegatedExecutionMethod = createExecutionMethod(window, wm, out);
+                    delegatedExecutionMethod.preExecute();
+                    try {
+                        delegatedExecutionMethod.getWriter().write(stdoutAsString);
+                        delegatedExecutionMethod.getWriter().flush();
+                        delegatedExecutionMethod.getWriter().close();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    delegatedExecutionMethod.postExecute();
+                    delegatedExecutionMethod.processResult(stdoutAsString);
+                } else {
+                    executionMethod.processResult(stdoutWriter.toString());
+                }
+            }
+        };
+
+        scriptExecutor.execute(callback,
+                new StringReader(inputText),
+                new TeeWriter(stdoutWriter, executionMethod.getWriter()),
+                EnvironmentProvider.getEnvironment(window, bundleItemSupplier));
 	}
 
     @Override
@@ -110,7 +177,7 @@ public class CommandBundleItem implements BundleItem<Void> {
         }
     }
 
-    private ExecutionMethod createExecutionMethod(Window window, WindowManager wm) {
+    private ExecutionMethod createExecutionMethod(Window window, WindowManager wm, String output) {
 	    ExecutionMethod outputMethod;
 	    if (OUTPUT_SHOW_AS_HTML.equals(output)) {
 	    	outputMethod = new HtmlExectuionMethod(window, wm);
@@ -119,7 +186,7 @@ public class CommandBundleItem implements BundleItem<Void> {
 	    }
 	    return outputMethod;
     }
-	
+
 	private String getInput(Window window) throws BadLocationException {
 		String text;
 		if (! INPUT_NONE.equals(input)) {
@@ -173,65 +240,93 @@ public class CommandBundleItem implements BundleItem<Void> {
 		private Window window;
 		private WindowManager wm;
 
-		public HtmlExectuionMethod(Window window, WindowManager wm) {
+        private OutputStreamWriter writer;
+        private CountDownLatch requestSentLatch;
+        private CountDownLatch executionCompletedLatch;
+        private HttpServer server;
+        private HttpContext context;
+        private String path;
+
+        public HtmlExectuionMethod(Window window, WindowManager wm) {
 			this.window = window;
 			this.wm = wm;
 		}
 
-		@Override
-        public void start(final ScriptExecutor scriptExecutor, final String input, final Map<String, String> environment)
-                throws IOException, URISyntaxException {
-			String path = "/command/" + System.currentTimeMillis(); 
-			
-			final HttpServer server = Application.get().getHttpServer();
-			final HttpContext context = server.createContext(path);
-			context.setHandler(new HttpHandler() {
-                public void handle(HttpExchange exchange) throws IOException {
-    				String requestMethod = exchange.getRequestMethod();
-    				if (requestMethod.equalsIgnoreCase("GET")) {
-    					Headers responseHeaders = exchange.getResponseHeaders();
-    					responseHeaders.set("Content-Type", "text/html");
-    					exchange.sendResponseHeaders(200, 0);
-    					
-    					final OutputStream responseBody = exchange.getResponseBody();
-    					final Writer writer = new OutputStreamWriter(responseBody);
-    					
-    					final CountDownLatch cdl = new CountDownLatch(1);
-    					
-    					scriptExecutor.execute(new UISupportCallback(window.getContainer()) {
-                            public void onAfterDone() {
-	            				cdl.countDown();
-	        					try {
-	                                writer.close();
-                                } catch (IOException e) {
-	                                throw new RuntimeException(e);
-                                }
-                            }
-    					}, new StringReader(input),
-                                new TransformingWriter(writer, TransformingWriter.CHUNK_BY_LINE, new Function<String, String>() {
-                                    public String apply(String s) {
-                                        s = s.replaceAll("txmt://open/?\\?([^'\" \\t\\n\\x0B\\f\\r]+)",
-                                                "http://localhost:" + Config.getHttpPort() + "/cmd/open?windowId=" + window.getId() + "&$1");
-                                        s = s.replaceAll("file://(?!localhost)", "http://localhost:" + Config.getHttpPort() + "/files");
-                                        return s;
-                                    }
-                                }), environment);
-    					
-    					
-    					try {
-	                        cdl.await();
-                        } catch (InterruptedException e) {
-                        	throw new RuntimeException(e);
+        @Override
+        public Writer getWriter() {
+            return new TransformingWriter(writer, TransformingWriter.CHUNK_BY_LINE,
+                    new Function<String, String>() {
+                        public String apply(String s) {
+                            s = s.replaceAll("txmt://open/?\\?([^'\" \\t\\n\\x0B\\f\\r]+)",
+                                    "http://localhost:" + Config.getHttpPort() + "/cmd/open?windowId=" + window.getId() + "&$1");
+                            s = s.replaceAll("file://(?!localhost)", "http://localhost:" + Config.getHttpPort() + "/files");
+                            return s;
                         }
-        				server.removeContext(context);
-    				}
-                }
-			});
-			
-			Desktop.getDesktop().browse(new URI("http://localhost:" + server.getAddress().getPort() + path));
+                    });
         }
-	}
-	
+
+        @Override
+        public void preExecute() {
+            requestSentLatch = new CountDownLatch(1);
+
+            path = "/command/" + System.currentTimeMillis();
+
+            server = Application.get().getHttpServer();
+            context = server.createContext(path);
+            context.setHandler(new HttpHandler() {
+                public void handle(HttpExchange exchange) throws IOException {
+                    String requestMethod = exchange.getRequestMethod();
+                    if (requestMethod.equalsIgnoreCase("GET")) {
+                        Headers responseHeaders = exchange.getResponseHeaders();
+                        responseHeaders.set("Content-Type", "text/html");
+                        exchange.sendResponseHeaders(200, 0);
+
+                        final OutputStream responseBody = exchange.getResponseBody();
+                        writer = new OutputStreamWriter(responseBody);
+
+                        requestSentLatch.countDown();
+                        executionCompletedLatch = new CountDownLatch(1);
+
+                        try {
+                            executionCompletedLatch.await(5, TimeUnit.MINUTES);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                        server.removeContext(context);
+                    }
+                }
+            });
+
+            try {
+                Desktop.getDesktop().browse(new URI("http://localhost:" + server.getAddress().getPort() + path));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (URISyntaxException e) {
+                throw new RuntimeException(e);
+            }
+
+            try {
+                requestSentLatch.await(20, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        @Override
+        public void postExecute() {
+            executionCompletedLatch.countDown();
+            try {
+                writer.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        @Override
+        public void processResult(String s) {
+        }
+    }
+
 	public static class DefaultExecutionMethod implements ExecutionMethod {
 		private String output;
 		private Window window;
@@ -245,74 +340,82 @@ public class CommandBundleItem implements BundleItem<Void> {
 			this.wm = wm;
 		}
 		
-		@Override
-        public void start(ScriptExecutor scriptExecutor, final String input, Map<String, String> environment) throws IOException {
-	        scriptExecutor.execute(new UISupportCallback(window.getContainer()) {
-                public void onAfterSuccess(final Execution execution) {
-                    String s = execution.getStdout();
-                	if (s == null) s = "";
-
-        			if (OUTPUT_SHOW_AS_TOOLTIP.equals(output)) {
-        				JOptionPane.showMessageDialog(window.getContainer(), s);
-        			} else if (OUTPUT_REPLACE_SELECTED_TEXT.equals(output)) {
-        				Buffer buffer = window.getDocList().getActiveDoc().getActiveBuffer();
-        				Interval selection = buffer.getSelection();
-                        if (selection == null || selection.isEmpty()) {
-                            if (virtualSelection != null) {
-                                selection = virtualSelection;
-                            } else {
-                                selection = new Interval(0, buffer.getLength());
-                            }
-                        }
-
-        				buffer.replaceText(selection, s, null);
-                    } else if (OUTPUT_AFTER_SELECTED_TEXT.equals(output)) {
-                        Buffer buffer = window.getDocList().getActiveDoc().getActiveBuffer();
-                        Interval selection = buffer.getSelection();
-                        if (selection == null || selection.isEmpty()) {
-                            if (virtualSelection != null) {
-                                selection = virtualSelection;
-                            } else {
-                                selection = new Interval(0, buffer.getLength());
-                            }
-                        }
-
-                        buffer.insertText(selection.getEnd(), s, null);
-
-                    } else if (OUTPUT_REPLACE_DOCUMENT.equals(output)) {
-                        Buffer buffer = window.getDocList().getActiveDoc().getActiveBuffer();
-        				Interval selection = buffer.getCompleteDocument();
-                        buffer.replaceText(selection, s, null);
-
-                    } else if (OUTPUT_CREATE_NEW_DOCUMENT.equals(output)) {
-                        Doc doc = window.getDocList().create();
-                        doc.getActiveBuffer().insertText(0, s, null);
-
-        			} else if (OUTPUT_DISCARD.equals(output)) {
-        				// Do nothing
-
-                    } else if (OUTPUT_INSERT_AS_SNIPPET.equals(output)) {
-                        Buffer b = window.getDocList().getActiveDoc().getActiveBuffer();
-
-                        Interval selection = b.getSelection();
-                        if (selection == null || selection.isEmpty()) {
-                            if (virtualSelection != null) {
-                                selection = virtualSelection;
-                            } else {
-                                selection = new Interval(0, b.getLength());
-                            }
-                        }
-
-                        b.remove(selection);
-
-                        Snippet snippet = new Snippet(s, null);
-                        snippet.insert(window, b);
-
-        			} else {
-        				throw new RuntimeException("Unsupported output " + output);
-        			}
-                }
-	        }, new StringReader(input), environment);
+        @Override
+        public Writer getWriter() {
+            return new NullWriter();
         }
-	}
+
+        @Override
+        public void preExecute() {
+        }
+
+        @Override
+        public void postExecute() {
+        }
+
+        @Override
+        public void processResult(String s) {
+            if (s == null) s = "";
+
+            if (OUTPUT_SHOW_AS_TOOLTIP.equals(output)) {
+                JOptionPane.showMessageDialog(window.getContainer(), s);
+            } else if (OUTPUT_REPLACE_SELECTED_TEXT.equals(output)) {
+                Buffer buffer = window.getDocList().getActiveDoc().getActiveBuffer();
+                Interval selection = buffer.getSelection();
+                if (selection == null || selection.isEmpty()) {
+                    if (virtualSelection != null) {
+                        selection = virtualSelection;
+                    } else {
+                        selection = new Interval(0, buffer.getLength());
+                    }
+                }
+
+                buffer.replaceText(selection, s, null);
+            } else if (OUTPUT_AFTER_SELECTED_TEXT.equals(output)) {
+                Buffer buffer = window.getDocList().getActiveDoc().getActiveBuffer();
+                Interval selection = buffer.getSelection();
+                if (selection == null || selection.isEmpty()) {
+                    if (virtualSelection != null) {
+                        selection = virtualSelection;
+                    } else {
+                        selection = new Interval(0, buffer.getLength());
+                    }
+                }
+
+                buffer.insertText(selection.getEnd(), s, null);
+
+            } else if (OUTPUT_REPLACE_DOCUMENT.equals(output)) {
+                Buffer buffer = window.getDocList().getActiveDoc().getActiveBuffer();
+                Interval selection = buffer.getCompleteDocument();
+                buffer.replaceText(selection, s, null);
+
+            } else if (OUTPUT_CREATE_NEW_DOCUMENT.equals(output)) {
+                Doc doc = window.getDocList().create();
+                doc.getActiveBuffer().insertText(0, s, null);
+
+            } else if (OUTPUT_DISCARD.equals(output)) {
+                // Do nothing
+
+            } else if (OUTPUT_INSERT_AS_SNIPPET.equals(output)) {
+                Buffer b = window.getDocList().getActiveDoc().getActiveBuffer();
+
+                Interval selection = b.getSelection();
+                if (selection == null || selection.isEmpty()) {
+                    if (virtualSelection != null) {
+                        selection = virtualSelection;
+                    } else {
+                        selection = new Interval(0, b.getLength());
+                    }
+                }
+
+                b.remove(selection);
+
+                Snippet snippet = new Snippet(s, null);
+                snippet.insert(window, b);
+
+            } else {
+                throw new RuntimeException("Unsupported output " + output);
+            }
+        }
+    }
 }

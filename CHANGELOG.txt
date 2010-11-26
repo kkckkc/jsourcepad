@@ -1,6 +1,9 @@
 Build
 ------------------------------------------------------------------------------------------------------------------------
 
+Features
+ - Command bundle items now supports changing of output type through exit codes
+
 
 
 Build 2010112501
