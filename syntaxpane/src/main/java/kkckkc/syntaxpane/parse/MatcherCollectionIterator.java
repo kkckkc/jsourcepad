@@ -7,7 +7,7 @@ import java.util.Iterator;
 
 public class MatcherCollectionIterator implements Iterator<Integer> {
 	private Matcher[] matchers = null;
-	private boolean[] matchState = null;
+	private Boolean[] matchState = null;
 	private BitSet ignored;
 	private IteratorPointer pointer = new IteratorPointer();
 	
@@ -27,7 +27,8 @@ public class MatcherCollectionIterator implements Iterator<Integer> {
 	@Override
 	public boolean hasNext() {
 		if (matchState == null) init();
-		
+
+        int currentPosition = pointer.getPosition();
 		int offset = Integer.MAX_VALUE;
 		int match = -1;
 		for (int i = 0; i < matchers.length; i++) {
@@ -37,11 +38,11 @@ public class MatcherCollectionIterator implements Iterator<Integer> {
             if (ignored.get(i)) continue;
 
 			// If matcher doesn't find any more matches in string
-			if (! matchState[i]) continue;
+			if (matchState[i] != null && ! matchState[i]) continue;
 
-			// If match is obsolete, find a new match
-			if (matchers[i].start() < pointer.getPosition()) {
-				matchState[i] = matchers[i].find(pointer.getPosition());
+			// If match is obsolete or has never been initialized, find a new match
+			if (matchState[i] == null || matchers[i].start() < currentPosition) {
+				matchState[i] = matchers[i].find(currentPosition);
 				
 				// Abort if no match was found
 				if (! matchState[i]) continue;
@@ -54,7 +55,7 @@ public class MatcherCollectionIterator implements Iterator<Integer> {
 			}
 			
 			// If we have already found a "best" match, no need to search anymore
-			if (offset == pointer.getPosition()) break;
+			if (offset == currentPosition) break;
 		}
 		
 		// If no match was found
@@ -69,10 +70,11 @@ public class MatcherCollectionIterator implements Iterator<Integer> {
 	}
 
 	private void init() {
-		matchState = new boolean[matchers.length];
+		matchState = new Boolean[matchers.length];
 		for (int i = 0; i < matchers.length; i++) {
 			if (matchers[i] == null) continue;
 			matchState[i] = matchers[i].find();
+            if (matchers[i].start() == 0) return;
 		}
 	}
 
