@@ -162,7 +162,8 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
 
         if (file.isDirectory()) {
             for (Window w : wm.getWindows()) {
-                if (file.equals(w.getProject())) {
+                if (w.getProject() == null) continue;
+                if (file.equals(w.getProject().getProjectDir())) {
                     return w;
                 }
             }

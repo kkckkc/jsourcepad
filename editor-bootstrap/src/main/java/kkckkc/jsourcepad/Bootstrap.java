@@ -88,6 +88,8 @@ public class Bootstrap implements Runnable {
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
+                WindowState.save();
+
                 if (Config.getMode() == Config.MODE_DEVELOPMENT) {
                     PerformanceLogger.get().dump();
                 }
@@ -131,11 +133,15 @@ public class Bootstrap implements Runnable {
         final Runnable initializeApplicationContinuation = new Runnable() {
             @Override
             public void run() {
+                WindowState.restore();
+
                 // Create new window
                 try {
                     if (args == null || args.length == 0) {
-                        Window w = Application.get().getWindowManager().newWindow(null);
-                        w.getDocList().create();
+                        if (Application.get().getWindowManager().getWindows().isEmpty()) {
+                            Window w = Application.get().getWindowManager().newWindow(null);
+                            w.getDocList().create();
+                        }
                     } else {
                         for (String s : args) {
                             File f = new File(s);
