@@ -178,6 +178,8 @@ public class BundleDocImpl extends DocImpl {
     }
 
     private void loadSyntax() throws IOException {
+        plist.remove("name");
+
         PListFormatter formatter = new PListFormatter(true);
         formatter.setMapKeyComparator(new SyntaxesKeyComparator());
         String s = formatter.format(plist);
