@@ -40,7 +40,7 @@
             </chainedmapper>
         </copy>
 
-        <available file="target/share" property="share.present"/>
+        <available file="target/Shared" property="share.present"/>
         <antcall target="checkout-share" />
 
         <antcall target="build-mac-app" />
@@ -49,20 +49,24 @@
 
     <target name="checkout-share"
             depends="checkout-share-checkout,checkout-share-update">
-        <copy todir="target/share/Support" overwrite="true">
+        <antcall target="overlay-share" />
+    </target>
+
+    <target name="overlay-share">
+        <copy todir="target/Shared/Support" overwrite="true" verbose="true">
             <fileset dir="Support">
-                <include name="**/*.*" />
+                <include name="**/*" />
             </fileset>
         </copy>
     </target>
 
     <target name="checkout-share-checkout" unless="share.present">
-        <mkdir dir="target/share" />
-        <exec dir="target/share" executable="${svn}">
+        <mkdir dir="target/Shared" />
+        <exec dir="target/Shared" executable="${svn}">
             <arg value="checkout" />
             <arg value="http://svn.textmate.org/trunk/Themes" />
         </exec>
-        <exec dir="target/share" executable="${svn}">
+        <exec dir="target/Shared" executable="${svn}">
             <arg value="checkout" />
             <arg value="-r" />
             <arg value="${revision}" />
@@ -71,8 +75,8 @@
     </target>
 
     <target name="checkout-share-update" if="share.present">
-        <exec command="${svn} update target/share/Themes" />
-        <exec command="${svn} update -r ${revision} target/share/Support" />
+        <exec command="${svn} update target/Shared/Themes" />
+        <exec command="${svn} update -r ${revision} target/Shared/Support" />
     </target>
 
     <target name="build-mac-app" if="isMac">
@@ -109,7 +113,7 @@
         </copy>
 
         <copy todir="target/package/mac/JSourcePad.app/Contents/Resources/Shared">
-            <fileset dir="target/share">
+            <fileset dir="target/Shared">
                 <exclude name="**/LaTeXUtils.rb" />
                 <exclude name="**/.svn" />
             </fileset>
@@ -159,7 +163,7 @@
 
         <zip file="target/package/jsourcepad.zip">
             <zipfileset dir="target/package/zip-app" prefix="jsourcepad" />
-            <zipfileset dir="target/share" prefix="jsourcepad/Shared">
+            <zipfileset dir="target/Shared" prefix="jsourcepad/Shared">
                 <exclude name="**/LaTeXUtils.rb" />
                 <exclude name="**/.svn" />
             </zipfileset>
