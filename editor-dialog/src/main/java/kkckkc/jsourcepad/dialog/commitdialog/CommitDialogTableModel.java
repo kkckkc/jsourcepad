@@ -1,4 +1,4 @@
-package kkckkc.jsourcepad.commitdialog;
+package kkckkc.jsourcepad.dialog.commitdialog;
 
 import com.google.common.collect.Table;
 

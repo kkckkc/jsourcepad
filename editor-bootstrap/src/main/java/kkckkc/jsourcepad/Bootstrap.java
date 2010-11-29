@@ -1,7 +1,6 @@
 package kkckkc.jsourcepad;
 
 import com.google.common.base.Function;
-import com.sun.net.httpserver.HttpServer;
 import kkckkc.jsourcepad.http.PreviewServer;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
@@ -179,7 +178,7 @@ public class Bootstrap implements Runnable {
                 Application.get().getThreadPool().submit(new Runnable() {
                     @Override
                     public void run() {
-                        HttpServer server = Application.get().getHttpServer();
+//                        HttpServer server = Application.get().getHttpServer();
                         PreviewServer ps = Application.get().getBeanFactory().getBean(PreviewServer.class);
                         SystemEnvironmentHelper.getSystemEnvironment();
                     }

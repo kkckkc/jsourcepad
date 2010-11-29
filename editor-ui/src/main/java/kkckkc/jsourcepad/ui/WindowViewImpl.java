@@ -14,6 +14,10 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
+import java.awt.event.AWTEventListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
 
 public class WindowViewImpl implements WindowView {
 
@@ -68,9 +72,75 @@ public class WindowViewImpl implements WindowView {
 		statusBarPanel.add(processStatusBarView(new SymbolView(window)));
 		
 		frame.add(statusBarPanel, BorderLayout.SOUTH);
+
+        FixedGlassPane glass = new FixedGlassPane(frame);
+        glass.setBorder(BorderFactory.createEmptyBorder());
+        glass.setOpaque(false);
+        frame.setGlassPane(glass);
 	}
 
-	protected Component processStatusBarView(JComponent view) {
+    class FixedGlassPane extends JPanel implements AWTEventListener {
+        private java.awt.Window window;
+
+        public FixedGlassPane(java.awt.Window window) {
+            this.window = window;
+            addMouseListener(new MouseAdapter() { });
+            addKeyListener(new KeyAdapter() { });
+        }
+
+        public void eventDispatched(AWTEvent event) {
+            Object source = event.getSource();
+
+            // discard the event if its source is not from the correct type
+            boolean sourceIsComponent = (event.getSource() instanceof Component);
+
+            if ((event instanceof KeyEvent) && sourceIsComponent) {
+                // If the event originated from the window w/glass pane, consume the event
+                if ((SwingUtilities.windowForComponent((Component) source) == window)) {
+                    ((KeyEvent) event).consume();
+                }
+            }
+        }
+
+        @Override
+        public void paint(Graphics g) {
+            if (getBackground().getAlpha() == 0f) {
+                return;
+            }
+            Graphics2D g2 = (Graphics2D) g;
+            g2.setColor(getBackground());
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
+            g2.fillRect(0, 0, getWidth(), getHeight());
+        }
+
+        public void setVisible(boolean value) {
+            if (value) {
+                // Sets the mouse cursor to hourglass mode
+                getTopLevelAncestor().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+                // Start receiving all events and consume them if necessary
+                Toolkit.getDefaultToolkit().addAWTEventListener(this, AWTEvent.KEY_EVENT_MASK);
+
+                this.requestFocus();
+
+                // Activate the glass pane capabilities
+                super.setVisible(value);
+            } else {
+                // Stop receiving all events
+                Toolkit.getDefaultToolkit().removeAWTEventListener(this);
+
+                // Deactivate the glass pane capabilities
+                super.setVisible(value);
+
+                // Sets the mouse cursor back to the regular pointer
+                if (getTopLevelAncestor() != null) {
+                    getTopLevelAncestor().setCursor(null);
+                }
+            }
+        }
+    }
+
+    protected Component processStatusBarView(JComponent view) {
 		return view;
 	}
 
@@ -136,5 +206,5 @@ public class WindowViewImpl implements WindowView {
 	protected JSplitPane createSplitPane() {
 		JSplitPane sp = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		return sp;
-	}	
+	}
 }

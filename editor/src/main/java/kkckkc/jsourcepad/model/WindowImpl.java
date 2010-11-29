@@ -60,17 +60,23 @@ public class WindowImpl extends AbstractMessageBus implements Window, MessageBus
     }
 
     @Override
-    public void setCursor(Cursor cursor) {
-        RootPaneContainer root = (RootPaneContainer)container;
-        root.getGlassPane().setCursor(cursor);
+    public void beginWait(boolean show, Runnable cancelAction) {
+        RootPaneContainer root = container;
+        root.getGlassPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        if (show) {
+            root.getGlassPane().setBackground(Color.black);
+        } else {
+            root.getGlassPane().setBackground(new Color(0, 0, 0, 0f));
+        }
         root.getGlassPane().setVisible(true);
     }
 
     @Override
-    public void hideCursor() {
-        RootPaneContainer root = (RootPaneContainer)container;
+    public void endWait() {
+        RootPaneContainer root = container;
         root.getGlassPane().setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         root.getGlassPane().setVisible(false);
+        root.getGlassPane().setBackground(null);
     }
 
     public void setId(int id) {

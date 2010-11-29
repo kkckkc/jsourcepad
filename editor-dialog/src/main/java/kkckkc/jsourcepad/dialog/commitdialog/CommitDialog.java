@@ -1,10 +1,12 @@
-package kkckkc.jsourcepad.commitdialog;
+package kkckkc.jsourcepad.dialog.commitdialog;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Table;
+import kkckkc.jsourcepad.dialog.Dialog;
+import kkckkc.jsourcepad.model.Window;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -22,7 +24,9 @@ public class CommitDialog implements Dialog {
     int returnValue;
 
     @Override
-    public int execute(JFrame parent, Writer out, String... args) throws IOException {
+    public int execute(Window window, Writer out, String stdin, String... args) throws IOException {
+        System.out.println(Arrays.asList(args));
+
         List<String> files = Lists.newArrayList();
         List<String> statuses = Lists.newArrayList();
 
@@ -52,8 +56,10 @@ public class CommitDialog implements Dialog {
         }
 
 
-        final JDialog jdialog = new JDialog(parent, true);
+        final JDialog jdialog = new JDialog(window.getContainer(), java.awt.Dialog.ModalityType.DOCUMENT_MODAL);
         jdialog.setTitle("Commit");
+        jdialog.setLocationRelativeTo(window.getContainer());
+        jdialog.setLocationByPlatform(true);
 
         JTable table = new JTable();
 
@@ -102,9 +108,17 @@ public class CommitDialog implements Dialog {
         jdialog.setVisible(true);
 
         if (returnValue == 0) {
+            boolean anyChecked = false;
+            for (Integer r : t.rowKeySet()) {
+                anyChecked |= (Boolean) t.get(r, 0);
+            }
+            if (! anyChecked) return 128;
+
             out.write("-m '" + textArea.getText().replaceAll("'", "'\"'\"'") + "'");
             for (Integer r : t.rowKeySet()) {
-                out.write(" '" + t.get(r, 2) + "'");
+                if ((Boolean) t.get(r, 0)) {
+                    out.write(" '" + t.get(r, 2) + "'");
+                }
             }
             out.flush();
         }
@@ -125,7 +139,7 @@ public class CommitDialog implements Dialog {
         };
 
         CommitDialog commitDialog = new CommitDialog();
-        System.out.println("\n\nReturn: " + commitDialog.execute(null, new OutputStreamWriter(System.out), a));
+        System.out.println("\n\nReturn: " + commitDialog.execute(null, new OutputStreamWriter(System.out), "", a));
 
         System.exit(0);
     }

@@ -245,7 +245,7 @@ public class Snippet {
             if (executeScripts) {
                 ScriptExecutor scriptExecutor = new ScriptExecutor(script.getBody(), Application.get().getThreadPool());
                 try {
-                    Execution ex = scriptExecutor.execute(new UISupportCallback(window.getContainer()),
+                    Execution ex = scriptExecutor.execute(new UISupportCallback(window),
                             new StringReader(""),
                             environment);
 

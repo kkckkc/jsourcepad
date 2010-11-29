@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<bean id="server" class="kkckkc.jsourcepad.dialog.DialogServer"
+          depends-on="httpServer" lazy-init="false"/>
+
+    <bean name="dialog/CommitWindow" class="kkckkc.jsourcepad.dialog.commitdialog.CommitDialog" />
+    <bean name="dialog/tm_dialog" class="kkckkc.jsourcepad.dialog.tmdialog.TmDialog" />
+
+
+    <bean name="dialog/tm_dialog/Support/nibs/SimpleNotificationWindow.nib" class="kkckkc.jsourcepad.dialog.tmdialog.dialogs.SimpleNotificationWindow" />
+
+</beans>

@@ -7,7 +7,7 @@ import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.bundle.BundleStructure;
 import kkckkc.jsourcepad.util.BeanFactoryLoader;
 import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
-import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -30,7 +30,7 @@ public class BundleEditorPlugin implements Plugin {
     }
 
     @Override
-    public <P, C> Resource getOverridesLocation(BeanFactoryLoader.Scope<P, C> scope, P parent, C context) {
+    public <P, C> Resource getOverridesLocation(BeanFactoryLoader.Scope<P, C> scope, P parent, C context, DefaultListableBeanFactory container) {
         if (scope == BeanFactoryLoader.DOCUMENT) {
             Window window = (Window) parent;
             File file = (File) context;
@@ -48,7 +48,7 @@ public class BundleEditorPlugin implements Plugin {
     }
 
     @Override
-    public <P, C> void init(BeanFactoryLoader.Scope<P, C> scope, P parent, C context, BeanFactory container) {
+    public <P, C> void init(BeanFactoryLoader.Scope<P, C> scope, P parent, C context, DefaultListableBeanFactory container) {
         if (scope == BeanFactoryLoader.WINDOW) {
             Window window = container.getBean(Window.class);
             if (BundleStructure.isBundleDir((File) context)) {

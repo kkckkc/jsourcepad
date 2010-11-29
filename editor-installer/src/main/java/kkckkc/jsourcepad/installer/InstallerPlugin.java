@@ -2,7 +2,7 @@ package kkckkc.jsourcepad.installer;
 
 import kkckkc.jsourcepad.Plugin;
 import kkckkc.jsourcepad.util.BeanFactoryLoader;
-import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -23,7 +23,7 @@ public class InstallerPlugin implements Plugin {
     }
 
     @Override
-    public <P, C> Resource getOverridesLocation(BeanFactoryLoader.Scope<P, C> scope, P parent, C context) {
+    public <P, C> Resource getOverridesLocation(BeanFactoryLoader.Scope<P, C> scope, P parent, C context, DefaultListableBeanFactory container) {
         if (scope == BeanFactoryLoader.APPLICATION) {
             return new ClassPathResource("application-installer.xml");
         }
@@ -31,7 +31,7 @@ public class InstallerPlugin implements Plugin {
     }
 
     @Override
-    public <P, C> void init(BeanFactoryLoader.Scope<P, C> scope, P parent, C context, BeanFactory container) {
+    public <P, C> void init(BeanFactoryLoader.Scope<P, C> scope, P parent, C context, DefaultListableBeanFactory container) {
         
     }
 }

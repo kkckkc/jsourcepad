@@ -1,32 +1,34 @@
 package kkckkc.jsourcepad.http;
 
-import com.google.common.collect.Maps;
-import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
-import com.sun.net.httpserver.*;
 import kkckkc.jsourcepad.model.*;
 import kkckkc.jsourcepad.util.Config;
 import kkckkc.jsourcepad.util.Cygwin;
 import kkckkc.syntaxpane.model.Interval;
 import kkckkc.syntaxpane.model.LineManager;
 import kkckkc.utils.StringUtils;
+import org.mortbay.jetty.servlet.Context;
+import org.mortbay.jetty.servlet.ServletHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import sun.net.www.MimeEntry;
 import sun.net.www.MimeTable;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLDecoder;
 import java.util.Iterator;
-import java.util.Map;
 
 public class PreviewServer {
 
-    private HttpServer httpServer;
+    private Context context;
 
     @Autowired
-    public void setHttpServer(HttpServer httpServer) {
-        this.httpServer = httpServer;
+    public void setHttpServer(Context context) {
+        this.context = context;
     }
 
     @PostConstruct
@@ -34,192 +36,142 @@ public class PreviewServer {
         initPreview();
         initFile();
         initCmd();
-        initDialog();
-    }
-
-    private void initDialog() {
-        final String path = "/dialog";
-
-        final HttpContext context = httpServer.createContext(path);
-        context.setHandler(new HttpHandler() {
-            public void handle(HttpExchange exchange) throws IOException {
-                String requestMethod = exchange.getRequestMethod();
-                System.out.println(URLDecoder.decode(new String(ByteStreams.toByteArray(exchange.getRequestBody())), "utf-8"));
-                System.out.println(exchange.getRequestURI());
-
-                exchange.getResponseHeaders().add("X-ResponseCode", "2");
-
-                exchange.sendResponseHeaders(200, 0);
-
-                OutputStream body = exchange.getResponseBody();
-                body.write((int) ' ');
-                body.flush();
-
-                exchange.close();
-            }
-        });
     }
 
     private void initPreview() {
-        final String path = "/preview";
+        final String path = "/preview/*";
 
-        final HttpContext context = httpServer.createContext(path);
-        context.setHandler(new HttpHandler() {
-            public void handle(HttpExchange exchange) throws IOException {
-                String requestMethod = exchange.getRequestMethod();
-                if (requestMethod.equalsIgnoreCase("GET")) {
-                    String httpPath = exchange.getRequestURI().toString();
-                    httpPath = httpPath.substring(path.length() + 1);
+        context.addServlet(new ServletHolder(
+                new HttpServlet() {
+                    @Override
+                    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+                        String httpPath = req.getPathInfo().substring(1);
 
-                    int windowId = getWindowId(httpPath);
-                    String path = getFilePath(httpPath);
+                        int windowId = getWindowId(httpPath);
+                        String path = getFilePath(httpPath);
 
-                    Window window = Application.get().getWindowManager().getWindow(windowId);
-                    Project project = window.getProject();
+                        Window window = Application.get().getWindowManager().getWindow(windowId);
+                        Project project = window.getProject();
 
-                    // Look through open files, these should serve the current state, not the saved
-                    // state
-                    int tabIdx = 0;
-                    Doc docToServe = null;
-                    for (Doc doc : window.getDocList().getDocs()) {
-                        if (doc.isBackedByFile() && project.getProjectRelativePath(doc.getFile().getPath()).equals(path)) {
-                            docToServe = doc;
-                        } else if (path.equals("/tab-" + tabIdx)) {
-                            docToServe = doc;
-                        }
-                        tabIdx++;
-                    }
-
-                    OutputStream responseBody = exchange.getResponseBody();
-                    Headers responseHeaders = exchange.getResponseHeaders();
-
-                    if (docToServe != null) {
-                        String mimeEncoding = "text/html";
-                        if (docToServe.isBackedByFile()) {
-                            mimeEncoding = getMimeEncoding(docToServe.getFile());
+                        // Look through open files, these should serve the current state, not the saved
+                        // state
+                        int tabIdx = 0;
+                        Doc docToServe = null;
+                        for (Doc doc : window.getDocList().getDocs()) {
+                            if (doc.isBackedByFile() && project.getProjectRelativePath(doc.getFile().getPath()).equals(path)) {
+                                docToServe = doc;
+                            } else if (path.equals("/tab-" + tabIdx)) {
+                                docToServe = doc;
+                            }
+                            tabIdx++;
                         }
 
-                        responseHeaders.set("Content-Type", mimeEncoding);
-                        exchange.sendResponseHeaders(200, 0);
+                        OutputStream responseBody = resp.getOutputStream();
 
-                        Buffer buffer = docToServe.getActiveBuffer();
-                        String content = buffer.getCompleteDocument().getText();
+                        if (docToServe != null) {
+                            String mimeEncoding = "text/html";
+                            if (docToServe.isBackedByFile()) {
+                                mimeEncoding = getMimeEncoding(docToServe.getFile());
+                            }
 
-                        Writer writer = new OutputStreamWriter(responseBody);
-                        writer.append(content);
-                        writer.flush();
-                        writer.close();
-                    } else {
-                        File f = new File(project.getProjectDir(), path);
+                            resp.setContentType(mimeEncoding);
 
-                        responseHeaders.set("Content-Type", getMimeEncoding(f));
-                        exchange.sendResponseHeaders(200, 0);
+                            Buffer buffer = docToServe.getActiveBuffer();
+                            String content = buffer.getCompleteDocument().getText();
 
-                        Files.copy(f, responseBody);
-                        responseBody.flush();
-                        responseBody.close();
+                            Writer writer = new OutputStreamWriter(responseBody);
+                            writer.append(content);
+                            writer.flush();
+                            writer.close();
+                        } else {
+                            File f = new File(project.getProjectDir(), path);
+
+                            resp.setContentType(getMimeEncoding(f));
+
+                            Files.copy(f, responseBody);
+                            responseBody.flush();
+                            responseBody.close();
+                        }
                     }
                 }
-            }
-        });
+        ), path);
     }
 
     private void initCmd() {
-        final String path = "/cmd";
+        final String path = "/cmd/*";
 
-        final HttpContext context = httpServer.createContext(path);
-        context.setHandler(new HttpHandler() {
-            public void handle(HttpExchange exchange) throws IOException {
-                String requestMethod = exchange.getRequestMethod();
-                if (requestMethod.equalsIgnoreCase("GET")) {
+        context.addServlet(new ServletHolder(new HttpServlet() {
+            @Override
+            protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+                String cmd = req.getPathInfo().substring(1);
 
-                    String httpPath = exchange.getRequestURI().toString();
-                    httpPath = httpPath.substring(path.length() + 1);
+                resp.setStatus(204);
 
-                    Map<String, String> params = parseQueryString(httpPath);
+                if ("open".equals(cmd)) {
+                    String url = req.getParameter("url");
+                    url = StringUtils.removePrefix(url, "http://localhost:" + Config.getHttpPort() + "/files");
 
-                    String cmd = httpPath.substring(0, httpPath.indexOf("?", 1));
+                    Window window;
+                    if (req.getParameter("windowId") != null) {
+                        int windowId = Integer.parseInt(req.getParameter("windowId"));
 
-                    exchange.sendResponseHeaders(204, 0);
-
-                    System.out.println("httpPath = " + httpPath);
-                    System.out.println("cmd = " + cmd);
-
-                    if ("open".equals(cmd)) {
-                        String url = params.get("url");
-                        url = StringUtils.removePrefix(url, "http://localhost:" + Config.getHttpPort() + "/files");
-
-                        System.out.println("url = " + url);
-
-                        Window window;
-                        if (params.containsKey("windowId")) {
-                            int windowId = Integer.parseInt(params.get("windowId"));
-
-                            window = Application.get().getWindowManager().getWindow(windowId);
-                            window.getDocList().open(new File(url));
-                        } else {
-                            window = Application.get().open(new File(url));
-                        }
-
-
-                        String line = params.get("line");
-                        if (line != null) {
-                            int lineIdx = Integer.parseInt(line);
-
-                            Buffer buffer = window.getDocList().getActiveDoc().getActiveBuffer();
-                            LineManager lm = buffer.getLineManager();
-
-                            Iterator<LineManager.Line> it = lm.iterator();
-                            while (it.hasNext()) {
-                                LineManager.Line l = it.next();
-                                if (l.getIdx() == (lineIdx - 1)) {
-                                    buffer.setSelection(Interval.createEmpty(l.getStart()));
-                                    break;
-                                }
-                            }
-                        }
+                        window = Application.get().getWindowManager().getWindow(windowId);
+                        window.getDocList().open(new File(url));
                     } else {
-                        throw new RuntimeException("Unsupport cmd");
+                        window = Application.get().open(new File(url));
                     }
 
+                    String line = req.getParameter("line");
+                    if (line != null) {
+                        int lineIdx = Integer.parseInt(line);
+
+                        Buffer buffer = window.getDocList().getActiveDoc().getActiveBuffer();
+                        LineManager lm = buffer.getLineManager();
+
+                        Iterator<LineManager.Line> it = lm.iterator();
+                        while (it.hasNext()) {
+                            LineManager.Line l = it.next();
+                            if (l.getIdx() == (lineIdx - 1)) {
+                                buffer.setSelection(Interval.createEmpty(l.getStart()));
+                                break;
+                            }
+                        }
+                    }
+                } else {
+                    throw new RuntimeException("Unsupport cmd");
                 }
             }
-        });
+        }), path);
     }
 
     private void initFile() {
-        final String path = "/files";
+        final String path = "/files/*";
 
-        final HttpContext context = httpServer.createContext(path);
-        context.setHandler(new HttpHandler() {
-            public void handle(HttpExchange exchange) throws IOException {
-                String requestMethod = exchange.getRequestMethod();
-                if (requestMethod.equalsIgnoreCase("GET")) {
-                    String httpPath = exchange.getRequestURI().toString();
-                    httpPath = httpPath.substring(path.length());
-                    httpPath = URLDecoder.decode(httpPath, "utf-8");
+        context.addServlet(new ServletHolder(new HttpServlet() {
+            @Override
+            protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+                String httpPath = req.getPathInfo();
+                httpPath = URLDecoder.decode(httpPath, "utf-8");
 
-                    OutputStream responseBody = exchange.getResponseBody();
-                    Headers responseHeaders = exchange.getResponseHeaders();
+                OutputStream responseBody = resp.getOutputStream();
 
-                    File f = new File(Cygwin.toFile(httpPath));
+                File f = new File(Cygwin.toFile(httpPath));
 
-                    if (! f.exists()) {
-                        exchange.sendResponseHeaders(404, 0);
-                        responseBody.flush();
-                        responseBody.close();
-                        return;
-                    }
-
-                    responseHeaders.set("Content-Type", getMimeEncoding(f));
-                    exchange.sendResponseHeaders(200, 0);
-
-                    Files.copy(f, responseBody);
+                if (! f.exists()) {
+                    resp.setStatus(404);
                     responseBody.flush();
                     responseBody.close();
+                    return;
                 }
+
+                resp.setContentType(getMimeEncoding(f));
+
+                Files.copy(f, responseBody);
+                responseBody.flush();
+                responseBody.close();
             }
-        });
+        }), path);
+
     }
 
     private String getFilePath(String httpPath) {
@@ -238,20 +190,5 @@ public class PreviewServer {
             return "text/html";
         }
         return me.getType();
-    }
-
-    public Map<String, String> parseQueryString(String s) throws UnsupportedEncodingException {
-        Map<String, String> params = Maps.newHashMap();
-        String[] urlParts = s.split("\\?");
-        if (urlParts.length > 1) {
-            String query = urlParts[1];
-            for (String param : query.split("&")) {
-                String[] pair = param.split("=");
-                String key = URLDecoder.decode(pair[0], "UTF-8");
-                String value = URLDecoder.decode(pair[1], "UTF-8");
-                params.put(key, value);
-            }
-        }
-        return params;
     }
 }

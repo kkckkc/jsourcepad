@@ -1,8 +1,7 @@
 package kkckkc.jsourcepad.action;
 
-import com.sun.net.httpserver.HttpServer;
-import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Doc;
+import kkckkc.jsourcepad.util.Config;
 import kkckkc.jsourcepad.util.action.BaseAction;
 
 import java.awt.*;
@@ -31,11 +30,8 @@ public class WindowShowWebPreviewAction extends BaseAction {
             path += "/tab-" + doc.getDocList().getIndex(doc);
         }
 
-        final HttpServer server = Application.get().getHttpServer();
-
-
         try {
-            Desktop.getDesktop().browse(new URI("http://localhost:" + server.getAddress().getPort() + path.replace("\\", "/")));
+            Desktop.getDesktop().browse(new URI("http://localhost:" + Config.getHttpPort() + path.replace("\\", "/")));
         } catch (IOException e1) {
             e1.printStackTrace();  
         } catch (URISyntaxException e1) {

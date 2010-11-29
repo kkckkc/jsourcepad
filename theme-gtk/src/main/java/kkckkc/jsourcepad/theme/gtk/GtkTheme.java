@@ -6,7 +6,7 @@ import kkckkc.jsourcepad.model.settings.ThemeSettings;
 import kkckkc.jsourcepad.theme.Theme;
 import kkckkc.jsourcepad.util.BeanFactoryLoader;
 import kkckkc.utils.Os;
-import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -50,7 +50,7 @@ public class GtkTheme implements Theme {
     }
 
     @Override
-    public <P, C> Resource getOverridesLocation(BeanFactoryLoader.Scope<P, C> scope, P parent, C context) {
+    public <P, C> Resource getOverridesLocation(BeanFactoryLoader.Scope<P, C> scope, P parent, C context, DefaultListableBeanFactory container) {
 		if (scope == BeanFactoryLoader.DOCUMENT) {
 			return new ClassPathResource("/gtk-document.xml");
 		} else if (scope == BeanFactoryLoader.WINDOW) {
@@ -61,7 +61,7 @@ public class GtkTheme implements Theme {
     }
 
     @Override
-    public <P, C> void init(BeanFactoryLoader.Scope<P, C> scope, P parent, C context, BeanFactory container) {
+    public <P, C> void init(BeanFactoryLoader.Scope<P, C> scope, P parent, C context, DefaultListableBeanFactory container) {
 
     }
 

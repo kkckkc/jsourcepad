@@ -18,6 +18,7 @@ import kkckkc.syntaxpane.parse.grammar.LanguageManager;
 import kkckkc.syntaxpane.style.StyleParser;
 import kkckkc.syntaxpane.style.StyleScheme;
 import kkckkc.utils.io.FileUtils;
+import org.mortbay.jetty.servlet.Context;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
@@ -94,9 +95,8 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
         return settingsManager;
     }
 
-	@SuppressWarnings("restriction")
-    public com.sun.net.httpserver.HttpServer getHttpServer() {
-	    return beanFactory.getBean(com.sun.net.httpserver.HttpServer.class);
+    public Context getHttpServer() {
+	    return beanFactory.getBean(Context.class);
     }
 
 	public ExecutorService getThreadPool() {

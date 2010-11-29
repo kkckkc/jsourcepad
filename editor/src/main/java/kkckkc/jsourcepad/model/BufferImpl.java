@@ -316,7 +316,7 @@ public class BufferImpl implements Buffer {
 
 		document.setLanguage(language);
 
-        doc.getDocList().getWindow().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        doc.getDocList().getWindow().beginWait(true, null);
 
         StringBuilder builder = new StringBuilder();
 		try {
@@ -332,7 +332,7 @@ public class BufferImpl implements Buffer {
 
 		clearModified();
 
-        doc.getDocList().getWindow().hideCursor();
+        doc.getDocList().getWindow().endWait();
 
 
 		documentStateListener.enable();

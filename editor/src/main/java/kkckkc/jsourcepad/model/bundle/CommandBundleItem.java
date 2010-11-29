@@ -1,7 +1,6 @@
 package kkckkc.jsourcepad.model.bundle;
 
 import com.google.common.base.Function;
-import com.sun.net.httpserver.*;
 import kkckkc.jsourcepad.model.*;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.bundle.snippet.Snippet;
@@ -10,10 +9,14 @@ import kkckkc.jsourcepad.util.io.*;
 import kkckkc.jsourcepad.util.io.ScriptExecutor.Execution;
 import kkckkc.syntaxpane.model.Interval;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import java.awt.*;
-import java.io.*;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
@@ -96,9 +99,10 @@ public class CommandBundleItem implements BundleItem<Void> {
 		final ExecutionMethod executionMethod = createExecutionMethod(window, wm, output);
         executionMethod.preExecute();
 
-        UISupportCallback callback = new UISupportCallback(window.getContainer()) {
+        UISupportCallback callback = new UISupportCallback(window) {
             @Override
-            public void onAfterDone() {
+            public void onAfterDone(Execution execution) {
+                super.onAfterDone(execution);
                 executionMethod.postExecute();
             }
 
@@ -180,7 +184,7 @@ public class CommandBundleItem implements BundleItem<Void> {
     private ExecutionMethod createExecutionMethod(Window window, WindowManager wm, String output) {
 	    ExecutionMethod outputMethod;
 	    if (OUTPUT_SHOW_AS_HTML.equals(output)) {
-	    	outputMethod = new HtmlExectuionMethod(window, wm);
+	    	outputMethod = new HtmlExecutionMethod(window, wm);
 	    } else {
 	    	outputMethod = new DefaultExecutionMethod(output, virtualSelection, window, wm);
 	    }
@@ -236,20 +240,15 @@ public class CommandBundleItem implements BundleItem<Void> {
 	
 	
 
-	public static class HtmlExectuionMethod implements ExecutionMethod {
+	public static class HtmlExecutionMethod implements ExecutionMethod {
 		private Window window;
-		private WindowManager wm;
-
-        private OutputStreamWriter writer;
+        private Writer writer;
         private CountDownLatch requestSentLatch;
         private CountDownLatch executionCompletedLatch;
-        private HttpServer server;
-        private HttpContext context;
         private String path;
 
-        public HtmlExectuionMethod(Window window, WindowManager wm) {
+        public HtmlExecutionMethod(Window window, WindowManager wm) {
 			this.window = window;
-			this.wm = wm;
 		}
 
         @Override
@@ -269,36 +268,30 @@ public class CommandBundleItem implements BundleItem<Void> {
         public void preExecute() {
             requestSentLatch = new CountDownLatch(1);
 
-            path = "/command/" + System.currentTimeMillis();
+            CommandBundleServer server = Application.get().getBeanFactory().getBean(CommandBundleServer.class);
+            long id = server.register(new CommandBundleServer.Handler() {
+                public void handle(HttpServletResponse resp) throws IOException {
+                    resp.setContentType("text/html");
 
-            server = Application.get().getHttpServer();
-            context = server.createContext(path);
-            context.setHandler(new HttpHandler() {
-                public void handle(HttpExchange exchange) throws IOException {
-                    String requestMethod = exchange.getRequestMethod();
-                    if (requestMethod.equalsIgnoreCase("GET")) {
-                        Headers responseHeaders = exchange.getResponseHeaders();
-                        responseHeaders.set("Content-Type", "text/html");
-                        exchange.sendResponseHeaders(200, 0);
+                    writer = resp.getWriter();
 
-                        final OutputStream responseBody = exchange.getResponseBody();
-                        writer = new OutputStreamWriter(responseBody);
+                    requestSentLatch.countDown();
+                    executionCompletedLatch = new CountDownLatch(1);
 
-                        requestSentLatch.countDown();
-                        executionCompletedLatch = new CountDownLatch(1);
-
-                        try {
-                            executionCompletedLatch.await(5, TimeUnit.MINUTES);
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
-                        server.removeContext(context);
+                    try {
+                        executionCompletedLatch.await(5, TimeUnit.MINUTES);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
                     }
+
+                    writer.close();
                 }
             });
 
+            path = "/command/" + id;
+
             try {
-                Desktop.getDesktop().browse(new URI("http://localhost:" + server.getAddress().getPort() + path));
+                Desktop.getDesktop().browse(new URI("http://localhost:" + Config.getHttpPort() + path));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             } catch (URISyntaxException e) {

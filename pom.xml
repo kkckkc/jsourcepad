@@ -24,7 +24,7 @@
         <module>bundle-editor</module>
         <module>editor-installer</module>
         <module>os-windows</module>
-        <module>dialog-commit-dialog</module>
+        <module>editor-dialog</module>
     </modules>
 
 

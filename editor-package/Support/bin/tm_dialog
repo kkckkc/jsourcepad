@@ -3,16 +3,25 @@
 require 'net/http'
 require 'uri'
 
-uri = "http://localhost:#{ENV['TM_SERVER_PORT']}/dialog/CommitWindow"
+
+if ARGV[0][0, 1] == "-"
+    dialog = "tm_dialog"
+else
+    dialog = "tm_dialog2"
+end
+
+uri = "http://localhost:#{ENV['TM_SERVER_PORT']}/dialog/#{dialog}"
 
 postArgs = { }
-postArgs['__WINDOW__'] = ENV['TM_FOCUSED_WINDOW']
 ARGV.each_with_index { |value, idx| postArgs["arg#{idx}"] = value }
+postArgs["__STDIN__"] = STDIN.read
+postArgs['__WINDOW__'] = ENV['TM_FOCUSED_WINDOW']
 res = Net::HTTP.post_form(URI.parse(uri), postArgs)
 
 puts res.body
 
 exitCode = Integer(res['X-ResponseCode'])
+exit(0)
 if exitCode != 0
 	exit(exitCode)
 end

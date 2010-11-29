@@ -2,58 +2,53 @@ package kkckkc.jsourcepad.util.io;
 
 import com.google.common.base.Strings;
 import kkckkc.jsourcepad.model.Application;
+import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.util.io.ScriptExecutor.Callback;
 import kkckkc.jsourcepad.util.io.ScriptExecutor.Execution;
-import kkckkc.jsourcepad.util.ui.ProgressDialog;
 
 import java.awt.*;
 
 public class UISupportCallback implements Callback {
-	private ProgressDialog dialog;
 	private String title;
 	private Container parent;
-	
-	public UISupportCallback(Container parent, String title) {
-	    this.parent = parent;
+    private Window window;
+
+    public UISupportCallback(Window window, String title) {
+	    this.window = window;
+        this.parent = window.getContainer();
 	    this.title = title;
+        window.beginWait(false, null);
     }
 
-	public UISupportCallback(Container parent) {
-	    this(parent, "Executing Script...");
+	public UISupportCallback(Window window) {
+	    this(window, "Executing Script...");
     }
 
 	public final void onAbort(final Execution execution) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				if (dialog != null)
-					dialog.close();
-
 				onAfterAbort(execution);
-				onAfterDone();
+				onAfterDone(execution);
 			}
 		});
 	}
 
 	public final void onDelay(final Execution execution) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				dialog = Application.get().getWindowManager().getWindow(parent).getPresenter(ProgressDialog.class);
-				dialog.show(title, execution, parent);
-				
-				onAfterDelay(execution);
-				onAfterDone();
-			}
-		});
+        window.beginWait(true, new Runnable() {
+            public void run() {
+                execution.cancel();
+            }
+        });
+        onAfterDelay(execution);
 	}
 
 	public final void onFailure(final Execution execution) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				if (dialog != null)
-					dialog.close();
+                window.endWait();
 
 				onAfterFailure(execution);
-				onAfterDone();
+				onAfterDone(execution);
 
                 ErrorDialog errorDialog = Application.get().getErrorDialog();
                 errorDialog.show("Script Execution Failed...",
@@ -67,15 +62,14 @@ public class UISupportCallback implements Callback {
 	public final void onSuccess(final Execution execution) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				if (dialog != null)
-					dialog.close();
+                window.endWait();
 				onAfterSuccess(execution);
-				onAfterDone();
+				onAfterDone(execution);
 			}
 		});
 	}
 
-	public void onAfterDone() {
+	public void onAfterDone(Execution execution) {
 	}
 
 	public void onAfterAbort(Execution execution) {

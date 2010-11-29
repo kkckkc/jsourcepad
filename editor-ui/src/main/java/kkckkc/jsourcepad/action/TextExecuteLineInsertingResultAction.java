@@ -1,19 +1,19 @@
 package kkckkc.jsourcepad.action;
 
-import java.awt.event.ActionEvent;
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.HashMap;
-
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Buffer;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.WindowManager;
 import kkckkc.jsourcepad.util.action.BaseAction;
 import kkckkc.jsourcepad.util.io.ScriptExecutor;
-import kkckkc.jsourcepad.util.io.UISupportCallback;
 import kkckkc.jsourcepad.util.io.ScriptExecutor.Execution;
+import kkckkc.jsourcepad.util.io.UISupportCallback;
 import kkckkc.syntaxpane.model.Interval;
+
+import java.awt.event.ActionEvent;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.HashMap;
 
 public class TextExecuteLineInsertingResultAction extends BaseAction {
 
@@ -35,7 +35,7 @@ public class TextExecuteLineInsertingResultAction extends BaseAction {
 		
 		ScriptExecutor scriptExecutor = new ScriptExecutor(line, Application.get().getThreadPool());
 		try {
-	        scriptExecutor.execute(new UISupportCallback(window.getContainer()) {
+	        scriptExecutor.execute(new UISupportCallback(window) {
 	            public void onAfterFailure(Execution execution) {
 	            	b.replaceText(i, execution.getStdout(), null);
 	            }

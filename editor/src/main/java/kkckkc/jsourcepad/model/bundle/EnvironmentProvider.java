@@ -5,6 +5,7 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import kkckkc.jsourcepad.action.ActionContextKeys;
+import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.util.Config;
@@ -53,8 +54,6 @@ public class EnvironmentProvider {
 				environment.put("TM_FILEPATH", formatPath(activeDoc.getFile().getPath()));
 			}
 
-            System.out.println("selection = " + activeDoc.getActiveBuffer().getSelection());
-
             Interval selection = activeDoc.getActiveBuffer().getSelection();
             if (selection != null && ! selection.isEmpty()) {
                 String text = activeDoc.getActiveBuffer().getText(selection);
@@ -79,8 +78,7 @@ public class EnvironmentProvider {
         paths.add(new File(Config.getSupportFolder(), "bin"));
         paths.add(new File(Config.getSupportFolder(), System.getProperty("os.name") + "/bin"));
 
-        // TODO: This is a hack. Add binary with proper error message
-        environment.put("DIALOG", "/Applications/Installed/TextMate.app/Contents/PlugIns/Dialog2.tmplugin/Contents/Resources/tm_dialog2");
+        environment.put("DIALOG", formatPath(new File(Config.getSupportFolder(), "bin/tm_dialog").getPath()));
 
 		List<File> files = Lists.newArrayList();
         ActionManager actionManager = window.getActionManager();
@@ -111,6 +109,11 @@ public class EnvironmentProvider {
         environment.put("PATH",
                     systemEnvironment.get("PATH") + File.pathSeparator +
                     Joiner.on(File.pathSeparator).join(Collections2.transform(paths, FILE_TO_STRING)));
+
+
+        // JSourcePad specific variables
+        environment.put("TM_SERVER_PORT", Integer.toString(Config.getHttpPort()));
+        environment.put("TM_FOCUSED_WINDOW", Integer.toString(Application.get().getWindowManager().getFocusedWindow().getId()));
 
 	    return environment;
     }
