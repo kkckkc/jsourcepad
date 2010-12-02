@@ -9,6 +9,9 @@ Features
  - Command bundle items now supports changing of output type through exit codes
  - Last open windows and files are restored upon startup
 
+Bugfixes
+ - NPE whith new tabs created by bundles
+
 
 Build 2010112501
 ------------------------------------------------------------------------------------------------------------------------
