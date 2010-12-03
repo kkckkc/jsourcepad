@@ -10,6 +10,9 @@
     <bean name="dialog/tm_dialog" class="kkckkc.jsourcepad.dialog.tmdialog.TmDialog" />
 
 
-    <bean name="dialog/tm_dialog/Support/nibs/SimpleNotificationWindow.nib" class="kkckkc.jsourcepad.dialog.tmdialog.dialogs.SimpleNotificationWindow" />
+    <bean name="dialog/tm_dialog/Support/nibs/SimpleNotificationWindow.nib"
+          class="kkckkc.jsourcepad.dialog.tmdialog.dialogs.SimpleNotificationWindow" scope="prototype" />
+    <bean name="dialog/tm_dialog/ProgressDialog.nib"
+          class="kkckkc.jsourcepad.dialog.tmdialog.dialogs.ProgressDialog" scope="prototype" />
 
 </beans>

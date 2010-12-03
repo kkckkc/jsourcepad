@@ -10,11 +10,13 @@ import kkckkc.jsourcepad.model.Window;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -24,104 +26,121 @@ public class CommitDialog implements Dialog {
     int returnValue;
 
     @Override
-    public int execute(Window window, Writer out, String stdin, String... args) throws IOException {
-        System.out.println(Arrays.asList(args));
+    public int execute(final Window window, final Writer out, final String stdin, final String... args) throws IOException {
+        try {
+            EventQueue.invokeAndWait(new Runnable() {
+                @Override
+                public void run() {
+                    List<String> files = Lists.newArrayList();
+                    List<String> statuses = Lists.newArrayList();
 
-        List<String> files = Lists.newArrayList();
-        List<String> statuses = Lists.newArrayList();
+                    Iterator<String> it = Arrays.asList(args).iterator();
+                    while (it.hasNext()) {
+                        String s = it.next();
+                        if (s.equals("--diff-cmd")) {
+                            it.next();
+                        } else if (s.equals("--status")) {
+                            String statusString = it.next();
+                            Iterables.addAll(statuses, Splitter.on(":").split(statusString));
+                        } else if (s.equals("--action-cmd")) {
+                            it.next();
+                        } else {
+                            files.add(s);
+                        }
+                    }
 
-        Iterator<String> it = Arrays.asList(args).iterator();
-        while (it.hasNext()) {
-            String s = it.next();
-            if (s.equals("--diff-cmd")) {
-                it.next();
-            } else if (s.equals("--status")) {
-                String statusString = it.next();
-                Iterables.addAll(statuses, Splitter.on(":").split(statusString));
-            } else if (s.equals("--action-cmd")) {
-                it.next();
-            } else {
-                files.add(s);
-            }
-        }
+                    Table<Integer, Integer, Object> t = HashBasedTable.create();
+                    int row = 0;
+                    for (String s : files) {
+                        t.put(row, 0, Boolean.TRUE);
+                        t.put(row, 1, statuses.get(row));
+                        t.put(row, 2, s);
 
-        Table<Integer, Integer, Object> t = HashBasedTable.create();
-        int row = 0;
-        for (String s : files) {
-            t.put(row, 0, Boolean.TRUE);
-            t.put(row, 1, statuses.get(row));
-            t.put(row, 2, s);
-
-            row++;
-        }
+                        row++;
+                    }
 
 
-        final JDialog jdialog = new JDialog(window.getContainer(), java.awt.Dialog.ModalityType.DOCUMENT_MODAL);
-        jdialog.setTitle("Commit");
-        jdialog.setLocationRelativeTo(window.getContainer());
-        jdialog.setLocationByPlatform(true);
+                    final JDialog jdialog = new JDialog(window.getContainer(), java.awt.Dialog.ModalityType.DOCUMENT_MODAL);
+                    jdialog.setTitle("Commit");
+                    jdialog.setLocationRelativeTo(window.getContainer());
+                    jdialog.setLocationByPlatform(true);
 
-        JTable table = new JTable();
+                    JTable table = new JTable();
 
-        JPanel pane = new JPanel();
-        pane.setLayout(new MigLayout("insets dialog", "[grow]", "[]r[grow]u[]r[grow]u[]"));
+                    JPanel pane = new JPanel();
+                    pane.setLayout(new MigLayout("insets dialog", "[grow]", "[]r[grow]u[]r[grow]u[]"));
 
-        jdialog.setContentPane(pane);
+                    jdialog.setContentPane(pane);
 
-        JTextArea textArea = new JTextArea(10, 50);
+                    JTextArea textArea = new JTextArea(10, 50);
 
-        pane.add(new JLabel("Summary of changes:"), "wrap");
-        pane.add(new JScrollPane(textArea), "grow, wrap");
+                    pane.add(new JLabel("Summary of changes:"), "wrap");
+                    pane.add(new JScrollPane(textArea), "grow, wrap");
 
-        pane.add(new JLabel("Choose files to commit:"), "wrap");
-        pane.add(new JScrollPane(table), "grow, wrap");
+                    pane.add(new JLabel("Choose files to commit:"), "wrap");
+                    pane.add(new JScrollPane(table), "grow, wrap");
 
-        JButton cancel = new JButton("Cancel");
-        JButton commit = new JButton("Commit");
+                    JButton cancel = new JButton("Cancel");
+                    JButton commit = new JButton("Commit");
 
-        pane.add(cancel, "split,tag cancel");
-        pane.add(commit, "split,tag ok");
+                    pane.add(cancel, "split,tag cancel");
+                    pane.add(commit, "split,tag ok");
 
-        table.setModel(new CommitDialogTableModel(t));
+                    table.setModel(new CommitDialogTableModel(t));
 
-        table.getColumnModel().getColumn(0).setMaxWidth(20);
-        table.getColumnModel().getColumn(1).setMaxWidth(20);
-        table.getColumnModel().getColumn(2).setPreferredWidth(400);
+                    table.getColumnModel().getColumn(0).setMaxWidth(20);
+                    table.getColumnModel().getColumn(1).setMaxWidth(20);
+                    table.getColumnModel().getColumn(2).setPreferredWidth(400);
 
-        cancel.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                returnValue = 128;
-                jdialog.setVisible(false);
-            }
-        });
-        commit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                returnValue = 0;
-                jdialog.setVisible(false);
-            }
-        });
+                    cancel.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            returnValue = 128;
+                            jdialog.setVisible(false);
+                        }
+                    });
+                    commit.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            returnValue = 0;
+                            jdialog.setVisible(false);
+                        }
+                    });
 
-        jdialog.pack();
+                    jdialog.pack();
 
-        jdialog.setVisible(true);
+                    jdialog.setVisible(true);
 
-        if (returnValue == 0) {
-            boolean anyChecked = false;
-            for (Integer r : t.rowKeySet()) {
-                anyChecked |= (Boolean) t.get(r, 0);
-            }
-            if (! anyChecked) return 128;
+                    if (returnValue == 0) {
+                        boolean anyChecked = false;
+                        for (Integer r : t.rowKeySet()) {
+                            anyChecked |= (Boolean) t.get(r, 0);
+                        }
+                        if (! anyChecked) {
+                            returnValue = 128;
+                            return;
+                        }
 
-            out.write("-m '" + textArea.getText().replaceAll("'", "'\"'\"'") + "'");
-            for (Integer r : t.rowKeySet()) {
-                if ((Boolean) t.get(r, 0)) {
-                    out.write(" '" + t.get(r, 2) + "'");
+                        try {
+                            out.write("-m '" + textArea.getText().replaceAll("'", "'\"'\"'") + "'");
+                            for (Integer r : t.rowKeySet()) {
+                                if ((Boolean) t.get(r, 0)) {
+                                    out.write(" '" + t.get(r, 2) + "'");
+                                }
+                            }
+                            out.flush();
+                        } catch (IOException ioe) {
+                            throw new RuntimeException(ioe);
+                        }
+                    }
                 }
-            }
-            out.flush();
+            });
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
         }
+
 
         return returnValue;
     }

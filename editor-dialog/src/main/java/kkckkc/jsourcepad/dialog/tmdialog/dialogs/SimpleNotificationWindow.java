@@ -12,15 +12,19 @@ import java.util.Map;
 
 public class SimpleNotificationWindow implements TmDialogDelegate {
     @Override
-    public Object execute(Window window, Map object) {
+    public Object execute(Window window, boolean center, boolean modal, boolean async, Map object) {
         String title = (String) object.get("title");
         String summary = (String) object.get("summary");
         String log = (String) object.get("log");
 
-        final JDialog jdialog = new JDialog(window.getContainer(), java.awt.Dialog.ModalityType.DOCUMENT_MODAL);
+        final JDialog jdialog = new JDialog(modal ? window.getContainer() : null, java.awt.Dialog.ModalityType.DOCUMENT_MODAL);
         jdialog.setTitle(title);
-        jdialog.setLocationRelativeTo(window.getContainer());
-        jdialog.setLocationByPlatform(true);
+        if (center) {
+            jdialog.setLocationRelativeTo(null);
+        } else {
+            jdialog.setLocationRelativeTo(window.getContainer());
+            jdialog.setLocationByPlatform(true);
+        }
 
         JButton ok = new JButton("OK");
         ok.addActionListener(new ActionListener() {
@@ -46,5 +50,14 @@ public class SimpleNotificationWindow implements TmDialogDelegate {
         jdialog.setVisible(true);
 
         return Maps.newHashMap();
+    }
+
+    @Override
+    public void close() {
+    }
+
+    @Override
+    public Object waitForClose() {
+        return null;
     }
 }

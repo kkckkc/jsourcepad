@@ -15,11 +15,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 import java.util.logging.Logger;
 
 public class DialogServer implements BeanFactoryAware {
@@ -65,34 +63,21 @@ public class DialogServer implements BeanFactoryAware {
                     i++;
                 }
 
+                Dialog dialog = beanFactory.getBean("dialog/" + dialogName, Dialog.class);
+                Window window = Application.get().getWindowManager().getWindow(Integer.parseInt(req.getParameter("__WINDOW__")));
                 try {
-                    final CountDownLatch latch = new CountDownLatch(1);
-                    EventQueue.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            Dialog dialog = beanFactory.getBean("dialog/" + dialogName, Dialog.class);
-                            Window window = Application.get().getWindowManager().getWindow(Integer.parseInt(req.getParameter("__WINDOW__")));
-                            try {
-                                int returnCode = dialog.execute(
-                                        window,
-                                        writer,
-                                        req.getParameter("__STDIN__"),
-                                        args.toArray(new String[args.size()])
-                                );
+                    int returnCode = dialog.execute(
+                            window,
+                            writer,
+                            req.getParameter("__STDIN__"),
+                            args.toArray(new String[args.size()])
+                    );
 
-                                resp.addHeader("X-ResponseCode", Integer.toString(returnCode));
-                                resp.setStatus(200);
+                    resp.addHeader("X-ResponseCode", Integer.toString(returnCode));
+                    resp.setStatus(200);
 
-                                writer.close();
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            } finally {
-                                latch.countDown();
-                            }
-                        }
-                    });
-                    latch.await();
-                } catch (InterruptedException e) {
+                    writer.close();
+                } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }

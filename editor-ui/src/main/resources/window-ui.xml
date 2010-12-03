@@ -29,9 +29,6 @@
     <bean id="symbolNavigationDialog" class="kkckkc.jsourcepad.ui.dialog.navigation.SymbolNavigationDialog" />
     <bean id="bundleItemNavigationDialog" class="kkckkc.jsourcepad.ui.dialog.navigation.BundleItemNavigationDialog" />
 
-	<bean id="progressDialog" class="kkckkc.jsourcepad.ui.dialog.progress.ProgressDialogImpl" />
-	<bean id="progressDialogView" class="kkckkc.jsourcepad.ui.dialog.progress.ProgressDialogViewImpl" autowire="constructor"/>
-
 	<bean id="projectPresenter" class="kkckkc.jsourcepad.ui.ProjectPresenter" />
 	<bean id="projectView" class="kkckkc.jsourcepad.ui.ProjectViewImpl" />
 

@@ -63,10 +63,4 @@ public class ErrorDialogViewImpl extends BaseJDialog implements ErrorDialogView 
         titleLabel.setText(title.length() > 40 ? title.substring(0, 39) + "..." : title);
         super.setTitle(title);
     }
-
-    public static void main(String... args) {
-        ErrorDialogViewImpl progressDialogView = new ErrorDialogViewImpl();
-        progressDialogView.setTitle("Lorem ipsum dolor sit amet");
-        progressDialogView.setVisible(true);
-    }
 }
