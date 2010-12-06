@@ -87,6 +87,7 @@ public class CommandBundleItem implements BundleItem<Void> {
         beforeRunning(window);
 
 		ScriptExecutor scriptExecutor = new ScriptExecutor(command, Application.get().getThreadPool());
+        scriptExecutor.setDirectory(bundleItemSupplier.getFile().getParentFile().getParentFile());
 
 		final WindowManager wm = Application.get().getWindowManager();
 

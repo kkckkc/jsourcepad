@@ -16,31 +16,23 @@ import java.awt.*;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 public class TmDialog implements Dialog, BeanFactoryAware {
+    private static final int ERROR_NOT_FOUND = 54628;
+    private static final int ERROR_GENERAL = 1;
+
     private BeanFactory beanFactory;
     private Map<Long, TmDialogDelegate> asynchronousWindows = Maps.newHashMap();
 
     @Override
-    public int execute(final Window window, Writer out, String stdin, String... args) throws IOException {
-        // -p parameters
-        // -a asynchronous
-        // -c center
-        // -m modal
-        // -q quite
-
-        // -t<token> update
-        // -x close
-        // -w wait   54528
-
-
+    public int execute(final Window window, Writer out, String pwd, String stdin, String... args) throws IOException {
+/*
         System.err.println("Arrays.asList(args) = " + Arrays.asList(args));
         System.err.println("STDIN = "  + stdin);
         System.err.println("---------------------------------------------------------------");
-
+*/
         boolean quite = false;
         boolean center = false;
         boolean modal = false;
@@ -63,16 +55,16 @@ public class TmDialog implements Dialog, BeanFactoryAware {
                         token = Long.parseLong(args[++i]);
                     }
                     final TmDialogDelegate delegate = asynchronousWindows.get(token);
-                    if (delegate == null) return 54628;
+                    if (delegate == null) return ERROR_NOT_FOUND;
 
                     plist = (Map) new NIOXMLPListReader().read(stdin.getBytes());
-                    executeDelegate(window, false, false, async, plist, delegate);
+                    delegateLoad(plist, false, delegate);
                     return 0;
                 }
                 if (arg.contains("x")) {
                     token = Long.parseLong(args[++i]);
                     TmDialogDelegate delegate = asynchronousWindows.get(token);
-                    if (delegate == null) return 54628;
+                    if (delegate == null) return ERROR_NOT_FOUND;
                     delegate.close();
                     asynchronousWindows.remove(token);
                     return 0;
@@ -80,8 +72,10 @@ public class TmDialog implements Dialog, BeanFactoryAware {
                 if (arg.contains("w")) {
                     token = Long.parseLong(args[++i]);
                     TmDialogDelegate delegate = asynchronousWindows.get(token);
-                    if (delegate == null) return 54628;
+                    if (delegate == null) return ERROR_NOT_FOUND;
                     Object o = delegate.waitForClose();
+                    if (o == null) return ERROR_GENERAL;
+
                     if (! quite) {
                         XMLPListWriter w = new XMLPListWriter();
                         w.setPropertyList(o);
@@ -103,6 +97,10 @@ public class TmDialog implements Dialog, BeanFactoryAware {
             plist = (Map) new NIOXMLPListReader().read(stdin.getBytes());
         }
 
+        if (! nib.startsWith("/")) {
+            nib = pwd + "/" + nib;
+        }
+
         List<String> constituents = Lists.newArrayList();
         Iterables.addAll(constituents, Splitter.on("/").omitEmptyStrings().split(nib));
         constituents = Lists.reverse(constituents);
@@ -111,23 +109,20 @@ public class TmDialog implements Dialog, BeanFactoryAware {
         StringBuilder cur = new StringBuilder();
         for (String s : constituents) {
             cur.insert(0, "/" + s);
-            if (beanFactory.containsBean("dialog/tm_dialog" + cur.toString())) {
-                delegate = beanFactory.getBean("dialog/tm_dialog" + cur.toString(), TmDialogDelegate.class);
+            if (beanFactory.containsBean("dialog/tm_dialog" + cur.toString().replace(' ', '_'))) {
+                delegate = beanFactory.getBean("dialog/tm_dialog" + cur.toString().replace(' ', '_'), TmDialogDelegate.class);
                 break;
             }
         }
 
         if (delegate == null) {
-            return 1;
+            System.out.println("Dialog not found");
+            return ERROR_NOT_FOUND;
         }
 
-        Object o = executeDelegate(window, center, modal, async, plist, delegate);
-        if (! quite && ! async) {
-            XMLPListWriter w = new XMLPListWriter();
-            w.setPropertyList(o);
-            out.write(w.getString());
-            out.flush();
-        }
+        delegateOpen(window, center, modal, async, delegate);
+        delegateLoad(plist, true, delegate);
+        delegateShow(delegate);
 
         if (async) {
             token = System.currentTimeMillis();
@@ -135,30 +130,65 @@ public class TmDialog implements Dialog, BeanFactoryAware {
 
             out.write(token.toString());
             out.flush();
+        } else {
+            Object o = delegate.waitForClose();
+            if (o == null) return ERROR_GENERAL;
+
+            if (! quite) {
+                XMLPListWriter w = new XMLPListWriter();
+                w.setPropertyList(o);
+                out.write(w.getString());
+                out.flush();
+            }
         }
+
 
         return 0;
     }
 
-    private Object executeDelegate(final Window window, final boolean center, final boolean modal, final boolean async, final Map plist, final TmDialogDelegate delegate) {
-        class EventQueueRunnable implements Runnable {
-            Object ret;
-
-            @Override
-            public void run() {
-                ret = delegate.execute(window, center, modal, async, plist);
-            }
-        }
-
-        EventQueueRunnable eqr = new EventQueueRunnable();
+    private void delegateShow(final TmDialogDelegate delegate) {
         try {
-            EventQueue.invokeAndWait(eqr);
+            EventQueue.invokeAndWait(new Runnable() {
+                @Override
+                public void run() {
+                    delegate.show();
+                }
+            });
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
             throw new RuntimeException(e);
         }
-        return eqr.ret;
+    }
+
+    private void delegateOpen(final Window window, final boolean center, final boolean modal, final boolean async, final TmDialogDelegate delegate) {
+        try {
+            EventQueue.invokeAndWait(new Runnable() {
+                @Override
+                public void run() {
+                    delegate.open(window, center, modal, async);
+                }
+            });
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void delegateLoad(final Map object, final boolean isFirstTime, final TmDialogDelegate delegate) {
+        try {
+            EventQueue.invokeAndWait(new Runnable() {
+                @Override
+                public void run() {
+                    delegate.load(isFirstTime, object);
+                }
+            });
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

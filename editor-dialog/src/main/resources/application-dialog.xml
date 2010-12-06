@@ -10,9 +10,14 @@
     <bean name="dialog/tm_dialog" class="kkckkc.jsourcepad.dialog.tmdialog.TmDialog" />
 
 
+    <!-- Global nibs -->
     <bean name="dialog/tm_dialog/Support/nibs/SimpleNotificationWindow.nib"
           class="kkckkc.jsourcepad.dialog.tmdialog.dialogs.SimpleNotificationWindow" scope="prototype" />
     <bean name="dialog/tm_dialog/ProgressDialog.nib"
           class="kkckkc.jsourcepad.dialog.tmdialog.dialogs.ProgressDialog" scope="prototype" />
+
+    <!-- HTML Bundle -->
+    <bean name="dialog/tm_dialog/html.tmbundle/Insert_Entity"
+          class="kkckkc.jsourcepad.dialog.tmdialog.dialogs.html.InsertEntity" scope="prototype" />
 
 </beans>

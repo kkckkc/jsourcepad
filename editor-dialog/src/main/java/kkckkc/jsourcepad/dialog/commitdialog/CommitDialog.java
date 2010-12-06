@@ -26,7 +26,7 @@ public class CommitDialog implements Dialog {
     int returnValue;
 
     @Override
-    public int execute(final Window window, final Writer out, final String stdin, final String... args) throws IOException {
+    public int execute(final Window window, final Writer out, final String pwd, final String stdin, final String... args) throws IOException {
         try {
             EventQueue.invokeAndWait(new Runnable() {
                 @Override
@@ -62,8 +62,6 @@ public class CommitDialog implements Dialog {
 
                     final JDialog jdialog = new JDialog(window.getContainer(), java.awt.Dialog.ModalityType.DOCUMENT_MODAL);
                     jdialog.setTitle("Commit");
-                    jdialog.setLocationRelativeTo(window.getContainer());
-                    jdialog.setLocationByPlatform(true);
 
                     JTable table = new JTable();
 
@@ -108,6 +106,9 @@ public class CommitDialog implements Dialog {
                     });
 
                     jdialog.pack();
+
+                    jdialog.setLocationRelativeTo(window.getContainer());
+                    jdialog.setLocationByPlatform(true);
 
                     jdialog.setVisible(true);
 
@@ -158,7 +159,7 @@ public class CommitDialog implements Dialog {
         };
 
         CommitDialog commitDialog = new CommitDialog();
-        System.out.println("\n\nReturn: " + commitDialog.execute(null, new OutputStreamWriter(System.out), "", a));
+        System.out.println("\n\nReturn: " + commitDialog.execute(null, new OutputStreamWriter(System.out), null, "", a));
 
         System.exit(0);
     }

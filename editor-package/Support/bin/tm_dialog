@@ -14,6 +14,7 @@ uri = "http://localhost:#{ENV['TM_SERVER_PORT']}/dialog/#{dialog}"
 
 postArgs = { }
 ARGV.each_with_index { |value, idx| postArgs["arg#{idx}"] = value }
+postArgs["__PWD__"] = Dir.pwd
 postArgs["__STDIN__"] = STDIN.read
 postArgs['__WINDOW__'] = ENV['TM_FOCUSED_WINDOW']
 res = Net::HTTP.post_form(URI.parse(uri), postArgs)

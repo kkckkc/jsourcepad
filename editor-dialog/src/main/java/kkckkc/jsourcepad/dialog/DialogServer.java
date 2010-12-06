@@ -69,6 +69,7 @@ public class DialogServer implements BeanFactoryAware {
                     int returnCode = dialog.execute(
                             window,
                             writer,
+                            req.getParameter("__PWD__"),
                             req.getParameter("__STDIN__"),
                             args.toArray(new String[args.size()])
                     );

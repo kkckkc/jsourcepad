@@ -5,6 +5,52 @@
 # See plist-LICENSE for license details
 # ------------------------------------------------------------------------------------
 
+def escapeHTML(string)
+    string.gsub(/&/n, '&amp;').gsub(/\"/n, '&quot;').gsub(/>/n, '&gt;').gsub(/</n, '&lt;')
+end
+
+def unescapeHTML(string)
+    string.gsub(/&(amp|quot|gt|lt|\#[0-9]+|\#x[0-9A-Fa-f]+);/n) do
+      match = $1.dup
+      case match
+      when 'amp'                 then '&'
+      when 'quot'                then '"'
+      when 'gt'                  then '>'
+      when 'lt'                  then '<'
+      when /\A#0*(\d+)\z/n       then
+        if Integer($1) < 256
+          Integer($1).chr
+        else
+          if Integer($1) < 65536 and ($KCODE[0] == ?u or $KCODE[0] == ?U)
+            [Integer($1)].pack("U")
+          else
+            "&##{$1};"
+          end
+        end
+      when /\A#x([0-9a-f]+)\z/ni then
+        if $1.hex < 256
+          $1.hex.chr
+        else
+          if $1.hex < 65536 and ($KCODE[0] == ?u or $KCODE[0] == ?U)
+            [$1.hex].pack("U")
+          else
+            "&#x#{$1};"
+          end
+        end
+      else
+        "&#{match};"
+      end
+    end
+end
+
+module OSX
+ class PropertyList
+   def PropertyList::load (xml)
+    Plist::parse_xml(xml)
+   end
+ end
+end
+
 #
 # = plist
 #
@@ -164,13 +210,13 @@ module Plist
 
   class PKey < PTag
     def to_ruby
-      text || ''
+      unescapeHTML(text || '')
     end
   end
 
   class PString < PTag
     def to_ruby
-      text || ''
+      unescapeHTML(text || '')
     end
   end
 
@@ -302,7 +348,7 @@ module Plist::Emit
 
           element.keys.sort.each do |k|
             v = element[k]
-            inner_tags << tag('key', k.to_s)
+            inner_tags << tag('key', escapeHTML(k.to_s))
             inner_tags << plist_node(v)
           end
 
@@ -317,7 +363,7 @@ module Plist::Emit
       when Date # also catches DateTime
         output << tag('date', element.strftime('%Y-%m-%dT%H:%M:%SZ'))
       when String, Symbol, Fixnum, Bignum, Integer, Float
-        output << tag(element_type(element), element.to_s)
+        output << tag(element_type(element), escapeHTML(element.to_s))
       when IO, StringIO
         element.rewind
         contents = element.read
