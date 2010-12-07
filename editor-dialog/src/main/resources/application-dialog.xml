@@ -21,7 +21,7 @@
           class="kkckkc.jsourcepad.dialog.tmdialog.dialogs.html.InsertEntity" scope="prototype" />
 
     <!-- Subversion Bundle -->
-    <bean name="dialog/tm_dialog/Subversion.tmbundle/Support/nibs/RevisionSelector.nib"
+    <bean name="dialog/tm_dialog/subversion.tmbundle/Support/nibs/RevisionSelector.nib"
           class="kkckkc.jsourcepad.dialog.tmdialog.dialogs.subversion.RevisionSelector" scope="prototype" />
 
 

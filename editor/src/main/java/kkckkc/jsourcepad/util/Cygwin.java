@@ -18,7 +18,7 @@ public class Cygwin {
     public static String toFile(String path) {
         if (! Os.isWindows()) return path;
 
-        if (path.startsWith("/")) {
+        if (path.startsWith("/") && ! path.startsWith("/cygdrive")) {
             ScriptExecutionSettings ses = Application.get().getSettingsManager().get(ScriptExecutionSettings.class);
             String bashCommand = ses.getShellCommandLine()[0];
             String cygwinPrefix = bashCommand.substring(0, bashCommand.indexOf("/bin/bash.exe"));

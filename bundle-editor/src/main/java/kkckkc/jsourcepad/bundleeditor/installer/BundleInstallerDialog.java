@@ -76,8 +76,8 @@ public class BundleInstallerDialog implements Dialog<BundleInstallerDialogView> 
                     Set<String> preSelectedBundles = Sets.newHashSet();
                     if (bundleManager.getBundles() == null || bundleManager.getBundles().isEmpty()) {
                         preSelectedBundles.addAll(Arrays.asList(
-                                "bundle-development", "c", "css", "html", "java", "javascript", "markdown",
-                                "php", "perl", "python", "ruby", "sql", "shellscript", "source", "text",
+                                "bundle-development", "c", "css", "diff", "html", "java", "javadoc", "javascript", "json", "markdown",
+                                "php", "perl", "python", "ruby", "sql", "shellscript", "source", "subversion", "text",
                                 "textmate", "todo", "xml"));
                     }
 
