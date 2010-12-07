@@ -2,6 +2,7 @@ package kkckkc.jsourcepad.util.messagebus;
 
 import kkckkc.utils.Pair;
 
+import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -11,8 +12,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 
 public class TopicImpl<T> implements Topic<T, Pair<Method, Object[]>> {
-	protected List<Pair<DispatchStrategy, WeakReference<T>>> listeners;
-	protected List<Pair<DispatchStrategy, WeakReference<UntypedListener>>> untypedListeners;
+	protected List<Pair<DispatchStrategy, Reference<T>>> listeners;
+	protected List<Pair<DispatchStrategy, Reference<UntypedListener>>> untypedListeners;
 	
 	private Class<? extends T> topic;
 	private T dispatcher;
@@ -24,19 +25,33 @@ public class TopicImpl<T> implements Topic<T, Pair<Method, Object[]>> {
 		this.messageBus = messageBus;
 	}
 
-	public void subscribe(DispatchStrategy dispatchStrategy, T listener) {
-		if (listeners == null) listeners = new CopyOnWriteArrayList<Pair<DispatchStrategy,WeakReference<T>>>();
-		listeners.add(new Pair<DispatchStrategy, WeakReference<T>>(dispatchStrategy, new WeakReference(listener)));
+	public void subscribeWeak(DispatchStrategy dispatchStrategy, T listener) {
+		if (listeners == null) listeners = new CopyOnWriteArrayList<Pair<DispatchStrategy,Reference<T>>>();
+		listeners.add(new Pair<DispatchStrategy, Reference<T>>(dispatchStrategy, new WeakReference(listener)));
 		return;
 	}
 
-	public void subscribeUntyped(DispatchStrategy strategy,
-			UntypedListener untypedListener) {
-		if (untypedListeners == null) untypedListeners = new CopyOnWriteArrayList<Pair<DispatchStrategy,WeakReference<UntypedListener>>>();
-		untypedListeners.add(new Pair<DispatchStrategy, WeakReference<UntypedListener>>(strategy, new WeakReference(untypedListener)));
-	}	
-	
-	@SuppressWarnings("unchecked")
+    public void subscribe(DispatchStrategy dispatchStrategy, T listener) {
+        if (listeners == null) listeners = new CopyOnWriteArrayList<Pair<DispatchStrategy,Reference<T>>>();
+        listeners.add(new Pair<DispatchStrategy, Reference<T>>(dispatchStrategy, new HardReference(listener)));
+        return;
+    }
+
+    public class HardReference<T> extends WeakReference<T> {
+        private final T strongRef;
+
+        public HardReference(T referent) {
+            super(null);
+            strongRef = referent;
+        }
+
+        public T get() {
+            return strongRef;
+        }
+    }
+
+
+    @SuppressWarnings("unchecked")
 	public T post() {
 		if (dispatcher == null) {
 			dispatcher = (T) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[] { topic }, new InvocationHandler() {
@@ -52,7 +67,7 @@ public class TopicImpl<T> implements Topic<T, Pair<Method, Object[]>> {
 	@Override
 	public void post(final Pair<Method, Object[]> message) {
 		if (listeners != null) {
-			for (final Pair<DispatchStrategy, WeakReference<T>> p : listeners) {
+			for (final Pair<DispatchStrategy, Reference<T>> p : listeners) {
                 if (p.getSecond().get() == null) continue;
 				p.getFirst().execute(new Runnable() {
 					public void run() {
@@ -67,7 +82,7 @@ public class TopicImpl<T> implements Topic<T, Pair<Method, Object[]>> {
 		}
 
 		if (untypedListeners != null) {
-			for (final Pair<DispatchStrategy, WeakReference<UntypedListener>> p : untypedListeners) {
+			for (final Pair<DispatchStrategy, Reference<UntypedListener>> p : untypedListeners) {
                 if (p.getSecond().get() == null) return;
 				p.getFirst().execute(new Runnable() {
 					public void run() {

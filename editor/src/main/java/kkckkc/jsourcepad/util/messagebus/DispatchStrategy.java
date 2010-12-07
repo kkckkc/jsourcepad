@@ -1,6 +1,7 @@
 package kkckkc.jsourcepad.util.messagebus;
 
 import java.awt.*;
+import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -23,6 +24,21 @@ public interface DispatchStrategy {
                 runnable.run();
             } else {
                 EventQueue.invokeLater(runnable);
+            }
+        }
+    };
+    public static final DispatchStrategy SYNC_EVENT = new DispatchStrategy() {
+        public void execute(Runnable runnable) {
+            if (EventQueue.isDispatchThread()) {
+                runnable.run();
+            } else {
+                try {
+                    EventQueue.invokeAndWait(runnable);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                } catch (InvocationTargetException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
     };

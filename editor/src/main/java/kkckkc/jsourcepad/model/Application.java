@@ -11,6 +11,7 @@ import kkckkc.jsourcepad.theme.DefaultTheme;
 import kkckkc.jsourcepad.theme.Theme;
 import kkckkc.jsourcepad.util.BeanFactoryLoader;
 import kkckkc.jsourcepad.util.Config;
+import kkckkc.jsourcepad.util.command.CommandExecutor;
 import kkckkc.jsourcepad.util.io.ErrorDialog;
 import kkckkc.jsourcepad.util.messagebus.AbstractMessageBus;
 import kkckkc.jsourcepad.util.messagebus.MessageBus;
@@ -193,6 +194,10 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
 
             return windowToUse;
         }
+    }
+
+    public CommandExecutor getCommandExecutor() {
+        return beanFactory.getBean(CommandExecutor.class);
     }
 
 }

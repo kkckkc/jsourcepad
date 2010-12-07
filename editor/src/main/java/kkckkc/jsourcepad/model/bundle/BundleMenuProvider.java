@@ -15,6 +15,7 @@ public class BundleMenuProvider {
 
     private static final Map<String, Action> itemActions = Maps.newHashMap();
     private static final Map<String, ActionGroup> actionGroups = Maps.newHashMap();
+    private static BundleListener bundleListener;
 
     public static Action getActionForItem(String uuid) {
         return itemActions.get(uuid);
@@ -35,7 +36,7 @@ public class BundleMenuProvider {
 		actionGroups.put(null, ag);
         buildMenu(ag, bundles);
 
-        Application.get().topic(BundleListener.class).subscribe(DispatchStrategy.ASYNC, new BundleListener() {
+        bundleListener = new BundleListener() {
             @Override
             public void bundleAdded(Bundle bundle) {
                 synchronized (actionGroups) {
@@ -74,7 +75,7 @@ public class BundleMenuProvider {
 
                 boolean found = root.containsName(bundle.getName());
 
-                if (! found) {
+                if (!found) {
                     ActionGroup newActionGroup = new ActionGroup(bundle.getName());
                     actionGroups.put(bundle.getName(), newActionGroup);
 
@@ -96,7 +97,8 @@ public class BundleMenuProvider {
             @Override
             public void languagesUpdated() {
             }
-        });
+        };
+        Application.get().topic(BundleListener.class).subscribeWeak(DispatchStrategy.ASYNC, bundleListener);
 
 		return ag;
     }

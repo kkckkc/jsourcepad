@@ -1,6 +1,6 @@
 package kkckkc.jsourcepad.action;
 
-import kkckkc.jsourcepad.command.TextComponentCommand;
+import kkckkc.jsourcepad.command.window.TextComponentCommand;
 import kkckkc.jsourcepad.util.action.BaseAction;
 
 import java.awt.event.ActionEvent;

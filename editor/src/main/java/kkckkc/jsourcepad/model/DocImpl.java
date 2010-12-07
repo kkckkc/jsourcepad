@@ -27,6 +27,7 @@ public class DocImpl extends AbstractMessageBus implements Doc, ScopeRoot, BeanF
 	private TabManager tabManager;
 	private DefaultListableBeanFactory container;
     private SourceDocument sourceDocument;
+    private BundleListener bundleListener;
 
     @Autowired
 	public DocImpl(final Window window, DocList docList, LanguageManager languageManager) {
@@ -40,7 +41,7 @@ public class DocImpl extends AbstractMessageBus implements Doc, ScopeRoot, BeanF
 		this.languageManager = languageManager;
 		this.tabManager = new TabManagerImpl(this);
 
-        Application.get().topic(BundleListener.class).subscribe(DispatchStrategy.ASYNC, new BundleListener() {
+        bundleListener = new BundleListener() {
 
             @Override
             public void bundleAdded(Bundle bundle) {
@@ -59,9 +60,10 @@ public class DocImpl extends AbstractMessageBus implements Doc, ScopeRoot, BeanF
                 LineManager.Line line = buffer.getLineManager().getLineByPosition(0);
                 Language language = DocImpl.this.languageManager.getLanguage(
                         line != null ? line.getCharSequence(false).toString() : "", backingFile);
-		        DocImpl.this.buffer.setLanguage(language);
+                DocImpl.this.buffer.setLanguage(language);
             }
-        });
+        };
+        Application.get().topic(BundleListener.class).subscribeWeak(DispatchStrategy.ASYNC, bundleListener);
 	}
 	
 	public Buffer getActiveBuffer() {

@@ -1,12 +1,11 @@
-package kkckkc.jsourcepad.command;
+package kkckkc.jsourcepad.command.window;
 
 import kkckkc.jsourcepad.model.Buffer;
-import kkckkc.jsourcepad.model.Window;
-import kkckkc.jsourcepad.util.command.Command;
+import kkckkc.jsourcepad.util.command.AbstractWindowCommand;
 
 import javax.swing.*;
 
-public class TextComponentCommand implements Command {
+public class TextComponentCommand extends AbstractWindowCommand {
     private String action;
 
     public void setAction(String action) {
@@ -14,7 +13,7 @@ public class TextComponentCommand implements Command {
     }
 
     @Override
-    public void execute(Window window) {
+    public void execute() {
         Buffer buffer = window.getDocList().getActiveDoc().getActiveBuffer();
 
         Action a = buffer.getActionMap().get(this.action);

@@ -8,7 +8,7 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 
-public class CommandExecutorImpl implements CommandExecutor {
+public class WindowCommandExecutorImpl extends AbstractCommandExecutor {
     private Window window;
 
     @Autowired
@@ -17,11 +17,14 @@ public class CommandExecutorImpl implements CommandExecutor {
     }
 
     @Override
-    public void execute(Command command) {
+    protected void doExecute(Command command) {
         StringBuilder b = getBeanPropertyValues(command);
         System.out.println("Executing: " + command.getClass().getSimpleName() + "[" + b.toString() + "]");
 
-        command.execute(window);
+        if (command instanceof WindowCommand) {
+            ((WindowCommand) command).setWindow(window);
+        }
+        command.execute();
     }
 
     private StringBuilder getBeanPropertyValues(Object command) {

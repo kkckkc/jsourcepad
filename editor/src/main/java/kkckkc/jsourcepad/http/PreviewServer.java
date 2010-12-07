@@ -1,9 +1,13 @@
 package kkckkc.jsourcepad.http;
 
+import com.google.common.collect.Lists;
 import com.google.common.io.Files;
+import kkckkc.jsourcepad.command.global.OpenCommand;
+import kkckkc.jsourcepad.command.window.FileOpenCommand;
 import kkckkc.jsourcepad.model.*;
 import kkckkc.jsourcepad.util.Config;
 import kkckkc.jsourcepad.util.Cygwin;
+import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
 import kkckkc.syntaxpane.model.Interval;
 import kkckkc.syntaxpane.model.LineManager;
 import kkckkc.utils.StringUtils;
@@ -21,6 +25,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLDecoder;
 import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 public class PreviewServer {
 
@@ -102,6 +108,11 @@ public class PreviewServer {
 
         context.addServlet(new ServletHolder(new HttpServlet() {
             @Override
+            protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+                doGet(req, resp);
+            }
+
+            @Override
             protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
                 String cmd = req.getPathInfo().substring(1);
 
@@ -116,9 +127,11 @@ public class PreviewServer {
                         int windowId = Integer.parseInt(req.getParameter("windowId"));
 
                         window = Application.get().getWindowManager().getWindow(windowId);
-                        window.getDocList().open(new File(url));
+                        window.getCommandExecutor().execute(new FileOpenCommand(url));
                     } else {
-                        window = Application.get().open(new File(url));
+                        OpenCommand openCommand = new OpenCommand(url, false);
+                        Application.get().getCommandExecutor().executeSync(openCommand);
+                        window = openCommand.getWindow();
                     }
 
                     String line = req.getParameter("line");
@@ -136,6 +149,50 @@ public class PreviewServer {
                                 break;
                             }
                         }
+                    }
+                } else if ("mate".equals(cmd)) {
+                    final List<String> args = Lists.newArrayList();
+                    int i = 0;
+                    while (true) {
+                        String s = req.getParameter("arg" + i);
+                        if (s == null) break;
+                        args.add(s);
+                        i++;
+                    }
+
+                    boolean wait = false;
+                    for (String s : args) {
+                        if (s.startsWith("-") && s.contains("w")) {
+                            wait = true;
+                        }
+                    }
+
+                    if (wait) {
+                        OpenCommand openCommand = new OpenCommand(args.get(args.size() - 1), true);
+                        Application.get().getCommandExecutor().executeSync(openCommand);
+                        final Window window = openCommand.getWindow();
+
+                        final CountDownLatch latch = new CountDownLatch(1);
+
+                        WindowManager.Listener listener = new WindowManager.Listener() {
+                            @Override
+                            public void created(Window w) {
+                            }
+
+                            @Override
+                            public void destroyed(Window w) {
+                                if (w == window) latch.countDown();
+                            }
+                        };
+                        Application.get().topic(WindowManager.Listener.class).subscribeWeak(DispatchStrategy.SYNC, listener);
+
+                        try {
+                            latch.await();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    } else {
+                        Application.get().getCommandExecutor().execute(new OpenCommand(args.get(args.size() - 1), false));
                     }
                 } else {
                     throw new RuntimeException("Unsupport cmd");

@@ -3,10 +3,14 @@ package kkckkc.utils.plist;
 import nanoxml.XMLElement;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 
 public class NIOXMLPListReader {
+
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
 	public Object read(byte[] bytes) throws IOException {
         XMLElement xmlElement = new XMLElement();
@@ -30,6 +34,8 @@ public class NIOXMLPListReader {
             return parseInteger(e);
 		} else if ("array".equals(name)) {
 			return parseArray(e);
+		} else if ("date".equals(name)) {
+			return parseDate(e);
 		}
 		throw new RuntimeException("Unsupported tag " + name);
 	}
@@ -49,6 +55,14 @@ public class NIOXMLPListReader {
 	private String parseString(XMLElement e) {
 		return e.getContent();
 	}
+
+    private Date parseDate(XMLElement e) {
+        try {
+            return dateFormat.parse(e.getContent());
+        } catch (ParseException e1) {
+            throw new RuntimeException(e1);
+        }
+    }
 
 	private Map<Object, Object> parseDictionary(XMLElement e) {
 		Map<Object, Object> m = new LinkedHashMap<Object, Object>();

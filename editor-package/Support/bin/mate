@@ -1,0 +1,11 @@
+#!/usr/bin/ruby
+
+require 'net/http'
+require 'uri'
+
+uri = "http://localhost:#{ENV['TM_SERVER_PORT']}/cmd/mate"
+
+postArgs = { }
+ARGV.each_with_index { |value, idx| postArgs["arg#{idx}"] = value }
+postArgs["__PWD__"] = Dir.pwd
+res = Net::HTTP.post_form(URI.parse(uri), postArgs)

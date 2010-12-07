@@ -24,6 +24,8 @@ import java.util.*;
 
 public class ManifestBundleDocPresenter extends BasicBundleDocPresenter {
 
+    private BundleListener menuListener;
+
     @Override
     protected void saveCallback() {
         super.saveCallback();
@@ -65,7 +67,7 @@ public class ManifestBundleDocPresenter extends BasicBundleDocPresenter {
         final BundleDocImpl bDoc = (BundleDocImpl) doc;
         final Bundle bundle = Application.get().getBundleManager().getBundle(bDoc.getName());
 
-        Application.get().topic(BundleListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, new BundleListener() {
+        menuListener = new BundleListener() {
 
             @Override
             public void bundleAdded(Bundle bundle) {
@@ -96,8 +98,10 @@ public class ManifestBundleDocPresenter extends BasicBundleDocPresenter {
             }
 
             @Override
-            public void languagesUpdated() { }
-        });
+            public void languagesUpdated() {
+            }
+        };
+        Application.get().topic(BundleListener.class).subscribeWeak(DispatchStrategy.ASYNC_EVENT, menuListener);
 
 
         DefaultTreeModel menuModel = initMenu(mView, bDoc, bundle);

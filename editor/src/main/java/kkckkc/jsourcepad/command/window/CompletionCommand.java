@@ -1,10 +1,9 @@
-package kkckkc.jsourcepad.command;
+package kkckkc.jsourcepad.command.window;
 
 import kkckkc.jsourcepad.model.Buffer;
-import kkckkc.jsourcepad.model.Window;
-import kkckkc.jsourcepad.util.command.Command;
+import kkckkc.jsourcepad.util.command.AbstractWindowCommand;
 
-public class CompletionCommand implements Command {
+public class CompletionCommand extends AbstractWindowCommand {
     public static enum Direction { NEXT, PREVIOUS }
 
     private Direction direction;
@@ -14,7 +13,7 @@ public class CompletionCommand implements Command {
     }
 
     @Override
-    public void execute(Window window) {
+    public void execute() {
         Buffer buffer = window.getDocList().getActiveDoc().getActiveBuffer();
         if (direction == Direction.NEXT) {
             buffer.getCompletionManager().completeNext();

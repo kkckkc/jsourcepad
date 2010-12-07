@@ -11,7 +11,7 @@
         <property name="projectDir" value="${projectDir}" />
     </bean>
 
-    <bean id="commandExecutor" class="kkckkc.jsourcepad.util.command.CommandExecutorImpl" />
+    <bean id="commandExecutor" class="kkckkc.jsourcepad.util.command.WindowCommandExecutorImpl" />
 
 
 	<bean id="macroEngine" class="kkckkc.jsourcepad.model.bundle.MacroEngine">

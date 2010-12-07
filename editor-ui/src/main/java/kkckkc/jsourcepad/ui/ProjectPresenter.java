@@ -55,8 +55,8 @@ public class ProjectPresenter implements Presenter<ProjectView>, Project.FileCha
             }
         }));
 
-        window.topic(Project.FileChangeListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, this);
-		window.topic(ProjectImpl.RefreshListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, this);
+        window.topic(Project.FileChangeListener.class).subscribeWeak(DispatchStrategy.ASYNC_EVENT, this);
+		window.topic(ProjectImpl.RefreshListener.class).subscribeWeak(DispatchStrategy.ASYNC_EVENT, this);
 
 		((JTree) view).getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
 			@Override

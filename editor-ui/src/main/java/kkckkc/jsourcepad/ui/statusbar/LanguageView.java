@@ -17,8 +17,8 @@ public class LanguageView extends JLabel implements DocList.Listener, Buffer.Lan
 		setText("--");
 		setEnabled(false);
 		
-		window.topic(DocList.Listener.class).subscribe(DispatchStrategy.ASYNC_EVENT, this);
-		window.topic(Buffer.LanguageListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, this);
+		window.topic(DocList.Listener.class).subscribeWeak(DispatchStrategy.ASYNC_EVENT, this);
+		window.topic(Buffer.LanguageListener.class).subscribeWeak(DispatchStrategy.ASYNC_EVENT, this);
 		
 		MenuFactory menuFactory = new MenuFactory();
 		JPopupMenu jpm = menuFactory.buildPopup(window.getActionManager().getActionGroup("language-menu"), null);

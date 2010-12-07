@@ -16,6 +16,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -28,11 +29,13 @@ public class TmDialog implements Dialog, BeanFactoryAware {
 
     @Override
     public int execute(final Window window, Writer out, String pwd, String stdin, String... args) throws IOException {
-/*
-        System.err.println("Arrays.asList(args) = " + Arrays.asList(args));
-        System.err.println("STDIN = "  + stdin);
-        System.err.println("---------------------------------------------------------------");
-*/
+
+        /*
+        System.out.println("Arrays.asList(args) = " + Arrays.asList(args));
+        System.out.println("STDIN = "  + stdin);
+        System.out.println("---------------------------------------------------------------");
+        */
+
         boolean quite = false;
         boolean center = false;
         boolean modal = false;
@@ -117,6 +120,9 @@ public class TmDialog implements Dialog, BeanFactoryAware {
 
         if (delegate == null) {
             System.out.println("Dialog not found");
+            System.out.println("Arrays.asList(args) = " + Arrays.asList(args));
+            System.out.println("STDIN = "  + stdin);
+            System.out.println("---------------------------------------------------------------");
             return ERROR_NOT_FOUND;
         }
 

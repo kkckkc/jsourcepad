@@ -33,8 +33,9 @@ public class WindowPresenter implements Presenter<WindowView>, DocList.Listener 
 	private WindowView windowView;
 	private BundleManager bundleManager;
 	private JFrame frame;
-	
-	@Autowired
+    private SettingsManager.Listener<WindowSettings> settingsListener;
+
+    @Autowired
 	public void setWindow(Window window) {
 	    this.window = window;
     }
@@ -129,15 +130,16 @@ public class WindowPresenter implements Presenter<WindowView>, DocList.Listener 
             }
         });
 
-        window.topic(DocList.Listener.class).subscribe(DispatchStrategy.ASYNC_EVENT, WindowPresenter.this);
+        window.topic(DocList.Listener.class).subscribeWeak(DispatchStrategy.ASYNC_EVENT, WindowPresenter.this);
         frame.setVisible(true);
 
         final Application app = Application.get();
-        app.getSettingsManager().subscribe(WindowSettings.class, new SettingsManager.Listener<WindowSettings>() {
+        settingsListener = new SettingsManager.Listener<WindowSettings>() {
             public void settingUpdated(WindowSettings settings) {
                 windowView.setShowProjectDrawer(settings.isShowProjectDrawer());
             }
-        }, false, app, window);
+        };
+        app.getSettingsManager().subscribe(WindowSettings.class, settingsListener, false, app, window);
     }
 	
 	

@@ -18,7 +18,7 @@ import java.util.Map;
 public class LanguageActionGroup extends ActionGroup implements BundleListener {
 
 	public LanguageActionGroup(Application application) {
-        application.topic(BundleListener.class).subscribe(DispatchStrategy.ASYNC, this);
+        application.topic(BundleListener.class).subscribeWeak(DispatchStrategy.ASYNC, this);
 
         rebuildMenu(application);
 	}

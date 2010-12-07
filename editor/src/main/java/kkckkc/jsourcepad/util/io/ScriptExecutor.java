@@ -66,10 +66,12 @@ public class ScriptExecutor {
                     execution.exitCode = exitCode;
 	                if (exitCode == 0 || (exitCode >= 200 && exitCode <= 207)) {
 	                	execution.callback.onSuccess(execution);
+                        System.err.println(execution.getStderr());
 	                } else {
 	                	execution.callback.onFailure(execution);
 	                }
-	                
+
+
 	                execution.cleanup();
                 } catch (InterruptedException e) {
 	                p.destroy();

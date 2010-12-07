@@ -11,7 +11,7 @@ public class ScopeView extends JLabel implements Buffer.InsertionPointListener {
 
 	public ScopeView(Window window) {
 		setText("--");
-		window.topic(Buffer.InsertionPointListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, this);
+		window.topic(Buffer.InsertionPointListener.class).subscribeWeak(DispatchStrategy.ASYNC_EVENT, this);
 	}
 	
 	@Override

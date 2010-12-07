@@ -31,8 +31,10 @@ public class DocPresenter implements Presenter<DocView> {
 	// Collaborators
 	protected DocView view;
     protected Window window;
-    
-	@Autowired
+    private SettingsListener settingsListener;
+    private ProjectSettingsListener projectSettingsListener;
+
+    @Autowired
     public void setView(DocView view) {
 	    this.view = view;
     }
@@ -59,11 +61,15 @@ public class DocPresenter implements Presenter<DocView> {
 
 		Application app = Application.get();
 
-		app.getSettingsManager().subscribe(new SettingsListener(), false, app, doc);
+        settingsListener = new SettingsListener();
+
+        app.getSettingsManager().subscribe(settingsListener, false, app, doc);
         if (window.getProject() != null) {
-            window.getProject().getSettingsManager().subscribe(new ProjectSettingsListener(window.getProject().getSettingsManager()), false, app, doc);
+            projectSettingsListener = new ProjectSettingsListener(window.getProject().getSettingsManager());
+            window.getProject().getSettingsManager().subscribe(projectSettingsListener, false, app, doc);
         } else {
-            app.getSettingsManager().subscribe(new ProjectSettingsListener(app.getSettingsManager()), false, app, doc);
+            projectSettingsListener = new ProjectSettingsListener(app.getSettingsManager());
+            app.getSettingsManager().subscribe(projectSettingsListener, false, app, doc);
         }
 
 		sourcePane.getEditorPane().getKeymap().addActionForKeyStroke(
@@ -94,8 +100,8 @@ public class DocPresenter implements Presenter<DocView> {
         actionContext.put(ActionContextKeys.FOCUSED_COMPONENT, doc);
         actionContext.commit();
 
-        doc.getDocList().getWindow().topic(Buffer.SelectionListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, ACTION_CONTEXT_UPDATER);
-        doc.getDocList().getWindow().topic(Doc.StateListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, ACTION_CONTEXT_UPDATER);
+        doc.getDocList().getWindow().topic(Buffer.SelectionListener.class).subscribeWeak(DispatchStrategy.ASYNC_EVENT, ACTION_CONTEXT_UPDATER);
+        doc.getDocList().getWindow().topic(Doc.StateListener.class).subscribeWeak(DispatchStrategy.ASYNC_EVENT, ACTION_CONTEXT_UPDATER);
         
         ActionContext.set(view.getComponent(), actionContext);
 
