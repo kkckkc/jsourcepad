@@ -5,12 +5,16 @@ import kkckkc.jsourcepad.model.settings.SettingsManager;
 import kkckkc.jsourcepad.model.settings.StyleSettings;
 import kkckkc.jsourcepad.util.action.BaseAction;
 import kkckkc.jsourcepad.util.action.Presenter;
+import kkckkc.jsourcepad.util.messagebus.Subscription;
 
+import javax.annotation.PreDestroy;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 public class ViewWrapColumnAction extends BaseAction implements Presenter.Menu, SettingsManager.Listener<StyleSettings> {
     private int column;
+
+    private Subscription subscription;
 
     public ViewWrapColumnAction() {
     }
@@ -20,10 +24,15 @@ public class ViewWrapColumnAction extends BaseAction implements Presenter.Menu, 
 
         if (column != 0) {
             SettingsManager settingsManager = Application.get().getSettingsManager();
-            settingsManager.subscribe(StyleSettings.class, this, true, Application.get());
+            subscription = settingsManager.subscribe(StyleSettings.class, this, true);
         }
 
         updateName();
+    }
+
+    @PreDestroy
+    public void destroy() {
+        subscription.unsubscribe();
     }
 
     @Override

@@ -2,25 +2,34 @@ package kkckkc.jsourcepad.model;
 
 import kkckkc.jsourcepad.model.settings.SettingsManager;
 import kkckkc.jsourcepad.model.settings.TabProjectSettings;
+import kkckkc.jsourcepad.util.messagebus.Subscription;
 import kkckkc.utils.CharSequenceUtils;
 
+import javax.annotation.PreDestroy;
 
 
 public class TabManagerImpl implements TabManager, SettingsManager.Listener<TabProjectSettings> {
 	private boolean softTabs;
 	private int tabSize;
 	private String softTab;
-	
+
+    private Subscription subscription;
+
 	public TabManagerImpl(Doc doc) {
         if (doc.getDocList().getWindow().getProject() != null) {
             SettingsManager settingsManager = doc.getDocList().getWindow().getProject().getSettingsManager();
-            settingsManager.subscribe(TabProjectSettings.class, this, true, Application.get(), doc);
+            subscription = settingsManager.subscribe(TabProjectSettings.class, this, true);
         } else {
             SettingsManager settingsManager = Application.get().getSettingsManager();
-		    settingsManager.subscribe(TabProjectSettings.class, this, true, Application.get(), doc);
+		    subscription = settingsManager.subscribe(TabProjectSettings.class, this, true);
         }
 	}
-	
+
+    @PreDestroy
+    public void destroy() {
+        subscription.unsubscribe();
+    }
+
 	public void settingUpdated(TabProjectSettings tabSettings) {
 		softTabs = tabSettings.isSoftTabs();
 		tabSize = tabSettings.getTabSize();

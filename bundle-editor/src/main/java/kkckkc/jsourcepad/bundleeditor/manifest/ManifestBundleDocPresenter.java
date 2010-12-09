@@ -9,6 +9,7 @@ import kkckkc.jsourcepad.model.bundle.BundleItemSupplier;
 import kkckkc.jsourcepad.model.bundle.BundleListener;
 import kkckkc.jsourcepad.model.bundle.BundleStructure;
 import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
+import kkckkc.jsourcepad.util.messagebus.Subscription;
 import kkckkc.jsourcepad.util.ui.JTreeUtils;
 
 import javax.swing.*;
@@ -24,7 +25,7 @@ import java.util.*;
 
 public class ManifestBundleDocPresenter extends BasicBundleDocPresenter {
 
-    private BundleListener menuListener;
+    private Subscription subscription;
 
     @Override
     protected void saveCallback() {
@@ -67,7 +68,7 @@ public class ManifestBundleDocPresenter extends BasicBundleDocPresenter {
         final BundleDocImpl bDoc = (BundleDocImpl) doc;
         final Bundle bundle = Application.get().getBundleManager().getBundle(bDoc.getName());
 
-        menuListener = new BundleListener() {
+        subscription = Application.get().topic(BundleListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, new BundleListener() {
 
             @Override
             public void bundleAdded(Bundle bundle) {
@@ -100,8 +101,7 @@ public class ManifestBundleDocPresenter extends BasicBundleDocPresenter {
             @Override
             public void languagesUpdated() {
             }
-        };
-        Application.get().topic(BundleListener.class).subscribeWeak(DispatchStrategy.ASYNC_EVENT, menuListener);
+        });
 
 
         DefaultTreeModel menuModel = initMenu(mView, bDoc, bundle);
@@ -133,6 +133,12 @@ public class ManifestBundleDocPresenter extends BasicBundleDocPresenter {
                 bDoc.setModified(true);
             }
         });
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        subscription.unsubscribe();
     }
 
     private void initAvailable(ManifestBundleDocViewImpl mView, DefaultTreeModel menuModel, Bundle bundle) {

@@ -8,6 +8,7 @@ import kkckkc.jsourcepad.model.*;
 import kkckkc.jsourcepad.util.Config;
 import kkckkc.jsourcepad.util.Cygwin;
 import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
+import kkckkc.jsourcepad.util.messagebus.Subscription;
 import kkckkc.syntaxpane.model.Interval;
 import kkckkc.syntaxpane.model.LineManager;
 import kkckkc.utils.StringUtils;
@@ -174,7 +175,7 @@ public class PreviewServer {
 
                         final CountDownLatch latch = new CountDownLatch(1);
 
-                        WindowManager.Listener listener = new WindowManager.Listener() {
+                        Subscription subscription = Application.get().topic(WindowManager.Listener.class).subscribe(DispatchStrategy.SYNC, new WindowManager.Listener() {
                             @Override
                             public void created(Window w) {
                             }
@@ -183,13 +184,14 @@ public class PreviewServer {
                             public void destroyed(Window w) {
                                 if (w == window) latch.countDown();
                             }
-                        };
-                        Application.get().topic(WindowManager.Listener.class).subscribeWeak(DispatchStrategy.SYNC, listener);
+                        });
 
                         try {
                             latch.await();
                         } catch (InterruptedException e) {
                             throw new RuntimeException(e);
+                        } finally {
+                            subscription.unsubscribe();
                         }
                     } else {
                         Application.get().getCommandExecutor().execute(new OpenCommand(args.get(args.size() - 1), false));

@@ -55,10 +55,10 @@ public class ProjectImpl implements Project, DocList.Listener, Window.FocusListe
 	public void init() {
         if (projectDir != null) {
 
-            window.topic(Window.FocusListener.class).subscribeWeak(DispatchStrategy.ASYNC, this);
+            window.topic(Window.FocusListener.class).subscribe(DispatchStrategy.ASYNC, this);
 
             settingsManager = new ProjectSettingsManager(window, projectDir);
-            settingsManager.subscribe(IgnorePatternProjectSettings.class, this, true, window);
+            settingsManager.subscribe(IgnorePatternProjectSettings.class, this, true);
         }
 	}
 	

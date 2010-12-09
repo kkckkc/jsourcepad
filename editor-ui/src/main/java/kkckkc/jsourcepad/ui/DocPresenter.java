@@ -1,5 +1,6 @@
 package kkckkc.jsourcepad.ui;
 
+import com.google.common.collect.Lists;
 import kkckkc.jsourcepad.Presenter;
 import kkckkc.jsourcepad.action.ActionContextKeys;
 import kkckkc.jsourcepad.action.text.IndentAction;
@@ -13,15 +14,18 @@ import kkckkc.jsourcepad.model.settings.SettingsManager.Listener;
 import kkckkc.jsourcepad.model.settings.SettingsManager.Setting;
 import kkckkc.jsourcepad.util.action.ActionContext;
 import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
+import kkckkc.jsourcepad.util.messagebus.Subscription;
 import kkckkc.syntaxpane.ScrollableSourcePane;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeListener;
+import java.util.List;
 
 public class DocPresenter implements Presenter<DocView> {
 	protected ScrollableSourcePane sourcePane;
@@ -31,8 +35,8 @@ public class DocPresenter implements Presenter<DocView> {
 	// Collaborators
 	protected DocView view;
     protected Window window;
-    private SettingsListener settingsListener;
-    private ProjectSettingsListener projectSettingsListener;
+
+    private List<Subscription> subscriptions = Lists.newArrayList();
 
     @Autowired
     public void setView(DocView view) {
@@ -52,7 +56,12 @@ public class DocPresenter implements Presenter<DocView> {
 	public void setDoc(Doc doc) {
 	    this.doc = doc;
     }
-	
+
+    @PreDestroy
+    public void destroy() {
+        for (Subscription s : subscriptions) s.unsubscribe();
+    }
+
 	@PostConstruct
     public void init() {
 		sourcePane = view.getSourcePane();
@@ -61,15 +70,13 @@ public class DocPresenter implements Presenter<DocView> {
 
 		Application app = Application.get();
 
-        settingsListener = new SettingsListener();
-
-        app.getSettingsManager().subscribe(settingsListener, false, app, doc);
+        subscriptions.add(app.getSettingsManager().subscribe(new SettingsListener(), false));
         if (window.getProject() != null) {
-            projectSettingsListener = new ProjectSettingsListener(window.getProject().getSettingsManager());
-            window.getProject().getSettingsManager().subscribe(projectSettingsListener, false, app, doc);
+            subscriptions.add(window.getProject().getSettingsManager().subscribe(
+                    new ProjectSettingsListener(window.getProject().getSettingsManager()), false));
         } else {
-            projectSettingsListener = new ProjectSettingsListener(app.getSettingsManager());
-            app.getSettingsManager().subscribe(projectSettingsListener, false, app, doc);
+            subscriptions.add(app.getSettingsManager().subscribe(
+                    new ProjectSettingsListener(app.getSettingsManager()), false));
         }
 
 		sourcePane.getEditorPane().getKeymap().addActionForKeyStroke(
@@ -100,8 +107,8 @@ public class DocPresenter implements Presenter<DocView> {
         actionContext.put(ActionContextKeys.FOCUSED_COMPONENT, doc);
         actionContext.commit();
 
-        doc.getDocList().getWindow().topic(Buffer.SelectionListener.class).subscribeWeak(DispatchStrategy.ASYNC_EVENT, ACTION_CONTEXT_UPDATER);
-        doc.getDocList().getWindow().topic(Doc.StateListener.class).subscribeWeak(DispatchStrategy.ASYNC_EVENT, ACTION_CONTEXT_UPDATER);
+        subscriptions.add(doc.getDocList().getWindow().topic(Buffer.SelectionListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, ACTION_CONTEXT_UPDATER));
+        subscriptions.add(doc.getDocList().getWindow().topic(Doc.StateListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, ACTION_CONTEXT_UPDATER));
         
         ActionContext.set(view.getComponent(), actionContext);
 

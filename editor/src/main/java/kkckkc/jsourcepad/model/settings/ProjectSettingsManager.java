@@ -3,6 +3,7 @@ package kkckkc.jsourcepad.model.settings;
 import com.google.common.collect.Maps;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
+import kkckkc.jsourcepad.util.messagebus.MessageBus;
 
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
@@ -66,5 +67,10 @@ public class ProjectSettingsManager extends AbstractSettingsManager {
 		}
 
         cache = Maps.newHashMap();
+    }
+
+    @Override
+    public MessageBus getMessageBus() {
+        return window;
     }
 }

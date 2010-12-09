@@ -3,6 +3,7 @@ package kkckkc.jsourcepad.model.settings;
 import com.google.common.collect.Maps;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.util.Config;
+import kkckkc.jsourcepad.util.messagebus.MessageBus;
 
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
@@ -65,4 +66,8 @@ public class GlobalSettingsManager extends AbstractSettingsManager {
 		}
     }
 
+    @Override
+    public MessageBus getMessageBus() {
+        return Application.get();
+    }
 }

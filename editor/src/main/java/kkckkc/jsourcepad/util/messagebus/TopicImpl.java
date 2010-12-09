@@ -2,8 +2,6 @@ package kkckkc.jsourcepad.util.messagebus;
 
 import kkckkc.utils.Pair;
 
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -12,42 +10,26 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 
 public class TopicImpl<T> implements Topic<T, Pair<Method, Object[]>> {
-	protected List<Pair<DispatchStrategy, Reference<T>>> listeners;
-	protected List<Pair<DispatchStrategy, Reference<UntypedListener>>> untypedListeners;
-	
+	protected List<Pair<DispatchStrategy, T>> listeners;
+
 	private Class<? extends T> topic;
 	private T dispatcher;
-	
-	private MessageBus messageBus;
-	
+
 	public TopicImpl(Class<? extends T> topic, MessageBus messageBus) {
 		this.topic = topic;
-		this.messageBus = messageBus;
 	}
 
-	public void subscribeWeak(DispatchStrategy dispatchStrategy, T listener) {
-		if (listeners == null) listeners = new CopyOnWriteArrayList<Pair<DispatchStrategy,Reference<T>>>();
-		listeners.add(new Pair<DispatchStrategy, Reference<T>>(dispatchStrategy, new WeakReference(listener)));
-		return;
-	}
+    public Subscription subscribe(DispatchStrategy dispatchStrategy, T listener) {
+        if (listeners == null) listeners = new CopyOnWriteArrayList<Pair<DispatchStrategy,T>>();
 
-    public void subscribe(DispatchStrategy dispatchStrategy, T listener) {
-        if (listeners == null) listeners = new CopyOnWriteArrayList<Pair<DispatchStrategy,Reference<T>>>();
-        listeners.add(new Pair<DispatchStrategy, Reference<T>>(dispatchStrategy, new HardReference(listener)));
-        return;
-    }
-
-    public class HardReference<T> extends WeakReference<T> {
-        private final T strongRef;
-
-        public HardReference(T referent) {
-            super(null);
-            strongRef = referent;
-        }
-
-        public T get() {
-            return strongRef;
-        }
+        final Pair<DispatchStrategy, T> pair = new Pair<DispatchStrategy, T>(dispatchStrategy, listener);
+        listeners.add(pair);
+        return new Subscription() {
+            @Override
+            public void unsubscribe() {
+                listeners.remove(pair);
+            }
+        };
     }
 
 
@@ -67,12 +49,11 @@ public class TopicImpl<T> implements Topic<T, Pair<Method, Object[]>> {
 	@Override
 	public void post(final Pair<Method, Object[]> message) {
 		if (listeners != null) {
-			for (final Pair<DispatchStrategy, Reference<T>> p : listeners) {
-                if (p.getSecond().get() == null) continue;
+			for (final Pair<DispatchStrategy, T> p : listeners) {
 				p.getFirst().execute(new Runnable() {
 					public void run() {
 						try {
-							message.getFirst().invoke(p.getSecond().get(), message.getSecond());
+							message.getFirst().invoke(p.getSecond(), message.getSecond());
 						} catch (Exception e) {
 							throw new RuntimeException(e);
 						}
@@ -80,26 +61,5 @@ public class TopicImpl<T> implements Topic<T, Pair<Method, Object[]>> {
 				});
 			}
 		}
-
-		if (untypedListeners != null) {
-			for (final Pair<DispatchStrategy, Reference<UntypedListener>> p : untypedListeners) {
-                if (p.getSecond().get() == null) return;
-				p.getFirst().execute(new Runnable() {
-					public void run() {
-						try {
-							p.getSecond().get().onEvent(message);
-						} catch (Exception e) {
-							throw new RuntimeException(e);
-						}
-					}
-				});
-			}
-		}
-		
-		// Post to all children as well
-		for (MessageBus mb : messageBus.getChildren()) {
-			mb.topic(topic).post(message);
-		}
-		
 	}
 }

@@ -16,9 +16,11 @@ import kkckkc.jsourcepad.util.action.ActionGroup;
 import kkckkc.jsourcepad.util.action.CompoundActionGroup;
 import kkckkc.jsourcepad.util.action.MenuFactory;
 import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
+import kkckkc.jsourcepad.util.messagebus.Subscription;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
@@ -33,7 +35,7 @@ public class WindowPresenter implements Presenter<WindowView>, DocList.Listener 
 	private WindowView windowView;
 	private BundleManager bundleManager;
 	private JFrame frame;
-    private SettingsManager.Listener<WindowSettings> settingsListener;
+    private Subscription subscription;
 
     @Autowired
 	public void setWindow(Window window) {
@@ -130,19 +132,21 @@ public class WindowPresenter implements Presenter<WindowView>, DocList.Listener 
             }
         });
 
-        window.topic(DocList.Listener.class).subscribeWeak(DispatchStrategy.ASYNC_EVENT, WindowPresenter.this);
+        window.topic(DocList.Listener.class).subscribe(DispatchStrategy.ASYNC_EVENT, WindowPresenter.this);
         frame.setVisible(true);
 
-        final Application app = Application.get();
-        settingsListener = new SettingsManager.Listener<WindowSettings>() {
+        subscription = Application.get().getSettingsManager().subscribe(WindowSettings.class, new SettingsManager.Listener<WindowSettings>() {
             public void settingUpdated(WindowSettings settings) {
                 windowView.setShowProjectDrawer(settings.isShowProjectDrawer());
             }
-        };
-        app.getSettingsManager().subscribe(WindowSettings.class, settingsListener, false, app, window);
+        }, false);
     }
 	
-	
+
+    @PreDestroy
+    public void destroy() {
+        subscription.unsubscribe();
+    }
 	
 	public void dispose() {
 		this.frame.dispose();

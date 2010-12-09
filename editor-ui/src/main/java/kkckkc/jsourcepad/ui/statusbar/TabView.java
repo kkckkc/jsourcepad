@@ -26,7 +26,7 @@ public class TabView extends JLabel implements DocList.Listener, ActionListener,
 	public TabView(Window window) {
 		this.window = window;
 		
-		window.topic(DocList.Listener.class).subscribeWeak(DispatchStrategy.ASYNC_EVENT, this);
+		window.topic(DocList.Listener.class).subscribe(DispatchStrategy.ASYNC_EVENT, this);
 		updateState(null);
 		
 		JPopupMenu popupMenu = new JPopupMenu();
@@ -46,7 +46,7 @@ public class TabView extends JLabel implements DocList.Listener, ActionListener,
 		
 		PopupUtils.bind(popupMenu, this, true);
 		
-		Application.get().getSettingsManager().subscribe(TabProjectSettings.class, this, false, Application.get());
+		Application.get().getSettingsManager().subscribe(TabProjectSettings.class, this, false);
 	}
 
 	private JMenuItem makeTabSizeButton(ButtonGroup tabSizeGroup, Integer size) {
@@ -66,7 +66,7 @@ public class TabView extends JLabel implements DocList.Listener, ActionListener,
 
 	@Override
     public void created(Doc doc) { 
-		Application.get().getSettingsManager().subscribe(TabProjectSettings.class, this, false, doc);
+        updateState(doc);
 	}
 
 	@Override
@@ -99,8 +99,7 @@ public class TabView extends JLabel implements DocList.Listener, ActionListener,
 		}
 
         getSettingsManager().update(newSettings);
-		
-		doc.topic(SettingsManager.Listener.class).post().settingUpdated(newSettings);
+        updateLabel(newSettings);
     }
 
 

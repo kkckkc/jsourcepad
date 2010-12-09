@@ -3,8 +3,8 @@ package kkckkc.jsourcepad.model;
 import kkckkc.jsourcepad.ScopeRoot;
 import kkckkc.jsourcepad.model.bundle.Bundle;
 import kkckkc.jsourcepad.model.bundle.BundleListener;
-import kkckkc.jsourcepad.util.messagebus.AbstractMessageBus;
 import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
+import kkckkc.jsourcepad.util.messagebus.Subscription;
 import kkckkc.syntaxpane.model.LineManager;
 import kkckkc.syntaxpane.model.SourceDocument;
 import kkckkc.syntaxpane.parse.grammar.Language;
@@ -15,10 +15,11 @@ import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
+import javax.annotation.PreDestroy;
 import java.io.*;
 
 
-public class DocImpl extends AbstractMessageBus implements Doc, ScopeRoot, BeanFactoryAware {
+public class DocImpl implements Doc, ScopeRoot, BeanFactoryAware {
 	protected LanguageManager languageManager;
 	private DocList docList;
 	protected Window window;
@@ -27,7 +28,7 @@ public class DocImpl extends AbstractMessageBus implements Doc, ScopeRoot, BeanF
 	private TabManager tabManager;
 	private DefaultListableBeanFactory container;
     private SourceDocument sourceDocument;
-    private BundleListener bundleListener;
+    private Subscription subscription;
 
     @Autowired
 	public DocImpl(final Window window, DocList docList, LanguageManager languageManager) {
@@ -41,7 +42,7 @@ public class DocImpl extends AbstractMessageBus implements Doc, ScopeRoot, BeanF
 		this.languageManager = languageManager;
 		this.tabManager = new TabManagerImpl(this);
 
-        bundleListener = new BundleListener() {
+        subscription = Application.get().topic(BundleListener.class).subscribe(DispatchStrategy.ASYNC, new BundleListener() {
 
             @Override
             public void bundleAdded(Bundle bundle) {
@@ -62,10 +63,14 @@ public class DocImpl extends AbstractMessageBus implements Doc, ScopeRoot, BeanF
                         line != null ? line.getCharSequence(false).toString() : "", backingFile);
                 DocImpl.this.buffer.setLanguage(language);
             }
-        };
-        Application.get().topic(BundleListener.class).subscribeWeak(DispatchStrategy.ASYNC, bundleListener);
+        });
 	}
-	
+
+    @PreDestroy
+    public void destroy() {
+        subscription.unsubscribe();
+    }
+
 	public Buffer getActiveBuffer() {
 		return buffer;
 	}

@@ -35,7 +35,7 @@ public class ApplicationController implements WindowManager.Listener {
             throw new RuntimeException(e);
         }
 
-		Application.get().topic(WindowManager.Listener.class).subscribeWeak(DispatchStrategy.SYNC_EVENT, this);
+		Application.get().topic(WindowManager.Listener.class).subscribe(DispatchStrategy.SYNC_EVENT, this);
 	}
 
 	

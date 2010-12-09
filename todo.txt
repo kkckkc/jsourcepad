@@ -3,8 +3,10 @@
 [x] Change tab size doesn't work
 [x] Change theme on the fly
 [x] Width of margin highlight
-[ ] Remove weak subscriptions on message buses. Verify explicit unsubscription on each
+[x] Remove weak subscriptions on message buses. Verify explicit unsubscription on each
+[ ] Line number alignment
 
+([ ] Rethink tab settings)
 
 [ ] Select Bundle Item should filter out unavailable due to scope
 [-] Disposable
