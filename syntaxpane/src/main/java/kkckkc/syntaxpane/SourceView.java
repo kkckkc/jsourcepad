@@ -65,7 +65,7 @@ public class SourceView extends FoldablePlainView implements ThreadedParserFacad
 		if (line == null) {
 			getDocument().getText(p0, p1 - p0, segment);
 			TextStyle defaultStyle = editorKit.getSourcePane().getStyleScheme().getTextStyle();
-			return draw(defaultStyle, graphics2d, x, y, segment, this);
+			return draw(defaultStyle, defaultStyle, graphics2d, x, y, segment, this);
 		}
 
 		int start = p0 - line.getStart();
@@ -77,7 +77,7 @@ public class SourceView extends FoldablePlainView implements ThreadedParserFacad
 		
 		FoldManager.State s = doc.getFoldManager().getFoldState(line.getIdx());
 		if (s == FoldManager.State.FOLDED_FIRST_LINE) {
-			x = draw(editorKit.getSourcePane().getStyleScheme().getTextStyle(), graphics,
+			x = draw(editorKit.getSourcePane().getStyleScheme().getTextStyle(), null, graphics,
 					x + 10, y, new Segment(new char[] { '.', '.', '.' }, 0, 3),
 					this);
 		}
@@ -115,6 +115,7 @@ public class SourceView extends FoldablePlainView implements ThreadedParserFacad
 	private int draw(Graphics graphics, int x, int y, int s, int e,
 			Segment segment, TabExpander tabExpander, Line line, Scope scope)
 			throws BadLocationException {
+        TextStyle defaultStyle = editorKit.getSourcePane().getStyleScheme().getTextStyle();
         TextStyle style = scopeSelectorManager.getMatch(scope, editorKit
 				.getSourcePane().getStyleScheme().getStyles());
 		if (style == null) {
@@ -126,7 +127,7 @@ public class SourceView extends FoldablePlainView implements ThreadedParserFacad
 			int t = Math.min(scope.getEnd(), e);
 			if (f < t) {
 				getText(line, segment, f, t);
-				x = draw(style, graphics, x, y, segment, tabExpander);
+				x = draw(style, defaultStyle, graphics, x, y, segment, tabExpander);
 			}
 		} else {
 			int o = scope.getStart();
@@ -137,7 +138,7 @@ public class SourceView extends FoldablePlainView implements ThreadedParserFacad
 
 					if (f < t) {
 						getText(line, segment, f, t);
-						x = draw(style, graphics, x, y, segment, tabExpander);
+						x = draw(style, defaultStyle, graphics, x, y, segment, tabExpander);
 					}
 				}
 
@@ -155,7 +156,7 @@ public class SourceView extends FoldablePlainView implements ThreadedParserFacad
 				int t = Math.min(end, e);
 				if (f < t) {
 					getText(line, segment, f, t);
-					x = draw(style, graphics, x, y, segment, tabExpander);
+					x = draw(style, defaultStyle, graphics, x, y, segment, tabExpander);
 				}
 			}
 		}
@@ -171,8 +172,8 @@ public class SourceView extends FoldablePlainView implements ThreadedParserFacad
 		getDocument().getText(startOffset, length, segment);
 	}
 	
-	private int draw(TextStyle style, Graphics graphics, int x, int y, Segment segment,
-			TabExpander tabExpander) {
+	private int draw(TextStyle style, TextStyle defaultStyle, Graphics graphics, int x, int y, Segment segment,
+                     TabExpander tabExpander) {
 		graphics.setColor(style.getColor());
 		Font f = graphics.getFont();
         
@@ -181,8 +182,21 @@ public class SourceView extends FoldablePlainView implements ThreadedParserFacad
 			newFont = newFont.deriveFont((style.isBold() ? Font.BOLD : 0)
 					| (style.isItalic() ? Font.ITALIC : 0));
 		graphics.setFont(newFont);
-		
+
 		int i = Utilities.drawTabbedText(segment, x, y, graphics, tabExpander, 0);
+
+        if (style.getBackground() != null && (defaultStyle != null && ! style.getBackground().equals(defaultStyle.getBackground()))) {
+            Graphics2D g2 = (Graphics2D) graphics;
+            g2.setColor(style.getBackground());
+            g2.setBackground(style.getBackground());
+
+            FontMetrics fm = sourcePane.getFontMetrics(f);
+            g2.fillRect(x, y - fm.getAscent(), i - x, fm.getHeight() - fm.getLeading());
+
+            graphics.setColor(style.getColor());
+            i = Utilities.drawTabbedText(segment, x, y, graphics, tabExpander, 0);
+        }
+
 		graphics.setFont(f);
 		return i;
 	}

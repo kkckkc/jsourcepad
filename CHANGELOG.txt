@@ -4,6 +4,7 @@ Build
 Improvements
  - Slight performance improvement in parsing by reducing the number of regexps checked in certain situations
  - The name property is removed from the syntax items in the bundle editor to better work with the Language Grammar bundle
+ - Support for background colors in themes
 
 Features
  - Command bundle items now supports changing of output type through exit codes
