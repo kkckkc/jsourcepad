@@ -30,8 +30,11 @@ public class LineNumberMargin extends JComponent implements PropertyChangeListen
 	private SourceDocument document;
 
 	private int fontHeight;
+    private int fontLeading;
+    private int fontDescent;
 
-	public LineNumberMargin(JEditorPane editorPane) {
+
+    public LineNumberMargin(JEditorPane editorPane) {
 		this.jEditorPane = editorPane;
 		this.jEditorPane.addPropertyChangeListener("document", this);
 		
@@ -58,6 +61,8 @@ public class LineNumberMargin extends JComponent implements PropertyChangeListen
 		fontMetrics = getFontMetrics(getFont());
 		fontHeight = fontMetrics.getHeight();
 		fontAscent = fontMetrics.getAscent();
+        fontDescent = fontMetrics.getDescent();
+        fontLeading = fontMetrics.getLeading();
 	}
 
 	public int getStartOffset() {
@@ -94,7 +99,8 @@ public class LineNumberMargin extends JComponent implements PropertyChangeListen
 					int rowWidth = getSize().width;
                     
 					g.drawString(lineNumber, rowWidth - stringWidth - MARGIN, 
-							((foldManager.toVisibleIndex(startLine.getIdx()) + 1) * fontHeight) - (fontHeight - fontAscent));
+							//((foldManager.toVisibleIndex(startLine.getIdx()) + 1) * fontHeight) - (fontHeight - fontAscent));
+							((foldManager.toVisibleIndex(startLine.getIdx()) + 1) * fontHeight) - fontLeading);
 					--max;
 				}
 				

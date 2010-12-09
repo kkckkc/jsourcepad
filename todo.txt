@@ -4,7 +4,7 @@
 [x] Change theme on the fly
 [x] Width of margin highlight
 [x] Remove weak subscriptions on message buses. Verify explicit unsubscription on each
-[ ] Line number alignment
+[x] Line number alignment
 
 ([ ] Rethink tab settings)
 
