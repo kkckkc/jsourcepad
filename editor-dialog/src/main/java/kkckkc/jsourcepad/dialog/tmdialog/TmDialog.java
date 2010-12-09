@@ -76,7 +76,7 @@ public class TmDialog implements Dialog, BeanFactoryAware {
                     token = Long.parseLong(args[++i]);
                     TmDialogDelegate delegate = asynchronousWindows.get(token);
                     if (delegate == null) return ERROR_NOT_FOUND;
-                    Object o = delegate.waitForClose();
+                    Object o = delegate.waitForData();
                     if (o == null) return ERROR_GENERAL;
 
                     if (! quite) {
@@ -137,7 +137,7 @@ public class TmDialog implements Dialog, BeanFactoryAware {
             out.write(token.toString());
             out.flush();
         } else {
-            Object o = delegate.waitForClose();
+            Object o = delegate.waitForData();
             if (o == null) return ERROR_GENERAL;
 
             if (! quite) {

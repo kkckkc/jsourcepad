@@ -218,7 +218,10 @@ public class ScrollableSourcePane extends JPanel {
             graphics2d.fillRect(clip.x, clip.y, clip.width, clip.height);
 
             graphics2d.setColor(getStyleScheme().getRightMargin().getBackground());
-            graphics2d.fillRect(getWrapColumn() * wm, clip.y, clip.width, clip.height);
+
+            graphics2d.fillRect(getWrapColumn() * wm, clip.y,
+                    (int) getVisibleRect().getMaxX() - (getWrapColumn() * wm),
+                    clip.height);
 
             graphics2d.setColor(getStyleScheme().getRightMargin().getColor());
             graphics2d.drawLine(getWrapColumn() * wm, clip.y, getWrapColumn() * wm, clip.y + clip.height);

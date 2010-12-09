@@ -1,3 +1,11 @@
+[x] Dialog wait for input should not close
+[ ] tm_dialog2 -ep
+[x] Change tab size doesn't work
+[x] Change theme on the fly
+[x] Width of margin highlight
+[ ] Remove weak subscriptions on message buses. Verify explicit unsubscription on each
+
+
 [ ] Select Bundle Item should filter out unavailable due to scope
 [-] Disposable
 [ ] Multiple invocations of select current scope should make it bigger

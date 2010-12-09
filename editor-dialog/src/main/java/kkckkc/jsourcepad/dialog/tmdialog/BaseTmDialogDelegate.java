@@ -13,19 +13,20 @@ public abstract class BaseTmDialogDelegate implements TmDialogDelegate {
     protected Action OK_ACTION = new AbstractAction("Ok") {
         @Override
         public void actionPerformed(ActionEvent e) {
-            close();
+            sendData();
         }
     };
     protected Action CANCEL_ACTION = new AbstractAction("Cancel") {
         @Override
         public void actionPerformed(ActionEvent e) {
             isCancelled = true;
-            close();
+            sendData();
         }
     };
 
     private boolean isCancelled = false;
     private boolean center;
+    private boolean async;
     private Window window;
 
     protected JDialog jdialog;
@@ -35,6 +36,7 @@ public abstract class BaseTmDialogDelegate implements TmDialogDelegate {
     public void open(Window window, boolean center, boolean modal, boolean async) {
         this.center = center;
         this.window = window;
+        this.async = async;
 
         jdialog = new JDialog(
                 modal ? window.getContainer() : null,
@@ -82,9 +84,17 @@ public abstract class BaseTmDialogDelegate implements TmDialogDelegate {
         jdialog.setVisible(false);
     }
 
+    private void sendData() {
+        if (latch != null) {
+            latch.countDown();
+        }
+        if (! async) {
+            jdialog.setVisible(false);
+        }
+    }
 
     @Override
-    public Object waitForClose() {
+    public Object waitForData() {
         if (latch != null) {
             try {
                 latch.await();
