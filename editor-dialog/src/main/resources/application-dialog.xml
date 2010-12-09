@@ -11,6 +11,8 @@
 
 
     <!-- Global nibs -->
+    <bean name="dialog/tm_dialog/Error"
+          class="kkckkc.jsourcepad.dialog.tmdialog.dialogs.ErrorDialog" scope="prototype" />
     <bean name="dialog/tm_dialog/Support/nibs/SimpleNotificationWindow.nib"
           class="kkckkc.jsourcepad.dialog.tmdialog.dialogs.SimpleNotificationWindow" scope="prototype" />
     <bean name="dialog/tm_dialog/ProgressDialog.nib"

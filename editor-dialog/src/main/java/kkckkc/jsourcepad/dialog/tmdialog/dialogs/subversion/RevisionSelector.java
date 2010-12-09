@@ -1,5 +1,6 @@
 package kkckkc.jsourcepad.dialog.tmdialog.dialogs.subversion;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import kkckkc.jsourcepad.dialog.tmdialog.BaseTmDialogDelegate;
@@ -8,7 +9,10 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class RevisionSelector extends BaseTmDialogDelegate {
     private JTable table;
@@ -62,7 +66,11 @@ public class RevisionSelector extends BaseTmDialogDelegate {
     protected Object getReturnData() {
         Map m = Maps.newHashMap();
 
-        m.put("returnArgument", Arrays.asList(table.getValueAt(table.getSelectedRow(), 0)));
+        List<Object> selectedRevisions = Lists.newArrayList();
+        for (int row : table.getSelectedRows()) {
+            selectedRevisions.add(table.getValueAt(row, 0));
+        }
+        m.put("returnArgument", selectedRevisions);
         m.put("returnButton", "ok");
 
         return m;

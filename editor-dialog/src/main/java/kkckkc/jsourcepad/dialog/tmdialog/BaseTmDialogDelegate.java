@@ -13,14 +13,14 @@ public abstract class BaseTmDialogDelegate implements TmDialogDelegate {
     protected Action OK_ACTION = new AbstractAction("Ok") {
         @Override
         public void actionPerformed(ActionEvent e) {
-            sendData();
+            notifyDataIsAvailable();
         }
     };
     protected Action CANCEL_ACTION = new AbstractAction("Cancel") {
         @Override
         public void actionPerformed(ActionEvent e) {
             isCancelled = true;
-            sendData();
+            notifyDataIsAvailable();
         }
     };
 
@@ -84,7 +84,7 @@ public abstract class BaseTmDialogDelegate implements TmDialogDelegate {
         jdialog.setVisible(false);
     }
 
-    private void sendData() {
+    protected void notifyDataIsAvailable() {
         if (latch != null) {
             latch.countDown();
         }
@@ -102,6 +102,8 @@ public abstract class BaseTmDialogDelegate implements TmDialogDelegate {
                 throw new RuntimeException(e);
             }
         }
+        // Reset latch
+        latch = new CountDownLatch(1);
         return isCancelled ? null : getReturnData();
     }
 

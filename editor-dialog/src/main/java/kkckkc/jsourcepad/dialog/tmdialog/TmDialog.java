@@ -47,6 +47,13 @@ public class TmDialog implements Dialog, BeanFactoryAware {
             String arg = args[i];
 
             if (arg.startsWith("-")) {
+                if (arg.contains("e")) {
+                    nib = "Error";
+                    center = true;
+
+                    // TODO: Maybe we should make sure we are modal whith regards to the current dialog if there are any. See Subversion > Diff Revisions... and select only one revision
+                    modal = true;
+                }
                 if (arg.contains("q")) quite = true;
                 if (arg.contains("c")) center = true;
                 if (arg.contains("m")) modal = true;
@@ -80,10 +87,15 @@ public class TmDialog implements Dialog, BeanFactoryAware {
                     if (o == null) return ERROR_GENERAL;
 
                     if (! quite) {
-                        XMLPListWriter w = new XMLPListWriter();
-                        w.setPropertyList(o);
-                        out.write(w.getString());
-                        out.flush();
+                        if (o instanceof Map) {
+                            XMLPListWriter w = new XMLPListWriter();
+                            w.setPropertyList(o);
+                            out.write(w.getString());
+                            out.flush();
+                        } else {
+                            out.write(o.toString());
+                            out.flush();
+                        }
                     }
                     return 0;
                 }
@@ -141,10 +153,15 @@ public class TmDialog implements Dialog, BeanFactoryAware {
             if (o == null) return ERROR_GENERAL;
 
             if (! quite) {
-                XMLPListWriter w = new XMLPListWriter();
-                w.setPropertyList(o);
-                out.write(w.getString());
-                out.flush();
+                if (o instanceof Map) {
+                    XMLPListWriter w = new XMLPListWriter();
+                    w.setPropertyList(o);
+                    out.write(w.getString());
+                    out.flush();
+                } else {
+                    out.write(o.toString());
+                    out.flush();
+                }
             }
         }
 
