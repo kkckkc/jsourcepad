@@ -30,9 +30,7 @@ public class EnvironmentProvider {
     };
 
     public static Map<String, String> getEnvironment(Window window, BundleItemSupplier bundleItemSupplier) {
-        Map<String, String> systemEnvironment = SystemEnvironmentHelper.getSystemEnvironment();
-
-		Map<String, String> environment = new HashMap<String, String>(systemEnvironment);
+		Map<String, String> environment = new HashMap<String, String>(getStaticEnvironment());
 		Doc activeDoc = window.getDocList().getActiveDoc();
 
 		if (activeDoc != null) {
@@ -67,18 +65,15 @@ public class EnvironmentProvider {
         }
 
 		List<File> paths = Lists.newArrayList();
-		
+
 		if (bundleItemSupplier != null) {
 			environment.put("TM_BUNDLE_SUPPORT", 
 					formatPath(new File(bundleItemSupplier.getFile().getParentFile().getParentFile(), "Support").getPath()));
 			paths.add(new File(bundleItemSupplier.getFile().getParentFile().getParentFile(), "Support/bin"));
 		}
 		
-        environment.put("TM_SUPPORT_PATH", formatPath(Config.getSupportFolder().getPath()));
         paths.add(new File(Config.getSupportFolder(), "bin"));
         paths.add(new File(Config.getSupportFolder(), System.getProperty("os.name") + "/bin"));
-
-        environment.put("DIALOG", formatPath(new File(Config.getSupportFolder(), "bin/tm_dialog").getPath()));
 
 		List<File> files = Lists.newArrayList();
         ActionManager actionManager = window.getActionManager();
@@ -106,14 +101,10 @@ public class EnvironmentProvider {
 		    environment.put("TM_TAB_SIZE", Integer.toString(activeDoc.getTabManager().getTabSize()));
         }
 
+        Map<String, String> systemEnvironment = SystemEnvironmentHelper.getSystemEnvironment();
         environment.put("PATH",
                     systemEnvironment.get("PATH") + File.pathSeparator +
                     Joiner.on(File.pathSeparator).join(Collections2.transform(paths, FILE_TO_STRING)));
-
-
-        // JSourcePad specific variables
-        environment.put("TM_SERVER_PORT", Integer.toString(Config.getHttpPort()));
-        environment.put("TM_FOCUSED_WINDOW", Integer.toString(Application.get().getWindowManager().getFocusedWindow().getId()));
 
 	    return environment;
     }
@@ -123,5 +114,24 @@ public class EnvironmentProvider {
             return Cygwin.makePathForEnvironmentUsage(s);
         }
         return s;
+    }
+
+    public static Map<String,String> getStaticEnvironment() {
+        Map<String, String> systemEnvironment = SystemEnvironmentHelper.getSystemEnvironment();
+
+        Map<String, String> environment = new HashMap<String, String>(systemEnvironment);
+
+        // JSourcePad specific variables
+        environment.put("TM_SERVER_PORT", Integer.toString(Config.getHttpPort()));
+        environment.put("TM_FOCUSED_WINDOW", Integer.toString(Application.get().getWindowManager().getFocusedWindow().getId()));
+
+        environment.put("DIALOG", formatPath(new File(Config.getSupportFolder(), "bin/tm_dialog").getPath()));
+
+        environment.put("TM_SUPPORT_PATH", formatPath(Config.getSupportFolder().getPath()));
+
+        // TODO: Make this configurable
+        environment.put("TM_SVN", "/usr/bin/svn");
+
+        return environment;
     }
 }

@@ -1,17 +1,22 @@
 package kkckkc.jsourcepad.command.global;
 
 import kkckkc.jsourcepad.model.Application;
+import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.util.Cygwin;
 import kkckkc.jsourcepad.util.command.Command;
+import kkckkc.utils.StringUtils;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 
 public class OpenCommand implements Command {
     private boolean openInSeparateWindow = false;
     private Object file;
     private Window window;
+    private String content;
 
     public OpenCommand() {
     }
@@ -33,15 +38,30 @@ public class OpenCommand implements Command {
         return window;
     }
 
+    public void setContents(String content) {
+        this.content = content;
+    }
+
     @Override
     public void execute() {
-        if (file instanceof String) {
+        if (file != null && file instanceof String) {
             file = new File(Cygwin.toFile((String) file));
         }
 
         if (openInSeparateWindow) {
             window = Application.get().getWindowManager().newWindow(null);
-            window.getDocList().open((File) file);
+            if (file == null) {
+                Doc doc = window.getDocList().create();
+                try {
+                    doc.getActiveBuffer().setText(
+                            Application.get().getLanguageManager().getLanguage(StringUtils.firstLine(content), new File("")),
+                            new BufferedReader(new StringReader(content)));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                window.getDocList().open((File) file);
+            }
         } else {
             try {
                 window = Application.get().open((File) file);

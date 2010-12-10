@@ -8,6 +8,8 @@ public abstract class AbstractCommandExecutor implements CommandExecutor {
     public void execute(final Command command) {
         if (! EventQueue.isDispatchThread()) {
             EventQueue.invokeLater(new EventQueueContinuation(command));
+        } else {
+            doExecute(command);
         }
     }
 

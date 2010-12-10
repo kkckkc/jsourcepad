@@ -6,6 +6,8 @@
 [x] Remove weak subscriptions on message buses. Verify explicit unsubscription on each
 [x] Line number alignment
 
+[ ] Bundle key bindings from project tree
+
 ([ ] Rethink tab settings)
 
 [ ] Select Bundle Item should filter out unavailable due to scope

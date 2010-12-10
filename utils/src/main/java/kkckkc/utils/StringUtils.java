@@ -28,4 +28,9 @@ public class StringUtils {
         return s;
     }
 
+    public static String firstLine(String content) {
+        int idx = content.indexOf('\n');
+        if (idx == -1) return content;
+        return content.substring(0, idx);
+    }
 }

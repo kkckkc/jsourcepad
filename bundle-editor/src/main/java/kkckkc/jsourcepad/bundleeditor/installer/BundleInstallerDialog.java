@@ -59,9 +59,6 @@ public class BundleInstallerDialog implements Dialog<BundleInstallerDialogView> 
         });
 
         view.getLabel().setText("Getting list of bundles...");
-
-
-
     }
 
     public void show() {

@@ -47,7 +47,18 @@ public class CommitDialogTableModel extends AbstractTableModel {
     }
 
     public void setValueAt(Object value, int row, int col) {
-        data.put(row, col, !(Boolean) data.get(row, col));
+        if (col == 0)
+            data.put(row, col, !(Boolean) data.get(row, col));
+        if (col == 1)
+            data.put(row, col, value);
+
         fireTableCellUpdated(row, col);
+    }
+
+    public void removeRow(int row) {
+        data.remove(row, 0);
+        data.remove(row, 1);
+        data.remove(row, 2);
+        fireTableRowsDeleted(row, row);
     }
 }
