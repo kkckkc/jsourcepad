@@ -89,6 +89,7 @@ public class BundleDocImpl extends DocImpl {
         }
 
         this.backingFile = file;
+        this.backingTimestamp = file.lastModified();
 
         GeneralPListReader pl = new GeneralPListReader();
         plist = (Map<String, Object>) pl.read(file);
@@ -259,6 +260,8 @@ public class BundleDocImpl extends DocImpl {
             w.setPropertyList(plist);
 
             Files.write(w.getString(), backingFile, Charsets.UTF_8);
+            this.backingTimestamp = backingFile.lastModified();
+
             setModified(false);
             getActiveBuffer().clearModified();
             window.topic(Doc.StateListener.class).post().modified(this, true, false);

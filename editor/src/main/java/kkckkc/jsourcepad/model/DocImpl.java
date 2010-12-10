@@ -1,5 +1,6 @@
 package kkckkc.jsourcepad.model;
 
+import com.google.common.collect.Lists;
 import kkckkc.jsourcepad.ScopeRoot;
 import kkckkc.jsourcepad.model.bundle.Bundle;
 import kkckkc.jsourcepad.model.bundle.BundleListener;
@@ -16,22 +17,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
 import javax.annotation.PreDestroy;
+import javax.swing.*;
 import java.io.*;
+import java.util.List;
 
 
 public class DocImpl implements Doc, ScopeRoot, BeanFactoryAware {
 	protected LanguageManager languageManager;
 	private DocList docList;
 	protected Window window;
+
 	protected File backingFile;
+    protected long backingTimestamp;
+
 	protected BufferImpl buffer;
 	private TabManager tabManager;
 	private DefaultListableBeanFactory container;
     private SourceDocument sourceDocument;
-    private Subscription subscription;
+    private List<Subscription> subscriptions = Lists.newArrayList();
 
     @Autowired
-	public DocImpl(final Window window, DocList docList, LanguageManager languageManager) {
+	public DocImpl(final Window window, final DocList docList, LanguageManager languageManager) {
 		this.docList = docList;
 
         sourceDocument = new SourceDocument();
@@ -42,7 +48,7 @@ public class DocImpl implements Doc, ScopeRoot, BeanFactoryAware {
 		this.languageManager = languageManager;
 		this.tabManager = new TabManagerImpl(this);
 
-        subscription = Application.get().topic(BundleListener.class).subscribe(DispatchStrategy.ASYNC, new BundleListener() {
+        subscriptions.add(Application.get().topic(BundleListener.class).subscribe(DispatchStrategy.ASYNC, new BundleListener() {
 
             @Override
             public void bundleAdded(Bundle bundle) {
@@ -63,12 +69,66 @@ public class DocImpl implements Doc, ScopeRoot, BeanFactoryAware {
                         line != null ? line.getCharSequence(false).toString() : "", backingFile);
                 DocImpl.this.buffer.setLanguage(language);
             }
-        });
+        }));
+
+        subscriptions.add(window.topic(Window.FocusListener.class).subscribe(DispatchStrategy.ASYNC_EVENT,
+                new Window.FocusListener() {
+                    @Override
+                    public void focusGained(Window window) {
+                        if (docList.getActiveDoc() == DocImpl.this) {
+                            checkFileForModification(window);
+                        }
+                    }
+
+                    @Override
+                    public void focusLost(Window window) {
+                    }
+                }));
+
+        subscriptions.add(window.topic(DocList.Listener.class).subscribe(DispatchStrategy.ASYNC_EVENT,
+                new DocList.Listener() {
+                    @Override
+                    public void created(Doc doc) {
+                    }
+
+                    @Override
+                    public void selected(int index, Doc doc) {
+                        if (doc == DocImpl.this) {
+                            checkFileForModification(window);
+                        }
+                    }
+
+                    @Override
+                    public void closed(int index, Doc doc) {
+                    }
+                }));
 	}
+
+    private void checkFileForModification(Window window) {
+        if (backingFile != null && backingTimestamp != backingFile.lastModified()) {
+            int option = JOptionPane.showOptionDialog(window.getContainer(),
+                    "File has been changed by an external process. Do you want to reload it?",
+                    "File Changed",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    new String[]{"Yes, Reload File", "No, Keep the Current Contents"},
+                    "Yes, Reload File");
+            if (option == 0) {
+                try {
+                    this.open(backingFile);
+                } catch (IOException ioe) {
+                    throw new RuntimeException(ioe);
+                }
+            }
+        }
+    }
 
     @PreDestroy
     public void destroy() {
-        subscription.unsubscribe();
+        for (Subscription s : subscriptions) {
+            s.unsubscribe();
+        }
     }
 
 	public Buffer getActiveBuffer() {
@@ -112,6 +172,8 @@ public class DocImpl implements Doc, ScopeRoot, BeanFactoryAware {
 			FileWriter fw = new FileWriter(this.backingFile);
 			fw.write(buffer.getText(buffer.getCompleteDocument()));
 			fw.close();
+
+            this.backingTimestamp = backingFile.lastModified();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -131,6 +193,7 @@ public class DocImpl implements Doc, ScopeRoot, BeanFactoryAware {
 		getActiveBuffer().clearModified();
 		
 		this.backingFile = file;
+        this.backingTimestamp = file.lastModified();
 		
 		window.topic(Project.FileChangeListener.class).post().created(file);
 		window.topic(Doc.StateListener.class).post().modified(this, true, false);
@@ -139,6 +202,7 @@ public class DocImpl implements Doc, ScopeRoot, BeanFactoryAware {
 	@Override
 	public void open(File file) throws IOException {
 		this.backingFile = file;
+        this.backingTimestamp = file.lastModified();
 
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		br.mark(1024);

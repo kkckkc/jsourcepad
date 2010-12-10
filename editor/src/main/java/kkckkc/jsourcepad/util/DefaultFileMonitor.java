@@ -55,7 +55,7 @@ public class DefaultFileMonitor extends AbstractFileMonitor implements Runnable 
 		}
 	}
 	
-	private void signalChange(File f) { 
+	private void signalChange(File f) {
 		for (Listener l : listeners) {
 			l.fileUpdated(f);
 		}

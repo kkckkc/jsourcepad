@@ -315,6 +315,11 @@ public class BufferImpl implements Buffer {
 		documentStateListener.disable();
 
 		document.setLanguage(language);
+        try {
+            document.remove(0, document.getLength());
+        } catch (BadLocationException e) {
+            throw new RuntimeException(e);
+        }
 
         doc.getDocList().getWindow().beginWait(true, null);
 
