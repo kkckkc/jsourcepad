@@ -31,6 +31,7 @@ public class NewFileDialog implements Dialog<NewFileDialogView>, ActionListener,
     public void show(File baseFolder) {
         view.getJDialog().setModalityType(java.awt.Dialog.ModalityType.DOCUMENT_MODAL);
 
+        view.getFileNameField().selectAll();
         view.getFileNameField().requestFocusInWindow();
         view.getFileNameField().addKeyListener(this);
 

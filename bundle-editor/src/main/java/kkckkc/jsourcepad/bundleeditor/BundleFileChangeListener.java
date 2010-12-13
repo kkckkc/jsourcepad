@@ -9,40 +9,19 @@ import kkckkc.utils.io.FileUtils;
 
 import java.io.File;
 
-public class BundleFileChangeListener implements Project.FileChangeListener {
-    @Override
-    public void renamed(File newFile, File oldFile) {
-        removed(oldFile);
-
-        BundleManager bm = Application.get().getBundleManager();
-        if (FileUtils.isAncestorOf(newFile, Config.getBundlesFolder())) {
-            // Did we delete a bundle
-            if (newFile.getParentFile().equals(Config.getBundlesFolder())) {
-                bm.addBundle(newFile);
-
-            } else {
-                // Find bundle
-                while (! newFile.getParentFile().equals(Config.getBundlesFolder())) {
-                    newFile = newFile.getParentFile();
-                }
-
-                // Reload
-                Bundle bundle = bm.getBundle(newFile);
-                bm.reload(bundle);
-            }
-        }
-
-    }
+public class BundleFileChangeListener implements Project.RefreshListener {
 
     @Override
-    public void removed(File file) {
+    public void refreshed(File file) {
         BundleManager bm = Application.get().getBundleManager();
         if (FileUtils.isAncestorOf(file, Config.getBundlesFolder())) {
-            // Did we delete a bundle
-            if (file.getParentFile().equals(Config.getBundlesFolder())) {
-                Bundle bundle = bm.getBundle(file);
-                bm.remove(bundle);
-
+            if (! file.exists()) {
+                if (file.getParentFile().equals(Config.getBundlesFolder())) {
+                    Bundle bundle = bm.getBundle(file);
+                    bm.remove(bundle);
+                } else {
+                    // Bundle added
+                }
             } else {
                 // Find bundle
                 while (! file.getParentFile().equals(Config.getBundlesFolder())) {
@@ -55,9 +34,4 @@ public class BundleFileChangeListener implements Project.FileChangeListener {
             }
         }
     }
-
-    @Override
-    public void created(File file) {
-    }
-    
 }

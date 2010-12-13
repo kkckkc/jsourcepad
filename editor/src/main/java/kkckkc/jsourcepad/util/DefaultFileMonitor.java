@@ -8,12 +8,15 @@ import java.io.File;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executor;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class DefaultFileMonitor extends AbstractFileMonitor implements Runnable {
 
 	public Map<File, Registration> registrations = Maps.newHashMap();
 	private Executor executor;
-	
+	private Lock lock = new ReentrantLock();
+
 	public DefaultFileMonitor(Executor executor) {
 		this.executor = executor;
 	}
@@ -38,26 +41,24 @@ public class DefaultFileMonitor extends AbstractFileMonitor implements Runnable 
 		for (Registration r : registrations.values()) {
 			r.process(newRegistrations);
 		}
-		synchronized (this) {
+
+        lock.lock();
+        try {
 			registrations = newRegistrations;
+		} finally {
+            lock.unlock();
+        }
+	}
+
+	private void fireDelete(File file) {
+		for (Listener listener : listeners) {
+			listener.fileRemoved(file);
 		}
 	}
 	
-	private void signalAdd(File f) {
-		for (Listener l : listeners) {
-			l.fileCreated(f);
-		}
-	}
-	
-	private void signalDelete(File f) {
-		for (Listener l : listeners) {
-			l.fileRemoved(f);
-		}
-	}
-	
-	private void signalChange(File f) {
-		for (Listener l : listeners) {
-			l.fileUpdated(f);
+	private void fireChange(File file) {
+		for (Listener listener : listeners) {
+			listener.fileUpdated(file);
 		}
 	}
 	
@@ -76,41 +77,46 @@ public class DefaultFileMonitor extends AbstractFileMonitor implements Runnable 
 			this.lastModified = file.lastModified();
 			
 			if (file.isDirectory()) {
-				for (File f : file.listFiles()) {
-					if (! p.apply(f)) continue;
-					children.add(f);
+				for (File child : file.listFiles()) {
+					if (! p.apply(child)) continue;
+					children.add(child);
 				}
 			}
 		}
 
 		public void process(Map<File, Registration> newRegistrations) {
 			if (! file.exists()) {
-				signalDelete(file);
+				fireDelete(file);
 			} else if (lastModified != file.lastModified()) {
-				signalChange(file);
+				fireChange(file);
 				newRegistrations.put(file, this);
 				this.lastModified = file.lastModified();
 			} else if (file.isDirectory()) {
+                boolean change = false;
+
 				Set<File> newChildren = Sets.newHashSet();
-				for (File f : file.listFiles()) {
-					if (! predicate.apply(f)) continue;
-					newChildren.add(f);
+				for (File child : file.listFiles()) {
+					if (! predicate.apply(child)) continue;
+					newChildren.add(child);
 				}
 				
 				if (! newChildren.equals(children)) {
 					// Detect add
 					newChildren.removeAll(children);
-					for (File f : newChildren) {
-						signalAdd(f);
+					for (File child : newChildren) {
+                        change = true;
+//						fireAdd(child);
 					}
 					
 					// Update children
 					children.clear();
-					for (File f : file.listFiles()) {
-						if (! predicate.apply(f)) continue;
-						children.add(f);
+					for (File child : file.listFiles()) {
+						if (! predicate.apply(child)) continue;
+						children.add(child);
 					}
 				}
+
+                if (change) fireChange(file);
 				
 				newRegistrations.put(file, this);
 			} else {
@@ -141,9 +147,7 @@ public class DefaultFileMonitor extends AbstractFileMonitor implements Runnable 
 			        return false;
 	        } else if (!file.equals(other.file))
 		        return false;
-	        if (predicate != other.predicate)
-		        return false;
-	        return true;
+            return predicate == other.predicate;
         }
 	}
 }

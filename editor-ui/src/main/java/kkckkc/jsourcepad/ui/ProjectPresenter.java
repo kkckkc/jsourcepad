@@ -28,7 +28,7 @@ import java.io.FileFilter;
 import java.util.List;
 import java.util.Map;
 
-public class ProjectPresenter implements Presenter<ProjectView>, Project.FileChangeListener, ProjectImpl.RefreshListener, SettingsManager.Listener<IgnorePatternProjectSettings>, BeanFactoryAware {
+public class ProjectPresenter implements Presenter<ProjectView>, ProjectImpl.RefreshListener, SettingsManager.Listener<IgnorePatternProjectSettings>, BeanFactoryAware {
 
 	private ProjectView view;
 	private Window window;
@@ -61,7 +61,6 @@ public class ProjectPresenter implements Presenter<ProjectView>, Project.FileCha
             }
         }, getDecorators()));
 
-        window.topic(Project.FileChangeListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, this);
 		window.topic(Project.RefreshListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, this);
 
 		((JTree) view).getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
@@ -111,25 +110,11 @@ public class ProjectPresenter implements Presenter<ProjectView>, Project.FileCha
             project.getSettingsManager().subscribe(IgnorePatternProjectSettings.class, this, false);
 	}
 
-    @Override
-    public void renamed(File newFile, File oldFile) {
-        refresh(newFile.getParentFile());
-    }
-
-    @Override
-    public void removed(File file) {
-        refresh(file.getParentFile());
-    }
-
-    @Override
-    public void created(File file) {
-		refresh(file.getParentFile());
-    }
-
 	@Override
-    public void refresh(File file) {
+    public void refreshed(File file) {
 		if (file != null) {
-			view.refresh(file);
+            if (file.isDirectory())
+			    view.refresh(file);
 		} else {
 			view.refresh();
 		}
@@ -158,39 +143,6 @@ public class ProjectPresenter implements Presenter<ProjectView>, Project.FileCha
         List<FileTreeModel.Decorator> dest = Lists.newArrayList();
         dest.addAll(decorators.values());
         return dest;
-/*        return Arrays.asList(
-                new FileTreeModel.Decorator() {
-
-                    @Override
-                    public void getDecoration(final FileTreeModel.Node parent, final FileTreeModel.Node[] children, final Runnable notifyChange) {
-                        Application.get().getThreadPool().submit(new Callable<Void>() {
-
-                            @Override
-                            public Void call() throws Exception {
-                                Thread.sleep(2 * 1000L);
-
-                                Random r = new Random(System.currentTimeMillis());
-                                for (FileTreeModel.Node n : children) {
-                                    if (r.nextBoolean()) {
-                                        n.putProperty("txtFile", Boolean.TRUE);
-                                    }
-                                }
-
-                                notifyChange.run();
-
-                                return null;
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void renderDecoration(FileTreeModel.Node node, FileTreeModel.CellRenderer renderer) {
-                        if (Boolean.TRUE.equals(node.getProperty("txtFile"))) {
-                            renderer.setForeground(Color.red);
-                        }
-                    }
-                });
-                */
     }
 
     @Override

@@ -10,12 +10,12 @@ public abstract class AbstractVcsDecorator implements FileTreeModel.Decorator {
     private static final String VCS_STATE = "VCS_STATE";
 
     public static enum State {
-        DELETED(Color.gray),
-        MODIFIED(Color.blue),
-        ADDED(Color.green),
-        CONFLICT(Color.red),
-        IGNORED(Color.orange),
-        UNKNOWN(Color.magenta);
+        DELETED(new Color(97, 97, 97)),
+        MODIFIED(new Color(0, 50, 160)),
+        ADDED(new Color(10, 119, 0)),
+        CONFLICT(new Color(255, 0, 0)),
+        IGNORED(new Color(114, 114, 56)),
+        UNKNOWN(new Color(153, 51, 0));
 
         Color color;
 

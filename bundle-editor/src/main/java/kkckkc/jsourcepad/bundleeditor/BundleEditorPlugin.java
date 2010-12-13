@@ -53,7 +53,7 @@ public class BundleEditorPlugin implements Plugin {
             Window window = container.getBean(Window.class);
             if (BundleStructure.isBundleDir((File) context)) {
                 BundleEditorContextMenu.init(container);
-                window.topic(Project.FileChangeListener.class).subscribe(DispatchStrategy.ASYNC, new BundleFileChangeListener());
+                window.topic(Project.RefreshListener.class).subscribe(DispatchStrategy.ASYNC, new BundleFileChangeListener());
             }
             InstallerMenu.init(container, window);
         }

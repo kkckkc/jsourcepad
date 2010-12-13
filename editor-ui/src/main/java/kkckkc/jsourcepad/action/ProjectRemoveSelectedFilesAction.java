@@ -32,8 +32,8 @@ public class ProjectRemoveSelectedFilesAction extends BaseAction {
                     Files.deleteRecursively((File) f);
 
                     if (project != null) {
+                        project.refresh(((File) f));
                         project.refresh(((File) f).getParentFile());
-                        window.topic(Project.FileChangeListener.class).post().removed((File) f);
                     }
                 } catch (IOException e1) {
                     throw new RuntimeException(e1);

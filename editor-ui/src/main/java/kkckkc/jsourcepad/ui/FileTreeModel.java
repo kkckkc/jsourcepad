@@ -36,8 +36,17 @@ public class FileTreeModel implements TreeModel {
     private Map<Node, Node[]> expandedNodes =
             new MapMaker().concurrencyLevel(2).makeMap();
 
+    private static final int MAX_ENTRIES = 2000;
+
+    private Map<File, Node> nodeCache = new LinkedHashMap<File, Node>(MAX_ENTRIES, .75F, true) {
+        protected boolean removeEldestEntry(Map.Entry<File, Node> eldest) {
+            return size() > MAX_ENTRIES;
+        }
+    };
+
+
     public FileTreeModel(final File root, final FileFilter filter, List<? extends Decorator> decorators) {
-        this.root = new Node(root);
+        this.root = makeNode(root);
         this.filter = filter;
 
         this.decorators = Objects.firstNonNull(decorators, Collections.<Decorator>emptyList());
@@ -87,12 +96,98 @@ public class FileTreeModel implements TreeModel {
     }
 
     public void refresh() {
-        refresh(root.getFile());
+        for (Node parent : expandedNodes.keySet()) {
+            refresh(parent.getFile());
+        }
     }
 
     public void refresh(File node) {
-        expandedNodes.clear();
-        fireTreeStructureChanged(createTreePath(node));
+        System.out.println("FileTreeModel.refresh " + node);
+        Node parent = makeNode(node);
+
+        Node[] currentChildren = expandedNodes.get(parent);
+        expandedNodes.remove(parent);
+        Node[] tobeChildren = getChildren(parent);
+
+        LinkedHashMap<Integer, Node> changedNodes = new LinkedHashMap<Integer, Node>();
+        LinkedHashMap<Integer, Node> insertedNodes = new LinkedHashMap<Integer, Node>();
+        LinkedHashMap<Integer, Node> removedNodes = new LinkedHashMap<Integer, Node>();
+
+        int tobeIdx = 0, currIdx = 0;
+
+        while (tobeIdx < tobeChildren.length) {
+            int cmp;
+            if (currIdx >= currentChildren.length) {
+                cmp = 1;
+            } else {
+                cmp = currentChildren[currIdx].getFile().getName().compareTo(
+                    tobeChildren[tobeIdx].getFile().getName());
+            }
+
+            if (cmp == 0) {
+                changedNodes.put(tobeIdx, tobeChildren[tobeIdx]);
+                tobeIdx++;
+                currIdx++;
+            } else if (cmp > 0) {
+                insertedNodes.put(tobeIdx, tobeChildren[tobeIdx]);
+                tobeIdx++;
+            } else {
+                removedNodes.put(currIdx, currentChildren[currIdx]);
+                currIdx++;
+            }
+        }
+
+        while (currIdx < currentChildren.length) {
+            removedNodes.put(currIdx, currentChildren[currIdx]);
+            currIdx++;
+        }
+
+        TreePath path = createTreePath(node);
+
+        TreeModelEvent evt;
+
+        if (! removedNodes.isEmpty()) {
+            evt = new TreeModelEvent(this, path, getIndices(removedNodes), getValues(removedNodes));
+            for (TreeModelListener l : listeners.getListeners(TreeModelListener.class)) {
+                l.treeNodesRemoved(evt);
+            }
+        }
+
+        if (! insertedNodes.isEmpty()) {
+            evt = new TreeModelEvent(this, path, getIndices(insertedNodes), getValues(insertedNodes));
+            for (TreeModelListener l : listeners.getListeners(TreeModelListener.class)) {
+                l.treeNodesInserted(evt);
+            }
+        }
+
+        if (! changedNodes.isEmpty()) {
+            evt = new TreeModelEvent(this, path, getIndices(changedNodes), getValues(changedNodes));
+            for (TreeModelListener l : listeners.getListeners(TreeModelListener.class)) {
+                l.treeNodesChanged(evt);
+            }
+        }
+    }
+
+    private Object[] getValues(LinkedHashMap<Integer, Node> nodes) {
+        return nodes.values().toArray();
+    }
+
+    private int[] getIndices(LinkedHashMap<Integer, Node> nodes) {
+        int i = 0;
+        int[] dest = new int[nodes.size()];
+        for (Integer key  : nodes.keySet()) {
+            dest[i++] = key;
+        }
+        return dest;
+    }
+
+    private Node makeNode(File file) {
+        Node n = nodeCache.get(file);
+        if (n == null) {
+            n = new Node(file);
+            nodeCache.put(file, n);
+        }
+        return n;
     }
 
     private Node[] getChildren(final Node parent) {
@@ -104,7 +199,7 @@ public class FileTreeModel implements TreeModel {
 
         final Node[] nodes = new Node[children.length];
         for (int i = 0; i < children.length; i++) {
-            nodes[i] = new Node(children[i]);
+            nodes[i] = makeNode(children[i]);
         }
 
         for (Decorator d : decorators) {
@@ -134,7 +229,7 @@ public class FileTreeModel implements TreeModel {
             path[0] = root;
         } else if (file != null) {
             path = createPath(file.getParentFile(), level + 1);
-            if (path != null) path[path.length - level] = new Node(file);
+            if (path != null) path[path.length - level] = makeNode(file);
         } else {
             path = null;
         }

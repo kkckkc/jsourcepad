@@ -20,6 +20,7 @@ public class NewFileDialogViewimpl extends BaseJDialog implements NewFileDialogV
     }
 
     private void initComponents() {
+        setTitle("New File");
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
         Container p = getContentPane();

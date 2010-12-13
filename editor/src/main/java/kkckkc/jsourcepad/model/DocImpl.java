@@ -178,6 +178,12 @@ public class DocImpl implements Doc, ScopeRoot, BeanFactoryAware {
 			throw new RuntimeException(e);
 		}
 		getActiveBuffer().clearModified();
+
+        Project p = getDocList().getWindow().getProject();
+        if (p != null) {
+            p.refresh(backingFile);
+            p.refresh(backingFile.getParentFile());
+        }
 		window.topic(Doc.StateListener.class).post().modified(this, true, false);
 	}
 
@@ -194,8 +200,12 @@ public class DocImpl implements Doc, ScopeRoot, BeanFactoryAware {
 		
 		this.backingFile = file;
         this.backingTimestamp = file.lastModified();
-		
-		window.topic(Project.FileChangeListener.class).post().created(file);
+
+        Project p = getDocList().getWindow().getProject();
+        if (p != null) {
+            p.refresh(file);
+            p.refresh(file.getParentFile());
+        }
 		window.topic(Doc.StateListener.class).post().modified(this, true, false);
 	}
 

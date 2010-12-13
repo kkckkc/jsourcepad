@@ -7,14 +7,8 @@ import java.io.File;
 import java.util.List;
 
 public interface Project {
-	interface FileChangeListener {
-        void renamed(File newFile, File oldFile);
-        void removed(File file);
-		void created(File file);
-	}
-
     interface RefreshListener {
-        public void refresh(File file);
+        public void refreshed(File file);
     }
 
 	public List<File> findFile(String query);

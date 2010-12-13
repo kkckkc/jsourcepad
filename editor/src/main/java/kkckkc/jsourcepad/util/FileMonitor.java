@@ -13,7 +13,6 @@ public interface FileMonitor {
 	public void requestRescan();
 	
 	public interface Listener {
-		public void fileCreated(File file);
 		public void fileRemoved(File file);
 		public void fileUpdated(File file);
 	}

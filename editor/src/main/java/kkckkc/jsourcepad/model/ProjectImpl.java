@@ -1,10 +1,10 @@
 package kkckkc.jsourcepad.model;
 
 import com.google.common.base.Function;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
-import com.google.common.collect.Sets;
 import kkckkc.jsourcepad.model.settings.IgnorePatternProjectSettings;
 import kkckkc.jsourcepad.model.settings.ProjectSettingsManager;
 import kkckkc.jsourcepad.model.settings.SettingsManager;
@@ -29,11 +29,14 @@ public class ProjectImpl implements Project, DocList.Listener, Window.FocusListe
 		}
 	};
 
+
+    private WeakHashMap<File, Long> refreshTimestamps = new WeakHashMap<File, Long>();
+
 	// Collaborators
 	private File projectDir;
 	private Window window;
 
-	private final Set<File> cache = Sets.newHashSet();
+	private final List<File> cache = Lists.newArrayList();
 	
 	private DefaultFileMonitor fileMonitor;
 	private List<File> selectedFiles = Lists.newArrayList();
@@ -68,8 +71,14 @@ public class ProjectImpl implements Project, DocList.Listener, Window.FocusListe
 
 	@Override
     public void refresh(File file) {
-	    window.topic(RefreshListener.class).post().refresh(file);
-    	cache.clear();
+        if (getProjectDir().equals(file)) file = null;
+
+        Long timestamp = refreshTimestamps.get(file);
+        if (timestamp == null || (System.currentTimeMillis() - timestamp) > 200) {
+            refreshTimestamps.put(file, System.currentTimeMillis());
+            window.topic(RefreshListener.class).post().refreshed(file);
+            cache.clear();
+        }
     }
 
 	@Override
@@ -121,7 +130,24 @@ public class ProjectImpl implements Project, DocList.Listener, Window.FocusListe
 		    }
 		}
     }
-	
+
+    private void populateCacheRecusively(Predicate<File> condition, File file, int maxFiles) {
+        if (maxFiles <= 0) return;
+
+        if (! file.isDirectory()) {
+            if (condition.apply(file)) cache.add(file);
+
+            return;
+        }
+
+        File[] children = file.listFiles();
+        if (children == null) return;
+
+        for (File f : children) {
+            populateCacheRecusively(condition, f, maxFiles - 1);
+        }
+    }
+
 	@Override
     public void closed(int index, Doc doc) {
     }
@@ -143,23 +169,6 @@ public class ProjectImpl implements Project, DocList.Listener, Window.FocusListe
 	    return s;
     }
 
-	private void populateCacheRecusively(Predicate<File> condition, File file, int maxFiles) {
-		if (maxFiles <= 0) return;
-		
-		if (! file.isDirectory()) {
-			if (condition.apply(file)) cache.add(file);
-			
-			return;
-		}
-		
-		File[] children = file.listFiles();
-		if (children == null) return;
-		
-		for (File f : children) {
-			populateCacheRecusively(condition, f, maxFiles - 1);
-		}
-	}
-	
 	@Override
     public void focusLost(Window window) {
     }
@@ -167,14 +176,10 @@ public class ProjectImpl implements Project, DocList.Listener, Window.FocusListe
 	@Override
     public void focusGained(Window window) {
 		fileMonitor.requestRescan();
+        refresh(null);
         synchronized (cache) {
             cache.clear();
         }
-    }
-
-	@Override
-    public void fileCreated(File file) {
-	    refresh(file);
     }
 
 	@Override
@@ -209,11 +214,13 @@ public class ProjectImpl implements Project, DocList.Listener, Window.FocusListe
 
     @Override
     public void register(File file) {
+        Preconditions.checkArgument(file.isDirectory(), "File must be directory");
         fileMonitor.register(file, predicate);
     }
 
     @Override
     public void unregister(File file) {
+        Preconditions.checkArgument(file.isDirectory(), "File must be directory");
         fileMonitor.unregister(file);
     }
 

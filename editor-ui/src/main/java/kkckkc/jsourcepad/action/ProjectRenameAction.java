@@ -21,9 +21,14 @@ public class ProjectRenameAction extends BaseAction {
         Object[] tp = actionContext.get(ActionContextKeys.SELECTION);
 
         String newName = JOptionPane.showInputDialog("New Name:");
-        ((File) tp[0]).renameTo(new File(((File) tp[0]).getParentFile(), newName));
+        File fromFile = (File) tp[0];
+        File toFile = new File(fromFile.getParentFile(), newName);
+        fromFile.renameTo(toFile);
 
-        window.getProject().refresh(((File) tp[0]).getParentFile());
+        window.getProject().refresh(fromFile);
+        window.getProject().refresh(toFile);
+        window.getProject().refresh(fromFile.getParentFile());
+        window.getProject().refresh(toFile.getParentFile());
 	}
 
 }
