@@ -18,15 +18,20 @@ import java.util.*;
 import java.util.concurrent.*;
 
 public class ScriptExecutor {
-	private static final int DELAY_BEFORE_DELAY_EVENT = 500;
+	private int delay = 500;
 	private String script;
 	private ExecutorService executorService;
     private File directory;
+    private boolean showStderr = true;
 
-	public ScriptExecutor(String script, ExecutorService executorService) {
+    public ScriptExecutor(String script, ExecutorService executorService) {
 		this.script = script;
 		this.executorService = executorService;
 	}
+
+    public void setDelay(int delay) {
+        this.delay = delay;
+    }
 
     public void setDirectory(File directory) {
         this.directory = directory;
@@ -66,7 +71,7 @@ public class ScriptExecutor {
                     execution.exitCode = exitCode;
 	                if (exitCode == 0 || (exitCode >= 200 && exitCode <= 207)) {
 	                	execution.callback.onSuccess(execution);
-                        System.err.println(execution.getStderr());
+                        if (showStderr) System.err.println(execution.getStderr());
 	                } else {
 	                	execution.callback.onFailure(execution);
 	                }
@@ -92,15 +97,17 @@ public class ScriptExecutor {
 		stdin.flush();
 		stdin.close();
 
-		
-		try {
-	        execution.processFuture.get(DELAY_BEFORE_DELAY_EVENT, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
-        	throw new RuntimeException(e);
-        } catch (ExecutionException e) {
-        	throw new RuntimeException(e);
-        } catch (TimeoutException e) {
-	        execution.callback.onDelay(execution);
+
+        if (delay > 0) {
+            try {
+                execution.processFuture.get(delay, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            } catch (TimeoutException e) {
+                execution.callback.onDelay(execution);
+            }
         }
         
         return execution;
@@ -154,7 +161,9 @@ public class ScriptExecutor {
 	    return pb;
     }
 
-    
+    public void setShowStderr(boolean b) {
+        this.showStderr = b;
+    }
 
 
     public interface Callback {

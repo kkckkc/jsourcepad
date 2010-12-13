@@ -228,7 +228,6 @@ public class ProjectImpl implements Project, DocList.Listener, Window.FocusListe
             }
         };
 
-        // TODO: Reregister all open files
         fileMonitor = new DefaultFileMonitor(Application.get().getThreadPool());
         fileMonitor.addListener(this);
         fileMonitor.register(getProjectDir(), predicate);

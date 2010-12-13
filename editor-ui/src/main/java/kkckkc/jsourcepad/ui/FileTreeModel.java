@@ -1,14 +1,23 @@
 package kkckkc.jsourcepad.ui;
 
+import com.google.common.base.Objects;
+import com.google.common.collect.Lists;
+import com.google.common.collect.MapMaker;
+import kkckkc.utils.Os;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.EventListenerList;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
+import java.awt.*;
 import java.io.File;
 import java.io.FileFilter;
-import java.util.Arrays;
-import java.util.Comparator;
+import java.util.*;
+import java.util.List;
 
 public class FileTreeModel implements TreeModel {
     public static final Comparator<File> COMPARATOR = new Comparator<File>() {
@@ -20,12 +29,18 @@ public class FileTreeModel implements TreeModel {
     };
     private final EventListenerList listeners = new EventListenerList();
 
-    private final File root;
+    private final Node root;
     private final FileFilter filter;
+    private List<? extends Decorator> decorators = Lists.newArrayList();
 
-    public FileTreeModel(final File root, final FileFilter filter) {
-        this.root = root;
+    private Map<Node, Node[]> expandedNodes =
+            new MapMaker().concurrencyLevel(2).makeMap();
+
+    public FileTreeModel(final File root, final FileFilter filter, List<? extends Decorator> decorators) {
+        this.root = new Node(root);
         this.filter = filter;
+
+        this.decorators = Objects.firstNonNull(decorators, Collections.<Decorator>emptyList());
     }
 
     public Object getRoot() {
@@ -33,19 +48,19 @@ public class FileTreeModel implements TreeModel {
     }
 
     public Object getChild(Object parent, int index) {
-        File[] children = getChildren((File) parent);
+        Node[] children = getChildren((Node) parent);
         if (children == null) return null;
         return children[index];
     }
 
     public int getChildCount(Object parent) {
-        File[] children = getChildren((File) parent);
+        Node[] children = getChildren((Node) parent);
         if (children == null) return 0;
         return children.length;
     }
 
     public boolean isLeaf(Object node) {
-        return !((File) node).isDirectory();
+        return !((Node) node).getFile().isDirectory();
     }
 
     public void valueForPathChanged(TreePath path, Object newValue) {}
@@ -53,7 +68,7 @@ public class FileTreeModel implements TreeModel {
     public int getIndexOfChild(Object parent, Object child) {
         if (parent == null || child == null) return -1;
 
-        File[] children = getChildren((File) parent);
+        Node[] children = getChildren((Node) parent);
         if (children == null) return -1;
 
         for (int i = 0; i < children.length; i++) {
@@ -71,88 +86,191 @@ public class FileTreeModel implements TreeModel {
         listeners.remove(TreeModelListener.class, l);
     }
 
-
-    public void insertFile(final File node) {
-        File parent = node.getParentFile();
-        int index = getIndexOfChild(parent, node);
-        if (index == -1) return;
-
-        TreePath p = createTreePath(parent);
-        TreeModelEvent ev = new TreeModelEvent(this, p, new int[] { index }, new File[] { node });
-        fireTreeNodesInserted(ev);
-    }
-
-    public void removeFile(final File node) {
-        File parent = node.getParentFile();
-        int index = getIndexOfChild(parent, node);
-        if (index == -1) return;
-
-        fireTreeNodesRemoved(
-                new TreeModelEvent(this, createTreePath(parent), new int[] { index }, new File[] { node }));
-    }
-
     public void refresh() {
-        refresh(root);
+        refresh(root.getFile());
     }
 
     public void refresh(File node) {
-        fireTreeStructureChanged(new TreeModelEvent(this, createTreePath(node), null, null));
+        expandedNodes.clear();
+        fireTreeStructureChanged(createTreePath(node));
     }
 
-    private void fireTreeNodesInserted(final TreeModelEvent evt) {
-        for (TreeModelListener l : listeners.getListeners(TreeModelListener.class)) {
-            l.treeNodesInserted(evt);
-        }
-    }
+    private Node[] getChildren(final Node parent) {
+        if (expandedNodes.containsKey(parent))
+            return expandedNodes.get(parent);
 
-    private File[] cacheChildren;
-    private File cacheParent;
-    private long cacheAccess;
-
-    private File[] getChildren(final File parent) {
-        if (cacheChildren != null && cacheParent.equals(parent) && (System.currentTimeMillis() - cacheAccess) < 50) {
-            return cacheChildren;
-        }
-
-        File[] children = parent.listFiles(filter);
+        File[] children = parent.getFile().listFiles(filter);
         if (children != null) Arrays.sort(children, COMPARATOR);
 
-        cacheParent = parent;
-        cacheChildren = children;
-        cacheAccess = System.currentTimeMillis();
+        final Node[] nodes = new Node[children.length];
+        for (int i = 0; i < children.length; i++) {
+            nodes[i] = new Node(children[i]);
+        }
 
-        return children;
+        for (Decorator d : decorators) {
+            d.getDecoration(parent, nodes, new Runnable() {
+                @Override
+                public void run() {
+                    fireNodesChanged(parent, nodes);
+                }
+            });
+        }
+
+        expandedNodes.put(parent, nodes);
+
+        return nodes;
     }
 
-    private TreePath createTreePath(File node) {
-        File[] elements = createPath(node, 1);
+    private TreePath createTreePath(File file) {
+        Node[] elements = createPath(file, 1);
         if (elements == null) return null;
         return new TreePath(elements);
     }
 
-    private File[] createPath(final File node, int level) {
-        File[] path;
-        if (root.equals(node)) {
-            path = new File[level];
+    private Node[] createPath(final File file, int level) {
+        Node[] path;
+        if (root.getFile().equals(file)) {
+            path = new Node[level];
             path[0] = root;
-        } else if (node != null) {
-            path = createPath(node.getParentFile(), level + 1);
-            if (path != null) path[path.length - level] = node;
+        } else if (file != null) {
+            path = createPath(file.getParentFile(), level + 1);
+            if (path != null) path[path.length - level] = new Node(file);
         } else {
             path = null;
         }
         return path;
     }
 
-    private void fireTreeNodesRemoved(final TreeModelEvent evt) {
-        for (TreeModelListener l : listeners.getListeners(TreeModelListener.class)) {
-            l.treeNodesRemoved(evt);
-        }
-    }
-
-    private void fireTreeStructureChanged(final TreeModelEvent evt) {
+    private void fireTreeStructureChanged(TreePath path) {
+        TreeModelEvent evt = new TreeModelEvent(this, path, null, null);
         for (TreeModelListener l : listeners.getListeners(TreeModelListener.class)) {
             l.treeStructureChanged(evt);
         }
     }
+
+    private void fireNodesChanged(Node parent, Node[] children) {
+        int[] indices = new int[children.length];
+        for (int i = 0; i < indices.length; i++) indices[i] = i;
+        TreeModelEvent evt = new TreeModelEvent(this, createTreePath(parent.getFile()), indices, children);
+        for (TreeModelListener l : listeners.getListeners(TreeModelListener.class)) {
+            l.treeNodesChanged(evt);
+        }
+    }
+
+    public void onCollapse(Node node) {
+        synchronized (this) {
+            expandedNodes.remove(node);
+        }
+    }
+
+    public void onExpand(Node node) {
+    }
+
+
+    public static class Node {
+        private File file;
+        private Map properties;
+
+        Node(File file) {
+            this.file = file;
+        }
+
+        public void putProperty(String key, Object value) {
+            if (properties == null) properties = new HashMap(10);
+            properties.put(key, value);
+        }
+
+        public Object getProperty(String key) {
+            if (properties == null) return null;
+            return properties.get(key);
+        }
+
+        public File getFile() {
+            return file;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Node node = (Node) o;
+
+            return file.equals(node.file);
+        }
+
+        @Override
+        public int hashCode() {
+            return file.hashCode();
+        }
+
+        public String toString() {
+            return file.toString();
+        }
+    }
+
+    public interface Decorator {
+        public void getDecoration(Node parent, Node[] children, Runnable notifyChange);
+        public void renderDecoration(Node node, CellRenderer renderer);
+    }
+
+
+    public static class CellRenderer extends DefaultTreeCellRenderer {
+        public CellRenderer() {
+			if (Os.isMac()) {
+				setBackgroundNonSelectionColor(null);
+				setBackgroundSelectionColor(null);
+				setBorderSelectionColor(null);
+			}
+		}
+
+	    public Component getTreeCellRendererComponent(
+	            final JTree tree,
+	            final Object value,
+	            final boolean selected,
+	            final boolean expanded,
+	            final boolean leaf,
+	            final int row,
+	            final boolean hasFocus) {
+            FileTreeModel model = (FileTreeModel) tree.getModel();
+
+	        super.getTreeCellRendererComponent(
+	                tree, ((FileTreeModel.Node) value).getFile().getName(), selected, expanded, leaf, row, hasFocus);
+	        setOpaque(false);
+	        setBorder(new EmptyBorder(1, 0, 1, 0));
+	        setIcon(getNodeIcon((Node) value));
+
+            List<? extends Decorator> decorators = model.decorators;
+            for (Decorator d : decorators) {
+                d.renderDecoration((Node) value, this);
+            }
+
+	        return this;
+	    }
+
+		public Color getBackground() {
+	    	return null;
+	    }
+
+		private Icon getNodeIcon(Node node) {
+            File file = node.getFile();
+		    if (file.isDirectory()) {
+				if (Os.isMac()) {
+					return UIManager.getDefaults().getIcon("FileChooser.newFolderIcon");
+                } else if (Os.isWindows()) {
+                    return UIManager.getDefaults().getIcon("FileChooser.newFolderIcon");
+				} else {
+					return new ImageIcon("/usr/share/icons/Human/16x16/places/folder.png");
+				}
+			} else {
+				if (Os.isMac()) {
+					return UIManager.getDefaults().getIcon("FileView.fileIcon");
+                } else if (Os.isWindows()) {
+                    return UIManager.getDefaults().getIcon("FileView.fileIcon");
+				} else {
+					return new ImageIcon("/usr/share/icons/gnome/16x16/mimetypes/text-x-generic.png");
+				}
+			}
+	    }
+	}
 }

@@ -123,7 +123,8 @@ public class EnvironmentProvider {
 
         // JSourcePad specific variables
         environment.put("TM_SERVER_PORT", Integer.toString(Config.getHttpPort()));
-        environment.put("TM_FOCUSED_WINDOW", Integer.toString(Application.get().getWindowManager().getFocusedWindow().getId()));
+        if (Application.get().getWindowManager().getFocusedWindow() != null)
+            environment.put("TM_FOCUSED_WINDOW", Integer.toString(Application.get().getWindowManager().getFocusedWindow().getId()));
 
         environment.put("DIALOG", formatPath(new File(Config.getSupportFolder(), "bin/tm_dialog").getPath()));
 

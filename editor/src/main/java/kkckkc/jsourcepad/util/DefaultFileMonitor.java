@@ -43,13 +43,13 @@ public class DefaultFileMonitor extends AbstractFileMonitor implements Runnable 
 		}
 	}
 	
-	private void signalAdd(File f) { 
+	private void signalAdd(File f) {
 		for (Listener l : listeners) {
 			l.fileCreated(f);
 		}
 	}
 	
-	private void signalDelete(File f) { 
+	private void signalDelete(File f) {
 		for (Listener l : listeners) {
 			l.fileRemoved(f);
 		}

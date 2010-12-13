@@ -7,14 +7,10 @@ import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.util.action.ActionGroup;
 import kkckkc.jsourcepad.util.action.MenuFactory;
 import kkckkc.jsourcepad.util.ui.PopupUtils;
-import kkckkc.utils.Os;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
-import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
@@ -31,13 +27,13 @@ public class ProjectViewImpl extends JTree implements ProjectView, MouseListener
 	
     @Autowired
     public ProjectViewImpl(Project project, Window window, DocList docList) {
-        super(new FileTreeModel(project.getProjectDir(), null));
+        super(new FileTreeModel(project.getProjectDir(), null, null));
 
         this.project = project;
         this.window = window;
         this.docList = docList;
 
-		setCellRenderer(new FileTreeCellRenderer());
+		setCellRenderer(new FileTreeModel.CellRenderer());
         setShowsRootHandles(true);
 
         addMouseListener(this);
@@ -60,9 +56,9 @@ public class ProjectViewImpl extends JTree implements ProjectView, MouseListener
 		if (selRow == -1) return;
 		TreePath selPath = getPathForLocation(e.getX(), e.getY());
 
-    	File f = (File) selPath.getLastPathComponent();
-        if (f.isFile()) {
-            docList.open(f);
+    	FileTreeModel.Node n = (FileTreeModel.Node) selPath.getLastPathComponent();
+        if (n.getFile().isFile()) {
+            docList.open(n.getFile());
 		}
 	}
 
@@ -87,12 +83,6 @@ public class ProjectViewImpl extends JTree implements ProjectView, MouseListener
 
 	@Override
 	public void mouseReleased(MouseEvent e) { }
-
-	@Override
-    public void insertFile(File file) {
-        if (project == null) return;
-		getModel().insertFile(file);
-    }
 
 	@Override
     public void refresh(File file) {
@@ -129,60 +119,6 @@ public class ProjectViewImpl extends JTree implements ProjectView, MouseListener
     }
 
 
-    public static class FileTreeCellRenderer extends DefaultTreeCellRenderer {
-
-		public FileTreeCellRenderer() {
-			if (Os.isMac()) {
-				setBackgroundNonSelectionColor(null); 
-				setBackgroundSelectionColor(null);
-				setBorderSelectionColor(null);
-			}
-		}
-		
-	    public Component getTreeCellRendererComponent(
-	            final JTree tree,
-	            final Object value,
-	            final boolean selected,
-	            final boolean expanded,
-	            final boolean leaf,
-	            final int row,
-	            final boolean hasFocus) {
-	        super.getTreeCellRendererComponent(
-	                tree, ((File) value).getName(), selected, expanded, leaf, row, hasFocus);
-	        setOpaque(false);
-	        setBorder(new EmptyBorder(1, 0, 1, 0));
-	        setIcon(getNodeIcon((java.io.File) value));
-	        return this;
-	    }
-	    
-	    
-
-		public Color getBackground() {
-	    	return null;
-	    }
-	    
-		private Icon getNodeIcon(File file) {
-		    if (file.isDirectory()) {
-				if (Os.isMac()) {
-					return UIManager.getDefaults().getIcon("FileChooser.newFolderIcon");
-                } else if (Os.isWindows()) {
-                    return UIManager.getDefaults().getIcon("FileChooser.newFolderIcon");
-				} else {
-					return new ImageIcon("/usr/share/icons/Human/16x16/places/folder.png");
-				}
-			} else {
-				if (Os.isMac()) {
-					return UIManager.getDefaults().getIcon("FileView.fileIcon");
-                } else if (Os.isWindows()) {
-                    return UIManager.getDefaults().getIcon("FileView.fileIcon");
-				} else {
-					return new ImageIcon("/usr/share/icons/gnome/16x16/mimetypes/text-x-generic.png");
-				}
-			}
-	    }
-
-		
-	}
 
 	@Override
     public JComponent getJComponent() {

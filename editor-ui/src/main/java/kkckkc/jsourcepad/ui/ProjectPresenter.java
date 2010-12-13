@@ -10,6 +10,10 @@ import kkckkc.jsourcepad.model.settings.IgnorePatternProjectSettings;
 import kkckkc.jsourcepad.model.settings.SettingsManager;
 import kkckkc.jsourcepad.util.action.ActionContext;
 import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
@@ -22,13 +26,15 @@ import javax.swing.tree.TreePath;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.List;
+import java.util.Map;
 
-public class ProjectPresenter implements Presenter<ProjectView>, Project.FileChangeListener, ProjectImpl.RefreshListener, SettingsManager.Listener<IgnorePatternProjectSettings> {
+public class ProjectPresenter implements Presenter<ProjectView>, Project.FileChangeListener, ProjectImpl.RefreshListener, SettingsManager.Listener<IgnorePatternProjectSettings>, BeanFactoryAware {
 
 	private ProjectView view;
 	private Window window;
     private ActionContext actionContext;
     private Project project;
+    private BeanFactory beanFactory;
 
     @Autowired
     public void setProject(Project project) {
@@ -53,10 +59,10 @@ public class ProjectPresenter implements Presenter<ProjectView>, Project.FileCha
             public boolean accept(File pathname) {
                 return project.getFilePredicate().apply(pathname);
             }
-        }));
+        }, getDecorators()));
 
         window.topic(Project.FileChangeListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, this);
-		window.topic(ProjectImpl.RefreshListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, this);
+		window.topic(Project.RefreshListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, this);
 
 		((JTree) view).getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
 			@Override
@@ -65,7 +71,7 @@ public class ProjectPresenter implements Presenter<ProjectView>, Project.FileCha
 				List<File> paths = Lists.newArrayList();
                 if (selectionPaths != null) {
                     for (TreePath tp : selectionPaths) {
-                        paths.add((File) tp.getLastPathComponent());
+                        paths.add(((FileTreeModel.Node) tp.getLastPathComponent()).getFile());
                     }
                 }
 				window.getProject().setSelectedFiles(paths);
@@ -78,13 +84,19 @@ public class ProjectPresenter implements Presenter<ProjectView>, Project.FileCha
         ((JTree) view).addTreeExpansionListener(new TreeExpansionListener() {
             @Override
             public void treeExpanded(TreeExpansionEvent event) {
-                File file = (File) event.getPath().getLastPathComponent();
+                FileTreeModel.Node node= (FileTreeModel.Node) event.getPath().getLastPathComponent();
+                File file = node.getFile();
+
+                ((FileTreeModel) ((JTree) view).getModel()).onExpand(node);
                 project.register(file);
             }
 
             @Override
             public void treeCollapsed(TreeExpansionEvent event) {
-                File file = (File) event.getPath().getLastPathComponent();
+                FileTreeModel.Node node= (FileTreeModel.Node) event.getPath().getLastPathComponent();
+                File file = node.getFile();
+
+                ((FileTreeModel) ((JTree) view).getModel()).onCollapse(node);
                 project.unregister(file);
             }
         });
@@ -101,17 +113,17 @@ public class ProjectPresenter implements Presenter<ProjectView>, Project.FileCha
 
     @Override
     public void renamed(File newFile, File oldFile) {
-        view.refresh(newFile.getParentFile());
+        refresh(newFile.getParentFile());
     }
 
     @Override
     public void removed(File file) {
-        view.refresh(file.getParentFile());
+        refresh(file.getParentFile());
     }
 
     @Override
     public void created(File file) {
-		view.insertFile(file);
+		refresh(file.getParentFile());
     }
 
 	@Override
@@ -138,6 +150,51 @@ public class ProjectPresenter implements Presenter<ProjectView>, Project.FileCha
             public boolean accept(File pathname) {
                 return project.getFilePredicate().apply(pathname);
             }
-        }));
+        }, getDecorators()));
+    }
+
+    public List<FileTreeModel.Decorator> getDecorators() {
+        Map<String, FileTreeModel.Decorator> decorators = ((ListableBeanFactory) beanFactory).getBeansOfType(FileTreeModel.Decorator.class);
+        List<FileTreeModel.Decorator> dest = Lists.newArrayList();
+        dest.addAll(decorators.values());
+        return dest;
+/*        return Arrays.asList(
+                new FileTreeModel.Decorator() {
+
+                    @Override
+                    public void getDecoration(final FileTreeModel.Node parent, final FileTreeModel.Node[] children, final Runnable notifyChange) {
+                        Application.get().getThreadPool().submit(new Callable<Void>() {
+
+                            @Override
+                            public Void call() throws Exception {
+                                Thread.sleep(2 * 1000L);
+
+                                Random r = new Random(System.currentTimeMillis());
+                                for (FileTreeModel.Node n : children) {
+                                    if (r.nextBoolean()) {
+                                        n.putProperty("txtFile", Boolean.TRUE);
+                                    }
+                                }
+
+                                notifyChange.run();
+
+                                return null;
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void renderDecoration(FileTreeModel.Node node, FileTreeModel.CellRenderer renderer) {
+                        if (Boolean.TRUE.equals(node.getProperty("txtFile"))) {
+                            renderer.setForeground(Color.red);
+                        }
+                    }
+                });
+                */
+    }
+
+    @Override
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+        this.beanFactory = beanFactory;
     }
 }

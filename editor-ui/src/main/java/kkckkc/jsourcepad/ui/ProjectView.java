@@ -8,8 +8,6 @@ import java.io.File;
 
 public interface ProjectView extends View {
 
-	void insertFile(File file);
-
 	void refresh(File file);
 
 	void refresh();

@@ -201,7 +201,7 @@ public class CommitDialog implements Dialog {
                                         if (Strings.isNullOrEmpty(stdout.trim())) {
                                             ((CommitDialogTableModel) table.getModel()).removeRow(row);
                                         } else {
-                                            table.setValueAt(stdout, row, 1);
+                                            table.setValueAt(stdout.substring(0, 1), row, 1);
                                         }
                                     } else {
                                         OpenCommand openCommand = new OpenCommand();

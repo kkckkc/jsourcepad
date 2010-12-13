@@ -25,6 +25,7 @@
         <module>editor-installer</module>
         <module>os-windows</module>
         <module>editor-dialog</module>
+        <module>editor-vcs</module>
     </modules>
 
 
