@@ -4,6 +4,8 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
 	default-lazy-init="true">
 
-    <bean id="svnVcsDecorator" class="kkckkc.jsourcepad.vcs.SvnVcsDecorator" lazy-init="true"/>
+    <bean id="vcsDecorationRenderer" class="kkckkc.jsourcepad.vcs.VcsDecorationRenderer" />
+
+    <bean id="svnVcsDecorator" class="kkckkc.jsourcepad.vcs.SvnVcsDecorator" />
 
 </beans>

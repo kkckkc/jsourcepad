@@ -5,6 +5,7 @@ import com.google.common.base.Splitter;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.bundle.EnvironmentProvider;
 import kkckkc.jsourcepad.ui.FileTreeModel;
+import kkckkc.jsourcepad.util.io.ErrorDialog;
 import kkckkc.jsourcepad.util.io.ScriptExecutor;
 
 import java.io.File;
@@ -14,7 +15,7 @@ import java.io.StringReader;
 public class SvnVcsDecorator extends AbstractVcsDecorator {
 
     @Override
-    protected void getStates(final FileTreeModel.Node parent, final FileTreeModel.Node[] children, final Function<State[], Void> continuation) {
+    protected void getStates(final FileTreeModel.Node parent, final FileTreeModel.Node[] children, final Function<VcsState[], Void> continuation) {
         if (! new File(parent.getFile(), ".svn").exists()) {
 //            continuation.apply(null);
             return;
@@ -31,7 +32,7 @@ public class SvnVcsDecorator extends AbstractVcsDecorator {
             scriptExecutor.execute(new ScriptExecutor.CallbackAdapter() {
                 @Override
                 public void onSuccess(ScriptExecutor.Execution execution) {
-                    State[] states = new State[children.length];
+                    VcsState[] states = new VcsState[children.length];
 
                     for (String line : Splitter.on("\n").omitEmptyStrings().split(execution.getStdout())) {
                         char status = line.charAt(0);
@@ -47,7 +48,8 @@ public class SvnVcsDecorator extends AbstractVcsDecorator {
 
                 @Override
                 public void onFailure(ScriptExecutor.Execution execution) {
-                    System.out.println("execution = " + execution.getStderr());
+                    ErrorDialog errorDialog = Application.get().getErrorDialog();
+                    errorDialog.show("Script Execution Failed...", execution.getStderr(), null);
                 }
             }, new StringReader(""), EnvironmentProvider.getStaticEnvironment());
         } catch (IOException e) {
@@ -57,9 +59,16 @@ public class SvnVcsDecorator extends AbstractVcsDecorator {
         return;
     }
 
-    private State getState(char status) {
-        if (status == '?') return State.UNKNOWN;
-        if (status == 'M') return State.MODIFIED;
+    private VcsState getState(char status) {
+        if (status == '?') return VcsState.UNKNOWN;
+        if (status == 'M') return VcsState.MODIFIED;
+        if (status == 'A') return VcsState.ADDED;
+        if (status == 'I') return VcsState.IGNORED;
+        if (status == 'C') return VcsState.CONFLICT;
+        if (status == 'D') return VcsState.DELETED;
+        if (status == 'R') return VcsState.REPLACED;
+        if (status == '~') return VcsState.OBSTRUCTED;
+        if (status == 'X') return VcsState.EXTERNAL;
         return null;
     }
 

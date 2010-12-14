@@ -102,7 +102,6 @@ public class FileTreeModel implements TreeModel {
     }
 
     public void refresh(File node) {
-        System.out.println("FileTreeModel.refresh " + node);
         Node parent = makeNode(node);
 
         Node[] currentChildren = expandedNodes.get(parent);
@@ -203,7 +202,7 @@ public class FileTreeModel implements TreeModel {
         }
 
         for (Decorator d : decorators) {
-            d.getDecoration(parent, nodes, new Runnable() {
+            d.decorate(parent, nodes, new Runnable() {
                 @Override
                 public void run() {
                     fireNodesChanged(parent, nodes);
@@ -305,13 +304,19 @@ public class FileTreeModel implements TreeModel {
     }
 
     public interface Decorator {
-        public void getDecoration(Node parent, Node[] children, Runnable notifyChange);
+        public void decorate(Node parent, Node[] children, Runnable notifyChange);
+    }
+
+    public interface DecorationRenderer {
         public void renderDecoration(Node node, CellRenderer renderer);
     }
 
 
     public static class CellRenderer extends DefaultTreeCellRenderer {
-        public CellRenderer() {
+        private List<DecorationRenderer> decorationRenderers;
+
+        public CellRenderer(List<DecorationRenderer> decorationRenderers) {
+            this.decorationRenderers = decorationRenderers;
 			if (Os.isMac()) {
 				setBackgroundNonSelectionColor(null);
 				setBackgroundSelectionColor(null);
@@ -327,17 +332,14 @@ public class FileTreeModel implements TreeModel {
 	            final boolean leaf,
 	            final int row,
 	            final boolean hasFocus) {
-            FileTreeModel model = (FileTreeModel) tree.getModel();
-
 	        super.getTreeCellRendererComponent(
 	                tree, ((FileTreeModel.Node) value).getFile().getName(), selected, expanded, leaf, row, hasFocus);
 	        setOpaque(false);
 	        setBorder(new EmptyBorder(1, 0, 1, 0));
 	        setIcon(getNodeIcon((Node) value));
 
-            List<? extends Decorator> decorators = model.decorators;
-            for (Decorator d : decorators) {
-                d.renderDecoration((Node) value, this);
+            for (DecorationRenderer renderer : decorationRenderers) {
+                renderer.renderDecoration((Node) value, this);
             }
 
 	        return this;

@@ -7,8 +7,13 @@ import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.util.action.ActionGroup;
 import kkckkc.jsourcepad.util.action.MenuFactory;
 import kkckkc.jsourcepad.util.ui.PopupUtils;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.annotation.PostConstruct;
 import javax.swing.*;
 import javax.swing.tree.TreePath;
 import java.awt.event.MouseEvent;
@@ -16,15 +21,16 @@ import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 
-
-public class ProjectViewImpl extends JTree implements ProjectView, MouseListener {
+public class ProjectViewImpl extends JTree implements ProjectView, MouseListener, BeanFactoryAware {
 	private static final long serialVersionUID = 1L;
 	private DocList docList;
 	private Project project;
 	protected Window window;
-	
+    private BeanFactory beanFactory;
+
     @Autowired
     public ProjectViewImpl(Project project, Window window, DocList docList) {
         super(new FileTreeModel(project.getProjectDir(), null, null));
@@ -33,7 +39,6 @@ public class ProjectViewImpl extends JTree implements ProjectView, MouseListener
         this.window = window;
         this.docList = docList;
 
-		setCellRenderer(new FileTreeModel.CellRenderer());
         setShowsRootHandles(true);
 
         addMouseListener(this);
@@ -41,6 +46,15 @@ public class ProjectViewImpl extends JTree implements ProjectView, MouseListener
 		ActionGroup actionGroup = window.getActionManager().getActionGroup("project-context-menu");
 		JPopupMenu jpm = new MenuFactory().buildPopup(actionGroup, null);
 		PopupUtils.bind(jpm, this, false);
+    }
+
+    @PostConstruct
+    public void init() {
+        Map<String, FileTreeModel.DecorationRenderer> renderers = ((ListableBeanFactory) beanFactory).getBeansOfType(FileTreeModel.DecorationRenderer.class);
+        List<FileTreeModel.DecorationRenderer> dest = Lists.newArrayList();
+        dest.addAll(renderers.values());
+
+        setCellRenderer(new FileTreeModel.CellRenderer(dest));
     }
 
     @Override
@@ -123,6 +137,11 @@ public class ProjectViewImpl extends JTree implements ProjectView, MouseListener
 	@Override
     public JComponent getJComponent() {
 		return this;
+    }
+
+    @Override
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+        this.beanFactory = beanFactory;
     }
 }
 
