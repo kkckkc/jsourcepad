@@ -24,12 +24,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
 
 public class CommitDialog implements Dialog {
 
+    static final Set<String> NO_COMMIT_STATUSES = new HashSet<String>(Arrays.asList("?", "X"));
     int returnValue;
 
     @Override
@@ -68,8 +68,9 @@ public class CommitDialog implements Dialog {
                     Table<Integer, Integer, Object> t = HashBasedTable.create();
                     int row = 0;
                     for (String s : files) {
-                        t.put(row, 0, Boolean.TRUE);
-                        t.put(row, 1, statuses.get(row));
+                        String status = statuses.get(row);
+                        t.put(row, 0, ! NO_COMMIT_STATUSES.contains(status));
+                        t.put(row, 1, status);
                         t.put(row, 2, s);
 
                         row++;
@@ -191,6 +192,7 @@ public class CommitDialog implements Dialog {
 
                         ScriptExecutor scriptExecutor = new ScriptExecutor(b.toString(), Application.get().getThreadPool());
                         scriptExecutor.setDirectory(new File(Cygwin.toFile(pwd)));
+                        scriptExecutor.setShowStderr(false);
 
                         try {
                             scriptExecutor.execute(new UISupportCallback(window) {
@@ -201,7 +203,9 @@ public class CommitDialog implements Dialog {
                                         if (Strings.isNullOrEmpty(stdout.trim())) {
                                             ((CommitDialogTableModel) table.getModel()).removeRow(row);
                                         } else {
-                                            table.setValueAt(stdout.substring(0, 1), row, 1);
+                                            String status = stdout.substring(0, 1);
+                                            table.setValueAt(status, row, 1);
+                                            table.setValueAt(! NO_COMMIT_STATUSES.contains(status), row, 0);
                                         }
                                     } else {
                                         OpenCommand openCommand = new OpenCommand();
