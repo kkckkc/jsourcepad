@@ -69,7 +69,9 @@ public class FileTreeModel implements TreeModel {
     }
 
     public boolean isLeaf(Object node) {
-        return !((Node) node).getFile().isDirectory();
+        Node n = (Node) node;
+        if (n.getFile() == null) return true;
+        return ! n.getFile().isDirectory();
     }
 
     public void valueForPathChanged(TreePath path, Object newValue) {}
@@ -290,16 +292,22 @@ public class FileTreeModel implements TreeModel {
 
             Node node = (Node) o;
 
+            if (file == null) return node.file == null;
+
             return file.equals(node.file);
         }
 
         @Override
         public int hashCode() {
-            return file.hashCode();
+            return file == null ? 0 : file.hashCode();
         }
 
         public String toString() {
-            return file.toString();
+            return file == null ? "" : file.toString();
+        }
+
+        public String getLabel() {
+            return file == null ? "" : file.getName();
         }
     }
 
@@ -333,7 +341,7 @@ public class FileTreeModel implements TreeModel {
 	            final int row,
 	            final boolean hasFocus) {
 	        super.getTreeCellRendererComponent(
-	                tree, ((FileTreeModel.Node) value).getFile().getName(), selected, expanded, leaf, row, hasFocus);
+	                tree, ((FileTreeModel.Node) value).getLabel(), selected, expanded, leaf, row, hasFocus);
 	        setOpaque(false);
 	        setBorder(new EmptyBorder(1, 0, 1, 0));
 	        setIcon(getNodeIcon((Node) value));
@@ -351,7 +359,7 @@ public class FileTreeModel implements TreeModel {
 
 		private Icon getNodeIcon(Node node) {
             File file = node.getFile();
-		    if (file.isDirectory()) {
+		    if (file != null && file.isDirectory()) {
 				if (Os.isMac()) {
 					return UIManager.getDefaults().getIcon("FileChooser.newFolderIcon");
                 } else if (Os.isWindows()) {

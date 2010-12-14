@@ -17,7 +17,6 @@ public class SvnVcsDecorator extends AbstractVcsDecorator {
     @Override
     protected void getStates(final FileTreeModel.Node parent, final FileTreeModel.Node[] children, final Function<VcsState[], Void> continuation) {
         if (! new File(parent.getFile(), ".svn").exists()) {
-//            continuation.apply(null);
             return;
         }
 

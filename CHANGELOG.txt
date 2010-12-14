@@ -10,9 +10,13 @@ Features
  - Command bundle items now supports changing of output type through exit codes
  - Last open windows and files are restored upon startup
  - Detect external changes to open files
+ - Dialog system to be available from bundles. Includes so far, CommitDialog, error, progress, simplenotification,
+   html.InsertEntity and subversion.RevisionSelector
+ - Git and subversion status on files are shown as colors in the project view
 
 Bugfixes
  - NPE whith new tabs created by bundles
+ - Lots of bugfixes to make sure the subversion bundle works almost completely
 
 
 Build 2010112501

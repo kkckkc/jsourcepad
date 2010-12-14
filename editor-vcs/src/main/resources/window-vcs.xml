@@ -7,5 +7,6 @@
     <bean id="vcsDecorationRenderer" class="kkckkc.jsourcepad.vcs.VcsDecorationRenderer" />
 
     <bean id="svnVcsDecorator" class="kkckkc.jsourcepad.vcs.SvnVcsDecorator" />
+    <bean id="gitVcsDecorator" class="kkckkc.jsourcepad.vcs.GitVcsDecorator" />
 
 </beans>
