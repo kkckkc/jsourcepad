@@ -6,7 +6,7 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
-public class VCSPlugin implements Plugin {
+public class VcsPlugin implements Plugin {
     @Override
     public String getId() {
         return "editor-vcs";
