@@ -180,22 +180,14 @@ public class NamedMatcher implements NamedMatchResult {
 		return matcher.replaceFirst(replacement);
 	}
 
-	public NamedMatcher useAnchoringBounds(boolean b) {
-		matcher.useAnchoringBounds(b);
+	public NamedMatcher useAnchoringBounds(boolean useAnchoringBounds) {
+		matcher.useAnchoringBounds(useAnchoringBounds);
 		return this;
 	}
 
-	public NamedMatcher useTransparentBounds(boolean b) {
-		matcher.useTransparentBounds(b);
+	public NamedMatcher useTransparentBounds(boolean useTransparentBounds) {
+		matcher.useTransparentBounds(useTransparentBounds);
 		return this;
-	}
-
-	public boolean equals(Object obj) {
-		return matcher.equals(obj);
-	}
-
-	public int hashCode() {
-		return matcher.hashCode();
 	}
 
 	public String toString() {

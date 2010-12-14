@@ -1,25 +1,7 @@
 package kkckkc.syntaxpane.parse.grammar.gtksourceview;
 
-import static kkckkc.utils.DomUtil.getChild;
-import static kkckkc.utils.DomUtil.getChildText;
-import static kkckkc.utils.DomUtil.getChildren;
-import static kkckkc.utils.DomUtil.getText;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import kkckkc.syntaxpane.parse.grammar.ContainerContext;
-import kkckkc.syntaxpane.parse.grammar.Context;
-import kkckkc.syntaxpane.parse.grammar.KeywordContext;
-import kkckkc.syntaxpane.parse.grammar.ReferenceContext;
-import kkckkc.syntaxpane.parse.grammar.RootContext;
-import kkckkc.syntaxpane.parse.grammar.SimpleContext;
-import kkckkc.syntaxpane.parse.grammar.SubPatternContext;
+import com.google.common.base.Suppliers;
+import kkckkc.syntaxpane.parse.grammar.*;
 import kkckkc.syntaxpane.parse.grammar.SubPatternContext.Where;
 import kkckkc.syntaxpane.parse.grammar.util.DefaultPatternSupplier;
 import kkckkc.syntaxpane.regex.NamedPatternFactory;
@@ -27,11 +9,17 @@ import kkckkc.syntaxpane.regex.Pattern;
 import kkckkc.syntaxpane.regex.PatternFactory;
 import kkckkc.utils.DomUtil;
 import kkckkc.utils.StringUtils;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import com.google.common.base.Suppliers;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static kkckkc.utils.DomUtil.*;
 
 public class GtkSourceViewLanguageParser {
 	private File file;
@@ -43,7 +31,7 @@ public class GtkSourceViewLanguageParser {
 		this.factory = new NamedPatternFactory();
 	}
 
-	public GtkSourceViewLanguage parse() throws FileNotFoundException, IOException {
+	public GtkSourceViewLanguage parse() throws IOException {
         Document doc = DomUtil.parse(file);
 
         languageId = doc.getDocumentElement().getAttribute("id");
@@ -283,9 +271,9 @@ public class GtkSourceViewLanguageParser {
 	}
 
 	
-	private void resolveStyle(Context c) {
-		GtkSourceViewLanguage language = (GtkSourceViewLanguage) c.getLanguage();
-		c.setName(language.resolveStyle(c.getName()));
+	private void resolveStyle(Context context) {
+		GtkSourceViewLanguage language = (GtkSourceViewLanguage) context.getLanguage();
+		context.setName(language.resolveStyle(context.getName()));
 	}
 
 	private boolean makeBoolean(String attributeValue) {

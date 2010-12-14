@@ -38,9 +38,9 @@ public class DocViewImpl implements DocView {
 	@Override
     public void redraw() {
 		// "Clone" font to force full redraw / recalculation
-		Font f = sourcePane.getFont();
-		f = f.deriveFont(f.getStyle());
-		sourcePane.getEditorPane().setFont(f);
+		Font font = sourcePane.getFont();
+		font = font.deriveFont(font.getStyle());
+		sourcePane.getEditorPane().setFont(font);
     }
 
 }

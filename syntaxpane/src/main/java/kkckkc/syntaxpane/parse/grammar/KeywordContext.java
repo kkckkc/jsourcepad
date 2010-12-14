@@ -24,12 +24,12 @@ public class KeywordContext extends MatchableContext {
 	}
 
 	@Override
-	public Matcher getMatcher(CharSequence s) {
+	public Matcher getMatcher(CharSequence seq) {
 		if (pattern == null) {
 			buildPattern();
 		}
 		
-		return pattern.matcher(s);
+		return pattern.matcher(seq);
 	}
 
 

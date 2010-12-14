@@ -59,7 +59,7 @@ public class DocPresenter implements Presenter<DocView> {
 
     @PreDestroy
     public void destroy() {
-        for (Subscription s : subscriptions) s.unsubscribe();
+        for (Subscription subscription : subscriptions) subscription.unsubscribe();
     }
 
 	@PostConstruct
@@ -133,8 +133,8 @@ public class DocPresenter implements Presenter<DocView> {
             }
 
             @Override
-            public void setEnabled(boolean b) {
-                a.setEnabled(b);
+            public void setEnabled(boolean enabled) {
+                a.setEnabled(enabled);
             }
 
             @Override

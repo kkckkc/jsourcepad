@@ -1,8 +1,8 @@
 package kkckkc.jsourcepad.ui;
 
-import javax.swing.JTabbedPane;
-
 import kkckkc.jsourcepad.View;
+
+import javax.swing.*;
 
 public interface DocListView extends View {
 

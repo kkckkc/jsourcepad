@@ -10,16 +10,13 @@ import kkckkc.syntaxpane.regex.Matcher;
 import kkckkc.utils.Pair;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 
 public class Parser {
 	public enum ChangeEvent { ADD, UPDATE, REMOVE }
 
-    private static long MAX_PARSE_TIME = 50 * 1000L * 1000L;
-    private static int SAMPLE_INTERVAL = 100;
-
-    private Logger logger = Logger.getLogger(Parser.class.getName());        
+    private static final long MAX_PARSE_TIME = 50 * 1000L * 1000L;
+    private static final int SAMPLE_INTERVAL = 100;
 
 	private MutableLineManager lineManager;
 	private Language language;
@@ -179,10 +176,10 @@ public class Parser {
 
     private int buildMatchers(Scope scope, Line line, CharSequence seq, MatchableContext def, MatchableContext[] contexts, Matcher[] matchers) {
         int rootMatcherIdx = 0;
-        for (int i = 0; i < contexts.length; i++) {
-            if (contexts[i] == null) continue;
-            if (contexts[i].isExtendParent()) {
-                matchers[rootMatcherIdx++] = contexts[i].getMatcher(seq);
+        for (MatchableContext context : contexts) {
+            if (context == null) continue;
+            if (context.isExtendParent()) {
+                matchers[rootMatcherIdx++] = context.getMatcher(seq);
             }
         }
         if (def instanceof ContainerContext) {
@@ -218,9 +215,9 @@ public class Parser {
 	    
 	    // Remove all that ends at line end
 	    while (true) {
-	    	Context c = scope.getContext();
-	    	if (c instanceof ContainerContext) {
-	    		ContainerContext acc = (ContainerContext) c;
+	    	Context context = scope.getContext();
+	    	if (context instanceof ContainerContext) {
+	    		ContainerContext acc = (ContainerContext) context;
 	    		if (acc.isEndAtLineEnd()) {
 	    			scope.getParent().getChildren().clear();
 	    			scope = scope.getParent();

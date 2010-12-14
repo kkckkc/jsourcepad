@@ -17,12 +17,12 @@ public class TextConvertToLowercaseAction extends BaseAction {
 
 	@Override
     public void actionPerformed(ActionEvent e) {
-		Buffer b = window.getDocList().getActiveDoc().getActiveBuffer();
+		Buffer activeBuffer = window.getDocList().getActiveDoc().getActiveBuffer();
 
-		Interval i = b.getSelectionOrCurrentLine();
-        String text = b.getText(i);
+		Interval selectionOrCurrentLine = activeBuffer.getSelectionOrCurrentLine();
+        String text = activeBuffer.getText(selectionOrCurrentLine);
 
-		b.replaceText(i, text.toLowerCase(), null);
+		activeBuffer.replaceText(selectionOrCurrentLine, text.toLowerCase(), null);
     }
 
 }

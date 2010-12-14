@@ -1,14 +1,14 @@
 package kkckkc.jsourcepad.model.bundle;
 
-import java.awt.event.ActionEvent;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import kkckkc.jsourcepad.model.Buffer;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.syntaxpane.model.Interval;
 import kkckkc.utils.Pair;
+
+import java.awt.event.ActionEvent;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MacroEngine {
 	public static final Map<String, MacroCommand> commands = new HashMap<String, MacroCommand>();
@@ -78,10 +78,10 @@ public class MacroEngine {
 
 		@Override
         public void execute(Object argument, Window window) {
-	        Buffer b = window.getDocList().getActiveDoc().getActiveBuffer();
+	        Buffer activeBuffer = window.getDocList().getActiveDoc().getActiveBuffer();
 	        
 	        // TODO: Check this
-	        b.getActionMap().get(actionName).actionPerformed(
+	        activeBuffer.getActionMap().get(actionName).actionPerformed(
 	        		new ActionEvent("", 0, actionName));
         }
 	}

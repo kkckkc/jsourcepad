@@ -37,13 +37,13 @@ public class ViewFullscreenAction extends BaseAction {
 
             Toolkit toolkit = Toolkit.getDefaultToolkit();
 
-            Insets i = toolkit.getScreenInsets(frame.getGraphicsConfiguration());
+            Insets insets = toolkit.getScreenInsets(frame.getGraphicsConfiguration());
 
             Rectangle max = new Rectangle(toolkit.getScreenSize());
-            max.x += i.left;
-            max.y += i.top;
-            max.width -= (i.left + i.right);
-            max.height -= (i.top + i.bottom);
+            max.x += insets.left;
+            max.y += insets.top;
+            max.width -= (insets.left + insets.right);
+            max.height -= (insets.top + insets.bottom);
 
             frame.setBounds(max);
 
@@ -55,7 +55,7 @@ public class ViewFullscreenAction extends BaseAction {
             frame.setUndecorated(isUndecorated);
         }
 
-        frame.setResizable(isMaximized ? false : true);
+        frame.setResizable(!isMaximized);
         frame.validate();
         frame.setVisible(wasVisible);
 

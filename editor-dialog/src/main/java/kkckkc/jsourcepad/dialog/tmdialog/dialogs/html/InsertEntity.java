@@ -51,17 +51,17 @@ public class InsertEntity extends BaseTmDialogDelegate {
 
     @Override
     protected Object getReturnData() {
-        Map m = Maps.newHashMap();
+        Map returnData = Maps.newHashMap();
         Map result = Maps.newHashMap();
 
-        m.put("result", result);
+        returnData.put("result", result);
 
         result.put("asEntity", checkbox.isSelected() ? "1" : "0");
 
         Entry entry = (Entry) list.getSelectedValue();
         result.put("returnArgument", Arrays.asList(entry.asMap()));
 
-        return m;
+        return returnData;
     }
 
     static class Entry {
@@ -80,10 +80,10 @@ public class InsertEntity extends BaseTmDialogDelegate {
         }
 
         public Map asMap() {
-            Map m = Maps.newHashMap();
-            m.put("char", character);
-            m.put("entity", entity);
-            return m;
+            Map map = Maps.newHashMap();
+            map.put("char", character);
+            map.put("entity", entity);
+            return map;
         }
     }
 }

@@ -1,9 +1,6 @@
 package kkckkc.jsourcepad.util.action;
 
 import com.google.common.collect.Lists;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,13 +8,12 @@ import java.awt.event.ActionEvent;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-public class ActionGroup extends AbstractAction implements BeanFactoryAware {
+public class ActionGroup extends AbstractAction {
 	private static final long serialVersionUID = 1L;
 
 	protected List<Action> items = Lists.newArrayList();
 	protected List<WeakReference<JComponent>> derivedComponents = Lists.newArrayList();
 	protected List<Runnable> derivedComponentsListeners = Lists.newArrayList();
-    private BeanFactory beanFactory;
 
     public ActionGroup() {
 	}
@@ -76,12 +72,12 @@ public class ActionGroup extends AbstractAction implements BeanFactoryAware {
 	}
 
 	public String toPrettyString() {
-	    StringBuilder b = new StringBuilder();
-	    toPrettyString(b, 0);
-		return b.toString();
+	    StringBuilder builder = new StringBuilder();
+	    toPrettyString(builder, 0);
+		return builder.toString();
     }
 
-	private void toPrettyString(StringBuilder b, int i) {
+	private void toPrettyString(StringBuilder builder, int i) {
 		StringBuilder indent = new StringBuilder();
 		for (int j = 0; j < i; j++) {
 			indent.append("    ");
@@ -89,12 +85,12 @@ public class ActionGroup extends AbstractAction implements BeanFactoryAware {
 		
 	    for (Object o : items) {
 	    	if (o == null) {
-	    		b.append(indent).append("-------------------------" + "\n");
+	    		builder.append(indent).append("-------------------------" + "\n");
 	    	} else if (o instanceof ActionGroup) {
-	    		b.append(indent).append(((ActionGroup) o).getValue(Action.NAME)).append("\n");
-	    		((ActionGroup) o).toPrettyString(b, i + 1);
+	    		builder.append(indent).append(((ActionGroup) o).getValue(Action.NAME)).append("\n");
+	    		((ActionGroup) o).toPrettyString(builder, i + 1);
 	    	} else {
-                b.append(indent).append(o.toString()).append("\n");
+                builder.append(indent).append(o.toString()).append("\n");
 	    	}
 	    }
     }
@@ -160,11 +156,6 @@ public class ActionGroup extends AbstractAction implements BeanFactoryAware {
         }
     }
 
-    @Override
-    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-        this.beanFactory = beanFactory;
-    }
-
     public void addLast(Action item) {
         add(size() - 1, item);
     }
@@ -183,8 +174,8 @@ public class ActionGroup extends AbstractAction implements BeanFactoryAware {
 
     public boolean containsName(String name) {
         for (int i = 0; i < getItems().size(); i++) {
-            String n = (String) getItems().get(i).getValue(Action.NAME);
-            if (n.toLowerCase().equals(name.toLowerCase())) {
+            String actionName = (String) getItems().get(i).getValue(Action.NAME);
+            if (actionName.toLowerCase().equals(name.toLowerCase())) {
                 return true;
             }
         }
@@ -195,8 +186,8 @@ public class ActionGroup extends AbstractAction implements BeanFactoryAware {
     public void insertSorted(String name, Action ag) {
         int i;
         for (i = 0; i < getItems().size(); i++) {
-            String n = (String) getItems().get(i).getValue(Action.NAME);
-            if (n.toLowerCase().compareTo(name.toLowerCase()) >= 0) {
+            String actionName = (String) getItems().get(i).getValue(Action.NAME);
+            if (actionName.toLowerCase().compareTo(name.toLowerCase()) >= 0) {
                 break;
             }
         }

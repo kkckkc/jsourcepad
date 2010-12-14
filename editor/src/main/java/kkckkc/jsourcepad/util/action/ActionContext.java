@@ -32,26 +32,26 @@ public class ActionContext {
         this.component = component;
     }
 
-    public static ActionContext get(Container c) {
-        if (c == null) {
+    public static ActionContext get(Container container) {
+        if (container == null) {
             return EMPTY_CONTEXT;
         }
-        if (! (c instanceof JComponent)) {
+        if (! (container instanceof JComponent)) {
             return EMPTY_CONTEXT;
         }
 
-        ActionContext ac = (ActionContext) ((JComponent) c).getClientProperty(KEY);
+        ActionContext ac = (ActionContext) ((JComponent) container).getClientProperty(KEY);
         if (ac != null) return ac;
 
-        if (c instanceof JPopupMenu) {
-            return get((JComponent) ((JPopupMenu) c).getInvoker());
+        if (container instanceof JPopupMenu) {
+            return get((JComponent) ((JPopupMenu) container).getInvoker());
         } else {
-            return get(c.getParent());
+            return get(container.getParent());
         }
     }
 
-    public static void set(JComponent c, ActionContext ac) {
-        c.putClientProperty(KEY, ac);
+    public static void set(JComponent component, ActionContext ac) {
+        component.putClientProperty(KEY, ac);
     }
 
 
@@ -77,8 +77,8 @@ public class ActionContext {
     }
 
     public void commit() {
-        for (Listener l : listeners) {
-            l.actionContextUpdated(this);
+        for (Listener listener : listeners) {
+            listener.actionContextUpdated(this);
         }
     }
 

@@ -1,12 +1,12 @@
 package com.github.kkckkc.syntaxpane.parse;
 
-import java.util.Iterator;
-
 import junit.framework.TestCase;
 import kkckkc.syntaxpane.model.Interval;
-import kkckkc.syntaxpane.model.MutableLineManager;
 import kkckkc.syntaxpane.model.LineManager.Line;
+import kkckkc.syntaxpane.model.MutableLineManager;
 import kkckkc.syntaxpane.parse.CharProvider;
+
+import java.util.Iterator;
  
 public class MutableLineManagerTest extends TestCase {
 	public void testAddOneLine() {

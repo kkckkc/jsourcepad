@@ -8,7 +8,6 @@ import kkckkc.utils.plist.GeneralPListReader;
 import kkckkc.utils.plist.PListReader;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -37,7 +36,7 @@ public class TextmateLanguageParser {
         };
 	}
 
-	public Language parse() throws FileNotFoundException, IOException {
+	public Language parse() throws IOException {
 		GeneralPListReader r = new GeneralPListReader();
 
 		Map m = (Map) r.read(file);
@@ -69,7 +68,7 @@ public class TextmateLanguageParser {
 		for (Map entry : ((List<Map>) m.get("patterns"))) {
 			contexts.add(parseContext(entry));
 		}
-		rc.setChildReferences(contexts.toArray(new Context[] {}));
+		rc.setChildReferences(contexts.toArray(new Context[contexts.size()]));
 
 		l.setRootContext(rc);
 		
@@ -87,7 +86,7 @@ public class TextmateLanguageParser {
 				}
 				contexts.add(c);
 			}
-			l.setSupportingContexts(contexts.toArray(new Context[] {}));
+			l.setSupportingContexts(contexts.toArray(new Context[contexts.size()]));
 		}
 		
 		return l;
@@ -109,12 +108,12 @@ public class TextmateLanguageParser {
 	    ContextList contextList = new ContextList(factory);
 
 	    if (entry.containsKey("name") || entry.containsKey("begin") || entry.containsKey("match")) {
-	    	Context c = parseContext(entry);
-	    	if (c.getId() == null) {
-		    	c.setId(id);
-		    	c.setName(id);
+	    	Context context = parseContext(entry);
+	    	if (context.getId() == null) {
+		    	context.setId(id);
+		    	context.setName(id);
 	    	}
-			contextList.setChildReferences(new Context[]{c});
+			contextList.setChildReferences(new Context[]{context});
 	    } else {
 	    	contextList.setName(id);
 	    	contextList.setId(id);
@@ -127,7 +126,7 @@ public class TextmateLanguageParser {
 				}
 			}
 			
-			contextList.setChildReferences(contexts.toArray(new Context[]{}));
+			contextList.setChildReferences(contexts.toArray(new Context[contexts.size()]));
 	    }
 	    
 	    return contextList;
@@ -151,20 +150,20 @@ public class TextmateLanguageParser {
 	}
 
 	private Context parseContainerContext(Map entry) {
-	    ContainerContext cc = new ContainerContext(factory);
-		cc.setId((String) entry.get("name")); 
-		cc.setName((String) entry.get("name"));
+	    ContainerContext context = new ContainerContext(factory);
+		context.setId((String) entry.get("name"));
+		context.setName((String) entry.get("name"));
 
 		if (entry.containsKey("disabled")) {
-            cc.setDisabled(true);
+            context.setDisabled(true);
         } else {
-            cc.setDisabled(false);
+            context.setDisabled(false);
         }
 
 		if (entry.containsKey("begin")) 
-			cc.setBegin(factory.create((String) entry.get("begin")));
+			context.setBegin(factory.create((String) entry.get("begin")));
 		if (entry.containsKey("end")) {
-            cc.setEnd(factory.create(fixBackrefs((String) entry.get("end"))));
+            context.setEnd(factory.create(fixBackrefs((String) entry.get("end"))));
         }
 
 		List<Map> patterns = (List<Map>) entry.get("patterns");
@@ -176,21 +175,21 @@ public class TextmateLanguageParser {
 		}
 
         if (entry.containsKey("contentName")) {
-            ContainerContext s = new ContainerContext(factory);
-            s.setId((String) entry.get("contentName"));
-            s.setName((String) entry.get("contentName"));
-            s.setContentNameContext(true);
+            ContainerContext containerContext = new ContainerContext(factory);
+            containerContext.setId((String) entry.get("contentName"));
+            containerContext.setName((String) entry.get("contentName"));
+            containerContext.setContentNameContext(true);
 
-            s.setBegin(factory.create("(?=.)"));
+            containerContext.setBegin(factory.create("(?=.)"));
             if (entry.containsKey("end"))
-                s.setEnd(factory.create("(?=" + fixBackrefs((String) entry.get("end")) + ")"));
+                containerContext.setEnd(factory.create("(?=" + fixBackrefs((String) entry.get("end")) + ")"));
             else
-                s.setEnd(factory.create("(?=.)"));
+                containerContext.setEnd(factory.create("(?=.)"));
 
-            s.setChildReferences(contexts.toArray(new Context[] {}));
+            containerContext.setChildReferences(contexts.toArray(new Context[contexts.size()]));
 
             contexts.clear();
-            contexts.add(s);
+            contexts.add(containerContext);
         }
 
 		if (entry.containsKey("beginCaptures")) {
@@ -238,9 +237,9 @@ public class TextmateLanguageParser {
             contexts.addAll(dest);
         }
 
-		cc.setChildReferences(contexts.toArray(new Context[] {}));
+		context.setChildReferences(contexts.toArray(new Context[contexts.size()]));
 		
-	    return cc;
+	    return context;
     }
 
     Pattern CHANGE_BACKREF = Pattern.compile("\\\\([0-9]+)");
@@ -263,22 +262,20 @@ public class TextmateLanguageParser {
 				contexts.add(spc);
 			}
 			Collections.sort(contexts, SUBPATTERN_COMPARATOR);
-			sc.setChildReferences(contexts.toArray(new Context[] {}));
+			sc.setChildReferences(contexts.toArray(new Context[contexts.size()]));
 		}
 		
 		return sc;
     }
 	
-	private static void recurse(File file, PListReader r) throws FileNotFoundException, IOException {
-		for (File f : file.listFiles()) {
-			if (f.getName().endsWith(".plist") || f.getName().endsWith(".tmLanguage")) {
+	private static void recurse(File file, PListReader r) throws IOException {
+		for (File childFile : file.listFiles()) {
+			if (childFile.getName().endsWith(".plist") || childFile.getName().endsWith(".tmLanguage")) {
 				if (file.getName().equals("Syntaxes")) {
-					System.out.println(f);
-					TextmateLanguageParser lp = new TextmateLanguageParser(f);
-					System.out.println(lp.parse().getLanguageId());
+					TextmateLanguageParser lp = new TextmateLanguageParser(childFile);
 				}
-			} else if (f.isDirectory()) {
-				recurse(f, r);
+			} else if (childFile.isDirectory()) {
+				recurse(childFile, r);
 			}
 		}
 	}

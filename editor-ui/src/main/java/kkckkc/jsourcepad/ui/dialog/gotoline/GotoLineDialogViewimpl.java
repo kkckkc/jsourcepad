@@ -9,7 +9,6 @@ import java.awt.*;
 public class GotoLineDialogViewimpl extends BaseJDialog implements GotoLineDialogView {
     private JTextField lineNumberField;
     private JButton okButton;
-    private JLabel lineNumberLabel;
 
     public GotoLineDialogViewimpl(java.awt.Frame parent) {
         super(parent, true);
@@ -25,7 +24,7 @@ public class GotoLineDialogViewimpl extends BaseJDialog implements GotoLineDialo
 
         lineNumberField = new JTextField();
         okButton = new JButton("OK");
-        lineNumberLabel = new JLabel("Line number:");
+        JLabel lineNumberLabel = new JLabel("Line number:");
 
         p.add(lineNumberLabel, "wrap,growx");
         p.add(lineNumberField, "wrap,growx");

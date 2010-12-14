@@ -107,10 +107,10 @@ public class FindDialog implements Dialog<FindDialogView> {
             position = selection.getEnd();
         }
         registerHistory("find", view.getFindField());
-        Interval i = finder.forward(position);
-        view.getReplace().setEnabled(i != null);
+        Interval interval = finder.forward(position);
+        view.getReplace().setEnabled(interval != null);
 
-        return i;
+        return interval;
     }
 
     private Interval previous(Buffer buffer) {
@@ -124,10 +124,10 @@ public class FindDialog implements Dialog<FindDialogView> {
 
         registerHistory("find", view.getFindField());
 
-        Interval i = finder.backward(position);
-        view.getReplace().setEnabled(i != null);
+        Interval interval = finder.backward(position);
+        view.getReplace().setEnabled(interval != null);
 
-        return i;
+        return interval;
     }
 
     private void replace(Buffer buffer) {

@@ -17,10 +17,10 @@ public class TextConvertToOppositeCaseAction extends BaseAction {
 
 	@Override
     public void actionPerformed(ActionEvent e) {
-        Buffer b = window.getDocList().getActiveDoc().getActiveBuffer();
+        Buffer activeBuffer = window.getDocList().getActiveDoc().getActiveBuffer();
 
-        Interval iv = b.getSelectionOrCurrentLine();
-        String text = b.getText(iv);
+        Interval iv = activeBuffer.getSelectionOrCurrentLine();
+        String text = activeBuffer.getText(iv);
 
         char[] chars = text.toCharArray();
         for (int i = 0; i < chars.length; i++) {
@@ -33,7 +33,7 @@ public class TextConvertToOppositeCaseAction extends BaseAction {
             }
         }
 
-        b.replaceText(iv, new String(chars), null);
+        activeBuffer.replaceText(iv, new String(chars), null);
     }
 
 }

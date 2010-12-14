@@ -39,21 +39,21 @@ public class Finder {
     }
 
     public Interval forward(int position) {
-        Interval i = findForward(position);
-        if (i != null) {
-            buffer.setSelection(i);
+        Interval interval = findForward(position);
+        if (interval != null) {
+            buffer.setSelection(interval);
         }
 
-        return i;
+        return interval;
     }
 
     public Interval backward(int position) {
-        Interval i = findBackward(position);
-        if (i != null) {
-            buffer.setSelection(i);
+        Interval interval = findBackward(position);
+        if (interval != null) {
+            buffer.setSelection(interval);
         }
 
-        return i;
+        return interval;
     }
 
     public void replace() {
@@ -127,11 +127,11 @@ public class Finder {
         int position = scope == null ? 0 : scope.getStart();
         int end = scope == null ? 0 : Integer.MAX_VALUE;
 
-        Interval i;
-        while ((i = forward(position)) != null) {
-            if (i.getStart() >= end) return;
+        Interval interval;
+        while ((interval = forward(position)) != null) {
+            if (interval.getStart() >= end) return;
             
-            position = i.getEnd();
+            position = interval.getEnd();
             replace();
         }
     }

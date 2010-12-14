@@ -56,10 +56,10 @@ public abstract class BaseTmDialogDelegate implements TmDialogDelegate {
 
         if (center) {
             Toolkit toolkit = Toolkit.getDefaultToolkit();
-            Dimension d = toolkit.getScreenSize();
+            Dimension dim = toolkit.getScreenSize();
 
-            int x = (d.width - jdialog.getSize().width)/2;
-            int y = (d.height - jdialog.getSize().height)/2;
+            int x = (dim.width - jdialog.getSize().width)/2;
+            int y = (dim.height - jdialog.getSize().height)/2;
             jdialog.setLocation(x, y);
 
         } else {

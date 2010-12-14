@@ -48,15 +48,15 @@ public class ErrorDialog extends BaseTmDialogDelegate {
         for (String s : buttonTitles) {
             final int idx = i;
 
-            JButton b = new JButton(s);
-            b.addActionListener(new ActionListener() {
+            JButton button = new JButton(s);
+            button.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     buttonIndex = idx;
                     notifyDataIsAvailable();
                 }
             });
-            buttonPanel.add(b);
+            buttonPanel.add(button);
             i++;
         }
 

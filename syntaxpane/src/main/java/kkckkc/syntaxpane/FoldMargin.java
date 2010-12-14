@@ -40,15 +40,14 @@ public class FoldMargin extends JComponent implements PropertyChangeListener {
 				if (position > document.getLength()) return;
 				
 				Line line = document.getLineManager().getLineByPosition(position);
-				if (line == null) return;
-				
+
 				document.getFoldManager().toggle(line);
 				
 				Element el = document.getDefaultRootElement();
 				int index = el.getElementIndex(editorPane.getCaretPosition());
 
-				FoldManager.State s = document.getFoldManager().getFoldState(index);
-				if (s == FoldManager.State.FOLDED_SECOND_LINE_AND_REST) {
+				FoldManager.State foldState = document.getFoldManager().getFoldState(index);
+				if (foldState == FoldManager.State.FOLDED_SECOND_LINE_AND_REST) {
 					editorPane.setCaretPosition(Math.max(0, position - 1));
 				}
 			}
@@ -82,23 +81,21 @@ public class FoldMargin extends JComponent implements PropertyChangeListener {
 
 		int h = g.getFontMetrics().getHeight();
  
-		if (startLine != null && endLine != null) {
-			LineManager lineManager = document.getLineManager();
-			do {
-				FoldManager.State s = document.getFoldManager().getFoldState(startLine.getIdx());
-				if (s == FoldManager.State.FOLDABLE || s == FoldManager.State.FOLDED_FIRST_LINE) {
-					g.setColor(getForeground());
+        LineManager lineManager = document.getLineManager();
+        do {
+            FoldManager.State foldState = document.getFoldManager().getFoldState(startLine.getIdx());
+            if (foldState == FoldManager.State.FOLDABLE || foldState == FoldManager.State.FOLDED_FIRST_LINE) {
+                g.setColor(getForeground());
 
-					int yo = document.getFoldManager().toVisibleIndex(startLine.getIdx()) * h + (h / 2) - 3;
-					if (s == FoldManager.State.FOLDED_FIRST_LINE) {
-						paintFoldedFoldMark(g, yo);
-					} else {
-						paintUnfoldedFoldMark(g, yo);
-					}
-				}
-				startLine = lineManager.getNext(startLine);
-			} while (startLine != null && startLine.getIdx() <= endLine.getIdx());
-		}
+                int yo = document.getFoldManager().toVisibleIndex(startLine.getIdx()) * h + (h / 2) - 3;
+                if (foldState == FoldManager.State.FOLDED_FIRST_LINE) {
+                    paintFoldedFoldMark(g, yo);
+                } else {
+                    paintUnfoldedFoldMark(g, yo);
+                }
+            }
+            startLine = lineManager.getNext(startLine);
+        } while (startLine != null && startLine.getIdx() <= endLine.getIdx());
 	}
 
 	private void paintUnfoldedFoldMark(Graphics g, int yo) {

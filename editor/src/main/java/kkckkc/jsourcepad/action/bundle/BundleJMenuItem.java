@@ -1,6 +1,6 @@
 package kkckkc.jsourcepad.action.bundle;
 
-import javax.swing.JMenuItem;
+import javax.swing.*;
 
 public class BundleJMenuItem extends JMenuItem {
 

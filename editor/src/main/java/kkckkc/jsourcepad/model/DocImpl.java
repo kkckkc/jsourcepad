@@ -66,7 +66,7 @@ public class DocImpl implements Doc, ScopeRoot, BeanFactoryAware {
             public void languagesUpdated() {
                 LineManager.Line line = buffer.getLineManager().getLineByPosition(0);
                 Language language = DocImpl.this.languageManager.getLanguage(
-                        line != null ? line.getCharSequence(false).toString() : "", backingFile);
+                        line.getCharSequence(false).toString(), backingFile);
                 DocImpl.this.buffer.setLanguage(language);
             }
         }));
@@ -126,8 +126,8 @@ public class DocImpl implements Doc, ScopeRoot, BeanFactoryAware {
 
     @PreDestroy
     public void destroy() {
-        for (Subscription s : subscriptions) {
-            s.unsubscribe();
+        for (Subscription subscription : subscriptions) {
+            subscription.unsubscribe();
         }
     }
 

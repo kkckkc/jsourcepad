@@ -143,8 +143,8 @@ public class ProjectImpl implements Project, DocList.Listener, Window.FocusListe
         File[] children = file.listFiles();
         if (children == null) return;
 
-        for (File f : children) {
-            populateCacheRecusively(condition, f, maxFiles - 1);
+        for (File child : children) {
+            populateCacheRecusively(condition, child, maxFiles - 1);
         }
     }
 

@@ -19,7 +19,10 @@ import kkckkc.utils.plist.PListReader;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
-import java.io.*;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.*;
 
 public class BundleManagerImpl implements BundleManager {
@@ -59,11 +62,6 @@ public class BundleManagerImpl implements BundleManager {
     }
 
     @Override
-    public void reloadSyntaxDefinition(File file) {
-        reload(languageManager);
-    }
-
-    @Override
 	@Deprecated
     public List<Bundle> getBundles() {
 		loadBundlesIfNeeded();
@@ -73,8 +71,8 @@ public class BundleManagerImpl implements BundleManager {
     @Override
     public Bundle getBundleByDirName(String name) {
         if (bundles != null) {
-            for (Bundle b : bundles) {
-                if (b.getBundleDirName().equals(name)) return b;
+            for (Bundle bundle : bundles) {
+                if (bundle.getBundleDirName().equals(name)) return bundle;
             }
         }
         return null;
@@ -82,8 +80,8 @@ public class BundleManagerImpl implements BundleManager {
 
     @Override
     public Bundle getBundle(String name) {
-        for (Bundle b : bundles) {
-            if (b.getName().equals(name)) return b;
+        for (Bundle bundle : bundles) {
+            if (bundle.getName().equals(name)) return bundle;
         }
         return null;
     }
@@ -91,8 +89,8 @@ public class BundleManagerImpl implements BundleManager {
 
     @Override
     public Bundle getBundle(File dir) {
-        for (Bundle b : bundles) {
-            if (b.getDir().equals(dir)) return b;
+        for (Bundle bundle : bundles) {
+            if (bundle.getDir().equals(dir)) return bundle;
         }
         return null;
     }
@@ -164,8 +162,8 @@ public class BundleManagerImpl implements BundleManager {
 
                 if (oldBundles != null) {
                     boolean found = false;
-                    for (Bundle b : oldBundles) {
-                        if (b.getDir().equals(bundleDir)) {
+                    for (Bundle bundle : oldBundles) {
+                        if (bundle.getDir().equals(bundleDir)) {
                             Application.get().topic(BundleListener.class).post().bundleUpdated(newBundle);
                             found = true;
                             break;
@@ -182,14 +180,14 @@ public class BundleManagerImpl implements BundleManager {
 	    
 
         if (oldBundles != null) {
-            for (Bundle b : oldBundles) {
+            for (Bundle bundle : oldBundles) {
                 boolean found = false;
-                for (Bundle nb : this.bundles) {
-                    if (nb.getDir().equals(b.getDir())) {
+                for (Bundle newBundle : this.bundles) {
+                    if (newBundle.getDir().equals(bundle.getDir())) {
                         found = true;
                     }
                 }
-                if (! found) Application.get().topic(BundleListener.class).post().bundleRemoved(b);
+                if (! found) Application.get().topic(BundleListener.class).post().bundleRemoved(bundle);
             }
         }
 
@@ -203,8 +201,8 @@ public class BundleManagerImpl implements BundleManager {
 
     private void indexPreferences() {
         preferences = Maps.newHashMap();
-        for (Bundle b : bundles) {
-            for (Map.Entry<String, Map<ScopeSelector, Object>> entry : b.getPreferences().entrySet()) {
+        for (Bundle bundle : bundles) {
+            for (Map.Entry<String, Map<ScopeSelector, Object>> entry : bundle.getPreferences().entrySet()) {
                 if (! preferences.containsKey(entry.getKey())) {
                     preferences.put(entry.getKey(), entry.getValue());
                 } else {
@@ -218,11 +216,11 @@ public class BundleManagerImpl implements BundleManager {
     private Bundle buildFromDirectory(Bundle bundle, PListReader r, File dir) {
 		try {
 	    	File bundleFile = new File(dir, "info.plist");
-			Map m = (Map) r.read(bundleFile); 
+			Map bundleProperties = (Map) r.read(bundleFile);
 
-			String name = (String) m.get("name");
+			String name = (String) bundleProperties.get("name");
 
-			Map menu = (Map) m.get("mainMenu");
+			Map menu = (Map) bundleProperties.get("mainMenu");
 			if (menu == null) {
 				menu = Maps.newHashMap();
 			}
@@ -275,26 +273,26 @@ public class BundleManagerImpl implements BundleManager {
     }
 
 	private void loadPreferences(File dir, BundleStructure.Type type, PListReader r,
-			Map<String, Map<ScopeSelector, Object>> prefs) throws FileNotFoundException, IOException {
+			Map<String, Map<ScopeSelector, Object>> prefs) throws IOException {
         dir = new File(dir, type.getFolder());
 		if (! dir.exists()) return;
 		
-		for (File f : dir.listFiles()) {
-			String n = f.getName();
-			if (n.equals("info.plist")) continue;
-			if (BundleStructure.isOfType(type, f)) {
-				Map<String, Object> m = (Map<String, Object>) r.read(f);
-				for (Map.Entry<String, Object> entry : ((Map<String, Object>) m.get("settings")).entrySet()) {
+		for (File file : dir.listFiles()) {
+			String name = file.getName();
+			if (name.equals("info.plist")) continue;
+			if (BundleStructure.isOfType(type, file)) {
+				Map<String, Object> itemProps = (Map<String, Object>) r.read(file);
+				for (Map.Entry<String, Object> entry : ((Map<String, Object>) itemProps.get("settings")).entrySet()) {
 					
 					// TODO: Check this
-					if (m.get("scope") == null) continue;
+					if (itemProps.get("scope") == null) continue;
 					
 					if (! prefs.containsKey(entry.getKey())) {
 						prefs.put(entry.getKey(), new HashMap<ScopeSelector, Object>());
 					}
 					
 					prefs.get(entry.getKey()).put(
-							TextmateScopeSelectorParser.parse((String) m.get("scope")),
+							TextmateScopeSelectorParser.parse((String) itemProps.get("scope")),
 							entry.getValue()
 					);
 				}
@@ -303,14 +301,14 @@ public class BundleManagerImpl implements BundleManager {
 	}
 
 	
-	private void load(File dir, BundleStructure.Type type, PListReader reader, Map<String, BundleItemSupplier> uuidToItem) throws FileNotFoundException, IOException {
+	private void load(File dir, BundleStructure.Type type, PListReader reader, Map<String, BundleItemSupplier> uuidToItem) throws IOException {
         dir = new File(dir, type.getFolder());
 
 		if (! dir.exists()) return;
 		
 		for (File file : dir.listFiles()) {
-			String n = file.getName();
-			if (n.equals("info.plist")) continue;
+			String fileName = file.getName();
+			if (fileName.equals("info.plist")) continue;
 			if (BundleStructure.isOfType(type, file)) {
 
 				Map data = (Map) reader.read(file);
@@ -321,7 +319,7 @@ public class BundleManagerImpl implements BundleManager {
 				
 				KeyStroke ks = null;
 				if (keyEq != null && ! "".equals(keyEq)) {
-					ks = new TextmateKeystrokeEncoding().parse(keyEq);
+					ks = TextmateKeystrokeEncoding.parse(keyEq);
 				}
 
                 // Hack to remove strange characters from macosx
@@ -340,7 +338,7 @@ public class BundleManagerImpl implements BundleManager {
 	}
 
 
-    private void loadTemplates(File dir, BundleStructure.Type type, PListReader reader, Map<String, BundleItemSupplier> uuidToItem) throws FileNotFoundException, IOException {
+    private void loadTemplates(File dir, BundleStructure.Type type, PListReader reader, Map<String, BundleItemSupplier> uuidToItem) throws IOException {
         dir = new File(dir, type.getFolder());
         if (! dir.exists()) return;
 
@@ -398,9 +396,9 @@ public class BundleManagerImpl implements BundleManager {
 
     private List<BundleItemSupplier> findBundleItems(Predicate<BundleItemSupplier> predicate, boolean delimit) {
         List<BundleItemSupplier> dest = Lists.newArrayList();
-        for (Bundle b : bundles) {
+        for (Bundle bundle : bundles) {
             int size = dest.size();
-            findInMenu(dest, b.getMenu(), predicate, delimit);
+            findInMenu(dest, bundle.getMenu(), predicate, delimit);
             if (delimit && size != dest.size()) dest.add(null);
         }
 

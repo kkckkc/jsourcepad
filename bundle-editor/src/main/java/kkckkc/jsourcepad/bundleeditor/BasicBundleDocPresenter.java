@@ -69,7 +69,7 @@ public class BasicBundleDocPresenter extends DocPresenter {
                 if (ks == null) {
                     JOptionPane optionPane = new JOptionPane("The value must be a valid keystroke",
                         JOptionPane.ERROR_MESSAGE, JOptionPane.DEFAULT_OPTION);
-                    optionPane.createDialog(bView.getKeyEquivalent(), null).show();
+                    optionPane.createDialog(bView.getKeyEquivalent(), null).setVisible(true);
 
                     EventQueue.invokeLater(new Runnable() {
                         @Override

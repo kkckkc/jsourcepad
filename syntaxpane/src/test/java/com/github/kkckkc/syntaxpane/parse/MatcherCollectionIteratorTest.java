@@ -5,9 +5,6 @@ import kkckkc.syntaxpane.parse.MatcherCollectionIterator;
 import kkckkc.syntaxpane.regex.Matcher;
 import kkckkc.syntaxpane.regex.NamedPatternFactory;
 
-import com.google.code.regex.NamedMatcher;
-import com.google.code.regex.NamedPattern;
-
 public class MatcherCollectionIteratorTest extends TestCase {
 	public void testWithEmptyMatchers() {
 		MatcherCollectionIterator iterator = new MatcherCollectionIterator(new Matcher[] {});

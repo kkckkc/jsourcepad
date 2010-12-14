@@ -22,10 +22,10 @@ public class TextReformatAndJustifyAction extends BaseAction {
     public void actionPerformed(ActionEvent e) {
         StyleSettings ss = Application.get().getSettingsManager().get(StyleSettings.class);
 
-		Buffer b = window.getDocList().getActiveDoc().getActiveBuffer();
+		Buffer activeBuffer = window.getDocList().getActiveDoc().getActiveBuffer();
 
-        Interval i = b.getSelectionOrCurrentParagraph();
-        String text = b.getText(i);
+        Interval selectionOrCurrentParagraph = activeBuffer.getSelectionOrCurrentParagraph();
+        String text = activeBuffer.getText(selectionOrCurrentParagraph);
 
         String[] lines = TextUtils.wrap(text, ss.getWrapColumn());
 
@@ -37,6 +37,6 @@ public class TextReformatAndJustifyAction extends BaseAction {
         if (! text.endsWith("\n"))
             builder.setLength(builder.length() - 1);
 
-		b.replaceText(i, builder.toString(), null);
+		activeBuffer.replaceText(selectionOrCurrentParagraph, builder.toString(), null);
     }
 }

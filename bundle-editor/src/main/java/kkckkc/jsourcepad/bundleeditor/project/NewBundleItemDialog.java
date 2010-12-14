@@ -158,7 +158,6 @@ public class NewBundleItemDialog implements ActionListener, KeyListener {
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
             perform();
-            return;
         }
     }
 

@@ -239,8 +239,8 @@ public class FileTreeModel implements TreeModel {
 
     private void fireTreeStructureChanged(TreePath path) {
         TreeModelEvent evt = new TreeModelEvent(this, path, null, null);
-        for (TreeModelListener l : listeners.getListeners(TreeModelListener.class)) {
-            l.treeStructureChanged(evt);
+        for (TreeModelListener listener : listeners.getListeners(TreeModelListener.class)) {
+            listener.treeStructureChanged(evt);
         }
     }
 
@@ -248,8 +248,8 @@ public class FileTreeModel implements TreeModel {
         int[] indices = new int[children.length];
         for (int i = 0; i < indices.length; i++) indices[i] = i;
         TreeModelEvent evt = new TreeModelEvent(this, createTreePath(parent.getFile()), indices, children);
-        for (TreeModelListener l : listeners.getListeners(TreeModelListener.class)) {
-            l.treeNodesChanged(evt);
+        for (TreeModelListener listener : listeners.getListeners(TreeModelListener.class)) {
+            listener.treeNodesChanged(evt);
         }
     }
 

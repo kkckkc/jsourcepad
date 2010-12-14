@@ -59,19 +59,19 @@ public class ActionManager implements BeanFactoryAware {
                 if ("focusOwner".equals(prop)) {
                     if (! (e.getNewValue() instanceof JComponent)) return;
 
-                    JComponent c = (JComponent) e.getNewValue();
-                    if (c == null) return;
+                    JComponent component = (JComponent) e.getNewValue();
+                    if (component == null) return;
          
-                    if (c instanceof JRootPane) return;
+                    if (component instanceof JRootPane) return;
 
-                    Window w = Application.get().getWindowManager().getWindow(c);
+                    Window w = Application.get().getWindowManager().getWindow(component);
 
                     if (w == null) return;
 
                     ActionManager actionManager = w.getActionManager();
 
-                    ActionContext ac = ActionContext.get(c);
-                    ac.setComponent(c);
+                    ActionContext ac = ActionContext.get(component);
+                    ac.setComponent(component);
 
                     actionManager.setActionContext(ac);
                 }

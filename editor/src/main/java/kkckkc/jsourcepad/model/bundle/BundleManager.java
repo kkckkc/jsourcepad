@@ -26,7 +26,6 @@ public interface BundleManager extends LanguageManager.Provider {
 	public void reload(Bundle bundle);
     public void addBundle(File dir);
     public void remove(Bundle bundle);
-    public void reloadSyntaxDefinition(File file);
 
     // Items
 	public Collection<BundleItemSupplier> getItemsForShortcut(KeyEvent ks, Scope scope);

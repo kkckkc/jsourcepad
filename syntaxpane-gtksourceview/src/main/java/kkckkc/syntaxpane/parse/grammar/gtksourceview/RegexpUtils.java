@@ -1,42 +1,42 @@
 package kkckkc.syntaxpane.parse.grammar.gtksourceview;
 
-import java.util.Map;
-
 import kkckkc.syntaxpane.regex.NamedPatternFactory;
 import kkckkc.syntaxpane.regex.Pattern;
+
+import java.util.Map;
 
 public class RegexpUtils {
 	private static java.util.regex.Pattern LEFT_BRACE = java.util.regex.Pattern.compile("(?<!\\\\)\\{");
 	private static java.util.regex.Pattern RIGHT_BRACE = java.util.regex.Pattern.compile("(?<!\\\\)\\}");
 	
 	public static String encode(String str, Map<String, String> replacements) {
-		StringBuilder b = new StringBuilder(str.length() * 2);
-		b.append(str);
+		StringBuilder builder = new StringBuilder(str.length() * 2);
+		builder.append(str);
 		
 		if (replacements != null && str.indexOf('%') >= 0) {
 			for (Map.Entry<String, String> entry : replacements.entrySet()) {
-				StringBuilderUtils.replace(b, "\\%{" + entry.getKey() + "}", entry.getValue());
+				StringBuilderUtils.replace(builder, "\\%{" + entry.getKey() + "}", entry.getValue());
 			}
 		}
 		
 		// Don't know what these expressions are for
-		StringBuilderUtils.replace(b, "\\%[", "");
-		StringBuilderUtils.replace(b, "\\%]", "");
+		StringBuilderUtils.replace(builder, "\\%[", "");
+		StringBuilderUtils.replace(builder, "\\%]", "");
 
 		// Special character classes
-		StringBuilderUtils.replace(b, "[][]", "[\\]\\[]");
-		StringBuilderUtils.replace(b, "[[]", "[\\[]");
+		StringBuilderUtils.replace(builder, "[][]", "[\\]\\[]");
+		StringBuilderUtils.replace(builder, "[[]", "[\\[]");
 
 		// Remove any \x and \o as these are special unicode escapes
-		StringBuilderUtils.replace(b, "\\x", "\\\\x");
-		StringBuilderUtils.replace(b, "\\o", "\\\\o");
+		StringBuilderUtils.replace(builder, "\\x", "\\\\x");
+		StringBuilderUtils.replace(builder, "\\o", "\\\\o");
 		
 		// TODO: This is a rather ugly workaround
-		StringBuilderUtils.replace(b, "\\\\\\o", "\\\\o");
-		StringBuilderUtils.replace(b, "\\\\\\x", "\\\\x");
+		StringBuilderUtils.replace(builder, "\\\\\\o", "\\\\o");
+		StringBuilderUtils.replace(builder, "\\\\\\x", "\\\\x");
 		
 		// Encode unescaped { and } not preceeded by \
-		str = LEFT_BRACE.matcher(b).replaceAll("\\\\{");
+		str = LEFT_BRACE.matcher(builder).replaceAll("\\\\{");
 		str = RIGHT_BRACE.matcher(str).replaceAll("\\\\}");
 
 		// Special handling of "single" backslashes

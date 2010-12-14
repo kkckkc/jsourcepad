@@ -33,11 +33,11 @@ public class LanguageActionGroup extends ActionGroup implements BundleListener {
             keyedActionGroups.put(Character.toString(c), ag);
         }
 
-        for (final Language l : application.getLanguageManager().getLanguages()) {
-            if (! l.isStandalone()) continue;
+        for (final Language language : application.getLanguageManager().getLanguages()) {
+            if (! language.isStandalone()) continue;
 
-            ActionGroup ag = keyedActionGroups.get(Character.toString(l.getName().charAt(0)).toUpperCase());
-            ag.add(new LanguageAction(application, l));
+            ActionGroup ag = keyedActionGroups.get(Character.toString(language.getName().charAt(0)).toUpperCase());
+            ag.add(new LanguageAction(application, language));
         }
 
         for (Map.Entry<String, ActionGroup> entry : keyedActionGroups.entrySet()) {

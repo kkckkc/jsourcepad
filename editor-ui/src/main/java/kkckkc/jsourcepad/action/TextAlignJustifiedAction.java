@@ -39,12 +39,12 @@ public class TextAlignJustifiedAction extends BaseAction {
 		b.replaceText(i, builder.toString(), null);
     }
 
-    private void justify(String line, StringBuilder b, int wrapColumn) {
+    private void justify(String line, StringBuilder builder, int wrapColumn) {
         line = line.trim();
         line = line.replace(" +", " ");
 
         if (line.length() > wrapColumn) {
-            b.append(line);
+            builder.append(line);
             return;
         }
 
@@ -61,10 +61,10 @@ public class TextAlignJustifiedAction extends BaseAction {
         for (int i = 0; i < line.length(); i++) {
             if (line.charAt(i) == ' ') {
                 for (int j = 0; j < spacing; j++) {
-                    b.append(" ");
+                    builder.append(" ");
                 }
             } else {
-                b.append(line.charAt(i));
+                builder.append(line.charAt(i));
             }
         }
     }

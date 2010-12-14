@@ -17,12 +17,12 @@ public class TextConvertToUppercaseAction extends BaseAction {
 
 	@Override
     public void actionPerformed(ActionEvent e) {
-		Buffer b = window.getDocList().getActiveDoc().getActiveBuffer();
+		Buffer activeBuffer = window.getDocList().getActiveDoc().getActiveBuffer();
 
-		Interval i = b.getSelectionOrCurrentLine();
-        String text = b.getText(i);
+		Interval selectionOrCurrentLine = activeBuffer.getSelectionOrCurrentLine();
+        String text = activeBuffer.getText(selectionOrCurrentLine);
 
-		b.replaceText(i, text.toUpperCase(), null);
+		activeBuffer.replaceText(selectionOrCurrentLine, text.toUpperCase(), null);
     }
 
 }

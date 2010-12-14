@@ -121,12 +121,12 @@ public class TabView extends JLabel implements DocList.Listener, ActionListener,
 	private void updateLabel(TabProjectSettings settings) {
 		setEnabled(true);
 
-		StringBuilder b = new StringBuilder();
-        b.append("Tab Width: ").append(settings.getTabSize());
+		StringBuilder builder = new StringBuilder();
+        builder.append("Tab Width: ").append(settings.getTabSize());
 		if (settings.isSoftTabs()) {
-			b.append(" (soft)");
+			builder.append(" (soft)");
 		}
-		setText(b.toString());
+		setText(builder.toString());
 		
 		tabSizeButtons.get(settings.getTabSize()).setSelected(true);
 		softTabsCheck.setSelected(settings.isSoftTabs());

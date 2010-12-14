@@ -22,7 +22,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.List;
@@ -180,17 +183,17 @@ public class CommitDialog implements Dialog {
         String status = (String) table.getValueAt(row, 1);
 
         JPopupMenu popupMenu = new JPopupMenu();
-        for (final Command c : commands) {
-            if (c.getStatuses() == null || Arrays.binarySearch(c.getStatuses(), status) >= 0) {
-                popupMenu.add(new AbstractAction(c.getLabel()) {
+        for (final Command command : commands) {
+            if (command.getStatuses() == null || Arrays.binarySearch(command.getStatuses(), status) >= 0) {
+                popupMenu.add(new AbstractAction(command.getLabel()) {
                     public void actionPerformed(ActionEvent e) {
-                        StringBuilder b = new StringBuilder();
-                        for (String s : c.getCommand()) {
-                            b.append(Cygwin.makePathForDirectUsage(s)).append(" ");
+                        StringBuilder builder = new StringBuilder();
+                        for (String s : command.getCommand()) {
+                            builder.append(Cygwin.makePathForDirectUsage(s)).append(" ");
                         }
-                        b.append(Cygwin.makePathForDirectUsage((String) table.getValueAt(row, 2)));
+                        builder.append(Cygwin.makePathForDirectUsage((String) table.getValueAt(row, 2)));
 
-                        ScriptExecutor scriptExecutor = new ScriptExecutor(b.toString(), Application.get().getThreadPool());
+                        ScriptExecutor scriptExecutor = new ScriptExecutor(builder.toString(), Application.get().getThreadPool());
                         scriptExecutor.setDirectory(new File(Cygwin.toFile(pwd)));
                         scriptExecutor.setShowStderr(false);
 
@@ -198,7 +201,7 @@ public class CommitDialog implements Dialog {
                             scriptExecutor.execute(new UISupportCallback(window) {
                                 @Override
                                 public void onAfterSuccess(ScriptExecutor.Execution execution) {
-                                    if (c.isStatusChangingCommand()) {
+                                    if (command.isStatusChangingCommand()) {
                                         String stdout = execution.getStdout();
                                         if (Strings.isNullOrEmpty(stdout.trim())) {
                                             ((CommitDialogTableModel) table.getModel()).removeRow(row);
@@ -225,24 +228,6 @@ public class CommitDialog implements Dialog {
         }
 
         popupMenu.show(table, (int) point.getX(), (int) point.getY());
-    }
-
-    public static void main(String... args) throws IOException {
-        String[] a = new String[] {
-                "--diff-cmd", "arg1=svn,diff,--diff-cmd,diff",
-                "--status", "M:A:A",
-                "--action-cmd", "!:Remove,svn,rm",
-                "--action-cmd", "?:Add,svn,add",
-                "--action-cmd", "A:Mark Executable,/Users/magnus/Library/Application Support/JSourcePad/Bundles/subversion.tmbundle/Support/commit_status_helper.rb,propset,svn:executable,true",
-                "--action-cmd", "A,M,D,C:Revert,/Users/magnus/Library/Application Support/JSourcePad/Bundles/subversion.tmbundle/Support/commit_status_helper.rb,revert",
-                "--action-cmd", "C:Resolved,/Users/magnus/Library/Application Support/JSourcePad/Bundles/subversion.tmbundle/Support/commit_status_helper.rb,resolved",
-                "b.txt", "c.txt", "k.txt"
-        };
-
-        CommitDialog commitDialog = new CommitDialog();
-        System.out.println("\n\nReturn: " + commitDialog.execute(null, new OutputStreamWriter(System.out), null, "", a));
-
-        System.exit(0);
     }
 
     static class Command {

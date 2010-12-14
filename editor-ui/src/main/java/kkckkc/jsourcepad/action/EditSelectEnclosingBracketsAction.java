@@ -18,8 +18,8 @@ public class EditSelectEnclosingBracketsAction extends BaseAction {
 
 	@Override
     public void actionPerformed(ActionEvent e) {
-        Doc d = actionContext.get(ActionContextKeys.ACTIVE_DOC);
-		Buffer buffer = d.getActiveBuffer();
+        Doc activeDoc = actionContext.get(ActionContextKeys.ACTIVE_DOC);
+		Buffer buffer = activeDoc.getActiveBuffer();
 
         InsertionPoint insertionPoint = buffer.getInsertionPoint();
 
@@ -39,10 +39,10 @@ public class EditSelectEnclosingBracketsAction extends BaseAction {
                     buffer.find(insertionPoint.getPosition(), Character.toString(end), Buffer.FindType.Literal, Buffer.Direction.Forward);
             if (endMatch == null) continue;
 
-            Interval i = new Interval(startMatch.getStart(), endMatch.getEnd());
+            Interval interval = new Interval(startMatch.getStart(), endMatch.getEnd());
 
-            if (found == null || i.getLength() < found.getLength()) {
-                found = i;
+            if (found == null || interval.getLength() < found.getLength()) {
+                found = interval;
             }
         }
 

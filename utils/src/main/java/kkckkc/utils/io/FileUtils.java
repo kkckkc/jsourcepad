@@ -5,9 +5,9 @@ import java.io.IOException;
 
 public class FileUtils {
 	public static File newTempFile(String prefix, String suffix) throws IOException {
-		File f = File.createTempFile(prefix, suffix);
-		f.deleteOnExit();
-		return f;
+		File tempFile = File.createTempFile(prefix, suffix);
+		tempFile.deleteOnExit();
+		return tempFile;
 	}
 
     public static boolean isAncestorOf(File descendant, File ancestor) {

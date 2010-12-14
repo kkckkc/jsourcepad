@@ -1,11 +1,11 @@
 package kkckkc.jsourcepad.action;
 
-import java.awt.event.ActionEvent;
-
 import kkckkc.jsourcepad.model.Buffer;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.util.action.BaseAction;
 import kkckkc.syntaxpane.model.Interval;
+
+import java.awt.event.ActionEvent;
 
 public class TextShiftRightAction extends BaseAction {
     private final Window window;
@@ -17,9 +17,9 @@ public class TextShiftRightAction extends BaseAction {
 	
 	@Override
     public void actionPerformed(ActionEvent e) {
-		Buffer b = window.getDocList().getActiveDoc().getActiveBuffer();
-		Interval i = b.getSelectionOrCurrentLine();
-		b.shift(i, 1);
+		Buffer activeBuffer = window.getDocList().getActiveDoc().getActiveBuffer();
+		Interval selectionOrCurrentLine = activeBuffer.getSelectionOrCurrentLine();
+		activeBuffer.shift(selectionOrCurrentLine, 1);
     }
 
 }

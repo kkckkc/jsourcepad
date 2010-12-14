@@ -1,12 +1,8 @@
 package kkckkc.syntaxpane.model;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import kkckkc.syntaxpane.parse.grammar.Context;
+
+import java.util.*;
 
 
 
@@ -156,9 +152,9 @@ public class Scope extends Interval {
 					}
 
 					public Scope next() {
-						Scope s = current;
+						Scope scope = current;
 						current = current.parent;
-						return s;
+						return scope;
 					}
 
 					public void remove() {
@@ -169,11 +165,11 @@ public class Scope extends Interval {
 	}
 
 	public Scope getRoot() {
-		Scope s = this;
-		while (s.parent != null) {
-			s = s.parent;
+		Scope scope = this;
+		while (scope.parent != null) {
+			scope = scope.parent;
 		}
-		return s;
+		return scope;
 	}
 
 	public boolean hasChildren() {
@@ -198,11 +194,11 @@ public class Scope extends Interval {
 				compareWith = compareWith.getParent();
 				continue;
 			}
-			
+
 			if (current.getParent() == null && compareWith.getParent() == null) {
 				return true;
 			}
-			
+
 			return false;
 		}
 	}

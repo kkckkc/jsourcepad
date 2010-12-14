@@ -2,7 +2,7 @@ package kkckkc.jsourcepad.model.settings;
 
 public class ProxySettings implements SettingsManager.Setting {
 
-    public static enum ProxyType { NO_PROXY, SYSTEM_PROXY, MANUAL_PROXY };
+    public static enum ProxyType { NO_PROXY, SYSTEM_PROXY, MANUAL_PROXY }
 
     private ProxyType proxyType;
     private String proxyHost;

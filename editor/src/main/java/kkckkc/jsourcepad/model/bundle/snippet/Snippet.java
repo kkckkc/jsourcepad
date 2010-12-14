@@ -59,18 +59,18 @@ public class Snippet {
         // We need to compile twice as defaults may not be defined for the first occurence
         // of a certain variable
         
-        StringBuilder b = new StringBuilder();
+        StringBuilder builder = new StringBuilder();
 		for (SnippetParser.Node node : nodes) {
-			node.accept(new CompilingVisitor(window, b, primaryVariables, variableDefaults, false));
+			node.accept(new CompilingVisitor(window, builder, primaryVariables, variableDefaults, false));
 		}
 
-        b = new StringBuilder();
+        builder = new StringBuilder();
         constituents.clear();
 		for (SnippetParser.Node node : nodes) {
-			node.accept(new CompilingVisitor(window, b, primaryVariables, variableDefaults, true));
+			node.accept(new CompilingVisitor(window, builder, primaryVariables, variableDefaults, true));
 		}
 
-		String str = b.toString();
+		String str = builder.toString();
 		int firstLineLength = str.indexOf('\n');
 		
 		String currentLine = buffer.getText(buffer.getCurrentLine());
@@ -108,9 +108,9 @@ public class Snippet {
 
 	private Anchor[] getAnchors() {
 		List<Anchor> anchors = Lists.newArrayList();
-		for (SnippetConstituent c : constituents) {
-			anchors.add(c.getBounds().getFirst());
-			anchors.add(c.getBounds().getSecond());
+		for (SnippetConstituent constituent : constituents) {
+			anchors.add(constituent.getBounds().getFirst());
+			anchors.add(constituent.getBounds().getSecond());
 		}
 	    return anchors.toArray(new Anchor[anchors.size()]);
     }
@@ -119,18 +119,18 @@ public class Snippet {
 		int maxTabStopId = findMaxTabStopId();			 
 		
 		while (id > 0 && id <= maxTabStopId) {
-			for (SnippetConstituent c : constituents) {
-				if (c.isCopy() || ! c.isActive()) continue;
-				if (c.getTabStopId() == id) return c;
+			for (SnippetConstituent constituent : constituents) {
+				if (constituent.isCopy() || ! constituent.isActive()) continue;
+				if (constituent.getTabStopId() == id) return constituent;
 			}			
 			id += increment;
 		}
 		
 		// As fallback if next is not found, use index 0
 		if (id > maxTabStopId) {
-			for (SnippetConstituent c : constituents) {
-				if (c.isCopy()) continue;
-				if (c.getTabStopId() == 0)return c;
+			for (SnippetConstituent constituent : constituents) {
+				if (constituent.isCopy()) continue;
+				if (constituent.getTabStopId() == 0)return constituent;
 			}
 		}
 		
@@ -139,9 +139,9 @@ public class Snippet {
 
 	private int findMaxTabStopId() {
 	    int maxTabStopId = 0;
-		for (SnippetConstituent c : constituents) {
-			if (c.isCopy() || ! c.isActive()) continue;
-			maxTabStopId = Math.max(maxTabStopId, c.getTabStopId());
+		for (SnippetConstituent constituent : constituents) {
+			if (constituent.isCopy() || ! constituent.isActive()) continue;
+			maxTabStopId = Math.max(maxTabStopId, constituent.getTabStopId());
 		}
 	    return maxTabStopId;
     }
@@ -166,14 +166,14 @@ public class Snippet {
 
 	class CompilingVisitor implements NodeVisitor {
 	    private final Window window;
-	    private final StringBuilder b;
+	    private final StringBuilder builder;
         private Map<Integer, String> variableDefaults;
         private Map<Integer, Variable> primaryVariables;
         private boolean executeScripts;
 
-        private CompilingVisitor(Window window, StringBuilder b, Map<Integer, Variable> primaryVariables, Map<Integer, String> variableDefaults, boolean executeScripts) {
+        private CompilingVisitor(Window window, StringBuilder builder, Map<Integer, Variable> primaryVariables, Map<Integer, String> variableDefaults, boolean executeScripts) {
 		    this.window = window;
-		    this.b = b;
+		    this.builder = builder;
 		    this.primaryVariables = primaryVariables;
             this.variableDefaults = variableDefaults;
             this.executeScripts = executeScripts;
@@ -181,19 +181,19 @@ public class Snippet {
 
 	    @Override
 	    public void visit(Literal literal) {
-	        b.append(literal.getString());
+	        builder.append(literal.getString());
 	    }
 
 	    @Override
 	    public void visit(Variable variable) {
-	        Anchor start = new Anchor(b.length(), Anchor.Bias.LEFT); 
+	        Anchor start = new Anchor(builder.length(), Anchor.Bias.LEFT);
 	    	
 	    	if (! variable.isTabStop()) {
-	    		b.append(variable.evaluate(environment));
+	    		builder.append(variable.evaluate(environment));
 	        }
 
-	    	for (Node n : variable.children()) {
-	    		n.accept(this);
+	    	for (Node node : variable.children()) {
+	    		node.accept(this);
 	    	}
 
 	        if (variable.isTabStop()) {
@@ -205,7 +205,7 @@ public class Snippet {
                 // If we don't have a default yet, try to establish one
 	        	if (! variableDefaults.containsKey(tabStopId)) {
 
-                    String value = b.substring(start.getPosition());
+                    String value = builder.substring(start.getPosition());
 
                     // Do we have a value or not
                     if (! "".equals(value)) {
@@ -225,12 +225,12 @@ public class Snippet {
                     String s = variableDefaults.get(tabStopId);
 
                     // Just in case, remove any other value specified
-                    b.setLength(start.getPosition());
+                    builder.setLength(start.getPosition());
 
-	        		b.append(s == null ? "" : s);
+	        		builder.append(s == null ? "" : s);
 	        	}
 
-    	        Anchor end = new Anchor(b.length(), Anchor.Bias.RIGHT);
+    	        Anchor end = new Anchor(builder.length(), Anchor.Bias.RIGHT);
 	        	constituents.add(new SnippetConstituent(
 	        			variable,
 	        			new Pair<Anchor, Anchor>(start, end),
@@ -251,7 +251,7 @@ public class Snippet {
 
                     ex.waitForCompletion();
 
-                    b.append(ex.getStdout());
+                    builder.append(ex.getStdout());
 
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -261,7 +261,7 @@ public class Snippet {
                     throw new RuntimeException(e);
                 }
             } else {
-                b.append("");
+                builder.append("");
             }
 	    }
     }
@@ -314,18 +314,18 @@ public class Snippet {
 			
 			if (copy) return;
 			
-			Interval i = getBoundsAsInterval();
+			Interval bounds = getBoundsAsInterval();
 			
-			environment.put(Integer.toString(tabStopId), buffer.getText(i));
+			environment.put(Integer.toString(tabStopId), buffer.getText(bounds));
 			
-			for (final SnippetConstituent c : constituents) {
-				if (c.isCopy() && c.getTabStopId() == tabStopId) {
+			for (final SnippetConstituent constituent : constituents) {
+				if (constituent.isCopy() && constituent.getTabStopId() == tabStopId) {
 					final String updatedValue = variable.evaluate(environment);
 
 					try {
 						changeTrackingEnabled = false;
 						buffer.replaceText(
-								c.getBoundsAsInterval(), 
+								constituent.getBoundsAsInterval(),
 								updatedValue, null);
 					} finally {
 						changeTrackingEnabled = true;
@@ -417,20 +417,20 @@ public class Snippet {
 
 		    Interval changeInterval = new Interval(de.getOffset(), de.getOffset() + de.getLength());
 
-			for (final SnippetConstituent c : constituents) {
-				Pair<Anchor, Anchor> pair = c.getBounds();
-		    	if (c.getBoundsAsInterval().overlaps(changeInterval)) {
+			for (final SnippetConstituent constituent : constituents) {
+				Pair<Anchor, Anchor> pair = constituent.getBounds();
+		    	if (constituent.getBoundsAsInterval().overlaps(changeInterval)) {
 					if (de.getLength() > (pair.getSecond().getPosition() - pair.getFirst().getPosition())) {
 			    		EventQueue.invokeLater(new Runnable() {
 	                        public void run() {
-	                        	c.setActive(false);
-	        		    		c.textChanged(de);
+	                        	constituent.setActive(false);
+	        		    		constituent.textChanged(de);
 	                        }
 			    		});
 					} else {
 			    		EventQueue.invokeLater(new Runnable() {
 	                        public void run() {
-	        		    		c.textChanged(de);
+	        		    		constituent.textChanged(de);
 	                        }
 			    		});
 					}
@@ -439,8 +439,8 @@ public class Snippet {
 		}
 
 		private boolean isOutsideOfAnchor(int position) {
-			for (SnippetConstituent c : constituents) {
-				Pair<Anchor, Anchor> pair = c.getBounds();
+			for (SnippetConstituent constituent : constituents) {
+				Pair<Anchor, Anchor> pair = constituent.getBounds();
 		    	if (pair.getFirst().getPosition() <= position && pair.getSecond().getPosition() >= position) {
 		    		return false;
 		    	}

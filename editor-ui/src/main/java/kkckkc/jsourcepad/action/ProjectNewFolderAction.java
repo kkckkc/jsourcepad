@@ -25,16 +25,16 @@ public class ProjectNewFolderAction extends BaseAction {
 
         if (name == null || "".equals(name)) return;
         
-        File f;
+        File folder;
         if (file.isDirectory()) {
-            f = new File(file, name);
+            folder = new File(file, name);
         } else {
-            f = new File(file.getParentFile(), name);
+            folder = new File(file.getParentFile(), name);
         }
 
-        f.mkdir();
+        folder.mkdir();
 
-        window.getProject().refresh(f.getParentFile());
+        window.getProject().refresh(folder.getParentFile());
 	}
 
 

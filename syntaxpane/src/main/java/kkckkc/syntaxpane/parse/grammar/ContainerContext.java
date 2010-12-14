@@ -61,21 +61,21 @@ public class ContainerContext extends MatchableContext {
 
 	
 	public Scope createScope(Scope parent, Matcher matcher) {
-		Scope s;
+		Scope scope;
 		if (isStyleInside()) {
-			s = new Scope(matcher.end(), matcher.end(), this, parent);
+			scope = new Scope(matcher.end(), matcher.end(), this, parent);
 		} else {
-			s = new Scope(matcher.start(), matcher.end(), this, parent);
+			scope = new Scope(matcher.start(), matcher.end(), this, parent);
 		}
 
 		if (endPattern != null && !contentNameContext && endPatternExpression.indexOf("@start") >= 0) {
 			for (int i = 0; i < matcher.groupCount(); i++) {
-				s.addAttribute(i + "@start", matcher.group(i));
+				scope.addAttribute(i + "@start", matcher.group(i));
 			}
 		}
 		
-		buildSubPatternScopes(s, matcher, Where.START);
-		return s;
+		buildSubPatternScopes(scope, matcher, Where.START);
+		return scope;
 	}
 	
 	public int close(Scope scope, Matcher matcher) {
@@ -112,23 +112,23 @@ public class ContainerContext extends MatchableContext {
 		return endPattern.matcher(segment);
 	}
 
-	public Matcher getMatcher(CharSequence s) {
+	public Matcher getMatcher(CharSequence seq) {
         if (disabled) {
-            return getDisabledMatcher(s);
+            return getDisabledMatcher(seq);
         } else {
-		    return beginPattern.matcher(s);
+		    return beginPattern.matcher(seq);
         }
 	}
 
-    private Matcher getDisabledMatcher(CharSequence s) {
-        return factory.create("a$b").matcher(s);
+    private Matcher getDisabledMatcher(CharSequence seq) {
+        return factory.create("a$b").matcher(seq);
     }
 
-    public void setDisabled(boolean b) {
-        this.disabled = b;
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
     }
 
-    public void setContentNameContext(boolean b) {
-        this.contentNameContext = b;
+    public void setContentNameContext(boolean contentNameContext) {
+        this.contentNameContext = contentNameContext;
     }
 }

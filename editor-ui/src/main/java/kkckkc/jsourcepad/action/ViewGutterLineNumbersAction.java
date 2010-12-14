@@ -13,19 +13,19 @@ public class ViewGutterLineNumbersAction extends BaseAction implements Presenter
     public ViewGutterLineNumbersAction() {
         SettingsManager settingsManager = Application.get().getSettingsManager();
 
-        GutterSettings s = settingsManager.get(GutterSettings.class);
-        putValue(Action.SELECTED_KEY, s.isLineNumbers());
+        GutterSettings settings = settingsManager.get(GutterSettings.class);
+        putValue(Action.SELECTED_KEY, settings.isLineNumbers());
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         SettingsManager settingsManager = Application.get().getSettingsManager();
 
-        GutterSettings s = settingsManager.get(GutterSettings.class);
-        s.setLineNumbers(! s.isLineNumbers());
-        settingsManager.update(s);
+        GutterSettings settings = settingsManager.get(GutterSettings.class);
+        settings.setLineNumbers(!settings.isLineNumbers());
+        settingsManager.update(settings);
 
-        putValue(Action.SELECTED_KEY, s.isLineNumbers());
+        putValue(Action.SELECTED_KEY, settings.isLineNumbers());
     }
 
     @Override

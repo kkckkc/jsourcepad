@@ -17,14 +17,14 @@ public class TextUnwrapSelectionAction extends BaseAction {
 
 	@Override
     public void actionPerformed(ActionEvent e) {
-		Buffer b = window.getDocList().getActiveDoc().getActiveBuffer();
+		Buffer activeBuffer = window.getDocList().getActiveDoc().getActiveBuffer();
 
-        Interval i = b.getSelectionOrCurrentParagraph();
-        String text = b.getText(i);
+        Interval selectionOrCurrentParagraph = activeBuffer.getSelectionOrCurrentParagraph();
+        String text = activeBuffer.getText(selectionOrCurrentParagraph);
 
         text = text.replaceAll("\n", "");
 
-		b.replaceText(i, text, null);
+		activeBuffer.replaceText(selectionOrCurrentParagraph, text, null);
     }
 
 

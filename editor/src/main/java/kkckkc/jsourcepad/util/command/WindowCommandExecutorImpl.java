@@ -18,8 +18,7 @@ public class WindowCommandExecutorImpl extends AbstractCommandExecutor {
 
     @Override
     protected void doExecute(Command command) {
-        StringBuilder b = getBeanPropertyValues(command);
-        System.out.println("Executing: " + command.getClass().getSimpleName() + "[" + b.toString() + "]");
+        StringBuilder builder = getBeanPropertyValues(command);
 
         if (command instanceof WindowCommand) {
             ((WindowCommand) command).setWindow(window);
@@ -28,24 +27,24 @@ public class WindowCommandExecutorImpl extends AbstractCommandExecutor {
     }
 
     private StringBuilder getBeanPropertyValues(Object command) {
-        StringBuilder b = new StringBuilder();
+        StringBuilder builder = new StringBuilder();
         try {
-            Class c = command.getClass();
-            BeanInfo beanInfo = Introspector.getBeanInfo(c);
+            Class commandClass = command.getClass();
+            BeanInfo beanInfo = Introspector.getBeanInfo(commandClass);
             for (PropertyDescriptor pd : beanInfo.getPropertyDescriptors()) {
                 if (pd.getName().equals("class")) continue;
                 
-                Field f = c.getDeclaredField(pd.getName());
-                f.setAccessible(true);
-                b.append(pd.getName()).append(" = ").append(f.get(command));
-                b.append(", ");
+                Field field = commandClass.getDeclaredField(pd.getName());
+                field.setAccessible(true);
+                builder.append(pd.getName()).append(" = ").append(field.get(command));
+                builder.append(", ");
             }
-            if (b.length() > 0) {
-                b.setLength(b.length() - 2);
+            if (builder.length() > 0) {
+                builder.setLength(builder.length() - 2);
             }
         } catch (Exception e) {
-            b.append("Cannot introspect command");
+            builder.append("Cannot introspect command");
         }
-        return b;
+        return builder;
     }
 }

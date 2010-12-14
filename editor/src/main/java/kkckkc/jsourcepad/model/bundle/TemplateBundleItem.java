@@ -52,9 +52,9 @@ public class TemplateBundleItem implements BundleItem<File> {
         return BundleStructure.Type.TEMPLATE;
     }
 
-    public static BundleItem create(BundleItemSupplier bundleItemSupplier, Map m) {
+    public static BundleItem create(BundleItemSupplier bundleItemSupplier, Map props) {
         return new TemplateBundleItem(bundleItemSupplier,
-	    		(String) m.get("command"),
-	    		(String) m.get("extension"));
+	    		(String) props.get("command"),
+	    		(String) props.get("extension"));
     }
 }

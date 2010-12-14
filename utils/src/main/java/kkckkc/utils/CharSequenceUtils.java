@@ -1,12 +1,12 @@
 package kkckkc.utils;
 
 public class CharSequenceUtils {
-	public static boolean startsWith(CharSequence a, CharSequence b) {
-		int len = b.length();
-		if (a.length() < len) return false;
+	public static boolean startsWith(CharSequence charSequence, CharSequence potentialPrefix) {
+		int len = potentialPrefix.length();
+		if (charSequence.length() < len) return false;
 		
 		for (int i = 0; i < len; i++) {
-			if (a.charAt(i) != b.charAt(i) || i >= a.length()) {
+			if (charSequence.charAt(i) != potentialPrefix.charAt(i) || i >= charSequence.length()) {
 				return false;
 			}
 		}

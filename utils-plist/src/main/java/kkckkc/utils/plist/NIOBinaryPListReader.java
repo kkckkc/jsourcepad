@@ -7,9 +7,10 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class NIOBinaryPListReader {
-
+    private static Logger logger = Logger.getLogger(NIOBinaryPListReader.class.toString());
 
 	private List<Object> objects;
 
@@ -60,7 +61,7 @@ public class NIOBinaryPListReader {
 			} else if (recordType == 13) {
 				objects.add(readDictionary(data, buffer, refCount >= 256));
 			} else {
-				System.out.println("Unsupported recordType " + recordType);
+                logger.severe("Unsupported recordType " + recordType);
 			}
 		}
 		

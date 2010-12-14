@@ -1,9 +1,8 @@
 package kkckkc.syntaxpane.parse.grammar.util;
 
+import com.google.common.base.Supplier;
 import kkckkc.syntaxpane.regex.Pattern;
 import kkckkc.syntaxpane.regex.PatternFactory;
-
-import com.google.common.base.Supplier;
 
 
 

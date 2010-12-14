@@ -241,11 +241,11 @@ public class PreviewServer {
         return Integer.parseInt(httpPath.substring(0, httpPath.indexOf('/')));
     }
 
-    private String getMimeEncoding(File f) {
-        MimeEntry me = MimeTable.getDefaultTable().findByFileName(f.getName());
+    private String getMimeEncoding(File file) {
+        MimeEntry me = MimeTable.getDefaultTable().findByFileName(file.getName());
         if (me == null) {
-            if (f.getName().endsWith(".css")) return "text/css";
-            if (f.getName().endsWith(".js")) return "text/javascript";
+            if (file.getName().endsWith(".css")) return "text/css";
+            if (file.getName().endsWith(".js")) return "text/javascript";
             return "text/html";
         }
         return me.getType();

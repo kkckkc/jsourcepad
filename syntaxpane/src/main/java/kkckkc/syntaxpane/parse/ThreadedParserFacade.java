@@ -86,8 +86,8 @@ public class ThreadedParserFacade {
     }
 
     private void notifyParsedFragment(Interval parsed) {
-        for (Listener l : listeners) {
-            l.segmentParsed(parsed);
+        for (Listener listener : listeners) {
+            listener.segmentParsed(parsed);
         }
     }
 

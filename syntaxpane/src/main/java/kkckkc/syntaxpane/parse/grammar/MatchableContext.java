@@ -113,42 +113,38 @@ public abstract class MatchableContext extends CompoundContext {
 		compiled = true;
 		
 		this.children = new Context[childReferences.length];
-		if (childReferences != null) {
-			for (int i = 0; i < childReferences.length; i++) {
-				childReferences[i].setLanguage(language);
-				children[i] = language.getLanguageManager().resolveContext(childReferences[i]);
-				
-				if (children[i] == null) {
-					// Ignore
-				} else if (children[i].getLanguage() == null) {
-					children[i].setLanguage(language);
-				}
-			}
-			
-			for (Context child : children) {
-				if (child == null) continue;
-				child.compile();
-			}
-		}
-		
+        for (int i = 0; i < childReferences.length; i++) {
+            childReferences[i].setLanguage(language);
+            children[i] = language.getLanguageManager().resolveContext(childReferences[i]);
+
+            if (children[i] == null) {
+                // Ignore
+            } else if (children[i].getLanguage() == null) {
+                children[i].setLanguage(language);
+            }
+        }
+
+        for (Context child : children) {
+            if (child == null) continue;
+            child.compile();
+        }
+
 		childReferences = null;	
 	}
 
 	void unnest(List<Context> dest) {
-		for (Context c : children) {
-			if (c == null) {
+		for (Context context : children) {
+			if (context == null) {
 				continue;
 			}
 
-			if (c instanceof ContainerContext && ((ContainerContext) c).beginPattern == null) {
-				((ContainerContext) c).unnest(dest);
-            } else if (c instanceof RootContext) {
-                ((RootContext) c).unnest(dest);
+			if (context instanceof ContainerContext && ((ContainerContext) context).beginPattern == null) {
+				((ContainerContext) context).unnest(dest);
+            } else if (context instanceof RootContext) {
+                ((RootContext) context).unnest(dest);
 			} else {
-				dest.add(c);
+				dest.add(context);
 			}
 		}
-		
-		return;
 	}
 }

@@ -65,16 +65,16 @@ public class NIOXMLPListReader {
     }
 
 	private Map<Object, Object> parseDictionary(XMLElement e) {
-		Map<Object, Object> m = new LinkedHashMap<Object, Object>();
+		Map<Object, Object> dict = new LinkedHashMap<Object, Object>();
 		
 		String key = null;
-		for (XMLElement c : ((Collection<XMLElement>) e.getChildren())) {
-			if ("key".equals(c.getName())) {
-				key = c.getContent();
+		for (XMLElement child : ((Collection<XMLElement>) e.getChildren())) {
+			if ("key".equals(child.getName())) {
+				key = child.getContent();
 			} else {
-				m.put(key, parseElement(c));
+				dict.put(key, parseElement(child));
 			}
 		}
-		return m;
+		return dict;
 	}
 }

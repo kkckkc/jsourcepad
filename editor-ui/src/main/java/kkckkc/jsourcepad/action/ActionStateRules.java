@@ -83,16 +83,16 @@ public class ActionStateRules {
     public static ActionStateRule CAN_UNDO = new ActionStateRule() {
         @Override
         public boolean shouldBeEnabled(ActionContext actionContext) {
-            Doc d = actionContext.get(ActionContextKeys.ACTIVE_DOC);
-    		return d.getActiveBuffer().canUndo();
+            Doc doc = actionContext.get(ActionContextKeys.ACTIVE_DOC);
+    		return doc.getActiveBuffer().canUndo();
         }
     };
 
     public static ActionStateRule CAN_REDO = new ActionStateRule() {
         @Override
         public boolean shouldBeEnabled(ActionContext actionContext) {
-            Doc d = actionContext.get(ActionContextKeys.ACTIVE_DOC);
-    		return d.getActiveBuffer().canRedo();
+            Doc doc = actionContext.get(ActionContextKeys.ACTIVE_DOC);
+    		return doc.getActiveBuffer().canRedo();
         }
     };
 

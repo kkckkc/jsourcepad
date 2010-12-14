@@ -1,6 +1,6 @@
 package kkckkc.syntaxpane.style;
 
-import java.awt.Color;
+import java.awt.*;
 import java.io.File;
 import java.util.Map;
 

@@ -1,5 +1,9 @@
 package kkckkc.jsourcepad.util.io;
 
+import junit.framework.TestCase;
+import kkckkc.jsourcepad.util.io.ScriptExecutor.CallbackAdapter;
+import kkckkc.jsourcepad.util.io.ScriptExecutor.Execution;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.HashMap;
@@ -8,10 +12,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-
-import junit.framework.TestCase;
-import kkckkc.jsourcepad.util.io.ScriptExecutor.CallbackAdapter;
-import kkckkc.jsourcepad.util.io.ScriptExecutor.Execution;
 
 public class ScriptExecutorTest extends TestCase {
 	public static final Map<String, String> EMPTY_ENV = new HashMap<String, String>();

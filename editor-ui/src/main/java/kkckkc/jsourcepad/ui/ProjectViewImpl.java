@@ -70,9 +70,9 @@ public class ProjectViewImpl extends JTree implements ProjectView, MouseListener
 		if (selRow == -1) return;
 		TreePath selPath = getPathForLocation(e.getX(), e.getY());
 
-    	FileTreeModel.Node n = (FileTreeModel.Node) selPath.getLastPathComponent();
-        if (n.getFile().isFile()) {
-            docList.open(n.getFile());
+    	FileTreeModel.Node node = (FileTreeModel.Node) selPath.getLastPathComponent();
+        if (node.getFile().isFile()) {
+            docList.open(node.getFile());
 		}
 	}
 
@@ -85,7 +85,6 @@ public class ProjectViewImpl extends JTree implements ProjectView, MouseListener
             } else {
                 setSelectionRow(selRow);
             }
-            return;
         }
     }
 
@@ -115,7 +114,7 @@ public class ProjectViewImpl extends JTree implements ProjectView, MouseListener
         File root = (File) getModel().getRoot();
         if (file.toString().startsWith(root.toString())) {
             List<File> path = Lists.newArrayList();
-            while (! file.equals(root) && file != null) {
+            while (file != null && ! file.equals(root)) {
                 path.add(file);
                 file = file.getParentFile();
             }
@@ -123,7 +122,7 @@ public class ProjectViewImpl extends JTree implements ProjectView, MouseListener
             path.add(root);
 
             Collections.reverse(path);
-            File[] pathArray = path.toArray(new File[] {});
+            File[] pathArray = path.toArray(new File[path.size()]);
 
             TreePath tp = new TreePath(pathArray);
             expandPath(tp);

@@ -1,9 +1,9 @@
 package kkckkc.jsourcepad.ui.dialog.filechooser;
 
-import java.awt.Component;
-import java.io.File;
-
 import kkckkc.jsourcepad.View;
+
+import java.awt.*;
+import java.io.File;
 
 public interface FileChooserView extends View {
 	public void openFile(Component parent, File pwd, FileChooserCallback fileChooserCallback);

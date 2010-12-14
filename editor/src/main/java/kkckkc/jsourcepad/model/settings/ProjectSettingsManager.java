@@ -50,19 +50,19 @@ public class ProjectSettingsManager extends AbstractSettingsManager {
 
 			window.topic(SettingsManager.Listener.class).post().settingUpdated(setting);
 		} catch (IOException e) {
-			System.err.println(e.getMessage());
+			throw new RuntimeException(e);
 		}
     }
 
 
     private void loadCache() {
-        File f = new File(settingsDir, ".jsourcepad.project");
-		if (f.exists()) {
+        File file = new File(settingsDir, ".jsourcepad.project");
+		if (file.exists()) {
 			try {
-	            cache = (Map) new XMLDecoder(new FileInputStream(f)).readObject();
+	            cache = (Map) new XMLDecoder(new FileInputStream(file)).readObject();
                 return;
             } catch (FileNotFoundException e) {
-	            System.err.println(e.getMessage());
+	            throw new RuntimeException(e);
             }
 		}
 

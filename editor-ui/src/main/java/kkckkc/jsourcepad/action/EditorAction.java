@@ -16,8 +16,8 @@ public class EditorAction extends BaseAction {
         this.action = action;
     }
 
-    public void setRequireSelection(boolean b) {
-        if (b) {
+    public void setRequireSelection(boolean requireSelection) {
+        if (requireSelection) {
             setActionStateRules(ActionStateRules.HAS_ACTIVE_DOC, ActionStateRules.TEXT_SELECTED);
         }
     }

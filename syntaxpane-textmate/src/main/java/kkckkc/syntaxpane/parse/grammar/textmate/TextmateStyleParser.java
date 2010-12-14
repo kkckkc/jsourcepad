@@ -84,21 +84,21 @@ public class TextmateStyleParser implements kkckkc.syntaxpane.style.StyleParser 
 		return s.indexOf(string) >= 0;
     }
 		
-	private Color color(Map m, String string) {
-		return makeColor((String) m.get(string));
+	private Color color(Map map, String colorProp) {
+		return makeColor((String) map.get(colorProp));
 	}
 	
-	private Color makeColor(String string) {
-		if (string == null) return null;
+	private Color makeColor(String colorString) {
+		if (colorString == null) return null;
 
-		if (string.length() > 7) {
-			Integer i = Integer.decode("#" + string.substring(1, 7));
-			Integer i2 = Integer.decode("#" + string.substring(7));
+		if (colorString.length() > 7) {
+			Integer i = Integer.decode("#" + colorString.substring(1, 7));
+			Integer i2 = Integer.decode("#" + colorString.substring(7));
 
 			return new Color((i >> 16) & 0xFF, (i >> 8) & 0xFF, i & 0xFF, i2);
 			
 		} else {
-			return Color.decode(string.substring(0, 7));	
+			return Color.decode(colorString.substring(0, 7));
 		}
     }
 }

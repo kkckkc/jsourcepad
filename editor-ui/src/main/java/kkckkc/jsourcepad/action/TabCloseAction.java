@@ -3,7 +3,6 @@ package kkckkc.jsourcepad.action;
 import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.DocList;
 import kkckkc.jsourcepad.model.Window;
-import kkckkc.jsourcepad.model.WindowManager;
 import kkckkc.jsourcepad.util.action.BaseAction;
 
 import javax.swing.*;
@@ -14,12 +13,10 @@ import java.awt.event.ActionEvent;
 public class TabCloseAction extends BaseAction {
 	private DocList docList;
 	private Window window;
-	private WindowManager wm;
 
-	public TabCloseAction(Window window, WindowManager wm, DocList docList) {
+	public TabCloseAction(Window window, DocList docList) {
 		this.window = window;
 		this.docList = docList;
-		this.wm = wm;
 	}
 
 	public void actionPerformed(ActionEvent e) {

@@ -161,8 +161,8 @@ public class ScriptExecutor {
 	    return pb;
     }
 
-    public void setShowStderr(boolean b) {
-        this.showStderr = b;
+    public void setShowStderr(boolean showStderr) {
+        this.showStderr = showStderr;
     }
 
 

@@ -14,8 +14,8 @@ public class SimpleContext extends MatchableContext {
 	}
 
 	@Override
-	public Matcher getMatcher(CharSequence s) {
-		return pattern.matcher(s);
+	public Matcher getMatcher(CharSequence seq) {
+		return pattern.matcher(seq);
 	}
 	
 	public void setPattern(Pattern pattern) {

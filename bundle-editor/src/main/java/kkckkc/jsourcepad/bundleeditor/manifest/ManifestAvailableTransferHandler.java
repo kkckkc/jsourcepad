@@ -61,9 +61,9 @@ class ManifestAvailableTransferHandler extends ManifestTransferHandler {
             DefaultMutableTreeNode destination = null;
             DefaultMutableTreeNode root = (DefaultMutableTreeNode) availableModel.getRoot();
             for (int i = 0; i < root.getChildCount(); i++) {
-                DefaultMutableTreeNode d = (DefaultMutableTreeNode) root.getChildAt(i);
-                if (d.getUserObject().toString().equals(folder)) {
-                    destination = d;
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode) root.getChildAt(i);
+                if (node.getUserObject().toString().equals(folder)) {
+                    destination = node;
                     break;
                 }
             }

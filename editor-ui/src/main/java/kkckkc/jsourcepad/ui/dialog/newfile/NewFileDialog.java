@@ -41,12 +41,12 @@ public class NewFileDialog implements Dialog<NewFileDialogView>, ActionListener,
 
         BundleItemSupplier selected = null;
         BundleManager bm = Application.get().getBundleManager();
-        for (Bundle b : bm.getBundles()) {
+        for (Bundle bundle : bm.getBundles()) {
             boolean groupAdded = false;
-            for (BundleItemSupplier bis : b.getItems()) {
+            for (BundleItemSupplier bis : bundle.getItems()) {
                 if (bis.getType() == BundleStructure.Type.TEMPLATE) {
                     if (! groupAdded) {
-                        templates.addItem(b);
+                        templates.addItem(bundle);
                         groupAdded = true;
                     }
 
@@ -129,7 +129,6 @@ public class NewFileDialog implements Dialog<NewFileDialogView>, ActionListener,
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
             perform();
-            return;
         }
     }
 
@@ -150,9 +149,9 @@ public class NewFileDialog implements Dialog<NewFileDialogView>, ActionListener,
             if (value instanceof Bundle) {
                 setBackground(list.getBackground());
                 setForeground(Color.gray);
-                Font f = list.getFont();
-                f = f.deriveFont(Font.ITALIC);
-                setFont(f);
+                Font font = list.getFont();
+                font = font.deriveFont(Font.ITALIC);
+                setFont(font);
                 setText(((Bundle) value).getName());
             } else {
                 if (isSelected) {

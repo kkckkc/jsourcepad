@@ -101,15 +101,15 @@ public class BundleMenuProvider {
 		return ag;
     }
 
-	private static void buildMenu(ActionGroup ag, List<Bundle> list) {
-	    for (Bundle b : list) {
-            if (b.getMenu().isEmpty()) continue;
+	private static void buildMenu(ActionGroup ag, List<Bundle> bundles) {
+	    for (Bundle bundle : bundles) {
+            if (bundle.getMenu().isEmpty()) continue;
             
-            ActionGroup bm = new ActionGroup(b.getName());
-            actionGroups.put(b.getName(), bm);
+            ActionGroup bm = new ActionGroup(bundle.getName());
+            actionGroups.put(bundle.getName(), bm);
             ag.add(bm);
             
-            createMenu(bm, b.getMenu());
+            createMenu(bm, bundle.getMenu());
 	    }
     }
 

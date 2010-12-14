@@ -1,8 +1,10 @@
 package kkckkc.utils.plist;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 public class PListFormatter {
+    private static Logger logger = Logger.getLogger(PListFormatter.class.toString());
 
     private Comparator<String> mapKeyComparator;
     private boolean useTextmateFormatting;
@@ -39,7 +41,7 @@ public class PListFormatter {
 	    } else if (o instanceof Boolean) {
 	    	dest.append(o);
 	    } else {
-	    	System.out.println("Unsupported: " + o.getClass());
+            logger.severe("Unsupported: " + o.getClass());
 	    }
     }
 

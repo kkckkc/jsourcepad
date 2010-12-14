@@ -3,7 +3,6 @@ package kkckkc.jsourcepad.action;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Buffer;
 import kkckkc.jsourcepad.model.Window;
-import kkckkc.jsourcepad.model.WindowManager;
 import kkckkc.jsourcepad.util.action.BaseAction;
 import kkckkc.jsourcepad.util.io.ScriptExecutor;
 import kkckkc.jsourcepad.util.io.ScriptExecutor.Execution;
@@ -17,31 +16,29 @@ import java.util.HashMap;
 
 public class TextExecuteLineInsertingResultAction extends BaseAction {
 
-	private WindowManager wm;
     private final Window window;
 
-	public TextExecuteLineInsertingResultAction(Window window, WindowManager wm) {
+	public TextExecuteLineInsertingResultAction(Window window) {
 		this.window = window;
-		this.wm = wm;
         setActionStateRules(ActionStateRules.HAS_ACTIVE_DOC);
 	}
 	
 	@Override
     public void actionPerformed(ActionEvent e) {
-		final Buffer b = window.getDocList().getActiveDoc().getActiveBuffer();
-		final Interval i = b.getSelectionOrCurrentLine();
+		final Buffer activeBuffer = window.getDocList().getActiveDoc().getActiveBuffer();
+		final Interval selectionOrCurrentLine = activeBuffer.getSelectionOrCurrentLine();
 		
-		String line = b.getText(i);
+		String line = activeBuffer.getText(selectionOrCurrentLine);
 		
 		ScriptExecutor scriptExecutor = new ScriptExecutor(line, Application.get().getThreadPool());
 		try {
 	        scriptExecutor.execute(new UISupportCallback(window) {
 	            public void onAfterFailure(Execution execution) {
-	            	b.replaceText(i, execution.getStdout(), null);
+	            	activeBuffer.replaceText(selectionOrCurrentLine, execution.getStdout(), null);
 	            }
 
 	            public void onAfterSuccess(Execution execution) {
-	            	b.replaceText(i, execution.getStderr(), null);
+	            	activeBuffer.replaceText(selectionOrCurrentLine, execution.getStderr(), null);
 	            }
 	        }, new StringReader(""), new HashMap<String, String>());
         } catch (IOException e1) {

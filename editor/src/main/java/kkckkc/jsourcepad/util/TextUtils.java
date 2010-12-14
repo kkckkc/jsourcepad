@@ -30,21 +30,21 @@ public class TextUtils {
 
         int spIdx = 0;
         
-        StringBuilder b = new StringBuilder();
+        StringBuilder builder = new StringBuilder();
         for (int i = 0; i < len; i++) {
             if (s.charAt(i) == ' ') {
                 for (int j = 0; j < spaceFactor; j++) {
-                    b.append(" ");
+                    builder.append(" ");
                 }
                 if (spIdx++ < extraSpaceCount) {
-                    b.append(" ");
+                    builder.append(" ");
                 }
             } else {
-                b.append(s.charAt(i));
+                builder.append(s.charAt(i));
             }
         }
 
-        return b.toString();
+        return builder.toString();
     }
 
     public static String[] wrap(String s, int wrapColumn) {

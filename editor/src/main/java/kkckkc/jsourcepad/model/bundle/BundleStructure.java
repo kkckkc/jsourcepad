@@ -46,7 +46,6 @@ public class BundleStructure {
         predicates.put(Type.MANIFEST, new Predicate<File>() {
             @Override
             public boolean apply(File file) {
-                System.out.println(file);
                 return file.getName().equals("info.plist") && isBundleDir(file.getParentFile().getParentFile());
             }
         });
@@ -54,8 +53,8 @@ public class BundleStructure {
 
 
 
-    public static boolean isBundleDir(File f) {
-        return f != null && f.equals(Config.getBundlesFolder());
+    public static boolean isBundleDir(File file) {
+        return file != null && file.equals(Config.getBundlesFolder());
     }
 
     public static boolean isOfType(Type type, File file) {
@@ -64,8 +63,8 @@ public class BundleStructure {
 
     public static boolean isOfAnyType(File file) {
         if (file == null) return false;
-        for (Predicate<File> f : predicates.values()) {
-            if (f.apply(file)) return true;
+        for (Predicate<File> filePredicate : predicates.values()) {
+            if (filePredicate.apply(file)) return true;
         }
         return false;
     }

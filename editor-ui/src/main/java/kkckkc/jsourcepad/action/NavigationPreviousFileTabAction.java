@@ -1,9 +1,9 @@
 package kkckkc.jsourcepad.action;
 
-import java.awt.event.ActionEvent;
-
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.util.action.BaseAction;
+
+import java.awt.event.ActionEvent;
 
 public class NavigationPreviousFileTabAction extends BaseAction {
     private final Window window;

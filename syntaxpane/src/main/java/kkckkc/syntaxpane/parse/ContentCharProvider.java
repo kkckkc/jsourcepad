@@ -1,10 +1,15 @@
 package kkckkc.syntaxpane.parse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.swing.text.AbstractDocument.Content;
 import javax.swing.text.BadLocationException;
 
 
 public class ContentCharProvider extends AbstractCharProvider {
+    private static Logger logger = LoggerFactory.getLogger(ContentCharProvider.class);
+
 	private Content content;
 	
 	public ContentCharProvider(Content content) {
@@ -22,7 +27,7 @@ public class ContentCharProvider extends AbstractCharProvider {
 		try {
 			return content.getString(start, end - start);
 		} catch (BadLocationException e) {
-			System.out.println(start + " - " + end + " (" + content.length() + ")");
+            logger.error(start + " - " + end + " (" + content.length() + ")");
 			throw new RuntimeException(e);
 		}
 	}

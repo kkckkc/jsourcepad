@@ -19,13 +19,13 @@ public class ContainerContextBuilder extends MatchableContextBuilder<ContainerCo
 		return this;
 	}
 	
-	public ContainerContextBuilder styleInside(boolean b) {
-		t.setStyleInside(b);
+	public ContainerContextBuilder styleInside(boolean styleInside) {
+		t.setStyleInside(styleInside);
 		return this;
 	}
 	
-	public ContainerContextBuilder endAtLineEnd(boolean b) {
-		t.setEndAtLineEnd(b);
+	public ContainerContextBuilder endAtLineEnd(boolean endAtLine) {
+		t.setEndAtLineEnd(endAtLine);
 		return this;
 	}
 

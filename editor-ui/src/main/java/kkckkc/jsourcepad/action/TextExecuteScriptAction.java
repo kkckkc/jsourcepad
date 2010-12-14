@@ -1,13 +1,12 @@
 package kkckkc.jsourcepad.action;
 
-import java.awt.event.ActionEvent;
-
-import javax.script.ScriptException;
-
 import kkckkc.jsourcepad.model.Buffer;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.util.action.BaseAction;
 import kkckkc.syntaxpane.model.Interval;
+
+import javax.script.ScriptException;
+import java.awt.event.ActionEvent;
 
 public class TextExecuteScriptAction extends BaseAction {
     private final Window window;
@@ -19,19 +18,19 @@ public class TextExecuteScriptAction extends BaseAction {
 	
 	@Override
     public void actionPerformed(ActionEvent e) {
-		final Buffer b = window.getDocList().getActiveDoc().getActiveBuffer();
+		final Buffer activeBuffer = window.getDocList().getActiveDoc().getActiveBuffer();
 		
-		Interval i = b.getSelection();
-		if (i == null || i.isEmpty()) {
-			i = b.getCompleteDocument();
+		Interval selection = activeBuffer.getSelection();
+		if (selection == null || selection.isEmpty()) {
+			selection = activeBuffer.getCompleteDocument();
 		}
 		
-		String line = b.getText(i);
+		String line = activeBuffer.getText(selection);
 		
         try {
 	        Object o = window.getScriptEngine().eval(line);
 	        if (o != null) {
-	        	b.replaceText(i, o.toString(), null);
+	        	activeBuffer.replaceText(selection, o.toString(), null);
 	        }
         } catch (ScriptException ex) {
 	        ex.printStackTrace();

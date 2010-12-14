@@ -54,8 +54,6 @@ public class SvnVcsDecorator extends AbstractVcsDecorator {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-        return;
     }
 
     private VcsState getState(char status) {

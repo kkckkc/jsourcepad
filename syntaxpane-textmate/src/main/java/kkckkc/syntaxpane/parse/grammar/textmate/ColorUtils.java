@@ -9,37 +9,37 @@ public class ColorUtils {
 
 	private static final double FACTOR = 0.98;
 
-	private static Color darker(Color c) {
-		int r = c.getRed();
-		int g = c.getGreen();
-		int b = c.getBlue();
+	private static Color darker(Color color) {
+		int red = color.getRed();
+		int green = color.getGreen();
+		int blue = color.getBlue();
 
 		return new Color(
-				Math.max(adjust(r, FACTOR), 0), 
-				Math.max(adjust(g, FACTOR), 0), 
-				Math.max(adjust(b, FACTOR), 0));
+				Math.max(adjust(red, FACTOR), 0),
+				Math.max(adjust(green, FACTOR), 0),
+				Math.max(adjust(blue, FACTOR), 0));
 	}
 
-	private static Color brighter(Color c) {
-		int r = c.getRed();
-		int g = c.getGreen();
-		int b = c.getBlue();
+	private static Color brighter(Color color) {
+		int red = color.getRed();
+		int green = color.getGreen();
+		int blue = color.getBlue();
 
 		int i = (int) (1.0 / (1.0 - FACTOR));
-		if (r == 0 && g == 0 && b == 0) {
+		if (red == 0 && green == 0 && blue == 0) {
 			return new Color(i, i, i);
 		}
-		if (r > 0 && r < i)
-			r = i;
-		if (g > 0 && g < i)
-			g = i;
-		if (b > 0 && b < i)
-			b = i;
+		if (red > 0 && red < i)
+			red = i;
+		if (green > 0 && green < i)
+			green = i;
+		if (blue > 0 && blue < i)
+			blue = i;
 
 		return new Color(
-				Math.min(adjust(r, 1 / FACTOR), 255), 
-				Math.min(adjust(g, 1 / FACTOR), 255), 
-				Math.min(adjust(b, 1 / FACTOR), 255));
+				Math.min(adjust(red, 1 / FACTOR), 255),
+				Math.min(adjust(green, 1 / FACTOR), 255),
+				Math.min(adjust(blue, 1 / FACTOR), 255));
 	}
 
 	private static int adjust(int color, double factor, double gamma) {

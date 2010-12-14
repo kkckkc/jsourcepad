@@ -2,7 +2,10 @@ package kkckkc.syntaxpane.style;
 
 import kkckkc.syntaxpane.model.Scope;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 
 public class ScopeSelector {
@@ -103,29 +106,29 @@ public class ScopeSelector {
 		}
 		
 		public String toString() {
-			StringBuilder b = new StringBuilder();
+			StringBuilder builder = new StringBuilder();
 			
-			List<String> l = new ArrayList<String>();
-			l.addAll(rule);
-			Collections.reverse(l);
+			List<String> list = new ArrayList<String>();
+			list.addAll(rule);
+			Collections.reverse(list);
 			
-			for (String s : l) {
-				b.append(s).append(" ");
+			for (String s : list) {
+				builder.append(s).append(" ");
 			}
 			
 			if (negativeRule != null) {
-				l.clear();
-				l.addAll(negativeRule);
-				Collections.reverse(l);
+				list.clear();
+				list.addAll(negativeRule);
+				Collections.reverse(list);
 
-				b.append("-");
+				builder.append("-");
 				
-				for (String s : l) {
-					b.append(s).append(" ");
+				for (String s : list) {
+					builder.append(s).append(" ");
 				}
 			}
 			
-			return b.toString();
+			return builder.toString();
 		}
 	}
 	
@@ -133,11 +136,11 @@ public class ScopeSelector {
 
 	
 	public String toString() {
-		StringBuilder b = new StringBuilder();
+		StringBuilder builder = new StringBuilder();
 		for (Rule r : rules) {
-			b.append(r.toString()).append(", ");
+			builder.append(r.toString()).append(", ");
 		}
-		b.setLength(b.length() - 2);
-		return b.toString();
+		builder.setLength(builder.length() - 2);
+		return builder.toString();
 	}
 }

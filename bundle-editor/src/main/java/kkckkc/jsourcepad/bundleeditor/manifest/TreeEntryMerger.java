@@ -22,8 +22,8 @@ public class TreeEntryMerger implements JTreeUtils.Merger {
     }
 
     @Override
-    public boolean equals(DefaultMutableTreeNode one, DefaultMutableTreeNode compareTo) {
-        Object uo1 = one.getUserObject();
+    public boolean equals(DefaultMutableTreeNode compare, DefaultMutableTreeNode compareTo) {
+        Object uo1 = compare.getUserObject();
         Object uo2 = compareTo.getUserObject();
 
         if (uo1 instanceof String) return uo1.equals(uo2);

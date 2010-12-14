@@ -61,9 +61,9 @@ public class BufferImpl implements Buffer {
     private CompoundUndoManager undoManager;
 
 
-    public BufferImpl(SourceDocument d, Doc doc, Window window) {
+    public BufferImpl(SourceDocument sourceDocument, Doc doc, Window window) {
 		this.window = window;
-	    this.document = d;
+	    this.document = sourceDocument;
 	    
 	    this.doc = doc;    
 
@@ -272,9 +272,9 @@ public class BufferImpl implements Buffer {
     }
 
 	@Override
-	public void setLanguage(Language l) {
+	public void setLanguage(Language language) {
 		documentStateListener.disable();
-		document.setLanguage(l);
+		document.setLanguage(language);
 		documentStateListener.enable();
 
 		if (caret != null && insertionPoint != null) {
@@ -402,8 +402,8 @@ public class BufferImpl implements Buffer {
     		if (prevprev != null) {
     			if (doc.getTabManager().getTabCount(prevprev.getCharSequence(false)) == indentCount && indentCount > 0) {
     				String s = doc.getTabManager().getFirstIndentionString(prev.getCharSequence(false));
-    				Interval i = Interval.createWithLength(prev.getStart(), s.length());
-	                doc.getActiveBuffer().remove(i);
+    				Interval interval = Interval.createWithLength(prev.getStart(), s.length());
+	                doc.getActiveBuffer().remove(interval);
 	                position -= s.length();
     				
     	    		indentCount--;
@@ -421,8 +421,8 @@ public class BufferImpl implements Buffer {
     	// Remove old indent
 		String s;
 		while ((s = doc.getTabManager().getFirstIndentionString(current.getCharSequence(false))) != null) {
-			Interval i = Interval.createWithLength(current.getStart(), s.length());
-            doc.getActiveBuffer().remove(i);
+			Interval interval = Interval.createWithLength(current.getStart(), s.length());
+            doc.getActiveBuffer().remove(interval);
             position -= s.length();
 		}
 
@@ -564,23 +564,22 @@ public class BufferImpl implements Buffer {
     @Override
     public TextInterval getCurrentLine() {
 		Line line = document.getLineManager().getLineByPosition(caret.getDot());
-		if (line == null) return null;
         return new BufferTextInterval(line.getStart(), line.getEnd());
     }
 
 	@Override
     public TextInterval getCurrentWord() {
-        Interval l = getCurrentLine();
-        if (l == null) return null;
+        Interval lineInterval = getCurrentLine();
+        if (lineInterval == null) return null;
         
-		String line = getText(l);
+		String line = getText(lineInterval);
 		int index = getInsertionPoint().getLineIndex();
 		
 		Pattern p = Pattern.compile("(^| )+(\\w*)");
 		Matcher matcher = p.matcher(line);
 		while (matcher.find()) {
 			if (matcher.groupCount() > 1 && matcher.start(2) <= index && matcher.end(2) >= index) {
-				return new BufferTextInterval(l.getStart() + matcher.start(2), l.getStart() + matcher.end(2));
+				return new BufferTextInterval(lineInterval.getStart() + matcher.start(2), lineInterval.getStart() + matcher.end(2));
 			}
 		}
 		
@@ -625,11 +624,11 @@ public class BufferImpl implements Buffer {
 	    try {
 			final Object o = textComponent.getHighlighter().addHighlight(interval.getStart(), interval.getEnd(), new HighlightPainter() {
 				@Override
-	            public void paint(Graphics g, int o0, int o1, Shape bounds, JTextComponent c) {
+	            public void paint(Graphics g, int o0, int o1, Shape bounds, JTextComponent component) {
 				    try {
-						TextUI mapper = c.getUI();
-						Rectangle p0 = mapper.modelToView(c, o0);
-						Rectangle p1 = mapper.modelToView(c, o1);
+						TextUI mapper = component.getUI();
+						Rectangle p0 = mapper.modelToView(component, o0);
+						Rectangle p1 = mapper.modelToView(component, o1);
 						
 						if (p0.y == p1.y) {
 						    // same line, render a rectangle
@@ -767,8 +766,8 @@ public class BufferImpl implements Buffer {
             super(start, end);
         }
 
-        public BufferTextInterval(Interval i) {
-            super(i.getStart(), i.getEnd());
+        public BufferTextInterval(Interval interval) {
+            super(interval.getStart(), interval.getEnd());
         }
 
         @Override

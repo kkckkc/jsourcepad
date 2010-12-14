@@ -5,10 +5,13 @@ import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
 import kkckkc.jsourcepad.util.messagebus.MessageBus;
 import kkckkc.jsourcepad.util.messagebus.Subscription;
 import kkckkc.utils.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public abstract class AbstractSettingsManager implements SettingsManager {
+    private static Logger logger = LoggerFactory.getLogger(AbstractSettingsManager.class);
 
     protected List<Pair<Class, Listener>> listeners;
 
@@ -33,12 +36,12 @@ public abstract class AbstractSettingsManager implements SettingsManager {
 	@Override
     public <T extends Setting> Subscription subscribe(final Class<T> type, final Listener<T> listener, boolean fireAtInit) {
         if (listeners == null) initListeners();
-        Pair l = new Pair(type, listener);
-        listeners.add(l);
+        Pair listenerPair = new Pair(type, listener);
+        listeners.add(listenerPair);
 	    if (fireAtInit) {
 	    	listener.settingUpdated(get(type));
 	    }
-        return new SettingsSubscription(l);
+        return new SettingsSubscription(listenerPair);
     }
 
     @Override
@@ -55,9 +58,9 @@ public abstract class AbstractSettingsManager implements SettingsManager {
 
         @Override
         public void unsubscribe() {
-            boolean b = listeners.remove(listener);
-            if (! b) {
-                System.out.println("WARNING: Removing listener failed");
+            boolean listenerRemoved = listeners.remove(listener);
+            if (! listenerRemoved) {
+                logger.error("Removing listener failed");
             }
         }
     }

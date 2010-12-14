@@ -25,8 +25,8 @@ public class CommandMapperManagerImpl implements CommandMapperManager, BeanFacto
     @Override
     public Command read(Object externalRepresentation) {
         for (CommandMapper mapper : mappers) {
-            Command c = mapper.read(externalRepresentation);
-            if (c != null) return c;
+            Command command = mapper.read(externalRepresentation);
+            if (command != null) return command;
         }
         throw new RuntimeException("Cannot read command " + externalRepresentation); 
     }

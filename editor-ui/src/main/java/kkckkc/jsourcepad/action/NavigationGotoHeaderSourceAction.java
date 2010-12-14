@@ -26,11 +26,11 @@ public class NavigationGotoHeaderSourceAction extends BaseAction {
         File found = null;
 
         boolean select = false;
-        for (File f : files) {
+        for (File file : files) {
             if (select) {
-                found = f;
+                found = file;
                 break;
-            } else if (f.equals(doc.getFile())) {
+            } else if (file.equals(doc.getFile())) {
                 select = true;
             }
         }

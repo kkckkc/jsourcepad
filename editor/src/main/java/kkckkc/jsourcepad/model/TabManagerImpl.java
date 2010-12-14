@@ -43,15 +43,15 @@ public class TabManagerImpl implements TabManager, SettingsManager.Listener<TabP
 	
 	@Override
     public String createIndent(int count) {
-		StringBuilder b = new StringBuilder();
+		StringBuilder builder = new StringBuilder();
 		for (int i = 0; i < count; i++) {
 			if (softTabs) {
-				b.append(softTab);
+				builder.append(softTab);
 			} else {
-				b.append("\t");
+				builder.append("\t");
 			}
 		}
-	    return b.toString();
+	    return builder.toString();
     }
 
 	@Override

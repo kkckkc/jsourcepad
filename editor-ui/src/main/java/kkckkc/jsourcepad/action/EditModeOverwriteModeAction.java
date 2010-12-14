@@ -20,19 +20,19 @@ public class EditModeOverwriteModeAction extends BaseAction implements Presenter
 
         SettingsManager settingsManager = getSettingsManager();
 
-        EditModeProjectSettings s = settingsManager.get(EditModeProjectSettings.class);
-        putValue(Action.SELECTED_KEY, s.isOverwriteMode());
+        EditModeProjectSettings editModeProjectSettings = settingsManager.get(EditModeProjectSettings.class);
+        putValue(Action.SELECTED_KEY, editModeProjectSettings.isOverwriteMode());
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         SettingsManager settingsManager = getSettingsManager();
 
-        EditModeProjectSettings s = settingsManager.get(EditModeProjectSettings.class);
-        s.setOverwriteMode(! s.isOverwriteMode());
-        settingsManager.update(s);
+        EditModeProjectSettings editModeProjectSettings = settingsManager.get(EditModeProjectSettings.class);
+        editModeProjectSettings.setOverwriteMode(!editModeProjectSettings.isOverwriteMode());
+        settingsManager.update(editModeProjectSettings);
 
-        putValue(Action.SELECTED_KEY, s.isOverwriteMode());
+        putValue(Action.SELECTED_KEY, editModeProjectSettings.isOverwriteMode());
     }
 
     @Override

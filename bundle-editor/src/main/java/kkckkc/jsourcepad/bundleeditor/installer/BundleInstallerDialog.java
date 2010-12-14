@@ -199,9 +199,9 @@ public class BundleInstallerDialog implements Dialog<BundleInstallerDialogView> 
 
             @Override
             protected void process(List<BundleTableModel.Entry> chunks) {
-                for (BundleTableModel.Entry s : chunks) {
+                for (BundleTableModel.Entry entry : chunks) {
                     progressMonitor.setProgress(getProgress());
-                    progressMonitor.setNote(s.getName());
+                    progressMonitor.setNote(entry.getName());
                 }
             }
 
@@ -219,9 +219,6 @@ public class BundleInstallerDialog implements Dialog<BundleInstallerDialogView> 
                     while (connection.getResponseCode() == 302) {
                         connection = (HttpURLConnection) new URL(connection.getHeaderField("Location")).openConnection();    
                     }
-
-                    System.out.println(connection.getResponseCode());
-                    System.out.println(connection.getHeaderField("Location"));
 
                     File tmp = File.createTempFile(entry.getName(), "tgz");
                     tmp.deleteOnExit();

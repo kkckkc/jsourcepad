@@ -15,9 +15,9 @@ public class WindowSettings implements Setting {
 
     @Override
     public Setting getDefault() {
-        WindowSettings s = new WindowSettings();
-        s.showProjectDrawer = true;
-        return s;
+        WindowSettings settings = new WindowSettings();
+        settings.showProjectDrawer = true;
+        return settings;
     }
 
 }

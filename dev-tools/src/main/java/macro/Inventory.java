@@ -1,14 +1,14 @@
 package macro;
 
+import kkckkc.jsourcepad.model.bundle.MacroEngine;
+import kkckkc.utils.plist.GeneralPListReader;
+import kkckkc.utils.plist.PListFormatter;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import kkckkc.jsourcepad.model.bundle.MacroEngine;
-import kkckkc.utils.plist.GeneralPListReader;
-import kkckkc.utils.plist.PListFormatter;
 
 public class Inventory {
 	private static Map<String, String> commandset = new HashMap<String, String>();
@@ -35,9 +35,9 @@ public class Inventory {
 	    		recurse(file);
 	    	} else if (file.getName().endsWith("tmMacro") || (file.isFile() && dir.getName().endsWith("Macros"))) {
 	    		GeneralPListReader gpl = new GeneralPListReader();
-	    		Map m = (Map) gpl.read(file);
+	    		Map props = (Map) gpl.read(file);
 	    		
-	    		List<Map> commands = (List<Map>) m.get("commands");
+	    		List<Map> commands = (List<Map>) props.get("commands");
 	    		for (Map cmd : commands) {
 	    			commandset.put((String) cmd.get("command"), new PListFormatter().format(cmd));
 	    		}

@@ -17,10 +17,10 @@ public class TextConvertTransposeAction extends BaseAction {
 
 	@Override
     public void actionPerformed(ActionEvent e) {
-        Buffer b = window.getDocList().getActiveDoc().getActiveBuffer();
+        Buffer activeBuffer = window.getDocList().getActiveDoc().getActiveBuffer();
 
-        Interval iv = b.getSelectionOrCurrentLine();
-        String text = b.getText(iv);
+        Interval iv = activeBuffer.getSelectionOrCurrentLine();
+        String text = activeBuffer.getText(iv);
 
         char[] chars = text.toCharArray();
         char[] dest = new char[chars.length]; 
@@ -28,7 +28,7 @@ public class TextConvertTransposeAction extends BaseAction {
             dest[chars.length - 1 - i] = chars[i];
         }
 
-        b.replaceText(iv, new String(dest), null);
+        activeBuffer.replaceText(iv, new String(dest), null);
     }
 
 }

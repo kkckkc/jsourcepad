@@ -17,8 +17,8 @@ public class SnippetBundleItem implements BundleItem<Void> {
 	    this.bundleItemSupplier = bundleItemSupplier;
     }
 	
-	public static BundleItem create(BundleItemSupplier bundleItemSupplier, Map<?, ?> m) {
-	    return new SnippetBundleItem(bundleItemSupplier, (String) m.get("content"));
+	public static BundleItem create(BundleItemSupplier bundleItemSupplier, Map<?, ?> props) {
+	    return new SnippetBundleItem(bundleItemSupplier, (String) props.get("content"));
     }
 
 	@Override

@@ -8,10 +8,10 @@ public interface CharProvider {
 	public int find(int start, char c);
 	
 	public static class StringBuffer extends AbstractCharProvider {
-		private java.lang.StringBuffer s;
+		private java.lang.StringBuffer stringBuffer;
 		
-		public StringBuffer(java.lang.StringBuffer s) {
-			this.s = s;
+		public StringBuffer(java.lang.StringBuffer stringBuffer) {
+			this.stringBuffer = stringBuffer;
 		}
 
 		public StringBuffer(String input) {
@@ -20,12 +20,12 @@ public interface CharProvider {
 
 		@Override
 		public int getLength() {
-			return s.length();
+			return stringBuffer.length();
 		}
 
 		@Override
 		public CharSequence getSubSequence(int start, int end) {
-			return s.substring(start, end);
+			return stringBuffer.substring(start, end);
 		}
 	}
 }

@@ -1,8 +1,8 @@
 package kkckkc.jsourcepad.model;
 
 import kkckkc.syntaxpane.model.LineManager;
-import kkckkc.syntaxpane.model.Scope;
 import kkckkc.syntaxpane.model.LineManager.Line;
+import kkckkc.syntaxpane.model.Scope;
 
 public class InsertionPoint {
 	private Scope scope;
@@ -25,11 +25,11 @@ public class InsertionPoint {
 
 	public int getLineNumber() {
 		Line line = lineManager.getLineByPosition(position);
-	    return line == null ? 0 : line.getIdx();
+	    return line.getIdx();
     }
 
 	public int getLineIndex() {
 	    Line line = lineManager.getLineByPosition(position);
-	    return line == null ? 0 : (position - line.getStart());
+	    return position - line.getStart();
     }
 }

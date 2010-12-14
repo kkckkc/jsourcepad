@@ -8,7 +8,6 @@ import kkckkc.utils.plist.GeneralPListReader;
 import kkckkc.utils.plist.PListReader;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,17 +43,17 @@ public class TextmateLanguageProvider implements LanguageManager.Provider {
         }
 	}
 	
-	private void recurse(LanguageManager languageManager, File file, PListReader r) throws FileNotFoundException, IOException {
-		for (File f : file.listFiles()) {
-			if (f.getName().endsWith(".plist") || f.getName().endsWith(".tmLanguage")) {
+	private void recurse(LanguageManager languageManager, File file, PListReader r) throws IOException {
+		for (File childFile : file.listFiles()) {
+			if (childFile.getName().endsWith(".plist") || childFile.getName().endsWith(".tmLanguage")) {
 				if (file.getName().equals("Syntaxes")) {
-					TextmateLanguageParser lp = new TextmateLanguageParser(f);
+					TextmateLanguageParser lp = new TextmateLanguageParser(childFile);
 					Language language = lp.parse();
 					language.setLanguageManager(languageManager);
 					languages.put(language.getLanguageId(), language);
 				}
-			} else if (f.isDirectory()) {
-				recurse(languageManager, f, r);
+			} else if (childFile.isDirectory()) {
+				recurse(languageManager, childFile, r);
 			}
 		}
 	}

@@ -1,7 +1,6 @@
 package kkckkc.jsourcepad;
 
 import com.google.common.base.Function;
-import kkckkc.jsourcepad.http.PreviewServer;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.bundle.BundleManager;
@@ -55,7 +54,6 @@ public class Bootstrap implements Runnable {
                         sb.append(line);
                     }
                     rd.close();
-                    sb.toString();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -72,8 +70,8 @@ public class Bootstrap implements Runnable {
 
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             public void uncaughtException(Thread t, final Throwable e) {
-                java.util.logging.Logger l = java.util.logging.Logger.getLogger("exceptions");
-                l.log(Level.WARNING, "Uncaught Exception", e);
+                java.util.logging.Logger logger = java.util.logging.Logger.getLogger("exceptions");
+                logger.log(Level.WARNING, "Uncaught Exception", e);
 
                 EventQueue.invokeLater(new Runnable() {
                     @Override
@@ -95,9 +93,9 @@ public class Bootstrap implements Runnable {
             }
         });
 
-        Bootstrap b = new Bootstrap(args);
+        Bootstrap bootstrap = new Bootstrap(args);
 
-        Thread mainThread = new Thread(tg, b);
+        Thread mainThread = new Thread(tg, bootstrap);
         mainThread.start();
     }
 
@@ -143,16 +141,16 @@ public class Bootstrap implements Runnable {
                         }
                     } else {
                         for (String s : args) {
-                            File f = new File(s);
-                            if (f.isDirectory()) {
-                                Application.get().open(f);
+                            File file = new File(s);
+                            if (file.isDirectory()) {
+                                Application.get().open(file);
                             }
                         }
 
                         for (String s : args) {
-                            File f = new File(s);
-                            if (! f.isDirectory()) {
-                                Application.get().open(f);
+                            File file = new File(s);
+                            if (! file.isDirectory()) {
+                                Application.get().open(file);
                             }
                         }
                     }
@@ -178,8 +176,6 @@ public class Bootstrap implements Runnable {
                 Application.get().getThreadPool().submit(new Runnable() {
                     @Override
                     public void run() {
-//                        HttpServer server = Application.get().getHttpServer();
-                        PreviewServer ps = Application.get().getBeanFactory().getBean(PreviewServer.class);
                         SystemEnvironmentHelper.getSystemEnvironment();
                     }
                 });

@@ -12,8 +12,8 @@ public class EditRedoAction extends BaseAction {
 	
 	@Override
     public void actionPerformed(ActionEvent e) {
-        Doc d = actionContext.get(ActionContextKeys.ACTIVE_DOC);
-		d.getActiveBuffer().redo();
+        Doc activeDoc = actionContext.get(ActionContextKeys.ACTIVE_DOC);
+		activeDoc.getActiveBuffer().redo();
     }
 
 }

@@ -14,8 +14,8 @@ public class EditFindUseSelectionForFindAction extends BaseAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        Doc d = actionContext.get(ActionContextKeys.ACTIVE_DOC);
-		Buffer buffer = d.getActiveBuffer();
+        Doc activeDoc = actionContext.get(ActionContextKeys.ACTIVE_DOC);
+		Buffer buffer = activeDoc.getActiveBuffer();
 
         Finder finder = buffer.getFinder();
         if (finder == null) {

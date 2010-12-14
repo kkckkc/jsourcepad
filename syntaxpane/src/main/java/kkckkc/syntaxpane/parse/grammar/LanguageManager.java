@@ -1,5 +1,8 @@
 package kkckkc.syntaxpane.parse.grammar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 public class LanguageManager {
+    private static Logger logger = LoggerFactory.getLogger(LanguageManager.class);
+
 	private Provider provider;
 
 	public void setProvider(Provider provider) {
@@ -29,14 +34,14 @@ public class LanguageManager {
 				
 				l = getLanguage(langId);
 				if (l == null) {
-					System.out.println("Cannot find language with id " + langId);
+					logger.warn("Cannot find language with id " + langId);
 					return null;
 				}
 			}
 			
 			Context c = l.find(ref);
 			if (c == null) {
-				System.out.println("Couldn't find " + ref + " in language " + l);
+				logger.warn("Couldn't find " + ref + " in language " + l);
 				return null;
 			}
 
@@ -47,14 +52,14 @@ public class LanguageManager {
 
 			Language l = getLanguage(langId);
 			if (l == null) {
-				System.out.println("Cannot find language with id " + langId);
+				logger.warn("Cannot find language with id " + langId);
 				return null;
 			}
 			
 			Context c = l.find(ref);
 
 			if (c == null) {
-				System.out.println("Couldn't find " + ref + " in language " + l);
+				logger.warn("Couldn't find " + ref + " in language " + l);
 				return null;
 			}
 			
@@ -66,11 +71,11 @@ public class LanguageManager {
 		} else {
 			Context c = ctx.getLanguage().find(ref);
 			if (c == null) {
-				RootContext rc = (RootContext) ctx.getLanguage().getRootContext();
+				/*RootContext rc = (RootContext) ctx.getLanguage().getRootContext();
 				for (Context ch : rc.getChildren()) {
 					System.out.println(ch);
-				}
-				System.out.println("Cannot find " + ref + ", in " + ctx.getLanguage());
+				}*/
+				logger.warn("Cannot find " + ref + ", in " + ctx.getLanguage());
 				return null;
 			}
 			return c;
@@ -78,12 +83,12 @@ public class LanguageManager {
 	}
 
 	public Language getLanguage(String langId) {
-		Language l = provider.getLanguages(this).get(langId);
-		if (l == null) return provider.getDefaultLanguage();
-		if (! l.isCompiled()) {
-			l.compile();
+		Language language = provider.getLanguages(this).get(langId);
+		if (language == null) return provider.getDefaultLanguage();
+		if (! language.isCompiled()) {
+			language.compile();
 		}
-		return l;
+		return language;
 	}
 	
 	
@@ -102,10 +107,10 @@ public class LanguageManager {
 	}
 
 	public Language getLanguage(String firstLine, File file) {
-		for (Language l : provider.getLanguages(this).values()) {
-			if (l.matches(firstLine, file)) {
-				l.compile();
-				return l;
+		for (Language language : provider.getLanguages(this).values()) {
+			if (language.matches(firstLine, file)) {
+				language.compile();
+				return language;
 			}
 		}
 		return provider.getDefaultLanguage();

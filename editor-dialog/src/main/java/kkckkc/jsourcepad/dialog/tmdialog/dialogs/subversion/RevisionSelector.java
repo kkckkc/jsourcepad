@@ -51,8 +51,8 @@ public class RevisionSelector extends BaseTmDialogDelegate {
 
         if (title != null) jdialog.setTitle(title);
         if (entries != null) {
-            for (int i = 0; i < entries.size(); i++) {
-                Map map = (Map) entries.get(i);
+            for (Object entry : entries) {
+                Map map = (Map) entry;
                 Entry e = Entry.fromMap(map);
                 if (revisions.contains(e.getRev())) continue;
 
@@ -64,16 +64,16 @@ public class RevisionSelector extends BaseTmDialogDelegate {
 
     @Override
     protected Object getReturnData() {
-        Map m = Maps.newHashMap();
+        Map returnData = Maps.newHashMap();
 
         List<Object> selectedRevisions = Lists.newArrayList();
         for (int row : table.getSelectedRows()) {
             selectedRevisions.add(table.getValueAt(row, 0));
         }
-        m.put("returnArgument", selectedRevisions);
-        m.put("returnButton", "ok");
+        returnData.put("returnArgument", selectedRevisions);
+        returnData.put("returnButton", "ok");
 
-        return m;
+        return returnData;
     }
 
     static class Entry {
@@ -82,12 +82,12 @@ public class RevisionSelector extends BaseTmDialogDelegate {
         String msg;
         Integer rev;
 
-        public static Entry fromMap(Map m) {
+        public static Entry fromMap(Map map) {
             Entry e = new Entry();
-            e.author = (String) m.get("author");
-            e.date = (Date) m.get("date");
-            e.msg = (String) m.get("msg");
-            e.rev = (Integer) m.get("rev");
+            e.author = (String) map.get("author");
+            e.date = (Date) map.get("date");
+            e.msg = (String) map.get("msg");
+            e.rev = (Integer) map.get("rev");
             return e;
         }
 

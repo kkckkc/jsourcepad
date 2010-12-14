@@ -23,17 +23,17 @@ public class ProjectRemoveSelectedFilesAction extends BaseAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
         int confirm = JOptionPane.showConfirmDialog((Component) e.getSource(), "Really Delete");
-        if (confirm == JOptionPane.OK_OPTION || confirm == JOptionPane.YES_OPTION) {
+        if (confirm == JOptionPane.OK_OPTION) {
             Project project = window.getProject();
 
             Object[] tp = actionContext.get(ActionContextKeys.SELECTION);
-            for (Object f : tp) {
+            for (Object o : tp) {
                 try {
-                    Files.deleteRecursively((File) f);
+                    Files.deleteRecursively((File) o);
 
                     if (project != null) {
-                        project.refresh(((File) f));
-                        project.refresh(((File) f).getParentFile());
+                        project.refresh(((File) o));
+                        project.refresh(((File) o).getParentFile());
                     }
                 } catch (IOException e1) {
                     throw new RuntimeException(e1);

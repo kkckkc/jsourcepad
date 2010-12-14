@@ -29,12 +29,12 @@ public class GlobalSettingsManager extends AbstractSettingsManager {
 	    
 		T t = null;
 
-		File f = new File(settingsDir, type.getName());
-		if (f.exists()) {
+		File file = new File(settingsDir, type.getName());
+		if (file.exists()) {
 			try {
-	            t = (T) new XMLDecoder(new FileInputStream(f)).readObject();
+	            t = (T) new XMLDecoder(new FileInputStream(file)).readObject();
             } catch (FileNotFoundException e) {
-	            System.err.println(e.getMessage());
+	            throw new RuntimeException(e);
             }
 		}
 		
@@ -44,7 +44,7 @@ public class GlobalSettingsManager extends AbstractSettingsManager {
 				Method method = type.getMethod("getDefault");
 				t = (T) method.invoke(t);
 			} catch (Exception e) {
-				System.err.println(e.getMessage());
+				throw new RuntimeException(e);
 			}
 		}
 		
@@ -55,8 +55,8 @@ public class GlobalSettingsManager extends AbstractSettingsManager {
 	@Override
     public void update(Setting setting) {
 		try {
-			File f = new File(settingsDir, setting.getClass().getName());
-			XMLEncoder e = new XMLEncoder(new FileOutputStream(f));
+			File file = new File(settingsDir, setting.getClass().getName());
+			XMLEncoder e = new XMLEncoder(new FileOutputStream(file));
 			e.writeObject(setting);
 			e.close();
 			

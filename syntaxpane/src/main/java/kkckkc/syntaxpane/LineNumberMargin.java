@@ -88,30 +88,25 @@ public class LineNumberMargin extends JComponent implements PropertyChangeListen
 		Line startLine = document.getLineManager().getLineByPosition(startPos);
 		Line endLine = document.getLineManager().getLineByPosition(endPos);
 		
-		if (startLine != null && endLine != null) {
-			MutableFoldManager foldManager = document.getFoldManager();
-			int max = foldManager.getVisibleLineCount();
-			do {
-				FoldManager.State s = document.getFoldManager().getFoldState(startLine.getIdx());
-				if (s != FoldManager.State.FOLDED_SECOND_LINE_AND_REST) {
-					String lineNumber = String.valueOf(startLine.getIdx() + 1);
-					int stringWidth = fontMetrics.stringWidth(lineNumber);
-					int rowWidth = getSize().width;
-                    
-					g.drawString(lineNumber, rowWidth - stringWidth - MARGIN, 
-							//((foldManager.toVisibleIndex(startLine.getIdx()) + 1) * fontHeight) - (fontHeight - fontAscent));
-							((foldManager.toVisibleIndex(startLine.getIdx()) + 1) * fontHeight) - fontLeading);
-					--max;
-				}
-				
-				startLine = document.getLineManager().getNext(startLine);
-			} while (startLine != null && startLine.getIdx() <= endLine.getIdx() && max > 0);
-			
-			setPreferredWidth(foldManager.getLineCount());
-		} else {
-			int stringWidth = fontMetrics.stringWidth("1");
-			g.drawString("1", getSize().width - stringWidth - MARGIN, fontHeight);
-		}
+        MutableFoldManager foldManager = document.getFoldManager();
+        int max = foldManager.getVisibleLineCount();
+        do {
+            FoldManager.State foldState = document.getFoldManager().getFoldState(startLine.getIdx());
+            if (foldState != FoldManager.State.FOLDED_SECOND_LINE_AND_REST) {
+                String lineNumber = String.valueOf(startLine.getIdx() + 1);
+                int stringWidth = fontMetrics.stringWidth(lineNumber);
+                int rowWidth = getSize().width;
+
+                g.drawString(lineNumber, rowWidth - stringWidth - MARGIN,
+                        //((foldManager.toVisibleIndex(startLine.getIdx()) + 1) * fontHeight) - (fontHeight - fontAscent));
+                        ((foldManager.toVisibleIndex(startLine.getIdx()) + 1) * fontHeight) - fontLeading);
+                --max;
+            }
+
+            startLine = document.getLineManager().getNext(startLine);
+        } while (startLine != null && startLine.getIdx() <= endLine.getIdx() && max > 0);
+
+        setPreferredWidth(foldManager.getLineCount());
 	}
  
 	@Override

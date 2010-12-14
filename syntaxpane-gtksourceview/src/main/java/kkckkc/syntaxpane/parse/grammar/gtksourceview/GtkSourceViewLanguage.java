@@ -44,12 +44,12 @@ public class GtkSourceViewLanguage extends Language {
 			mapTo = mapTo.substring(mapTo.indexOf(':') + 1);
 		}
 		
-		GtkSourceViewLanguage l = (GtkSourceViewLanguage) getLanguageManager().getLanguage(languagePart);
+		GtkSourceViewLanguage language = (GtkSourceViewLanguage) getLanguageManager().getLanguage(languagePart);
 		
-		if (l == null) {
+		if (language == null) {
 			return mapTo + "." + languageId + ":" + name;
 		} else {
-			return l.resolveStyle(mapTo) + "." + languageId + ":" + name;
+			return language.resolveStyle(mapTo) + "." + languageId + ":" + name;
 		}
 	}
 }

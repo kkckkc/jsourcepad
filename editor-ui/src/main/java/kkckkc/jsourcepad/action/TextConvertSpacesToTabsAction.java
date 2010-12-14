@@ -22,17 +22,17 @@ public class TextConvertSpacesToTabsAction extends BaseAction {
     public void actionPerformed(ActionEvent e) {
         TabProjectSettings ts = getSettingsManager().get(TabProjectSettings.class);
 
-		Buffer b = window.getDocList().getActiveDoc().getActiveBuffer();
+		Buffer activeBuffer = window.getDocList().getActiveDoc().getActiveBuffer();
 
-        TextInterval i = b.getSelectionOrCurrentLine();
-        String text = i.getText();
+        TextInterval selectionOrCurrentLine = activeBuffer.getSelectionOrCurrentLine();
+        String text = selectionOrCurrentLine.getText();
 
         StringBuilder builder = new StringBuilder();
         for (int j = 0; j < ts.getTabSize(); j++) builder.append(" ");
 
         text = text.replace(builder.toString(), "\t");
 
-		b.replaceText(i, text, null);
+		activeBuffer.replaceText(selectionOrCurrentLine, text, null);
     }
 
     private SettingsManager getSettingsManager() {

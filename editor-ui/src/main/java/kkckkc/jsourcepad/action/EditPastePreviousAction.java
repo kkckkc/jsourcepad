@@ -16,15 +16,15 @@ public class EditPastePreviousAction extends BaseAction {
 
 	@Override
     public void actionPerformed(ActionEvent e) {
-        Doc d = actionContext.get(ActionContextKeys.ACTIVE_DOC);
+        Doc activeDoc = actionContext.get(ActionContextKeys.ACTIVE_DOC);
 
         ClipboardManager cm = Application.get().getClipboardManager();
         Transferable t = cm.getSecondLast();
 
         if (t == null) return;
         
-        Buffer b = d.getActiveBuffer();
-        b.insertText(b.getInsertionPoint().getPosition(), 
+        Buffer buffer = activeDoc.getActiveBuffer();
+        buffer.insertText(buffer.getInsertionPoint().getPosition(),
                 ClipboardManager.getText(t), null);
     }
 

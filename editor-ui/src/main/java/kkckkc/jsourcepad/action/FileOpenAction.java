@@ -1,12 +1,12 @@
 package kkckkc.jsourcepad.action;
 
-import java.awt.event.ActionEvent;
-import java.io.File;
-
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.ui.dialog.filechooser.FileChooserCallback;
 import kkckkc.jsourcepad.ui.dialog.filechooser.FileOpenDialog;
 import kkckkc.jsourcepad.util.action.BaseAction;
+
+import java.awt.event.ActionEvent;
+import java.io.File;
 
 
 

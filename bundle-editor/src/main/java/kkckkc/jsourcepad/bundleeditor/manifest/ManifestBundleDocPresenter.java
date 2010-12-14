@@ -219,13 +219,13 @@ public class ManifestBundleDocPresenter extends BasicBundleDocPresenter {
         for (BundleStructure.Type type : Arrays.asList(BundleStructure.Type.COMMAND, BundleStructure.Type.MACRO, BundleStructure.Type.SNIPPET)) {
             if (! entries.containsKey(type)) continue;
 
-            List<TreeEntry> l = new ArrayList<TreeEntry>(entries.get(type));
-            Collections.sort(l, new TreeEntry.TreeEntryComparator());
+            List<TreeEntry> entriesList = new ArrayList<TreeEntry>(entries.get(type));
+            Collections.sort(entriesList, new TreeEntry.TreeEntryComparator());
 
             DefaultMutableTreeNode typeNode = new DefaultMutableTreeNode(new TreeEntry("", type.getFolder(), true));
             root.add(typeNode);
-            for (TreeEntry s : l) {
-                typeNode.add(new DefaultMutableTreeNode(s));
+            for (TreeEntry entry : entriesList) {
+                typeNode.add(new DefaultMutableTreeNode(entry));
             }
         }
     }

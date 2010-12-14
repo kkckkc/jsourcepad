@@ -21,11 +21,11 @@ public class ViewGutterFoldingsAction extends BaseAction implements Presenter.Me
     public void actionPerformed(ActionEvent e) {
         SettingsManager settingsManager = Application.get().getSettingsManager();
 
-        GutterSettings s = settingsManager.get(GutterSettings.class);
-        s.setFoldings(! s.isFoldings());
-        settingsManager.update(s);
+        GutterSettings settings = settingsManager.get(GutterSettings.class);
+        settings.setFoldings(!settings.isFoldings());
+        settingsManager.update(settings);
 
-        putValue(Action.SELECTED_KEY, s.isFoldings());
+        putValue(Action.SELECTED_KEY, settings.isFoldings());
     }
 
     @Override

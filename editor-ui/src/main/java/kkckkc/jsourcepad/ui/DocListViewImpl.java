@@ -1,8 +1,7 @@
 package kkckkc.jsourcepad.ui;
 
-import java.awt.Dimension;
-
-import javax.swing.JTabbedPane;
+import javax.swing.*;
+import java.awt.*;
 
 public class DocListViewImpl implements DocListView {
 

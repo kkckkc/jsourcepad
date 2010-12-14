@@ -14,8 +14,8 @@ public class EditFindNextAction extends BaseAction {
 	
 	@Override
     public void actionPerformed(ActionEvent e) {
-        Doc d = actionContext.get(ActionContextKeys.ACTIVE_DOC);
-		Buffer buffer = d.getActiveBuffer();
+        Doc activeDoc = actionContext.get(ActionContextKeys.ACTIVE_DOC);
+		Buffer buffer = activeDoc.getActiveBuffer();
 
         int position = buffer.getInsertionPoint().getPosition();
         Interval selection = buffer.getSelection();

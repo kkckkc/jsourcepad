@@ -8,6 +8,8 @@ import kkckkc.jsourcepad.dialog.Dialog;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.utils.plist.NIOXMLPListReader;
 import kkckkc.utils.plist.XMLPListWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -21,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 public class TmDialog implements Dialog, BeanFactoryAware {
+    private static Logger logger = LoggerFactory.getLogger(TmDialog.class);
+
     private static final int ERROR_NOT_FOUND = 54628;
     private static final int ERROR_GENERAL = 1;
 
@@ -29,13 +33,6 @@ public class TmDialog implements Dialog, BeanFactoryAware {
 
     @Override
     public int execute(final Window window, Writer out, String pwd, String stdin, String... args) throws IOException {
-
-        /*
-        System.out.println("Arrays.asList(args) = " + Arrays.asList(args));
-        System.out.println("STDIN = "  + stdin);
-        System.out.println("---------------------------------------------------------------");
-        */
-
         boolean quite = false;
         boolean center = false;
         boolean modal = false;
@@ -131,10 +128,9 @@ public class TmDialog implements Dialog, BeanFactoryAware {
         }
 
         if (delegate == null) {
-            System.out.println("Dialog not found");
-            System.out.println("Arrays.asList(args) = " + Arrays.asList(args));
-            System.out.println("STDIN = "  + stdin);
-            System.out.println("---------------------------------------------------------------");
+            logger.error("Dialog not found");
+            logger.debug("Arrays.asList(args) = " + Arrays.asList(args));
+            logger.debug("STDIN = "  + stdin);
             return ERROR_NOT_FOUND;
         }
 

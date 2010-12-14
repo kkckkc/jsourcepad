@@ -33,7 +33,7 @@ public interface Buffer {
 	
 	// Initialize
 	public void bind(JTextComponent textComponent);
-	public void setLanguage(Language l);
+	public void setLanguage(Language language);
 	public Language getLanguage();
 	public void setText(Language language, BufferedReader reader) throws IOException;
 	

@@ -48,9 +48,9 @@ public abstract class LineManager {
 	}
 
 	public String dumpXml() {
-		StringBuffer b = new StringBuffer();
-		dumpXml(b);
-		return b.toString();
+		StringBuffer buf = new StringBuffer();
+		dumpXml(buf);
+		return buf.toString();
 	}
 	
 	public class Line extends Interval {

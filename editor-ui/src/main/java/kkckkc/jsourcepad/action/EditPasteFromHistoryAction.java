@@ -23,7 +23,7 @@ public class EditPasteFromHistoryAction extends BaseAction {
 
 	@Override
     public void actionPerformed(ActionEvent e) {
-        Doc d = actionContext.get(ActionContextKeys.ACTIVE_DOC);
+        Doc activeDoc = actionContext.get(ActionContextKeys.ACTIVE_DOC);
 
         ClipboardManager cm = Application.get().getClipboardManager();
 
@@ -32,13 +32,13 @@ public class EditPasteFromHistoryAction extends BaseAction {
         List<Transferable> history = cm.getHistory();
         Collections.reverse(history);
         for (Transferable t : history) {
-            tempActionGroup.add(new PasteAction(ClipboardManager.getText(t), d.getActiveBuffer()));
+            tempActionGroup.add(new PasteAction(ClipboardManager.getText(t), activeDoc.getActiveBuffer()));
         }
 
         JPopupMenu jpm = new MenuFactory().buildPopup(tempActionGroup, null);
 
         // TODO: Move this into Buffer.showPopup() or something
-        DocPresenter presenter = d.getPresenter(DocPresenter.class);
+        DocPresenter presenter = activeDoc.getPresenter(DocPresenter.class);
         Point point = presenter.getInsertionPointLocation();
         JComponent component = presenter.getComponent();
 
@@ -47,18 +47,18 @@ public class EditPasteFromHistoryAction extends BaseAction {
 
 
     public static class PasteAction extends AbstractAction {
-        private final String string;
+        private final String text;
         private final Buffer buffer;
 
-        public PasteAction(String s, Buffer buffer) {
-            super(s.length() > 40 ? s.substring(0, 40) : s);
-            this.string = s;
+        public PasteAction(String text, Buffer buffer) {
+            super(text.length() > 40 ? text.substring(0, 40) : text);
+            this.text = text;
             this.buffer = buffer;
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            buffer.insertText(buffer.getInsertionPoint().getPosition(), string, null);
+            buffer.insertText(buffer.getInsertionPoint().getPosition(), text, null);
         }
     }
 }

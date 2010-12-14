@@ -12,7 +12,7 @@ public class RootContext extends MatchableContext {
 	}
 
 	@Override
-	public Matcher getMatcher(CharSequence s) {
+	public Matcher getMatcher(CharSequence seq) {
 		return null;
 	}
 

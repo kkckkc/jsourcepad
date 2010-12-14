@@ -23,8 +23,6 @@ public abstract class FoldablePlainView extends PlainView {
 
 	@Override
 	public void paint(Graphics g, Shape a) {
-		Shape originalA = a;
-//		a = adjustPaintRegion(a);
 		Rectangle alloc = (Rectangle) a;
 		tabBase = alloc.x;
 		JTextComponent host = (JTextComponent) getContainer();
@@ -64,16 +62,16 @@ public abstract class FoldablePlainView extends PlainView {
 		for (int line = getDocument().getFoldManager().fromVisibleIndex(linesAbove); line < endLine; line++) {
 			FoldManager.State state = getDocument().getFoldManager().getFoldState(line);
 			if (state != FoldManager.State.FOLDED_SECOND_LINE_AND_REST) {
-				Rectangle b = originalA.getBounds();
-				drawLineBackground(g, b.x, b.y, b.height, b.width);
+				Rectangle bounds = a.getBounds();
+				drawLineBackground(g, bounds.x, bounds.y, bounds.height, bounds.width);
 				if (dh != null) {
 					Element lineElement = map.getElement(line);
 					if (line == lineCount) {
 						dh.paintLayeredHighlights(g, lineElement.getStartOffset(),
-								lineElement.getEndOffset(), originalA, host, this);
+								lineElement.getEndOffset(), a, host, this);
 					} else {
 						dh.paintLayeredHighlights(g, lineElement.getStartOffset(),
-								lineElement.getEndOffset() - 1, originalA, host,
+								lineElement.getEndOffset() - 1, a, host,
 								this);
 					}
 				}
@@ -141,12 +139,11 @@ public abstract class FoldablePlainView extends PlainView {
                 try {
                     int p0 = line.getStartOffset();
                     int p1 = line.getEndOffset() - 1;
-                    Segment s = getLineBuffer(); 
-                    doc.getText(p0, p1 - p0, s);
+                    Segment segment = getLineBuffer();
+                    doc.getText(p0, p1 - p0, segment);
                     tabBase = alloc.x;
-                    int offs = p0 + Utilities.getTabbedTextOffset(s, metrics,
+                    return p0 + Utilities.getTabbedTextOffset(segment, metrics,
                                                                   tabBase, x, this, p0);
-                    return offs;
                 } catch (BadLocationException e) {
                     // should not happen
                     return -1;
@@ -155,36 +152,36 @@ public abstract class FoldablePlainView extends PlainView {
         }
     }    
 	
-	public int getNextVisualPositionFrom(int pos, Position.Bias b, Shape a, int direction, Position.Bias[] biasRet) throws BadLocationException {
+	public int getNextVisualPositionFrom(int pos, Position.Bias bias, Shape shape, int direction, Position.Bias[] biasRet) throws BadLocationException {
 		int result = -1;
 		
 		if (direction == WEST || direction == EAST) {
-			result = super.getNextVisualPositionFrom(pos, b, a, direction, biasRet);
+			result = super.getNextVisualPositionFrom(pos, bias, shape, direction, biasRet);
 
 			int index = getElement().getElementIndex(result);
 			
 			FoldManager.State state = getDocument().getFoldManager().getFoldState(index);
 			if (state == FoldManager.State.FOLDED_SECOND_LINE_AND_REST) {
 				if (direction == WEST) {
-					Interval f = getDocument().getFoldManager().getFoldOverlapping(index);
-					result = getElement().getElement(f.getStart()).getEndOffset() - 1;
+					Interval foldInterval = getDocument().getFoldManager().getFoldOverlapping(index);
+					result = getElement().getElement(foldInterval.getStart()).getEndOffset() - 1;
 				} else if (direction == EAST) {
-					Interval f = getDocument().getFoldManager().getFoldOverlapping(index);
-					result = getElement().getElement(f.getEnd() + 1).getStartOffset();
+					Interval foldInterval = getDocument().getFoldManager().getFoldOverlapping(index);
+					result = getElement().getElement(foldInterval.getEnd() + 1).getStartOffset();
 				}
 			}
 		} else if (direction == NORTH || direction == SOUTH) {
-			result = super.getNextVisualPositionFrom(pos, b, a, direction, biasRet);
+			result = super.getNextVisualPositionFrom(pos, bias, shape, direction, biasRet);
 			int index = getElement().getElementIndex(result);
 
 			FoldManager.State state = getDocument().getFoldManager().getFoldState(index);
 			if (state == FoldManager.State.FOLDED_SECOND_LINE_AND_REST) {
 				if (direction == NORTH) {
-					Interval f = getDocument().getFoldManager().getFoldOverlapping(index);
-					result = getElement().getElement(f.getStart()).getEndOffset() - 1;
+					Interval foldInterval = getDocument().getFoldManager().getFoldOverlapping(index);
+					result = getElement().getElement(foldInterval.getStart()).getEndOffset() - 1;
 				} else if (direction == SOUTH) {
-					Interval f = getDocument().getFoldManager().getFoldOverlapping(index);
-					result = getElement().getElement(f.getEnd() + 1).getStartOffset();
+					Interval foldInterval = getDocument().getFoldManager().getFoldOverlapping(index);
+					result = getElement().getElement(foldInterval.getEnd() + 1).getStartOffset();
 				}
 			}
 
@@ -193,23 +190,23 @@ public abstract class FoldablePlainView extends PlainView {
 		return result;
 	}
 	
-	public Shape modelToView(int pos, Shape a, Position.Bias b) throws BadLocationException {
+	public Shape modelToView(int pos, Shape shape, Position.Bias bias) throws BadLocationException {
 		// line coordinates
 		Document doc = getDocument();
 		Element map = getElement();
 		
 		int lineIndex = map.getElementIndex(pos);
 
-		Rectangle lineArea = lineToRect(a, lineIndex);
+		Rectangle lineArea = lineToRect(shape, lineIndex);
 
 		// determine span from the start of the line
 		tabBase = lineArea.x;
 		Element line = map.getElement(lineIndex);
 
 		int p0 = line.getStartOffset();
-		Segment s = getLineBuffer();
-		doc.getText(p0, pos - p0, s);
-		int xOffs = Utilities.getTabbedTextWidth(s, metrics, tabBase, this, p0);
+		Segment segment = getLineBuffer();
+		doc.getText(p0, pos - p0, segment);
+		int xOffs = Utilities.getTabbedTextWidth(segment, metrics, tabBase, this, p0);
 
 		// fill in the results and return
 		lineArea.x += xOffs;

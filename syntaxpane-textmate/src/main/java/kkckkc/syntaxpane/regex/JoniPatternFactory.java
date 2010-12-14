@@ -77,8 +77,6 @@ public class JoniPatternFactory implements PatternFactory {
 		if (cs instanceof String) {
 			return ((String) cs).toCharArray();
 		} else {
-			System.out.println("Warning: CharSequence is " + cs.getClass());
-						
 			int len = cs.length();
 			char[] dest = new char[len];
 			for (int i = 0; i < len; i++) {
@@ -202,7 +200,7 @@ public class JoniPatternFactory implements PatternFactory {
 
 		@Override
         public String replaceAll(String replacement) {
-            StringBuilder b = new StringBuilder();
+            StringBuilder builder = new StringBuilder();
 
             int pos = 0;
             while (find(pos)) {
@@ -212,42 +210,42 @@ public class JoniPatternFactory implements PatternFactory {
                 if (start == end) break;
 
                 if (start > pos) {
-                    b.append(new String(chars, pos, start - pos));
+                    builder.append(new String(chars, pos, start - pos));
                 }
 
-                appendReplacement(replacement, b);
+                appendReplacement(replacement, builder);
 
                 pos = end;
             }
 
             if (pos < chars.length) {
-                b.append(new String(chars, pos, chars.length - pos));
+                builder.append(new String(chars, pos, chars.length - pos));
             }
 
-            return b.toString();
+            return builder.toString();
         }
 
-        private void appendReplacement(String replacement, StringBuilder b) {
+        private void appendReplacement(String replacement, StringBuilder builder) {
             // Remove all conditionals
             java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("\\(\\?([0-9]+):([^):]+)(:([^)]+))?\\)");
-            java.util.regex.Matcher m = pattern.matcher(replacement);
+            java.util.regex.Matcher matcher = pattern.matcher(replacement);
 
             StringBuffer buf = new StringBuffer();
-            while (m.find()) {
-                Integer groupId = Integer.parseInt(m.group(1));
-                String value = m.group(2);
-                String alternative = m.group(4);
+            while (matcher.find()) {
+                Integer groupId = Integer.parseInt(matcher.group(1));
+                String value = matcher.group(2);
+                String alternative = matcher.group(4);
                 if (groupId <= groupCount()) {
-                    m.appendReplacement(buf, value);
+                    matcher.appendReplacement(buf, value);
                 } else {
                     if (alternative != null) {
-                        m.appendReplacement(buf, alternative);
+                        matcher.appendReplacement(buf, alternative);
                     } else {
-                        m.appendReplacement(buf, "");
+                        matcher.appendReplacement(buf, "");
                     }
                 }
             }
-            m.appendTail(buf);
+            matcher.appendTail(buf);
 
             replacement = buf.toString();
 
@@ -296,23 +294,23 @@ public class JoniPatternFactory implements PatternFactory {
                 if (fragment != null) {
                     switch (currentTransformation) {
                         case 'L':
-                            b.append(fragment.toLowerCase());
+                            builder.append(fragment.toLowerCase());
                             break;
                         case 'U':
-                            b.append(fragment.toUpperCase());
+                            builder.append(fragment.toUpperCase());
                             break;
                         case 'l':
-                            b.append(Character.toLowerCase(fragment.charAt(0)));
-                            if (fragment.length() > 1) b.append(fragment.substring(1));
+                            builder.append(Character.toLowerCase(fragment.charAt(0)));
+                            if (fragment.length() > 1) builder.append(fragment.substring(1));
                             currentTransformation = 'E';
                             break;
                         case 'u':
-                            b.append(Character.toUpperCase(fragment.charAt(0)));
-                            if (fragment.length() > 1) b.append(fragment.substring(1));
+                            builder.append(Character.toUpperCase(fragment.charAt(0)));
+                            if (fragment.length() > 1) builder.append(fragment.substring(1));
                             currentTransformation = 'E';
                             break;
                         default:
-                            b.append(fragment);
+                            builder.append(fragment);
                             currentTransformation = 'E';
                             break;
                     }

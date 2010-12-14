@@ -1,11 +1,8 @@
 package kkckkc.jsourcepad.ui.dialog.navigation;
 
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JTextField;
-
 import kkckkc.jsourcepad.View;
+
+import javax.swing.*;
 
 public interface QuickNavigationDialogView extends View {
 	public JTextField getTextField();

@@ -51,10 +51,10 @@ public class DocListImpl implements DocList {
 	@Override
 	public Doc open(File file) {
 		int i = 0;
-		for (Doc b : docs) {
-			if (file.equals(b.getFile())) {
+		for (Doc doc : docs) {
+			if (file.equals(doc.getFile())) {
 				setActive(i);
-				return b;
+				return doc;
 			}
 			i++;
 		}
@@ -82,10 +82,10 @@ public class DocListImpl implements DocList {
 	}
 
     @Override
-    public int getIndex(Doc doc) {
+    public int getIndex(Doc docToFind) {
         int i = 0;
-        for (Doc d : docs) {
-            if (d == doc) return i;
+        for (Doc doc : docs) {
+            if (doc == docToFind) return i;
             i++;
         }
         return -1;
@@ -102,9 +102,9 @@ public class DocListImpl implements DocList {
 		if (activeIndex != selectedIndex) {
 			this.activeIndex = selectedIndex;
 			if (this.activeIndex >= 0) {
-				Doc b = docs.get(this.activeIndex);
-				b.activate();
-				window.topic(Listener.class).post().selected(selectedIndex, b);
+				Doc doc = docs.get(this.activeIndex);
+				doc.activate();
+				window.topic(Listener.class).post().selected(selectedIndex, doc);
 			}
 		}
 	}
@@ -121,17 +121,17 @@ public class DocListImpl implements DocList {
     }
 
     @Override
-	public void close(Doc doc) {
+	public void close(Doc docToClose) {
 		int i = 0;
-		for (Doc b : docs) {
-			if (b == doc) {
+		for (Doc doc : docs) {
+			if (doc == docToClose) {
 				break;
 			}
 			i++;
 		}
 
-		docs.remove(doc);
-		window.topic(Listener.class).post().closed(i, doc);
+		docs.remove(docToClose);
+		window.topic(Listener.class).post().closed(i, docToClose);
 	}
 
     @Override

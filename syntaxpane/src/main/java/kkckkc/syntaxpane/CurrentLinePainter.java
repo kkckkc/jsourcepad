@@ -48,26 +48,26 @@ public class CurrentLinePainter implements Highlighter.HighlightPainter, CaretLi
 		this.color = color;
 	}
 
-	public void paint(Graphics g, int p0, int p1, Shape bounds, JTextComponent c) {
+	public void paint(Graphics g, int p0, int p1, Shape bounds, JTextComponent textComponent) {
 		try {
             Graphics2D graphics2d = (Graphics2D) g;
 
             int wm = graphics2d.getFontMetrics().charWidth('m');
-            Rectangle r = c.modelToView(c.getCaretPosition());
+            Rectangle r = textComponent.modelToView(textComponent.getCaretPosition());
 
             graphics2d.setColor(rightMarginBackground);
-            graphics2d.fillRect(wrapColumn * wm, r.y, c.getWidth(), r.height);
+            graphics2d.fillRect(wrapColumn * wm, r.y, textComponent.getWidth(), r.height);
 
             graphics2d.setColor(rightMargin);
             graphics2d.drawLine(wrapColumn * wm, r.y, wrapColumn * wm, r.y + r.height);
 
 			g.setColor(color);
-			g.fillRect(0, r.y, c.getWidth(), r.height);
+			g.fillRect(0, r.y, textComponent.getWidth(), r.height);
 
 			if (lastHighlight == null)
 				lastHighlight = r;
 		} catch (BadLocationException ble) {
-			System.out.println(ble);
+            throw new RuntimeException(ble);
 		}
 	}
 

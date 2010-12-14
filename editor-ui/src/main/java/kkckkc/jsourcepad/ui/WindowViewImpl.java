@@ -151,8 +151,7 @@ public class WindowViewImpl implements WindowView {
 	}
 
 	protected JScrollPane createTreeScrollPane(JComponent tree) {
-	    JScrollPane st = new JScrollPane(tree);
-	    return st;
+	    return new JScrollPane(tree);
     }
 	
 	public JMenuBar getMenubar() {
@@ -204,7 +203,6 @@ public class WindowViewImpl implements WindowView {
     }
 
 	protected JSplitPane createSplitPane() {
-		JSplitPane sp = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-		return sp;
+		return new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 	}
 }

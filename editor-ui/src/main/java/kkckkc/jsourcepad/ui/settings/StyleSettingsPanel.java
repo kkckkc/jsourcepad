@@ -30,11 +30,11 @@ public class StyleSettingsPanel implements SettingsPanel {
             protected Void doInBackground() throws Exception {
                 Graphics2D g = GraphicsEnvironment.getLocalGraphicsEnvironment().createGraphics(new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB));
                 for (String family : GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()) {
-                    Font f = Font.decode(family);
-                    FontMetrics fm = g.getFontMetrics(f);
+                    Font font = Font.decode(family);
+                    FontMetrics fm = g.getFontMetrics(font);
 
                     if (fm.charWidth('m') == fm.charWidth('l')) {
-                        view.getFonts().addItem(f.getFamily());
+                        view.getFonts().addItem(font.getFamily());
                     }
                 }
 

@@ -38,11 +38,11 @@ public class TextAlignCenterAction extends BaseAction {
 		b.replaceText(i, builder.toString(), null);
     }
 
-    private void center(String line, StringBuilder b, int wrapColumn) {
+    private void center(String line, StringBuilder builder, int wrapColumn) {
         line = line.trim();
 
         if (line.length() > wrapColumn) {
-            b.append(line);
+            builder.append(line);
             return;
         }
 
@@ -50,9 +50,9 @@ public class TextAlignCenterAction extends BaseAction {
         int indent = mid - (line.length() / 2);
 
         for (int i = 0; i < indent; i++) {
-            b.append(" ");
+            builder.append(" ");
         }
-        b.append(line);
+        builder.append(line);
     }
 
 }

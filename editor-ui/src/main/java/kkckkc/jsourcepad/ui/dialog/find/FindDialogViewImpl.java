@@ -9,9 +9,6 @@ import java.awt.*;
 
 public class FindDialogViewImpl extends BaseJDialog implements FindDialogView{
 
-    private JComboBox findField;
-    private JLabel findLabel;
-    private JLabel replaceLabel;
     private JCheckBox isRegularExpression;
     private JCheckBox isCaseSensitive;
     private JCheckBox isWrapAround;
@@ -20,6 +17,7 @@ public class FindDialogViewImpl extends BaseJDialog implements FindDialogView{
     private JButton replace;
     private JButton replaceAll;
     private JComboBox replaceField;
+    private JComboBox findField;
 
     @Autowired
     public FindDialogViewImpl(java.awt.Frame parent) {
@@ -36,8 +34,8 @@ public class FindDialogViewImpl extends BaseJDialog implements FindDialogView{
         Container p = getContentPane();
         p.setLayout(new MigLayout("insets dialog", "[]r[grow]1cm[grow,right]", "[]r[]u[]r[]u:push[]"));
 
-        findLabel = new javax.swing.JLabel();
-        replaceLabel = new javax.swing.JLabel();
+        JLabel findLabel = new javax.swing.JLabel();
+        JLabel replaceLabel = new javax.swing.JLabel();
         isRegularExpression = new javax.swing.JCheckBox();
         isCaseSensitive = new javax.swing.JCheckBox();
         isWrapAround = new javax.swing.JCheckBox();
@@ -143,11 +141,5 @@ public class FindDialogViewImpl extends BaseJDialog implements FindDialogView{
     @Override
     public JDialog getJDialog() {
         return this;
-    }
-
-
-    public static void main(String... args) {
-        FindDialogViewImpl f = new FindDialogViewImpl(null);
-        f.setVisible(true);
     }
 }

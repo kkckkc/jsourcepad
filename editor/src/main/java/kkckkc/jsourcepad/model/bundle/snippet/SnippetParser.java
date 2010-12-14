@@ -25,9 +25,9 @@ class SnippetParser {
         List<Node> dest = doParse(s);
 
         boolean endVarFound = false;
-        for (Node n : dest) {
-            if (n instanceof Variable) {
-                Variable v = (Variable) n;
+        for (Node node : dest) {
+            if (node instanceof Variable) {
+                Variable v = (Variable) node;
                 if ("0".equals(v.getName())) {
                     endVarFound = true;
                 }
@@ -167,7 +167,7 @@ class SnippetParser {
 	}
 	
 	public static class Literal implements Node {
-		private String string;
+        private String string;
 
 		public Literal(String s) {
 	        this.string = s;
@@ -231,9 +231,9 @@ class SnippetParser {
 	        this.options = options;
         }
 
-		public Variable(String name, Collection<Node> l) {
+		public Variable(String name, Collection<Node> nodes) {
 	        this.name = name;
-	        this.children = l;
+	        this.children = nodes;
         }
 		
 		public String getName() {

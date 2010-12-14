@@ -1,12 +1,6 @@
 package kkckkc.syntaxpane.parse.grammar.builder;
 
-import kkckkc.syntaxpane.parse.grammar.ContainerContext;
-import kkckkc.syntaxpane.parse.grammar.Context;
-import kkckkc.syntaxpane.parse.grammar.KeywordContext;
-import kkckkc.syntaxpane.parse.grammar.ReferenceContext;
-import kkckkc.syntaxpane.parse.grammar.RootContext;
-import kkckkc.syntaxpane.parse.grammar.SimpleContext;
-import kkckkc.syntaxpane.parse.grammar.SubPatternContext;
+import kkckkc.syntaxpane.parse.grammar.*;
 import kkckkc.syntaxpane.regex.NamedPatternFactory;
 
 

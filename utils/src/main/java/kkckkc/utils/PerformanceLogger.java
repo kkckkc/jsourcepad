@@ -68,7 +68,7 @@ public class PerformanceLogger {
 	}
 
 
-	public void enter(Object o, String string) {
-	    enter(o.getClass().getName() + "#" + string);
+	public void enter(Object o, String label) {
+	    enter(o.getClass().getName() + "#" + label);
     }
 }

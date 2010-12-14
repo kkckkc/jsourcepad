@@ -20,7 +20,6 @@ public class ScrollableSourcePane extends JPanel {
 	private JScrollPane scrollPane;
 	
 	private StyleScheme styleScheme;
-	private SourceEditorKit editorKit;
 	private LineNumberMargin lineNumberPane;
 	private FoldMargin foldMargin;
 	private Color origBackground;
@@ -34,7 +33,7 @@ public class ScrollableSourcePane extends JPanel {
     public ScrollableSourcePane(LanguageManager languageManager) {
 		super(new BorderLayout());
 		
-		editorKit = new SourceEditorKit(this, languageManager);
+		SourceEditorKit editorKit = new SourceEditorKit(this, languageManager);
 
 		editorPane = new SourceJEditorPane();
 		editorPane.setOpaque(false);
@@ -158,8 +157,8 @@ public class ScrollableSourcePane extends JPanel {
 		editorPane.read(reader, null);
 	}
 	
-	public void read(File f) throws IOException {
-		editorPane.read(new FileReader(f), f);
+	public void read(File file) throws IOException {
+		editorPane.read(new FileReader(file), file);
 	}
     
     public void setShowInvisibles(boolean showInvisibles) {

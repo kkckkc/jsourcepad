@@ -3,16 +3,13 @@ package kkckkc.jsourcepad.ui.settings;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.settings.IgnorePatternProjectSettings;
-import kkckkc.jsourcepad.model.settings.SettingsManager;
 import kkckkc.jsourcepad.model.settings.SettingsPanel;
 
 public class ProjectSettingsPanel implements SettingsPanel {
     private ProjectSettingsPanelView view;
-    private SettingsManager settingsManager;
 
     public ProjectSettingsPanel() {
         this.view = new ProjectSettingsPanelView();
-        this.settingsManager = Application.get().getSettingsManager();
     }
 
     @Override

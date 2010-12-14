@@ -33,24 +33,24 @@ public class BundleItemFactory {
 
     private static BundleItem getTemplate(BundleItemSupplier bundleItemSupplier, File file) throws IOException {
         GeneralPListReader gpl = new GeneralPListReader();
-        Map m = (Map) gpl.read(file);
+        Map map = (Map) gpl.read(file);
 
-        return TemplateBundleItem.create(bundleItemSupplier, m);
+        return TemplateBundleItem.create(bundleItemSupplier, map);
     }
 
     private static BundleItem getCommand(BundleItemSupplier bundleItemSupplier, File file) throws IOException {
 		GeneralPListReader gpl = new GeneralPListReader();
-		Map m = (Map) gpl.read(file);
+		Map map = (Map) gpl.read(file);
 
-	    return CommandBundleItem.create(bundleItemSupplier, m);
+	    return CommandBundleItem.create(bundleItemSupplier, map);
     }
 
 
 	private static BundleItem getSnippet(BundleItemSupplier bundleItemSupplier, File file) throws IOException {
 		GeneralPListReader gpl = new GeneralPListReader();
-		Map m = (Map) gpl.read(file);
+		Map map = (Map) gpl.read(file);
 
-	    return SnippetBundleItem.create(bundleItemSupplier, m);
+	    return SnippetBundleItem.create(bundleItemSupplier, map);
     }
 	
 }

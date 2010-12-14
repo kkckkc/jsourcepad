@@ -1,9 +1,14 @@
 package kkckkc.jsourcepad.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SedUtils {
+    private static Logger logger = LoggerFactory.getLogger(SedUtils.class);
+
 	private static final Pattern EXPRESSION = Pattern.compile("s/([^/]+)/([^/]+)/([^;]*);"); 
 	
 	public static String applySedExpressions(String text, String expressions) {
@@ -24,7 +29,7 @@ public class SedUtils {
 		
 		if (! "g".equals(options)) {
 			// TODO: Check this
-			System.err.println("Option " + options + " not supported yet");
+            logger.error("Option " + options + " not supported yet");
 		}
 		
 		return text.replaceAll(search, replace);

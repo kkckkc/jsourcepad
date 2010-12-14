@@ -2,9 +2,6 @@ package kkckkc.jsourcepad.theme.osx;
 
 import kkckkc.jsourcepad.ui.WindowViewImpl;
 
-import javax.swing.*;
-import java.awt.*;
-
 public class OsxWindowViewImpl extends WindowViewImpl {
 
 	@Override
@@ -57,9 +54,9 @@ public class OsxWindowViewImpl extends WindowViewImpl {
 
 	@Override
 	protected Component processStatusBarView(JComponent view) {
-		Component c = super.processStatusBarView(view);
-		c.setFont(c.getFont().deriveFont(11f));
-		return c;
+		Component component = super.processStatusBarView(view);
+		component.setFont(component.getFont().deriveFont(11f));
+		return component;
 	}
 	
 	

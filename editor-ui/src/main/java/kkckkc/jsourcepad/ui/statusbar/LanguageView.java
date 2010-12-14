@@ -37,15 +37,15 @@ public class LanguageView extends JLabel implements DocList.Listener, Buffer.Lan
 	@Override
     public void selected(int index, Doc doc) {
         if (doc.getActiveBuffer() == null) return;
-		Language l = doc.getActiveBuffer().getLanguage();
+		Language language = doc.getActiveBuffer().getLanguage();
 		setEnabled(true);
-		setText(l.getName());
+		setText(language.getName());
     }
 
 	@Override
     public void languageModified(Buffer buffer) {
-		Language l = buffer.getLanguage();
+		Language language = buffer.getLanguage();
 		setEnabled(true);
-		setText(l.getName());
+		setText(language.getName());
     }
 }

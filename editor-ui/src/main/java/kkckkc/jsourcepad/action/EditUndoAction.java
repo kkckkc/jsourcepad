@@ -12,8 +12,8 @@ public class EditUndoAction extends BaseAction {
 	
 	@Override
     public void actionPerformed(ActionEvent e) {
-		Doc d = actionContext.get(ActionContextKeys.ACTIVE_DOC);
-		d.getActiveBuffer().undo();
+		Doc activeDoc = actionContext.get(ActionContextKeys.ACTIVE_DOC);
+		activeDoc.getActiveBuffer().undo();
     }
 
 }

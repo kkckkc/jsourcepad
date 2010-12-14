@@ -16,12 +16,12 @@ public class FileSaveAction extends BaseAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-        Doc d = actionContext.get(ActionContextKeys.ACTIVE_DOC);
-		if (! d.isBackedByFile()) {
+        Doc activeDoc = actionContext.get(ActionContextKeys.ACTIVE_DOC);
+		if (! activeDoc.isBackedByFile()) {
             fileSaveAsAction.setActionContext(actionContext);
 			fileSaveAsAction.actionPerformed(e);
 		} else {
-			d.save();
+			activeDoc.save();
 		}
 	}
 

@@ -36,8 +36,8 @@ public class SourceView extends FoldablePlainView implements ThreadedParserFacad
     }
 
 	@Override
-	protected void updateDamage(DocumentEvent changes, Shape a, ViewFactory f) {
-		super.updateDamage(changes, a, f);
+	protected void updateDamage(DocumentEvent changes, Shape a, ViewFactory viewFactory) {
+		super.updateDamage(changes, a, viewFactory);
 
 		editorKit.getSourcePane().getEditorPane().repaint();
 	}
@@ -62,12 +62,6 @@ public class SourceView extends FoldablePlainView implements ThreadedParserFacad
 
 		Segment segment = getLineBuffer();
 
-		if (line == null) {
-			getDocument().getText(p0, p1 - p0, segment);
-			TextStyle defaultStyle = editorKit.getSourcePane().getStyleScheme().getTextStyle();
-			return draw(defaultStyle, defaultStyle, graphics2d, x, y, segment, this);
-		}
-
 		int start = p0 - line.getStart();
 		int end = p1 - line.getStart();
 
@@ -75,8 +69,8 @@ public class SourceView extends FoldablePlainView implements ThreadedParserFacad
 		
 		x = draw(graphics2d, x, y, start, end, segment, this, line, line.getScope().getRoot());
 		
-		FoldManager.State s = doc.getFoldManager().getFoldState(line.getIdx());
-		if (s == FoldManager.State.FOLDED_FIRST_LINE) {
+		FoldManager.State foldState = doc.getFoldManager().getFoldState(line.getIdx());
+		if (foldState == FoldManager.State.FOLDED_FIRST_LINE) {
 			x = draw(editorKit.getSourcePane().getStyleScheme().getTextStyle(), null, graphics,
 					x + 10, y, new Segment(new char[] { '.', '.', '.' }, 0, 3),
 					this);
@@ -175,9 +169,9 @@ public class SourceView extends FoldablePlainView implements ThreadedParserFacad
 	private int draw(TextStyle style, TextStyle defaultStyle, Graphics graphics, int x, int y, Segment segment,
                      TabExpander tabExpander) {
 		graphics.setColor(style.getColor());
-		Font f = graphics.getFont();
+		Font font = graphics.getFont();
         
-		Font newFont = f;
+		Font newFont = font;
 		if (style.isBold() || style.isItalic() || style.isUnderline())
 			newFont = newFont.deriveFont((style.isBold() ? Font.BOLD : 0)
 					| (style.isItalic() ? Font.ITALIC : 0));
@@ -190,14 +184,14 @@ public class SourceView extends FoldablePlainView implements ThreadedParserFacad
             g2.setColor(style.getBackground());
             g2.setBackground(style.getBackground());
 
-            FontMetrics fm = sourcePane.getFontMetrics(f);
+            FontMetrics fm = sourcePane.getFontMetrics(font);
             g2.fillRect(x, y - fm.getAscent(), i - x, fm.getHeight() - fm.getLeading());
 
             graphics.setColor(style.getColor());
             i = Utilities.drawTabbedText(segment, x, y, graphics, tabExpander, 0);
         }
 
-		graphics.setFont(f);
+		graphics.setFont(font);
 		return i;
 	}
 

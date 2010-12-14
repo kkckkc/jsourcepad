@@ -15,10 +15,7 @@ public class MutableLineManager extends LineManager {
 
 	public List<Line> addInterval(Interval interval) {
 		Line startLine = getLineByPosition(interval.start);
-		if (startLine == null) {
-			startLine = new Line(0, 0, 0);
-		}
-		
+
 		int idx = startLine.idx;
 		List<Line> newLines = new ArrayList<Line>();
 		Line l = nextLine(idx, startLine.start);
@@ -49,8 +46,8 @@ public class MutableLineManager extends LineManager {
 		if (startLine != endLine) {
 			Iterator<Line> it = lines.tailSet(startLine, false).iterator();
 			while (it.hasNext()) {
-				Line l = it.next();
-				if (l == endLine) break;
+				Line line = it.next();
+				if (line == endLine) break;
 				it.remove();
 			}
 			
@@ -68,33 +65,32 @@ public class MutableLineManager extends LineManager {
 
 	private void renumber(Line startLine, int idx, int position, int length) {
         for (Line line : lines.tailSet(startLine, true)) {
-            Line l = line;
             if (length >= 0) {
-                if (l.start >= position) {
-                    l.start += length;
+                if (line.start >= position) {
+                    line.start += length;
                 }
             } else {
-                if (l.start > position) {
-                    l.start += length;
+                if (line.start > position) {
+                    line.start += length;
                 }
             }
-            l.end += length;
+            line.end += length;
 
-            l.start = Math.max(l.start, 0);
-            l.end = Math.max(l.end, 0);
+            line.start = Math.max(line.start, 0);
+            line.end = Math.max(line.end, 0);
 
-            l.idx = idx;
+            line.idx = idx;
             idx++;
         }
 	}
 	
 	
 	private Line nextLine(int idx, int start) {
-		int c = charProvider.find(start, '\n');
-		if (c == -1) {
+		int newlineIdx = charProvider.find(start, '\n');
+		if (newlineIdx == -1) {
 			return new Line(idx, start, charProvider.getLength());
 		} else {
-			return new Line(idx, start, c);
+			return new Line(idx, start, newlineIdx);
 		}
 	}
 

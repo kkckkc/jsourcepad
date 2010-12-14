@@ -65,18 +65,18 @@ public class ScopeSelectorManager {
         for (T t : items) {
             ScopeSelector selector = scopeSelectorExtractor.getScopeSelector(t);
 
-            Match m;
+            Match match;
             if (selector == null) {
-                m = Match.MATCH;
+                match = Match.MATCH;
             } else {
-                m = selector.matches(scope, depth);
+                match = selector.matches(scope, depth);
             }
 
-            if (! m.isMatch()) continue;
+            if (! match.isMatch()) continue;
 
-            if (bestMatch == null || m.compareTo(bestMatch) > 0) bestMatch = m;
+            if (bestMatch == null || match.compareTo(bestMatch) > 0) bestMatch = match;
 
-            currentMatches.add(new Pair<Match, T>(m, t));
+            currentMatches.add(new Pair<Match, T>(match, t));
         }
 
         Object lastObject = null;
@@ -108,16 +108,16 @@ public class ScopeSelectorManager {
 		for (T t : items) {
 			ScopeSelector selector = scopeSelectorExtractor.getScopeSelector(t);
 			
-			Match m;
+			Match match;
 			if (selector == null) {
-				m = Match.MATCH;
+				match = Match.MATCH;
 			} else {
-				m = selector.matches(scope, depth);
+				match = selector.matches(scope, depth);
 			}
 
-			if (! m.isMatch()) continue;
+			if (! match.isMatch()) continue;
 
-			currentMatches.add(new Pair<Match, T>(m, t));
+			currentMatches.add(new Pair<Match, T>(match, t));
 		}
 
         Collections.sort(currentMatches, new Comparator<Pair<Match, T>>() {

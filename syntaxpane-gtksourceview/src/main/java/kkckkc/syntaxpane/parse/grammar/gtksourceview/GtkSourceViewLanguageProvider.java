@@ -1,12 +1,12 @@
 package kkckkc.syntaxpane.parse.grammar.gtksourceview;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-
 import kkckkc.syntaxpane.parse.grammar.Language;
 import kkckkc.syntaxpane.parse.grammar.LanguageManager;
 import kkckkc.syntaxpane.parse.grammar.RootContext;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 
 
@@ -35,10 +35,10 @@ public class GtkSourceViewLanguageProvider implements LanguageManager.Provider {
 
 		languages = new HashMap<String, Language>();
 		
-		for (final File f : languageFiles) {
-			if (! f.getName().endsWith(".lang")) continue;
+		for (final File languageFile : languageFiles) {
+			if (! languageFile.getName().endsWith(".lang")) continue;
 		
-			GtkSourceViewLanguageParser languageParser = new GtkSourceViewLanguageParser(f);
+			GtkSourceViewLanguageParser languageParser = new GtkSourceViewLanguageParser(languageFile);
 			try {
 				Language language = languageParser.parse();
 				language.setLanguageManager(languageManager);

@@ -17,10 +17,10 @@ public class TextConvertToTitlecaseAction extends BaseAction {
 
 	@Override
     public void actionPerformed(ActionEvent e) {
-		Buffer b = window.getDocList().getActiveDoc().getActiveBuffer();
+		Buffer activeBuffer = window.getDocList().getActiveDoc().getActiveBuffer();
 
-		Interval iv = b.getSelectionOrCurrentLine();
-        String text = b.getText(iv);
+		Interval iv = activeBuffer.getSelectionOrCurrentLine();
+        String text = activeBuffer.getText(iv);
 
         boolean inword = false;
         char[] chars = text.toCharArray();
@@ -37,7 +37,7 @@ public class TextConvertToTitlecaseAction extends BaseAction {
             }
         }
 
-		b.replaceText(iv, new String(chars), null);
+		activeBuffer.replaceText(iv, new String(chars), null);
     }
 
 }

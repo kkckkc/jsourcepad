@@ -23,8 +23,7 @@ public class EditModeProjectSettings implements SettingsManager.ProjectSetting {
 
     @Override
     public SettingsManager.Setting getDefault() {
-        EditModeProjectSettings s = new EditModeProjectSettings();
-        return s;
+        return new EditModeProjectSettings();
     }
 
 }

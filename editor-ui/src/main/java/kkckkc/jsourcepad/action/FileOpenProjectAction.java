@@ -1,7 +1,6 @@
 package kkckkc.jsourcepad.action;
 
 import kkckkc.jsourcepad.model.Application;
-import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.WindowManager;
 import kkckkc.jsourcepad.ui.dialog.filechooser.DirectoryOpenDialog;
 import kkckkc.jsourcepad.ui.dialog.filechooser.FileChooserCallback;
@@ -14,11 +13,9 @@ import java.io.File;
 
 public class FileOpenProjectAction extends BaseAction {
 
-    private Window window;
     private DirectoryOpenDialog directoryOpenDialog;
 
-    public FileOpenProjectAction(Window window, DirectoryOpenDialog directoryOpenDialog) {
-		this.window = window;
+    public FileOpenProjectAction(DirectoryOpenDialog directoryOpenDialog) {
 		this.directoryOpenDialog = directoryOpenDialog;
 	}
 

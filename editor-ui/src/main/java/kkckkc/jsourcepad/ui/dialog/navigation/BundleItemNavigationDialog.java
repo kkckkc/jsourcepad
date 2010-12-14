@@ -71,8 +71,8 @@ public class BundleItemNavigationDialog extends NavigationDialog {
     private Collection<BundleItemSupplier> getBundleItems(final String query) {
         java.util.List<BundleItemSupplier> all = Lists.newArrayList();
 
-        for (Bundle b : Application.get().getBundleManager().getBundles()) {
-            all.addAll(b.getItems());
+        for (Bundle bundle : Application.get().getBundleManager().getBundles()) {
+            all.addAll(bundle.getItems());
         }
 
         java.util.List<BundleItemSupplier> dest = Lists.newArrayList();
@@ -104,7 +104,6 @@ public class BundleItemNavigationDialog extends NavigationDialog {
     public void mouseClicked(MouseEvent e) {
 		if (e.getClickCount() > 1) {
 			executeSelected();
-			return;
 		}
     }
 

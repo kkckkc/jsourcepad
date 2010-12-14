@@ -29,8 +29,7 @@ public class TextmateScopeSelectorParser {
         String s = positionOfMinus < 0 ? t : t.substring(0, positionOfMinus);
         StringTokenizer tok = new StringTokenizer(s, " ");
         while (tok.hasMoreTokens()) {
-            String i = tok.nextToken();
-            positiveRule.add(i);
+            positiveRule.add(tok.nextToken());
         }
 
         // Parse negative rules
@@ -38,8 +37,7 @@ public class TextmateScopeSelectorParser {
             s = t.substring(positionOfMinus + 1);
             tok = new StringTokenizer(s, " ");
             while (tok.hasMoreTokens()) {
-                String i = tok.nextToken();
-                negativeRule.add(i);
+                negativeRule.add(tok.nextToken());
             }
         }
 

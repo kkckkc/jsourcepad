@@ -181,50 +181,50 @@ public class CharacterPairsHandler extends DocumentFilter {
     		int pos = insertionPoint.getPosition();
     		if (end == cur) {
     			int level = 1, found = -1;
-    			char[] s = buffer.getText(Interval.createWithLength(0, pos - 1)).toCharArray();
-    			for (int f = 0; f < s.length; f++) {
-    				char c = s[s.length - f - 1];
+    			char[] chars = buffer.getText(Interval.createWithLength(0, pos - 1)).toCharArray();
+    			for (int i = 0; i < chars.length; i++) {
+    				char c = chars[chars.length - i - 1];
     				if (c == start) level--;
     				if (c == end) level++;
 
     				if (level == 0) {
-    					found = f;
+    					found = i;
     					break;
     				}
     			}
 
     			if (found == -1) {
-	    			Interval i = Interval.createWithLength(pos - 1, 1);
-	    			buffer.highlight(i, HighlightType.Box, new StyleBean(null, null, Color.red), true);
+	    			Interval interval = Interval.createWithLength(pos - 1, 1);
+	    			buffer.highlight(interval, HighlightType.Box, new StyleBean(null, null, Color.red), true);
     				return;
     			}
     			
-    			Interval i = Interval.createWithLength(pos - found - 2, 1);
-    			buffer.highlight(i, HighlightType.Box, new StyleBean(null, null, Color.gray), true);
+    			Interval interval = Interval.createWithLength(pos - found - 2, 1);
+    			buffer.highlight(interval, HighlightType.Box, new StyleBean(null, null, Color.gray), true);
     		} else if (start == cur) {
     			if (buffer.getLength() <= pos) return;
 
     			int level = 1, found = -1;
-    			char s[] = buffer.getText(Interval.createWithLength(pos, buffer.getLength() - pos)).toCharArray();
-    			for (int f = 0; f < s.length; f++) {
-    				char c = s[f];
+    			char[] chars = buffer.getText(Interval.createWithLength(pos, buffer.getLength() - pos)).toCharArray();
+    			for (int i = 0; i < chars.length; i++) {
+    				char c = chars[i];
     				if (c == start) level++;
     				if (c == end) level--;
     				
     				if (level == 0) {
-    					found = f;
+    					found = i;
     					break;
     				}
     			}
 
     			if (found == -1) {
-	    			Interval i = Interval.createWithLength(pos - 1, 1);
-	    			buffer.highlight(i, HighlightType.Box, new StyleBean(null, null, Color.red), true);
+	    			Interval interval = Interval.createWithLength(pos - 1, 1);
+	    			buffer.highlight(interval, HighlightType.Box, new StyleBean(null, null, Color.red), true);
     				return;
     			}
     			
-    			Interval i = Interval.createWithLength(pos + found, 1);
-    			buffer.highlight(i, HighlightType.Box, new StyleBean(null, null, Color.gray), true);
+    			Interval interval = Interval.createWithLength(pos + found, 1);
+    			buffer.highlight(interval, HighlightType.Box, new StyleBean(null, null, Color.gray), true);
     		}
 	    }
     }

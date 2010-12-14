@@ -28,8 +28,8 @@ public abstract class MatchableContextBuilder<T extends MatchableContext, U exte
 	}
 	
 	@SuppressWarnings("unchecked")
-	public U extendParent(boolean b) {
-		t.setExtendParent(b);
+	public U extendParent(boolean extendParent) {
+		t.setExtendParent(extendParent);
 		return (U) this;
 	}
 

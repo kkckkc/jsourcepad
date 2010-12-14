@@ -11,22 +11,22 @@ public class TextmateKeystrokeEncoding {
         //}
 
 		int modifiers = 0;
-		char[] c = s.toCharArray();
-		if (c.length > 1) {
-			for (int i = 0; i < (c.length - 1); i++) {
-				if (c[i] == '^') {
+		char[] chars = s.toCharArray();
+		if (chars.length > 1) {
+			for (int i = 0; i < (chars.length - 1); i++) {
+				if (chars[i] == '^') {
 					modifiers |= KeyEvent.CTRL_MASK;
-				} else if (c[i] == '@') {
+				} else if (chars[i] == '@') {
 					modifiers |= KeyEvent.META_MASK;
-				} else if (c[i] == '~') {
+				} else if (chars[i] == '~') {
 					modifiers |= KeyEvent.ALT_MASK;
-				} else if (c[i] == '$') {
+				} else if (chars[i] == '$') {
 					modifiers |= KeyEvent.SHIFT_MASK;
 				}
 			}
 		}
 		
-		char key = c[c.length - 1];
+		char key = chars[chars.length - 1];
 		if (Character.isUpperCase(key)) {
 			modifiers |= KeyEvent.SHIFT_MASK;
 		}
@@ -94,11 +94,11 @@ public class TextmateKeystrokeEncoding {
 	}
 
     public static String toString(KeyStroke ks) {
-        StringBuilder b = new StringBuilder();
+        StringBuilder builder = new StringBuilder();
 
-        if ((ks.getModifiers() & KeyEvent.CTRL_MASK) != 0) b.append("^");
-        if ((ks.getModifiers() & KeyEvent.ALT_MASK) != 0) b.append("~");
-        if ((ks.getModifiers() & KeyEvent.META_MASK) != 0) b.append("@");
+        if ((ks.getModifiers() & KeyEvent.CTRL_MASK) != 0) builder.append("^");
+        if ((ks.getModifiers() & KeyEvent.ALT_MASK) != 0) builder.append("~");
+        if ((ks.getModifiers() & KeyEvent.META_MASK) != 0) builder.append("@");
 
         // Handle SHIFT
         boolean uppercase = false;
@@ -106,82 +106,82 @@ public class TextmateKeystrokeEncoding {
             if (Character.isLetter(ks.getKeyChar())) {
                 uppercase = true;
             } else {
-                b.append("$");
+                builder.append("$");
             }
         }
 
         switch (ks.getKeyCode()) {
             case KeyEvent.VK_ENTER:
-                b.append((char) 13);
+                builder.append((char) 13);
                 break;
             case KeyEvent.VK_F1:
-                b.append((char) 63236);
+                builder.append((char) 63236);
                 break;
             case KeyEvent.VK_F2:
-                b.append((char) 63237);
+                builder.append((char) 63237);
                 break;
             case KeyEvent.VK_F3:
-                b.append((char) 63238);
+                builder.append((char) 63238);
                 break;
             case KeyEvent.VK_F4:
-                b.append((char) 63239);
+                builder.append((char) 63239);
                 break;
             case KeyEvent.VK_F5:
-                b.append((char) 63240);
+                builder.append((char) 63240);
                 break;
             case KeyEvent.VK_F6:
-                b.append((char) 63241);
+                builder.append((char) 63241);
                 break;
             case KeyEvent.VK_F7:
-                b.append((char) 63242);
+                builder.append((char) 63242);
                 break;
             case KeyEvent.VK_F8:
-                b.append((char) 63243);
+                builder.append((char) 63243);
                 break;
             case KeyEvent.VK_F9:
-                b.append((char) 63244);
+                builder.append((char) 63244);
                 break;
             case KeyEvent.VK_F10:
-                b.append((char) 63245);
+                builder.append((char) 63245);
                 break;
             case KeyEvent.VK_F11:
-                b.append((char) 63246);
+                builder.append((char) 63246);
                 break;
             case KeyEvent.VK_F12:
-                b.append((char) 63247);
+                builder.append((char) 63247);
                 break;
             case KeyEvent.VK_F13:
-                b.append((char) 63248);
+                builder.append((char) 63248);
                 break;
             case KeyEvent.VK_F14:
-                b.append((char) 63249);
+                builder.append((char) 63249);
                 break;
             case KeyEvent.VK_F15:
-                b.append((char) 63250);
+                builder.append((char) 63250);
                 break;
             case KeyEvent.VK_CONTEXT_MENU:
-                b.append((char) 3);
+                builder.append((char) 3);
                 break;
             case KeyEvent.VK_DELETE:
-                b.append((char) 63272);
+                builder.append((char) 63272);
                 break;
             case KeyEvent.VK_BACK_SPACE:
-                b.append((char) 127);
+                builder.append((char) 127);
                 break;
             case KeyEvent.VK_LEFT:
-                b.append((char) 63234);
+                builder.append((char) 63234);
                 break;
             case KeyEvent.VK_RIGHT:
-                b.append((char) 63235);
+                builder.append((char) 63235);
                 break;
             case KeyEvent.VK_DOWN:
-                b.append((char) 63233);
+                builder.append((char) 63233);
                 break;
             case KeyEvent.VK_UP:
-                b.append((char) 63232);
+                builder.append((char) 63232);
                 break;
             case KeyEvent.VK_ESCAPE:
-                b.append((char) 27);
+                builder.append((char) 27);
                 break;
 
             default:
@@ -191,13 +191,13 @@ public class TextmateKeystrokeEncoding {
                 }
 
                 if (uppercase) {
-                    b.append(Character.toUpperCase(c));
+                    builder.append(Character.toUpperCase(c));
                 } else {
-                    b.append(Character.toLowerCase(c));
+                    builder.append(Character.toLowerCase(c));
                 }
                 break;
         }
 
-        return b.toString();
+        return builder.toString();
     }
 }

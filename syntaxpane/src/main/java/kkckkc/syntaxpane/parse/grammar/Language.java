@@ -38,10 +38,9 @@ public class Language implements Comparable<Language> {
 	
 	public boolean matches(String firstLine, File file) {
 		if (firstLinePattern != null && firstLinePattern.get().matcher(firstLine).matches()) return true;
-		if (file != null && fileNamePattern != null && fileNamePattern.get().matcher(file.getName()).matchesAll()) return true;
-		
-		return false;
-	}
+        return file != null && fileNamePattern != null && fileNamePattern.get().matcher(file.getName()).matchesAll();
+
+    }
 	
 	public void setFileNamePattern(Supplier<Pattern> fileNamePattern) {
 		this.fileNamePattern = fileNamePattern;
@@ -112,9 +111,9 @@ public class Language implements Comparable<Language> {
 		rootContext.setLanguage(this);
 		rootContext.compile();
 		
-		for (Context c : supportingContexts) {
-			c.setLanguage(this);
-			c.compile();
+		for (Context context : supportingContexts) {
+			context.setLanguage(this);
+			context.compile();
 		}
 		
 		this.compiled = true;
@@ -139,13 +138,13 @@ public class Language implements Comparable<Language> {
 		}
     }
 
-	private void buildCache(Context c) {
-		if (! (c instanceof CompoundContext)) return;
-		if (cache.containsKey(c.getId())) return;
+	private void buildCache(Context context) {
+		if (! (context instanceof CompoundContext)) return;
+		if (cache.containsKey(context.getId())) return;
 		
-		cache.put(c.getId(), c);
+		cache.put(context.getId(), context);
 		
-		for (Context child : ((CompoundContext) c).getChildren()) {
+		for (Context child : ((CompoundContext) context).getChildren()) {
 			if (child == null) continue;
 			
 			buildCache(child);

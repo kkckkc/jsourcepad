@@ -27,33 +27,33 @@ public class SymbolList {
 		List<Pair<String, Integer>> symbols = Lists.newArrayList();
 
 		LineManager lm = buffer.getLineManager();
-		Line l = lm.getLineByPosition(0);
-		while (l != null) {
-			Scope root = l.getScope().getRoot();
-			visit(l, root, symbols);
+		Line line = lm.getLineByPosition(0);
+		while (line != null) {
+			Scope root = line.getScope().getRoot();
+			visit(line, root, symbols);
 			
-			l = lm.getNext(l);
+			line = lm.getNext(line);
 		}	
 		
 		return symbols;
 	}
 	
 
-	private void visit(Line l, Scope s, List<Pair<String, Integer>> symbolList) {
+	private void visit(Line line, Scope scope, List<Pair<String, Integer>> symbolList) {
 		BundleManager bundleManager = Application.get().getBundleManager();
 		
-		Object o = bundleManager.getPreference(PrefKeys.SYMBOL_SHOW_IN_LIST, s);
-		if (s.getRoot() != s && o != null) {
-			String symbol = l.getCharSequence(false).subSequence(s.getStart(), s.getEnd()).toString();
+		Object o = bundleManager.getPreference(PrefKeys.SYMBOL_SHOW_IN_LIST, scope);
+		if (scope.getRoot() != scope && o != null) {
+			String symbol = line.getCharSequence(false).subSequence(scope.getStart(), scope.getEnd()).toString();
 			
-			String transformation = (String) bundleManager.getPreference(PrefKeys.SYMBOL_TRANSFORMATION, s);
+			String transformation = (String) bundleManager.getPreference(PrefKeys.SYMBOL_TRANSFORMATION, scope);
 			if (transformation != null) {
 				symbol = SedUtils.applySedExpressions(symbol, transformation);
 			}
-			symbolList.add(new Pair<String, Integer>(symbol, l.getStart() + s.getStart()));
-		} else if (s.hasChildren()) {
-        	for (Scope sc : s.getChildren()) {
-        		visit(l, sc, symbolList);
+			symbolList.add(new Pair<String, Integer>(symbol, line.getStart() + scope.getStart()));
+		} else if (scope.hasChildren()) {
+        	for (Scope sc : scope.getChildren()) {
+        		visit(line, sc, symbolList);
         	}
 		}
     }

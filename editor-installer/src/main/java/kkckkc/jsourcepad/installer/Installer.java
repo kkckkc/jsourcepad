@@ -27,7 +27,7 @@ public class Installer implements Function<Runnable, Boolean> {
             try {
                 Config.getThemesFolder().mkdirs();
                 File themeFolder = new File(Config.getApplicationFolder(), "Shared/Themes");
-                if (themeFolder != null && themeFolder.listFiles() != null) {
+                if (themeFolder.listFiles() != null) {
                     for (File theme : themeFolder.listFiles()) {
                         Files.copy(theme, new File(Config.getThemesFolder(), theme.getName()));
                     }

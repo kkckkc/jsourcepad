@@ -1,7 +1,7 @@
 
 package kkckkc.jsourcepad.util.action;
 
-import javax.swing.JMenuItem;
+import javax.swing.*;
 
 public interface Presenter {
     public interface Menu {

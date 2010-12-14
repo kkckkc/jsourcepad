@@ -22,10 +22,10 @@ public class TextAlignRightAction extends BaseAction {
     public void actionPerformed(ActionEvent e) {
         StyleSettings ss = Application.get().getSettingsManager().get(StyleSettings.class);
 
-		Buffer b = window.getDocList().getActiveDoc().getActiveBuffer();
+		Buffer activeBuffer = window.getDocList().getActiveDoc().getActiveBuffer();
 
-		TextInterval i = b.getSelectionOrCurrentLine();
-        String text = i.getText();
+		TextInterval selectionOrCurrentLine = activeBuffer.getSelectionOrCurrentLine();
+        String text = selectionOrCurrentLine.getText();
 
         StringBuilder builder = new StringBuilder();
         StringTokenizer tok = new StringTokenizer(text, "\n", true);
@@ -35,23 +35,23 @@ public class TextAlignRightAction extends BaseAction {
             right(line, builder, ss.getWrapColumn());
         }
 
-		b.replaceText(i, builder.toString(), null);
+		activeBuffer.replaceText(selectionOrCurrentLine, builder.toString(), null);
     }
 
-    private void right(String line, StringBuilder b, int wrapColumn) {
+    private void right(String line, StringBuilder builder, int wrapColumn) {
         line = line.trim();
 
         if (line.length() > wrapColumn) {
-            b.append(line);
+            builder.append(line);
             return;
         }
 
         int indent = wrapColumn - line.length();
 
         for (int i = 0; i < indent; i++) {
-            b.append(" ");
+            builder.append(" ");
         }
-        b.append(line);
+        builder.append(line);
     }
 
 }

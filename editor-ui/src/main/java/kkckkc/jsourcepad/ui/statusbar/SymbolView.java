@@ -1,19 +1,16 @@
 package kkckkc.jsourcepad.ui.statusbar;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.List;
-
-import javax.swing.AbstractAction;
-import javax.swing.JLabel;
-import javax.swing.JPopupMenu;
-
 import kkckkc.jsourcepad.model.Buffer;
 import kkckkc.jsourcepad.model.SymbolList;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.syntaxpane.model.Interval;
 import kkckkc.utils.Pair;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.List;
 
 public class SymbolView extends JLabel {
 

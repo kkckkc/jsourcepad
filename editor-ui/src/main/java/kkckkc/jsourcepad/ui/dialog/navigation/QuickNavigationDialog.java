@@ -47,7 +47,6 @@ public class QuickNavigationDialog extends NavigationDialog {
     public void mouseClicked(MouseEvent e)  {
         if (e.getClickCount() > 1) {
             openSelectedFile();
-            return;
         }
 }
 

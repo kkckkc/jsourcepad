@@ -44,9 +44,9 @@ public class WindowState implements Serializable {
         for (WindowData wd : windowState.windows) {
             Window window = wm.newWindow(wd.project);
 
-            for (File f : wd.openFiles) {
-                if (! f.exists()) continue;
-                window.getDocList().open(f);
+            for (File openFile : wd.openFiles) {
+                if (! openFile.exists()) continue;
+                window.getDocList().open(openFile);
             }
         }
 

@@ -42,11 +42,11 @@ public class DomUtil {
 				private Element next = findNext();
 				
 				private Element findNext() {
-					for(Node n = (next == null ? e.getFirstChild() : next.getNextSibling());
-						n != null; n = n.getNextSibling()){
-						if (n.getNodeType() == Node.ELEMENT_NODE) {
-							if (n.getNodeName().equals(name)) {
-								next = (Element) n;
+					for(Node node = (next == null ? e.getFirstChild() : next.getNextSibling());
+						node != null; node = node.getNextSibling()){
+						if (node.getNodeType() == Node.ELEMENT_NODE) {
+							if (node.getNodeName().equals(name)) {
+								next = (Element) node;
 								return next;
 							}
 						}
@@ -75,10 +75,10 @@ public class DomUtil {
 				private Element next = findNext();
 				
 				private Element findNext() {
-					for(Node n = (next == null ? e.getFirstChild() : next.getNextSibling());
-						n != null; n = n.getNextSibling()){
-						if (n.getNodeType() == Node.ELEMENT_NODE) {
-							next = (Element) n;
+					for(Node node = (next == null ? e.getFirstChild() : next.getNextSibling());
+						node != null; node = node.getNextSibling()){
+						if (node.getNodeType() == Node.ELEMENT_NODE) {
+							next = (Element) node;
 							return next;
 						}
 					}
@@ -103,10 +103,10 @@ public class DomUtil {
 	public static Element getChild(Element e, String name) {
 		Element child = null;
 
-		for(Node c = e.getFirstChild();
-			c != null; c = c.getNextSibling()){
-			if (c.getNodeType() == Node.ELEMENT_NODE) {
-				Element el = (Element) c;
+		for (Node node = e.getFirstChild();
+			node != null; node = node.getNextSibling()){
+			if (node.getNodeType() == Node.ELEMENT_NODE) {
+				Element el = (Element) node;
 				if (el.getNodeName().equals(name)) {
 					child = el;
 				}
@@ -162,12 +162,12 @@ public class DomUtil {
                 builder.setEntityResolver(ENTITY_RESOLVER);
 		    }
 
-			Document d = builder.parse(source);
+			Document document = builder.parse(source);
 
 			builder.reset();
 			documentBuilderPool.offer(builder);
 			
-			return d;
+			return document;
 		} catch (IOException e) {
 			throw new RuntimeException("Can't parse", e);
 		} catch (SAXException e) {
@@ -185,12 +185,12 @@ public class DomUtil {
                 builder.setEntityResolver(ENTITY_RESOLVER);
             }
 
-            Document d = builder.newDocument();
+            Document document = builder.newDocument();
 
             builder.reset();
             documentBuilderPool.offer(builder);
 
-            return d;
+            return document;
         } catch (ParserConfigurationException e) {
             throw new RuntimeException("Can't create parser", e);
         }

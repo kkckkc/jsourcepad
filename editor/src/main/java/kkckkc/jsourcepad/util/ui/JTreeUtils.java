@@ -84,8 +84,8 @@ public class JTreeUtils {
             }
         }
 
-        for (DefaultMutableTreeNode n : nodesToBeRemoved) {
-            model.removeNodeFromParent(n);
+        for (DefaultMutableTreeNode node : nodesToBeRemoved) {
+            model.removeNodeFromParent(node);
         }
     }
 

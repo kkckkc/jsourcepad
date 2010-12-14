@@ -21,11 +21,9 @@ public class BasicScopeSelectorParser {
         List<String> positiveRule = new ArrayList<String>(5);
 
         // Parse positive rules
-        String s = t;
-        StringTokenizer tok = new StringTokenizer(s, " ");
+        StringTokenizer tok = new StringTokenizer(t, " ");
         while (tok.hasMoreTokens()) {
-            String i = tok.nextToken();
-            positiveRule.add(i);
+            positiveRule.add(tok.nextToken());
         }
 
         return new ScopeSelector.Rule(positiveRule.isEmpty() ? null : positiveRule, null);

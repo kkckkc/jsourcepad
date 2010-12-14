@@ -107,9 +107,7 @@ public class NIOLegacyPListReader {
 
 		public Token nextToken() {
 			if (tokenQueue.isEmpty()) fillTokenQueue();
-			Token t = tokenQueue.poll();
-//            System.out.println(t);
-            return t;
+			return tokenQueue.poll();
 		}
 
 		private void fillTokenQueue() {
@@ -186,7 +184,7 @@ public class NIOLegacyPListReader {
 		}
 
         private CharSequence unescape(CharSequence charSequence) {
-            StringBuilder b = new StringBuilder();
+            StringBuilder builder = new StringBuilder();
 
             boolean inEscape = false;
             if (textmateFormatting) {
@@ -194,10 +192,10 @@ public class NIOLegacyPListReader {
                     char c = charSequence.charAt(i);
                     if (! inEscape) {
                         if (c == '\'') inEscape = true;
-                        else b.append(c);
+                        else builder.append(c);
                     } else {
                         if (c == '\'') {
-                            b.append("'");
+                            builder.append("'");
                             inEscape = false;
                         } else throw new RuntimeException("Cannot happen");
                     }
@@ -207,23 +205,23 @@ public class NIOLegacyPListReader {
                     char c = charSequence.charAt(i);
                     if (! inEscape) {
                         if (c == '\\') inEscape = true;
-                        else b.append(c);
+                        else builder.append(c);
                     } else {
-                        if (c == '\\') b.append("\\");
-                        else if (c == '"') b.append("\"");
-                        else if (c == 'b') b.append("\b");
-                        else if (c == 'n') b.append("\n");
-                        else if (c == 'r') b.append("\r");
-                        else if (c == 't') b.append("\t");
+                        if (c == '\\') builder.append("\\");
+                        else if (c == '"') builder.append("\"");
+                        else if (c == 'b') builder.append("\b");
+                        else if (c == 'n') builder.append("\n");
+                        else if (c == 'r') builder.append("\r");
+                        else if (c == 't') builder.append("\t");
                         else {
                             // TODO: Handle octal and hex escapes, see http://www.gnustep.org/resources/documentation/Developer/Base/Reference/NSPropertyList.html
-                            b.append(c);
+                            builder.append(c);
                         }
                     }
                 }
             }
 
-            return b;
+            return builder;
         }
 
 	}

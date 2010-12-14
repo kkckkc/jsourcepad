@@ -47,14 +47,14 @@ public class MutableFoldManager implements FoldManager {
 
 	@Override
     public Fold getFoldStartingWith(int id) {
-		Fold f = null;
-		for (Fold i : folds) {
-			if (i.getStart() == id) {
-				f = i;
+		Fold foundFold = null;
+		for (Fold fold : folds) {
+			if (fold.getStart() == id) {
+				foundFold = fold;
 			}
 		}
 		
-		return f;
+		return foundFold;
 	}
 	
 	// Optimization as folds are most often searched linearly idx by idx
@@ -62,12 +62,12 @@ public class MutableFoldManager implements FoldManager {
 	@Override
     public Interval getFoldOverlapping(int id) {
 		if (cachedFold != null && cachedFold.contains(id)) return cachedFold;
-		for (Interval f : folds) {
-			if (f.getStart() > id) {
+		for (Interval fold : folds) {
+			if (fold.getStart() > id) {
 				break;
-			} else if (f.contains(id)) { 
-				cachedFold = f;
-				return f;
+			} else if (fold.contains(id)) {
+				cachedFold = fold;
+				return fold;
 			} 
 		}
 		return null;
@@ -75,10 +75,10 @@ public class MutableFoldManager implements FoldManager {
 	
 	@Override
     public State getFoldState(int idx) {
-		Interval f = getFoldOverlapping(idx);
-		if (f != null && f.getStart() == idx) {
+		Interval fold = getFoldOverlapping(idx);
+		if (fold != null && fold.getStart() == idx) {
 			return State.FOLDED_FIRST_LINE;
-		} else if (f != null) {
+		} else if (fold != null) {
 			return State.FOLDED_SECOND_LINE_AND_REST;
 		} else if (foldable.get(idx)) {
 			return State.FOLDABLE;
@@ -99,15 +99,15 @@ public class MutableFoldManager implements FoldManager {
 			List<Fold> children = new ArrayList<Fold>();
 
 			boolean inserted = false;
-			for (Fold f : folds) {
-				if (newFold.contains(f)) {
-					children.add(f);
+			for (Fold fold : folds) {
+				if (newFold.contains(fold)) {
+					children.add(fold);
 				} else {
-					if (! inserted && f.getStart() >= newFold.getStart()) {
+					if (! inserted && fold.getStart() >= newFold.getStart()) {
 						newFolds.add(newFold);
 						inserted = true;
 					}
-					newFolds.add(f);
+					newFolds.add(fold);
 				}
 			}
 
@@ -145,17 +145,17 @@ public class MutableFoldManager implements FoldManager {
 		String prefix = s.substring(0, i);
 		
 		int end = Integer.MAX_VALUE;
-		Line l = lineManager.getNext(line);
-		while (l != null) {
-			end = l.getIdx();
+		Line nextLine = lineManager.getNext(line);
+		while (nextLine != null) {
+			end = nextLine.getIdx();
 
-			CharSequence lc = l.getCharSequence(false);
+			CharSequence lc = nextLine.getCharSequence(false);
 			if (CharSequenceUtils.startsWith(lc, prefix) && 
 					foldEndPattern.matcher(lc).matches() &&
 					! Character.isWhitespace(lc.charAt(prefix.length()))) {
 				break;
 			}
-			l = lineManager.getNext(l);
+			nextLine = lineManager.getNext(nextLine);
 		}
 		return end;
 	}
@@ -210,8 +210,8 @@ public class MutableFoldManager implements FoldManager {
 	
 	public void fireFoldUpdated() {
 		cachedFold = null;
-		for (FoldListener l : foldListeners) {
-			l.foldUpdated();
+		for (FoldListener listener : foldListeners) {
+			listener.foldUpdated();
 		}
 	}
 	
@@ -233,18 +233,17 @@ public class MutableFoldManager implements FoldManager {
 		List<Fold> newFolds = new ArrayList<Fold>(Math.max(10, folds.size()));
 			
 		synchronized (folds) {
-			for (Fold i : folds) {
-				if (i.overlaps(interval)) {
-					i.updateForDelete(interval, newFolds);
+			for (Fold fold : folds) {
+				if (fold.overlaps(interval)) {
+					fold.updateForDelete(interval, newFolds);
 					
 					ret = true;
-					continue;
-				} else if (i.getStart() > interval.getEnd()) {
-					i.move(- interval.getLength());
-					newFolds.add(i);
+				} else if (fold.getStart() > interval.getEnd()) {
+					fold.move(- interval.getLength());
+					newFolds.add(fold);
 					ret = true;
 				} else {
-					newFolds.add(i);
+					newFolds.add(fold);
 				}
 			}
 			
@@ -264,13 +263,13 @@ public class MutableFoldManager implements FoldManager {
 		List<Fold> newFolds = new ArrayList<Fold>(Math.max(10, folds.size() + interval.getLength()));
 
 		synchronized (folds) {
-			for (Fold i : folds) {
-				if (i.getStart() > interval.getStart()) {
-					i.move(interval.getLength());
-					newFolds.add(i);
+			for (Fold fold : folds) {
+				if (fold.getStart() > interval.getStart()) {
+					fold.move(interval.getLength());
+					newFolds.add(fold);
 					ret = true;
 				} else {
-					newFolds.add(i);
+					newFolds.add(fold);
 				}
 			}
 			
@@ -293,8 +292,8 @@ public class MutableFoldManager implements FoldManager {
 		public void updateForDelete(Interval interval, List<Fold> newFolds) {
 			if (interval.overlaps(this)) {
 				if (children != null) {
-					for (Fold f : children) {
-						f.updateForDelete(interval, newFolds);
+					for (Fold fold : children) {
+						fold.updateForDelete(interval, newFolds);
 					}
 				}
 			} else {
@@ -306,8 +305,8 @@ public class MutableFoldManager implements FoldManager {
 			start += offset;
 			end += offset;
 			if (children != null) {
-				for (Fold f : children) {
-					f.move(offset);
+				for (Fold fold : children) {
+					fold.move(offset);
 				}
 			}
 		}

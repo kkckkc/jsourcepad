@@ -1,6 +1,6 @@
 package kkckkc.syntaxpane.style;
 
-import java.awt.Color;
+import java.awt.*;
 
 public class StyleBean implements Style, TextStyle {
 	private Color color;

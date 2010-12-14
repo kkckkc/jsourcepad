@@ -23,10 +23,10 @@ public class GutterSettings implements SettingsManager.Setting {
 
     @Override
     public SettingsManager.Setting getDefault() {
-        GutterSettings s = new GutterSettings();
-        s.lineNumbers = true;
-        s.foldings = true;
-        return s;
+        GutterSettings gutterSettings = new GutterSettings();
+        gutterSettings.lineNumbers = true;
+        gutterSettings.foldings = true;
+        return gutterSettings;
     }
 
 }

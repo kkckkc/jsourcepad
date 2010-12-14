@@ -63,13 +63,13 @@ public class CommandBundleItem implements BundleItem<Void> {
         this.beforeRunning = beforeRunning;
 	}
 	
-	public static CommandBundleItem create(BundleItemSupplier bundleItemSupplier, Map<?, ?> m) {
+	public static CommandBundleItem create(BundleItemSupplier bundleItemSupplier, Map<?, ?> props) {
 	    return new CommandBundleItem(bundleItemSupplier,
-	    		(String) m.get("command"),
-	    		(String) m.get("input"),
-	    		(String) m.get("fallbackInput"),
-	    		(String) m.get("output"),
-                (String) m.get("beforeRunningCommand"));
+	    		(String) props.get("command"),
+	    		(String) props.get("input"),
+	    		(String) props.get("fallbackInput"),
+	    		(String) props.get("output"),
+                (String) props.get("beforeRunningCommand"));
     }
 
 	
@@ -391,21 +391,21 @@ public class CommandBundleItem implements BundleItem<Void> {
                 // Do nothing
 
             } else if (OUTPUT_INSERT_AS_SNIPPET.equals(output)) {
-                Buffer b = window.getDocList().getActiveDoc().getActiveBuffer();
+                Buffer activeBuffer = window.getDocList().getActiveDoc().getActiveBuffer();
 
-                Interval selection = b.getSelection();
+                Interval selection = activeBuffer.getSelection();
                 if (selection == null || selection.isEmpty()) {
                     if (virtualSelection != null) {
                         selection = virtualSelection;
                     } else {
-                        selection = new Interval(0, b.getLength());
+                        selection = new Interval(0, activeBuffer.getLength());
                     }
                 }
 
-                b.remove(selection);
+                activeBuffer.remove(selection);
 
                 Snippet snippet = new Snippet(s, null);
-                snippet.insert(window, b);
+                snippet.insert(window, activeBuffer);
 
             } else {
                 throw new RuntimeException("Unsupported output " + output);

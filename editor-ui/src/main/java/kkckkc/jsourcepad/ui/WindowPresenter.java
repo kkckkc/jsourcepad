@@ -8,7 +8,6 @@ import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.DocList;
 import kkckkc.jsourcepad.model.Window;
-import kkckkc.jsourcepad.model.bundle.BundleManager;
 import kkckkc.jsourcepad.model.bundle.BundleMenuProvider;
 import kkckkc.jsourcepad.model.settings.SettingsManager;
 import kkckkc.jsourcepad.model.settings.WindowSettings;
@@ -33,7 +32,6 @@ public class WindowPresenter implements Presenter<WindowView>, DocList.Listener 
 
 	private Window window;
 	private WindowView windowView;
-	private BundleManager bundleManager;
 	private JFrame frame;
     private Subscription subscription;
 
@@ -41,12 +39,7 @@ public class WindowPresenter implements Presenter<WindowView>, DocList.Listener 
 	public void setWindow(Window window) {
 	    this.window = window;
     }
-	
-	@Autowired
-	public void setBundleManager(BundleManager bundleManager) {
-	    this.bundleManager = bundleManager;
-    }
-	
+
 	@Autowired
     public void setView(WindowView view) {
 	    this.windowView = view;

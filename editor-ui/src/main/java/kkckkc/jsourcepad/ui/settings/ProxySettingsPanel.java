@@ -75,13 +75,13 @@ public class ProxySettingsPanel implements SettingsPanel {
         ProxySettings proxySettings = settingsManager.get(ProxySettings.class);
         switch (proxySettings.getProxyType()) {
             case NO_PROXY:
-                view.getType().setSelectedItem(view.NO_PROXY);
+                view.getType().setSelectedItem(ProxySettingsPanelView.NO_PROXY);
                 break;
             case SYSTEM_PROXY:
-                view.getType().setSelectedItem(view.SYSTEM_PROXY);
+                view.getType().setSelectedItem(ProxySettingsPanelView.SYSTEM_PROXY);
                 break;
             case MANUAL_PROXY:
-                view.getType().setSelectedItem(view.MANUAL_PROXY);
+                view.getType().setSelectedItem(ProxySettingsPanelView.MANUAL_PROXY);
                 view.getHost().setText(proxySettings.getProxyHost());
                 view.getPort().setText(proxySettings.getProxyPort());
                 break;
@@ -102,11 +102,11 @@ public class ProxySettingsPanel implements SettingsPanel {
     }
 
     private void updateSettings(ProxySettings proxySettings) {
-        if (view.getType().getSelectedItem().equals(view.NO_PROXY)) {
+        if (view.getType().getSelectedItem().equals(ProxySettingsPanelView.NO_PROXY)) {
             proxySettings.setProxyType(ProxySettings.ProxyType.NO_PROXY);
             proxySettings.setProxyHost(null);
             proxySettings.setProxyPort(null);
-        } else if (view.getType().getSelectedItem().equals(view.SYSTEM_PROXY)) {
+        } else if (view.getType().getSelectedItem().equals(ProxySettingsPanelView.SYSTEM_PROXY)) {
             proxySettings.setProxyType(ProxySettings.ProxyType.SYSTEM_PROXY);
             proxySettings.setProxyHost(null);
             proxySettings.setProxyPort(null);
