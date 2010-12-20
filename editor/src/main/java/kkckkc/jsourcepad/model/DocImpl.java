@@ -1,5 +1,6 @@
 package kkckkc.jsourcepad.model;
 
+import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import kkckkc.jsourcepad.ScopeRoot;
 import kkckkc.jsourcepad.model.bundle.Bundle;
@@ -169,7 +170,7 @@ public class DocImpl implements Doc, ScopeRoot, BeanFactoryAware {
 	@Override
 	public void save() {
 		try {
-			FileWriter fw = new FileWriter(this.backingFile);
+            Writer fw = new OutputStreamWriter(new FileOutputStream(this.backingFile), Charsets.UTF_8);
 			fw.write(buffer.getText(buffer.getCompleteDocument()));
 			fw.close();
 
@@ -190,7 +191,7 @@ public class DocImpl implements Doc, ScopeRoot, BeanFactoryAware {
 	@Override
 	public void saveAs(File file) {
 		try {
-			FileWriter fw = new FileWriter(file);
+			Writer fw = new OutputStreamWriter(new FileOutputStream(file), Charsets.UTF_8);
 			fw.write(buffer.getText(buffer.getCompleteDocument()));
 			fw.close();
 		} catch (IOException e) {
@@ -214,7 +215,7 @@ public class DocImpl implements Doc, ScopeRoot, BeanFactoryAware {
 		this.backingFile = file;
         this.backingTimestamp = file.lastModified();
 
-		BufferedReader br = new BufferedReader(new FileReader(file));
+		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), Charsets.UTF_8));
 		br.mark(1024);
 		
 		char[] buffer = new char[800];

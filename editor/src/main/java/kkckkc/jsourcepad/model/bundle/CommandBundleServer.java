@@ -32,6 +32,8 @@ public class CommandBundleServer {
 
                 long key = Long.parseLong(path);
 
+                resp.setCharacterEncoding("utf-8");
+
                 Handler handler = handlers.get(key);
                 handler.handle(resp);
                 handlers.remove(key);

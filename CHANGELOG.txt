@@ -14,10 +14,12 @@ Features
  - Dialog system to be available from bundles. Includes so far, CommitDialog, error, progress, simplenotification,
    html.InsertEntity and subversion.RevisionSelector
  - Git and subversion status on files are shown as colors in the project view
+ - File encoding changed to utf-8
 
 Bugfixes
  - NPE whith new tabs created by bundles
  - Lots of bugfixes to make sure the subversion bundle works almost completely
+
 
 
 Build 2010112501
