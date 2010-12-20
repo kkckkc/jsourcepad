@@ -41,11 +41,12 @@ public class GlobalKeyEventDispatcher implements KeyEventDispatcher {
         if (window == null) {
             return false;
         }
-        if (window.getDocList().getActiveDoc() == null) {
-            return false;
+
+        Scope scope = null;
+        if (window.getDocList().getActiveDoc() != null) {
+            scope = window.getDocList().getActiveDoc().getActiveBuffer().getInsertionPoint().getScope();
         }
 
-        Scope scope = window.getDocList().getActiveDoc().getActiveBuffer().getInsertionPoint().getScope();
         Collection<BundleItemSupplier> items = bundleManager.getItemsForShortcut(e, scope);
 
         if (!items.isEmpty()) {

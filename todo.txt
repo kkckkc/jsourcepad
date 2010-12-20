@@ -6,7 +6,7 @@
 [x] Remove weak subscriptions on message buses. Verify explicit unsubscription on each
 [x] Line number alignment
 
-[ ] Bundle key bindings from project tree
+[x] Bundle key bindings from project tree
 [ ] Fix Project domain model. Move stuff from FileTreeModel. Move decorators
 
 ([ ] Rethink tab settings)
