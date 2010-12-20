@@ -6,6 +6,7 @@ Improvements
  - The name property is removed from the syntax items in the bundle editor to better work with the Language Grammar bundle
  - Support for background colors in themes
  - Bundle key bindings from project tree
+ - Changed how txmt url prefix is handled. Changed to more robust JavaScript solution instead of html stream replacement
 
 Features
  - Command bundle items now supports changing of output type through exit codes

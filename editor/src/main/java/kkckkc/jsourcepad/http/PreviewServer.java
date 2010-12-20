@@ -126,13 +126,14 @@ public class PreviewServer {
 
                     String url = req.getParameter("url");
                     url = StringUtils.removePrefix(url, "http://localhost:" + Config.getHttpPort() + "/files");
+                    url = StringUtils.removePrefix(url, "file://");
 
                     Window window;
                     if (req.getParameter("windowId") != null) {
                         int windowId = Integer.parseInt(req.getParameter("windowId"));
 
                         window = Application.get().getWindowManager().getWindow(windowId);
-                        window.getCommandExecutor().execute(new FileOpenCommand(url));
+                        window.getCommandExecutor().executeSync(new FileOpenCommand(url));
                     } else {
                         OpenCommand openCommand = new OpenCommand(url, false);
                         Application.get().getCommandExecutor().executeSync(openCommand);

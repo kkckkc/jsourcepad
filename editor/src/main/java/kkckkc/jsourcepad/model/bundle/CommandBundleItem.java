@@ -261,8 +261,8 @@ public class CommandBundleItem implements BundleItem<Void> {
             return new TransformingWriter(writer, TransformingWriter.CHUNK_BY_LINE,
                     new Function<String, String>() {
                         public String apply(String s) {
-                            s = s.replaceAll("txmt://open/?\\?([^'\" \\t\\n\\x0B\\f\\r]+)",
-                                    "http://localhost:" + Config.getHttpPort() + "/cmd/open?windowId=" + window.getId() + "&$1");
+//                            s = s.replaceAll("txmt://open/?\\?([^'\" \\t\\n\\x0B\\f\\r]+)",
+//                                    "http://localhost:" + Config.getHttpPort() + "/cmd/open?windowId=" + window.getId() + "&$1");
                             s = s.replaceAll("file://(?!localhost)", "http://localhost:" + Config.getHttpPort() + "/files");
                             return s;
                         }
@@ -283,6 +283,7 @@ public class CommandBundleItem implements BundleItem<Void> {
                             "<script>" +
                             "TextMate = {}; " +
                             "TextMate.port = " + Config.getHttpPort() + "; " +
+                            "TextMate.windowId = " + window.getId() + "; " +
                             "TextMate.system = function (cmd, handler) { " +
                             "    if (handler == null) { " +
                             "        var resp = null; " +
@@ -333,6 +334,19 @@ public class CommandBundleItem implements BundleItem<Void> {
         public void postExecute() {
             executionCompletedLatch.countDown();
             try {
+                writer.write(
+                        "<script>\n" +
+                        "document.body.onclick = function(e) { " +
+                        "  var target = e.target || e.srcElement; " +
+                        "  if (target.tagName.toLowerCase() == 'a') { " +
+                        "    if (target.href.match(/^txmt:\\/\\/open/)) { " +
+                        "      location.href = target.href.replace(/txmt:\\/\\/open\\/?\\?([^'\" \\t\\n\\f\\r]+)/, 'http://localhost:' + TextMate.port + '/cmd/open?windowId=' + TextMate.windowId + '&$1');" +
+                        "      return false;\n" +
+                        "    } " +
+                        "  }" +
+                        "}" +
+                        "</script>");
+
                 writer.close();
             } catch (IOException e) {
                 logger.error("Error closing HTTP stream", e);
