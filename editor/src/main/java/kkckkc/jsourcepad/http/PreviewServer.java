@@ -5,8 +5,11 @@ import com.google.common.io.Files;
 import kkckkc.jsourcepad.command.global.OpenCommand;
 import kkckkc.jsourcepad.command.window.FileOpenCommand;
 import kkckkc.jsourcepad.model.*;
+import kkckkc.jsourcepad.model.bundle.EnvironmentProvider;
 import kkckkc.jsourcepad.util.Config;
 import kkckkc.jsourcepad.util.Cygwin;
+import kkckkc.jsourcepad.util.io.ScriptExecutor;
+import kkckkc.jsourcepad.util.io.UISupportCallback;
 import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
 import kkckkc.jsourcepad.util.messagebus.Subscription;
 import kkckkc.syntaxpane.model.Interval;
@@ -28,6 +31,7 @@ import java.net.URLDecoder;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 
 public class PreviewServer {
 
@@ -117,9 +121,9 @@ public class PreviewServer {
             protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
                 String cmd = req.getPathInfo().substring(1);
 
-                resp.setStatus(204);
-
                 if ("open".equals(cmd)) {
+                    resp.setStatus(204);
+
                     String url = req.getParameter("url");
                     url = StringUtils.removePrefix(url, "http://localhost:" + Config.getHttpPort() + "/files");
 
@@ -152,6 +156,8 @@ public class PreviewServer {
                         }
                     }
                 } else if ("mate".equals(cmd)) {
+                    resp.setStatus(204);
+
                     final List<String> args = Lists.newArrayList();
                     int i = 0;
                     while (true) {
@@ -196,6 +202,29 @@ public class PreviewServer {
                     } else {
                         Application.get().getCommandExecutor().execute(new OpenCommand(args.get(args.size() - 1), false));
                     }
+                } else if ("exec".equals(cmd)) {
+                    String cmdString = req.getParameter("cmd");
+
+                    Window window = Application.get().getWindowManager().getFocusedWindow();
+
+                    ScriptExecutor scriptExecutor = new ScriptExecutor(cmdString, Application.get().getThreadPool());
+                    scriptExecutor.setDelay(0);
+                    scriptExecutor.setShowStderr(false);
+                    ScriptExecutor.Execution execution = scriptExecutor.execute(
+                            new UISupportCallback(window),
+                            new StringReader(""),
+                            EnvironmentProvider.getEnvironment(window, null));
+                    try {
+                        execution.waitForCompletion();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    } catch (ExecutionException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    resp.getWriter().write(execution.getStdout());
+                    resp.getWriter().flush();
+
                 } else {
                     throw new RuntimeException("Unsupport cmd");
                 }

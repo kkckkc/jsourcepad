@@ -28,6 +28,7 @@ public class EnvironmentProvider {
             return formatPath(file.toString());
         }
     };
+    private static BundleItemSupplier lastBundleItemSupplier;
 
     public static Map<String, String> getEnvironment(Window window, BundleItemSupplier bundleItemSupplier) {
 		Map<String, String> environment = new HashMap<String, String>(getStaticEnvironment());
@@ -66,12 +67,16 @@ public class EnvironmentProvider {
 
 		List<File> paths = Lists.newArrayList();
 
-		if (bundleItemSupplier != null) {
-			environment.put("TM_BUNDLE_SUPPORT", 
-					formatPath(new File(bundleItemSupplier.getFile().getParentFile().getParentFile(), "Support").getPath()));
-			paths.add(new File(bundleItemSupplier.getFile().getParentFile().getParentFile(), "Support/bin"));
-		}
-		
+		if (bundleItemSupplier == null) {
+            bundleItemSupplier = lastBundleItemSupplier;
+        }
+        lastBundleItemSupplier = bundleItemSupplier;
+
+        environment.put("TM_BUNDLE_SUPPORT",
+                formatPath(new File(bundleItemSupplier.getFile().getParentFile().getParentFile(), "Support").getPath()));
+
+        paths.add(new File(bundleItemSupplier.getFile().getParentFile().getParentFile(), "Support/bin"));
+
         paths.add(new File(Config.getSupportFolder(), "bin"));
         paths.add(new File(Config.getSupportFolder(), System.getProperty("os.name") + "/bin"));
 

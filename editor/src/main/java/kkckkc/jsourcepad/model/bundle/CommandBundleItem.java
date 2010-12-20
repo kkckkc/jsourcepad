@@ -8,6 +8,8 @@ import kkckkc.jsourcepad.util.Config;
 import kkckkc.jsourcepad.util.io.*;
 import kkckkc.jsourcepad.util.io.ScriptExecutor.Execution;
 import kkckkc.syntaxpane.model.Interval;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.swing.*;
@@ -248,6 +250,8 @@ public class CommandBundleItem implements BundleItem<Void> {
         private CountDownLatch executionCompletedLatch;
         private String path;
 
+        private static Logger logger = LoggerFactory.getLogger(HtmlExecutionMethod.class);
+
         public HtmlExecutionMethod(Window window, WindowManager wm) {
 			this.window = window;
 		}
@@ -275,6 +279,27 @@ public class CommandBundleItem implements BundleItem<Void> {
                     resp.setContentType("text/html");
 
                     writer = resp.getWriter();
+                    writer.write(
+                            "<script>" +
+                            "TextMate = {}; " +
+                            "TextMate.port = " + Config.getHttpPort() + "; " +
+                            "TextMate.system = function (cmd, handler) { " +
+                            "    if (handler == null) { " +
+                            "        var resp = null; " +
+                            "        xhr = new XMLHttpRequest(); " +
+                            "        xhr.open('GET', 'http://localhost:' + TextMate.port + '/cmd/exec?cmd=' + escape(cmd), false); " +
+                            "        xhr.send(null); " +
+                            "        return { " +
+                            "            outputString: xhr.responseText, " +
+                            "            errorString: null, " +
+                            "            status: xhr.getResponseHeader('X-ResponseCode') " +
+                            "        }; " +
+                            "    } else { " +
+                            "        alert('Not yet supported'); " +
+                            "    } " +
+                            "}; " +
+                            "exec = TextMate.system;" +
+                            "</script>");
 
                     requestSentLatch.countDown();
                     executionCompletedLatch = new CountDownLatch(1);
@@ -284,8 +309,6 @@ public class CommandBundleItem implements BundleItem<Void> {
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
-
-                    writer.close();
                 }
             });
 
@@ -312,7 +335,7 @@ public class CommandBundleItem implements BundleItem<Void> {
             try {
                 writer.close();
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                logger.error("Error closing HTTP stream", e);
             }
         }
 
