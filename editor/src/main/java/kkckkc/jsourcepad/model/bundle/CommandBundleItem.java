@@ -261,8 +261,6 @@ public class CommandBundleItem implements BundleItem<Void> {
             return new TransformingWriter(writer, TransformingWriter.CHUNK_BY_LINE,
                     new Function<String, String>() {
                         public String apply(String s) {
-//                            s = s.replaceAll("txmt://open/?\\?([^'\" \\t\\n\\x0B\\f\\r]+)",
-//                                    "http://localhost:" + Config.getHttpPort() + "/cmd/open?windowId=" + window.getId() + "&$1");
                             s = s.replaceAll("file://(?!localhost)", "http://localhost:" + Config.getHttpPort() + "/files");
                             return s;
                         }
@@ -302,8 +300,8 @@ public class CommandBundleItem implements BundleItem<Void> {
                             "exec = TextMate.system;" +
                             "</script>");
 
-                    requestSentLatch.countDown();
                     executionCompletedLatch = new CountDownLatch(1);
+                    requestSentLatch.countDown();
 
                     try {
                         executionCompletedLatch.await(5, TimeUnit.MINUTES);
@@ -332,7 +330,6 @@ public class CommandBundleItem implements BundleItem<Void> {
 
         @Override
         public void postExecute() {
-            executionCompletedLatch.countDown();
             try {
                 writer.write(
                         "<script>\n" +
@@ -351,6 +348,7 @@ public class CommandBundleItem implements BundleItem<Void> {
             } catch (IOException e) {
                 logger.error("Error closing HTTP stream", e);
             }
+            executionCompletedLatch.countDown();
         }
 
         @Override
