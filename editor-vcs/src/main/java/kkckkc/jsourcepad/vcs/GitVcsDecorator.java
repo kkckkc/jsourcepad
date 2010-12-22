@@ -39,11 +39,8 @@ public class GitVcsDecorator extends AbstractVcsDecorator {
         File gitRoot = getGitRoot(parent.getFile());
         if (gitRoot == null) return;
 
-        requestQueueLock.lock();
-        try {
+        synchronized (requestQueue) {
             requestQueue.add(new Request(gitRoot, children, continuation));
-        } finally {
-            requestQueueLock.unlock();
         }
 
         Application.get().getThreadPool().submit(requestProcessor);
@@ -120,12 +117,9 @@ public class GitVcsDecorator extends AbstractVcsDecorator {
                 File gitRoot = null;
 
                 // Abort if the queue is empty
-                requestQueueLock.lock();
-                try {
+                synchronized (requestQueue) {
                     if (requestQueue.isEmpty()) return;
                     gitRoot = requestQueue.get(0).getGitRoot();
-                } finally {
-                    requestQueueLock.unlock();
                 }
 
                 // Get the actual statuses
@@ -135,8 +129,7 @@ public class GitVcsDecorator extends AbstractVcsDecorator {
                 // Move requests with same root another list
                 // This operation should be quick and thus locking should be fine
                 List<Request> requestsWithSameRoot = Lists.newArrayList();
-                requestQueueLock.lock();
-                try {
+                synchronized (requestQueue) {
                     Iterator<Request> it = requestQueue.iterator();
                     while (it.hasNext()) {
                         Request request = it.next();
@@ -145,8 +138,6 @@ public class GitVcsDecorator extends AbstractVcsDecorator {
                             requestsWithSameRoot.add(request);
                         }
                     }
-                } finally {
-                    requestQueueLock.unlock();
                 }
 
                 // Update the state of all nodes of all applicable requests

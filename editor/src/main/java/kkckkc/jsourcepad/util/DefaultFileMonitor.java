@@ -8,14 +8,11 @@ import java.io.File;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executor;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class DefaultFileMonitor extends AbstractFileMonitor implements Runnable {
 
 	public Map<File, Registration> registrations = Maps.newHashMap();
 	private Executor executor;
-	private Lock lock = new ReentrantLock();
 
 	public DefaultFileMonitor(Executor executor) {
 		this.executor = executor;
@@ -42,11 +39,8 @@ public class DefaultFileMonitor extends AbstractFileMonitor implements Runnable 
 			r.process(newRegistrations);
 		}
 
-        lock.lock();
-        try {
-			registrations = newRegistrations;
-		} finally {
-            lock.unlock();
+        synchronized (this) {
+        	registrations = newRegistrations;
         }
 	}
 
