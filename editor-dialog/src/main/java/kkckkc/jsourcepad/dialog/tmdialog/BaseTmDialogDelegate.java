@@ -68,6 +68,7 @@ public abstract class BaseTmDialogDelegate implements TmDialogDelegate {
         }
 
         jdialog.setVisible(true);
+        jdialog.requestFocus();
     }
 
     protected abstract void buildDialog(JPanel panel);

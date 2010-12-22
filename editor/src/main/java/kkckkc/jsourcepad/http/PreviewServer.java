@@ -5,7 +5,6 @@ import com.google.common.io.Files;
 import kkckkc.jsourcepad.command.global.OpenCommand;
 import kkckkc.jsourcepad.command.window.FileOpenCommand;
 import kkckkc.jsourcepad.model.*;
-import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.bundle.EnvironmentProvider;
 import kkckkc.jsourcepad.util.Config;
 import kkckkc.jsourcepad.util.Cygwin;
@@ -27,9 +26,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.*;
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URLDecoder;
 import java.util.Iterator;
 import java.util.List;
@@ -212,44 +209,38 @@ public class PreviewServer {
                         Application.get().getCommandExecutor().execute(new OpenCommand(args.get(args.size() - 1), false));
                     }
                 } else if ("refresh".equals(cmd)) {
-                    // There's really nothing to do here
+                    Application.get().getWindowManager().getFocusedWindow().topic(Window.FocusListener.class).post().focusGained(
+                            Application.get().getWindowManager().getFocusedWindow()
+                    );
 
                 } else if ("exec".equals(cmd)) {
                     final String cmdString = req.getParameter("cmd");
 
                     try {
-                        EventQueue.invokeAndWait(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    Window window = Application.get().getWindowManager().getFocusedWindow();
+                        Window window = Application.get().getWindowManager().getFocusedWindow();
+                        window.beginWait(true, null);
 
-                                    ScriptExecutor scriptExecutor = new ScriptExecutor(cmdString, Application.get().getThreadPool());
-                                    scriptExecutor.setDelay(0);
-                                    scriptExecutor.setShowStderr(false);
-                                    ScriptExecutor.Execution execution = scriptExecutor.execute(
-                                            new UISupportCallback(window),
-                                            new StringReader(""),
-                                            EnvironmentProvider.getEnvironment(window, null));
-                                    try {
-                                        execution.waitForCompletion();
-                                    } catch (InterruptedException e) {
-                                        throw new RuntimeException(e);
-                                    } catch (ExecutionException e) {
-                                        throw new RuntimeException(e);
-                                    }
+                        ScriptExecutor scriptExecutor = new ScriptExecutor(cmdString, Application.get().getThreadPool());
+                        scriptExecutor.setDelay(0);
+                        scriptExecutor.setShowStderr(false);
+                        ScriptExecutor.Execution execution = scriptExecutor.execute(
+                                new UISupportCallback(window),
+                                new StringReader(""),
+                                EnvironmentProvider.getEnvironment(window, null));
+                        try {
+                            execution.waitForCompletion();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        } catch (ExecutionException e) {
+                            throw new RuntimeException(e);
+                        } finally {
+                            window.endWait();
+                        }
 
-                                    resp.getWriter().write(execution.getStdout());
-                                    resp.getWriter().flush();
-                                } catch (IOException ioe) {
-                                    throw new RuntimeException(ioe);
-                                }
-                            }
-                        });
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    } catch (InvocationTargetException e) {
-                        throw new RuntimeException(e);
+                        resp.getWriter().write(execution.getStdout());
+                        resp.getWriter().flush();
+                    } catch (IOException ioe) {
+                        throw new RuntimeException(ioe);
                     }
 
                 } else {
