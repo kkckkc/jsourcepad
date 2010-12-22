@@ -70,6 +70,14 @@ public class Config {
         }
     }
 
+    public static File getTempFolder() {
+        if (useCorrectMacLocations && Os.isMac()) {
+            return new File(System.getProperty("user.home"), "Library/Caches/JSourcePad");
+        } else {
+            return new File(System.getProperty("user.home"), ".jsourcepad/temp");
+        }
+    }
+
     public static File getLogFolder() {
         if (useCorrectMacLocations && Os.isMac()) {
             return new File(System.getProperty("user.home"), "Library/Logs/JSourcePad");

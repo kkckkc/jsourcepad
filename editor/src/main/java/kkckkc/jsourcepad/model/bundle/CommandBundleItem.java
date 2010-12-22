@@ -1,6 +1,8 @@
 package kkckkc.jsourcepad.model.bundle;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Function;
+import com.google.common.io.Files;
 import kkckkc.jsourcepad.model.*;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.bundle.snippet.Snippet;
@@ -8,6 +10,8 @@ import kkckkc.jsourcepad.util.Config;
 import kkckkc.jsourcepad.util.io.*;
 import kkckkc.jsourcepad.util.io.ScriptExecutor.Execution;
 import kkckkc.syntaxpane.model.Interval;
+import kkckkc.utils.Os;
+import kkckkc.utils.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,19 +19,18 @@ import javax.servlet.http.HttpServletResponse;
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import java.awt.*;
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("restriction")
 public class CommandBundleItem implements BundleItem<Void> {
-	
+	private static Logger logger = LoggerFactory.getLogger(CommandBundleItem.class);
+
 	public static final String OUTPUT_SHOW_AS_HTML = "showAsHTML";
 	public static final String OUTPUT_DISCARD = "discard";
 	public static final String OUTPUT_REPLACE_SELECTED_TEXT = "replaceSelectedText";
@@ -86,6 +89,10 @@ public class CommandBundleItem implements BundleItem<Void> {
 	
 	
 	public void execute(final Window window, Void context) throws Exception {
+        if (! Os.isMac()) {
+            fixShebang();
+        }
+
         beforeRunning(window);
 
 		ScriptExecutor scriptExecutor = new ScriptExecutor(command, Application.get().getThreadPool());
@@ -164,6 +171,67 @@ public class CommandBundleItem implements BundleItem<Void> {
                 new TeeWriter(stdoutWriter, executionMethod.getWriter()),
                 EnvironmentProvider.getEnvironment(window, bundleItemSupplier));
 	}
+
+    private void fixShebang() throws IOException {
+        File bundleFolder = bundleItemSupplier.getFile().getParentFile().getParentFile();
+
+        File supportFolder = new File(bundleFolder, "Support");
+        File supportCacheFolder = new File(Config.getTempFolder(), "Bundles/" + bundleFolder.getName() + "/Support");
+
+        // Get newest timestamp of the Support folder
+        long timestamp = 0;
+        List<File> files = FileUtils.recurse(supportFolder);
+        for (File f : files) {
+            timestamp = Math.max(timestamp, f.lastModified());
+        }
+
+        // Get the timestamp of the modified Support folder
+        long timestampOfSupportCache = 0;
+        File timestampfile = new File(supportCacheFolder, ".timestamp");
+        if (! timestampfile.exists()) {
+            timestampfile.getParentFile().mkdirs();
+        } else {
+            timestampOfSupportCache = Long.parseLong(Files.toString(timestampfile, Charsets.UTF_8));
+        }
+
+        if (timestamp > timestampOfSupportCache) {
+            logger.info("Applying shebang fix for " + bundleFolder.getName() + "/Support");
+            for (File f : files) {
+                if (f.isDirectory()) continue;
+
+                byte[] contents = FileUtils.readBytes(f);
+
+                if (contents[0] == (byte) '#' && contents[1] == (byte) '!') {
+                    StringBuilder shebangLine = new StringBuilder();
+                    for (int i = 2; i < contents.length; i++) {
+                        if (contents[i] == '\n') break;
+                        shebangLine.append((char) contents[i]);
+                    }
+
+                    File wrapper = new File(supportCacheFolder,
+                            f.getCanonicalPath().substring(supportFolder.getCanonicalPath().length()));
+
+                    Files.write(
+                            "#!/bin/bash\n" +
+                            shebangLine + " \"$TM_BUNDLE_SUPPORT/" + f.getName() + ".real\" $*",
+                            wrapper,
+                            Charsets.US_ASCII);
+
+                    File to = new File(supportCacheFolder,
+                            f.getCanonicalPath().substring(supportFolder.getCanonicalPath().length()) + ".real");
+                    to.getParentFile().mkdirs();
+                    Files.write(contents, to);
+                } else {
+                    File to = new File(supportCacheFolder,
+                            f.getCanonicalPath().substring(supportFolder.getCanonicalPath().length()));
+                    to.getParentFile().mkdirs();
+                    Files.write(contents, to);
+                }
+            }
+        }
+
+        Files.write(Long.toString(timestamp), timestampfile, Charsets.UTF_8);
+    }
 
     @Override
     public BundleStructure.Type getType() {

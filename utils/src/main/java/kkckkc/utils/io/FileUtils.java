@@ -1,7 +1,10 @@
 package kkckkc.utils.io;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FileUtils {
 	public static File newTempFile(String prefix, String suffix) throws IOException {
@@ -41,5 +44,34 @@ public class FileUtils {
 
     public static String expandAbbreviations(String text) {
         return text.replaceAll("~", System.getProperty("user.home").replace('\\', '/'));
+    }
+
+    public static List<File> recurse(File root) {
+        List<File> dest = new ArrayList<File>();
+        recurse(root, dest);
+        return dest;
+    }
+
+    private static void recurse(File root, List<File> dest) {
+        dest.add(root);
+        File[] children = root.listFiles();
+        if (children != null) {
+            for (File f : children) {
+                recurse(f, dest);
+            }
+        }
+    }
+
+    public static byte[] readBytes(File file) throws IOException {
+		FileInputStream fis = new FileInputStream(file);
+        try {
+            byte[] dest = new byte[fis.available()];
+            fis.read(dest);
+            fis.close();
+
+            return dest;
+        } finally {
+            fis.close();
+        }
     }
 }
