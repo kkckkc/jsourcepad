@@ -108,8 +108,8 @@ public class EnvironmentProvider {
 
         Map<String, String> systemEnvironment = SystemEnvironmentHelper.getSystemEnvironment();
         environment.put("PATH",
-                    systemEnvironment.get("PATH") + File.pathSeparator +
-                    Joiner.on(File.pathSeparator).join(Collections2.transform(paths, FILE_TO_STRING)));
+                    Joiner.on(File.pathSeparator).join(Collections2.transform(paths, FILE_TO_STRING)) +
+                    File.pathSeparator + systemEnvironment.get("PATH"));
 
 	    return environment;
     }

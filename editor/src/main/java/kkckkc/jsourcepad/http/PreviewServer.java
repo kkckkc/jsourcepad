@@ -5,6 +5,7 @@ import com.google.common.io.Files;
 import kkckkc.jsourcepad.command.global.OpenCommand;
 import kkckkc.jsourcepad.command.window.FileOpenCommand;
 import kkckkc.jsourcepad.model.*;
+import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.bundle.EnvironmentProvider;
 import kkckkc.jsourcepad.util.Config;
 import kkckkc.jsourcepad.util.Cygwin;
@@ -26,7 +27,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.*;
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URLDecoder;
 import java.util.Iterator;
 import java.util.List;
@@ -118,7 +121,7 @@ public class PreviewServer {
             }
 
             @Override
-            protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+            protected void doGet(HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
                 String cmd = req.getPathInfo().substring(1);
 
                 if ("open".equals(cmd)) {
@@ -200,31 +203,51 @@ public class PreviewServer {
                         } finally {
                             subscription.unsubscribe();
                         }
+                    } else if (args.isEmpty()) {
+                        OpenCommand openCommand = new OpenCommand();
+                        openCommand.setContents(req.getParameter("__STDIN__"));
+                        openCommand.setOpenInSeparateWindow(true);
+                        Application.get().getCommandExecutor().execute(openCommand);
                     } else {
                         Application.get().getCommandExecutor().execute(new OpenCommand(args.get(args.size() - 1), false));
                     }
                 } else if ("exec".equals(cmd)) {
-                    String cmdString = req.getParameter("cmd");
+                    final String cmdString = req.getParameter("cmd");
 
-                    Window window = Application.get().getWindowManager().getFocusedWindow();
-
-                    ScriptExecutor scriptExecutor = new ScriptExecutor(cmdString, Application.get().getThreadPool());
-                    scriptExecutor.setDelay(0);
-                    scriptExecutor.setShowStderr(false);
-                    ScriptExecutor.Execution execution = scriptExecutor.execute(
-                            new UISupportCallback(window),
-                            new StringReader(""),
-                            EnvironmentProvider.getEnvironment(window, null));
                     try {
-                        execution.waitForCompletion();
+                        EventQueue.invokeAndWait(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    Window window = Application.get().getWindowManager().getFocusedWindow();
+
+                                    ScriptExecutor scriptExecutor = new ScriptExecutor(cmdString, Application.get().getThreadPool());
+                                    scriptExecutor.setDelay(0);
+                                    scriptExecutor.setShowStderr(false);
+                                    ScriptExecutor.Execution execution = scriptExecutor.execute(
+                                            new UISupportCallback(window),
+                                            new StringReader(""),
+                                            EnvironmentProvider.getEnvironment(window, null));
+                                    try {
+                                        execution.waitForCompletion();
+                                    } catch (InterruptedException e) {
+                                        throw new RuntimeException(e);
+                                    } catch (ExecutionException e) {
+                                        throw new RuntimeException(e);
+                                    }
+
+                                    resp.getWriter().write(execution.getStdout());
+                                    resp.getWriter().flush();
+                                } catch (IOException ioe) {
+                                    throw new RuntimeException(ioe);
+                                }
+                            }
+                        });
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
-                    } catch (ExecutionException e) {
+                    } catch (InvocationTargetException e) {
                         throw new RuntimeException(e);
                     }
-
-                    resp.getWriter().write(execution.getStdout());
-                    resp.getWriter().flush();
 
                 } else {
                     throw new RuntimeException("Unsupport cmd");

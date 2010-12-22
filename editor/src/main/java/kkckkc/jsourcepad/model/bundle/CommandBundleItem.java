@@ -284,7 +284,6 @@ public class CommandBundleItem implements BundleItem<Void> {
                             "TextMate.windowId = " + window.getId() + "; " +
                             "TextMate.system = function (cmd, handler) { " +
                             "    if (handler == null) { " +
-                            "        var resp = null; " +
                             "        xhr = new XMLHttpRequest(); " +
                             "        xhr.open('GET', 'http://localhost:' + TextMate.port + '/cmd/exec?cmd=' + escape(cmd), false); " +
                             "        xhr.send(null); " +
@@ -294,7 +293,19 @@ public class CommandBundleItem implements BundleItem<Void> {
                             "            status: xhr.getResponseHeader('X-ResponseCode') " +
                             "        }; " +
                             "    } else { " +
-                            "        alert('Not yet supported'); " +
+                            "        xhr = new XMLHttpRequest(); " +
+                            "        xhr.open('GET', 'http://localhost:' + TextMate.port + '/cmd/exec?cmd=' + escape(cmd), false); " +
+                            "        xhr.onreadystatechange = function() { " +
+                            "            if (xhr.readyState == 4 && xhr.status != 404) { " +
+                            "                handler({" +
+                            "                    outputString: xhr.responseText, " +
+                            "                    errorString: null, " +
+                            "                    status: xhr.getResponseHeader('X-ResponseCode') " +
+                            "                }); " +
+                            "            } " +
+                            "        };" +
+                            "        xhr.send(null); " +
+                            "        return {};" +
                             "    } " +
                             "}; " +
                             "exec = TextMate.system;" +
