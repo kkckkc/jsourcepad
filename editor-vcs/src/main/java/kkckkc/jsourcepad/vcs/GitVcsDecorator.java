@@ -12,6 +12,7 @@ import kkckkc.jsourcepad.util.io.ErrorDialog;
 import kkckkc.jsourcepad.util.io.ScriptExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
@@ -176,9 +177,14 @@ public class GitVcsDecorator extends AbstractVcsDecorator {
                     }
 
                     @Override
-                    public void onFailure(ScriptExecutor.Execution execution) {
-                        ErrorDialog errorDialog = Application.get().getErrorDialog();
-                        errorDialog.show("Script Execution Failed...", execution.getStderr(), null);
+                    public void onFailure(final ScriptExecutor.Execution execution) {
+                        EventQueue.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                ErrorDialog errorDialog = Application.get().getErrorDialog();
+                                errorDialog.show("Script Execution Failed...", execution.getStderr(), null);
+                            }
+                        });
                     }
                 }, new StringReader(""), EnvironmentProvider.getStaticEnvironment());
 
