@@ -211,15 +211,17 @@ public class CommandBundleItem implements BundleItem<Void> {
                     File wrapper = new File(supportCacheFolder,
                             f.getCanonicalPath().substring(supportFolder.getCanonicalPath().length()));
 
+                    File to = new File(supportCacheFolder,
+                            f.getCanonicalPath().substring(supportFolder.getCanonicalPath().length()) + ".real");
+
+                    to.getParentFile().mkdirs();
+
                     Files.write(
                             "#!/bin/bash\n" +
                             shebangLine + " \"$TM_BUNDLE_SUPPORT/" + f.getName() + ".real\" $*",
                             wrapper,
                             Charsets.US_ASCII);
 
-                    File to = new File(supportCacheFolder,
-                            f.getCanonicalPath().substring(supportFolder.getCanonicalPath().length()) + ".real");
-                    to.getParentFile().mkdirs();
                     Files.write(contents, to);
                 } else {
                     File to = new File(supportCacheFolder,
