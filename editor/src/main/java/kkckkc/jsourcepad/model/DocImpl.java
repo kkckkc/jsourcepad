@@ -107,15 +107,25 @@ public class DocImpl implements Doc, ScopeRoot, BeanFactoryAware {
 
     private void checkFileForModification(Window window) {
         if (backingFile != null && backingTimestamp != backingFile.lastModified()) {
-            int option = JOptionPane.showOptionDialog(window.getContainer(),
-                    "File has been changed by an external process. Do you want to reload it?",
-                    "File Changed",
-                    JOptionPane.YES_NO_OPTION,
-                    JOptionPane.QUESTION_MESSAGE,
-                    null,
-                    new String[]{"Yes, Reload File", "No, Keep the Current Contents"},
-                    "Yes, Reload File");
-            if (option == 0) {
+
+            // TODO: Maybe this criteria should be changed to include if the file is modified by a CommandBundleItem execution
+            if (isModified()) {
+                int option = JOptionPane.showOptionDialog(window.getContainer(),
+                        "File has been changed by an external process. Do you want to reload it?",
+                        "File Changed",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        new String[]{"Yes, Reload File", "No, Keep the Current Contents"},
+                        "Yes, Reload File");
+                if (option == 0) {
+                    try {
+                        this.open(backingFile);
+                    } catch (IOException ioe) {
+                        throw new RuntimeException(ioe);
+                    }
+                }
+            } else {
                 try {
                     this.open(backingFile);
                 } catch (IOException ioe) {

@@ -1,0 +1,25 @@
+#!/usr/bin/ruby
+
+require 'net/http'
+require 'uri'
+
+
+eState = 0
+ARGV.each do |a|
+    puts a
+    puts eState
+
+    if eState == 1 and a.include? "TextMate"
+        puts "Refresh"
+        uri = "http://localhost:#{ENV['TM_SERVER_PORT']}/cmd/refresh"
+        res = Net::HTTP.post_form(URI.parse(uri), { })
+        exit(0)
+    elsif a == "-e"
+        eState = 1
+    else
+        eState = 0
+    end
+end
+
+# TODO: Implement forwarding
+# Forward to real osascript

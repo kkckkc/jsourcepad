@@ -211,6 +211,9 @@ public class PreviewServer {
                     } else {
                         Application.get().getCommandExecutor().execute(new OpenCommand(args.get(args.size() - 1), false));
                     }
+                } else if ("refresh".equals(cmd)) {
+                    // There's really nothing to do here
+
                 } else if ("exec".equals(cmd)) {
                     final String cmdString = req.getParameter("cmd");
 
