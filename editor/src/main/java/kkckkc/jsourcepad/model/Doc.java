@@ -5,7 +5,8 @@ import java.io.IOException;
 
 
 public interface Doc {
-	public interface StateListener {
+
+    public interface StateListener {
 		public void modified(Doc doc, boolean newState, boolean oldState);
 	}
 	
@@ -16,7 +17,8 @@ public interface Doc {
 	public void saveAs(File file);
 	public void close();
 	public File getFile();
-	
+    public void refresh();
+
 	public String getTitle();
 	
 	public boolean isModified();

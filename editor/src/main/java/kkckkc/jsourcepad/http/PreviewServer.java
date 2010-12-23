@@ -213,9 +213,12 @@ public class PreviewServer {
                         Application.get().getCommandExecutor().execute(new OpenCommand(args.get(args.size() - 1), false));
                     }
                 } else if ("refresh".equals(cmd)) {
-                    Application.get().getWindowManager().getFocusedWindow().topic(Window.FocusListener.class).post().focusGained(
-                            Application.get().getWindowManager().getFocusedWindow()
-                    );
+                    Window focusedWindow = Application.get().getWindowManager().getFocusedWindow();
+
+                    Doc activeDoc = focusedWindow.getDocList().getActiveDoc();
+                    activeDoc.refresh();
+
+                    focusedWindow.topic(Window.FocusListener.class).post().focusGained(focusedWindow);
 
                 } else if ("exec".equals(cmd)) {
                     final String cmdString = req.getParameter("cmd");
