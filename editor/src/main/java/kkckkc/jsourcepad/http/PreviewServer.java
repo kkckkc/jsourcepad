@@ -140,6 +140,10 @@ public class PreviewServer {
                         window = openCommand.getWindow();
                     }
 
+                    // Trigger toFront
+                    window.getContainer().setAlwaysOnTop(true);
+                    window.getContainer().setAlwaysOnTop(false);
+
                     String line = req.getParameter("line");
                     if (line != null) {
                         int lineIdx = Integer.parseInt(line);

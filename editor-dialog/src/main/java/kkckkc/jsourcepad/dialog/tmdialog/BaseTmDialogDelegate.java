@@ -67,8 +67,9 @@ public abstract class BaseTmDialogDelegate implements TmDialogDelegate {
             jdialog.setLocationByPlatform(true);
         }
 
+        jdialog.setAlwaysOnTop(true);
         jdialog.setVisible(true);
-        jdialog.requestFocus();
+        jdialog.setAlwaysOnTop(false);
     }
 
     protected abstract void buildDialog(JPanel panel);

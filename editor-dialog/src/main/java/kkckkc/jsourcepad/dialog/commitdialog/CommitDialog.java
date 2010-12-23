@@ -142,7 +142,10 @@ public class CommitDialog implements Dialog {
                     jdialog.setLocationRelativeTo(window.getContainer());
                     jdialog.setLocationByPlatform(true);
 
+                    jdialog.setAlwaysOnTop(true);
                     jdialog.setVisible(true);
+                    jdialog.setAlwaysOnTop(false);
+
 
                     if (returnValue == 0) {
                         boolean anyChecked = false;
