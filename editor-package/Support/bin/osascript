@@ -21,9 +21,5 @@ ARGV.each do |a|
     end
 end
 
-OS=`lowercase \`uname\``
-if [ "{$OS}" == "darwin" ]; then
-    /usr/bin/osascript $*
-fi
-
-
+# TODO: Implement forwarding
+# Forward to real osascript
