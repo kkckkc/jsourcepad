@@ -17,6 +17,8 @@
           class="kkckkc.jsourcepad.dialog.tmdialog.dialogs.SimpleNotificationWindow" scope="prototype" />
     <bean name="dialog/tm_dialog/ProgressDialog.nib"
           class="kkckkc.jsourcepad.dialog.tmdialog.dialogs.ProgressDialog" scope="prototype" />
+    <bean name="dialog/tm_dialog/RequestString"
+          class="kkckkc.jsourcepad.dialog.tmdialog.dialogs.RequestStringDialog" scope="prototype" />
 
     <!-- HTML Bundle -->
     <bean name="dialog/tm_dialog/html.tmbundle/Insert_Entity"

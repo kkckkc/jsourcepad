@@ -2,6 +2,7 @@ package kkckkc.jsourcepad.model.bundle;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Function;
+import com.google.common.base.Strings;
 import com.google.common.io.Files;
 import kkckkc.jsourcepad.model.*;
 import kkckkc.jsourcepad.model.Window;
@@ -468,7 +469,9 @@ public class CommandBundleItem implements BundleItem<Void> {
             if (s == null) s = "";
 
             if (OUTPUT_SHOW_AS_TOOLTIP.equals(output)) {
-                JOptionPane.showMessageDialog(window.getContainer(), s);
+                if (! Strings.isNullOrEmpty(s.trim())) {
+                    JOptionPane.showMessageDialog(window.getContainer(), s);
+                }
             } else if (OUTPUT_REPLACE_SELECTED_TEXT.equals(output)) {
                 Buffer buffer = window.getDocList().getActiveDoc().getActiveBuffer();
                 Interval selection = buffer.getSelection();

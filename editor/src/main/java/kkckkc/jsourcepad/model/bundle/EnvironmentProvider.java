@@ -143,6 +143,7 @@ public class EnvironmentProvider {
         environment.put("DIALOG", formatPath(new File(Config.getSupportFolder(), "bin/tm_dialog").getPath()));
 
         environment.put("TM_SUPPORT_PATH", formatPath(Config.getSupportFolder().getPath()));
+        environment.put("TM_APP_PATH", "TextMate.app");
 
         // TODO: Make this configurable
         environment.put("TM_SVN", "/usr/bin/svn");
