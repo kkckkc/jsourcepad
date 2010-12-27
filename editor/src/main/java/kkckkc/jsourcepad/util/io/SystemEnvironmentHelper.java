@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 
 public class SystemEnvironmentHelper {
 
-    private static Map<String, String> systemEnvironment;
+    private static volatile Map<String, String> systemEnvironment;
 
     public static Map<String, String> getSystemEnvironment() {
         if (systemEnvironment != null) return new HashMap<String, String>(systemEnvironment);
@@ -28,6 +28,8 @@ public class SystemEnvironmentHelper {
     }
 
     private static synchronized void loadSystemEnvironment(ExecutorService executor) {
+        if (systemEnvironment != null) return;
+
         systemEnvironment = Maps.newHashMap();
 
         SettingsManager settingsManager = Application.get().getSettingsManager();
