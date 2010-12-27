@@ -20,15 +20,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class GitVcsDecorator extends AbstractVcsDecorator {
 
     private Project project;
-    private List<Request> requestQueue = Lists.newArrayList();
-    private Lock requestQueueLock = new ReentrantLock();
+    private final List<Request> requestQueue = Lists.newArrayList();
     private RequestProcessor requestProcessor = new RequestProcessor();
+    private static ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     @Autowired
     public void setProject(Project project) {
@@ -44,7 +44,7 @@ public class GitVcsDecorator extends AbstractVcsDecorator {
             requestQueue.add(new Request(gitRoot, children, continuation));
         }
 
-        Application.get().getThreadPool().submit(requestProcessor);
+        executorService.submit(requestProcessor);
     }
 
     private File getGitRoot(File file) {
@@ -108,52 +108,43 @@ public class GitVcsDecorator extends AbstractVcsDecorator {
     }
 
     class RequestProcessor implements Runnable {
-        private Lock processorLock = new ReentrantLock();
-
         @Override
         public void run() {
-            // Ensure only one RequestProcessor will run at the same time
-            processorLock.lock();
-            try {
-                File gitRoot = null;
+            File gitRoot = null;
 
-                // Abort if the queue is empty
-                synchronized (requestQueue) {
-                    if (requestQueue.isEmpty()) return;
-                    gitRoot = requestQueue.get(0).getGitRoot();
-                }
+            // Abort if the queue is empty
+            synchronized (requestQueue) {
+                if (requestQueue.isEmpty()) return;
+                gitRoot = requestQueue.get(0).getGitRoot();
+            }
 
-                // Get the actual statuses
-                Map<File, String> statuses = Maps.newHashMap();
-                executeGit(gitRoot, statuses);
+            // Get the actual statuses
+            Map<File, String> statuses = Maps.newHashMap();
+            executeGit(gitRoot, statuses);
 
-                // Move requests with same root another list
-                // This operation should be quick and thus locking should be fine
-                List<Request> requestsWithSameRoot = Lists.newArrayList();
-                synchronized (requestQueue) {
-                    Iterator<Request> it = requestQueue.iterator();
-                    while (it.hasNext()) {
-                        Request request = it.next();
-                        if (request.getGitRoot().equals(gitRoot)) {
-                            it.remove();
-                            requestsWithSameRoot.add(request);
-                        }
+            // Move requests with same root another list
+            // This operation should be quick and thus locking should be fine
+            List<Request> requestsWithSameRoot = Lists.newArrayList();
+            synchronized (requestQueue) {
+                Iterator<Request> it = requestQueue.iterator();
+                while (it.hasNext()) {
+                    Request request = it.next();
+                    if (request.getGitRoot().equals(gitRoot)) {
+                        it.remove();
+                        requestsWithSameRoot.add(request);
                     }
                 }
+            }
 
-                // Update the state of all nodes of all applicable requests
-                for (Request request : requestsWithSameRoot) {
-                    FileTreeModel.Node[] children = request.getChildren();
-                    VcsState[] states = new VcsState[children.length];
-                    for (int i = 0; i < children.length; i++) {
-                        states[i] = getState(statuses.get(children[i].getFile()));
+            // Update the state of all nodes of all applicable requests
+            for (Request request : requestsWithSameRoot) {
+                FileTreeModel.Node[] children = request.getChildren();
+                VcsState[] states = new VcsState[children.length];
+                for (int i = 0; i < children.length; i++) {
+                    states[i] = getState(statuses.get(children[i].getFile()));
 
-                    }
-                    request.getContinuation().apply(states);
                 }
-
-            } finally {
-                processorLock.unlock();
+                request.getContinuation().apply(states);
             }
         }
 
