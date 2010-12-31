@@ -436,6 +436,7 @@ public class CommandBundleItem implements BundleItem<Void> {
                     writer.write(
                             "<script>\n" +
                             "document.body.onclick = function(e) { " +
+                            "  e = e || window.event; " +
                             "  var target = e.target || e.srcElement; " +
                             "  if (target.tagName.toLowerCase() == 'a') { " +
                             "    if (target.href.match(/^txmt:\\/\\/open/)) { " +
