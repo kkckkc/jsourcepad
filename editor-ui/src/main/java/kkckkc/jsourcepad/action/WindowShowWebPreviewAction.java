@@ -1,10 +1,10 @@
 package kkckkc.jsourcepad.action;
 
+import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.util.Config;
 import kkckkc.jsourcepad.util.action.BaseAction;
 
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.URI;
@@ -31,7 +31,7 @@ public class WindowShowWebPreviewAction extends BaseAction {
         }
 
         try {
-            Desktop.getDesktop().browse(new URI("http://localhost:" + Config.getHttpPort() + path.replace("\\", "/")));
+            Application.get().getBrowser().show(new URI("http://localhost:" + Config.getHttpPort() + path.replace("\\", "/")), true);
         } catch (IOException e1) {
             e1.printStackTrace();  
         } catch (URISyntaxException e1) {

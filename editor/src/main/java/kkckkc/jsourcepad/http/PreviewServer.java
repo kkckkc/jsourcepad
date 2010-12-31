@@ -30,6 +30,7 @@ import java.io.*;
 import java.net.URLDecoder;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 
@@ -227,13 +228,16 @@ public class PreviewServer {
                         Window window = Application.get().getWindowManager().getFocusedWindow();
                         window.beginWait(true, null);
 
+                        Map<String,String> environment = EnvironmentProvider.getEnvironment(window, null);
+                        UISupportCallback callback = new UISupportCallback(window);
+
                         ScriptExecutor scriptExecutor = new ScriptExecutor(cmdString, Application.get().getThreadPool());
                         scriptExecutor.setDelay(0);
                         scriptExecutor.setShowStderr(false);
                         ScriptExecutor.Execution execution = scriptExecutor.execute(
-                                new UISupportCallback(window),
+                                callback,
                                 new StringReader(""),
-                                EnvironmentProvider.getEnvironment(window, null));
+                                environment);
                         try {
                             execution.waitForCompletion();
                         } catch (InterruptedException e) {

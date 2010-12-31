@@ -19,6 +19,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ServiceLoader;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 
@@ -66,6 +67,11 @@ public class Bootstrap implements Runnable {
     private static void startApplication(String... args) {
         PerformanceLogger.get().enter(Bootstrap.class.getName() + "#init");
 
+        ServiceLoader<ApplicationLifecycleListener> loader = ServiceLoader.load(ApplicationLifecycleListener.class);
+        for (ApplicationLifecycleListener listener : loader) {
+            listener.applicationAboutToStart();
+        }
+
         ThreadGroup tg = new ThreadGroup("Editor");
 
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
@@ -97,6 +103,10 @@ public class Bootstrap implements Runnable {
 
         Thread mainThread = new Thread(tg, bootstrap);
         mainThread.start();
+
+        for (ApplicationLifecycleListener listener : loader) {
+            listener.applicationStarted();
+        }
     }
 
     private static boolean checkAlreadyRunning() {

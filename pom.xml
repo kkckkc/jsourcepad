@@ -41,6 +41,13 @@
                 <module>theme-osx</module>
             </modules>
         </profile>
+
+        <profile>
+            <id>webview</id>
+            <modules>
+                <module>editor-webview</module>
+            </modules>
+        </profile>
     </profiles>
 
 

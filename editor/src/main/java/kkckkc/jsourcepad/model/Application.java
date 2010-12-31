@@ -112,6 +112,10 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
         return beanFactory.getBean(LanguageManager.class);
     }
 
+    public Browser getBrowser() {
+        return beanFactory.getBean(Browser.class);
+    }
+
 	public StyleScheme getStyleScheme(StyleSettings styleSettings) {
 		StyleParser styleParser = beanFactory.getBean(StyleParser.class);
 

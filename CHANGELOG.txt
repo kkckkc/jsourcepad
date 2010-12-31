@@ -18,6 +18,7 @@ Features
  - Git and subversion status on files are shown as colors in the project view
  - File encoding changed to utf-8
  - TextMate.system javascript support in HTML output for command bundle items
+ - Embedded browser
 
 Bugfixes
  - NPE whith new tabs created by bundles

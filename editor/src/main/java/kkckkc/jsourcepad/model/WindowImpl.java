@@ -68,7 +68,8 @@ public class WindowImpl extends AbstractMessageBus implements Window, MessageBus
         } else {
             root.getGlassPane().setBackground(new Color(0, 0, 0, 0f));
         }
-        root.getGlassPane().setVisible(true);
+        if (! root.getGlassPane().isVisible())
+            root.getGlassPane().setVisible(true);
     }
 
     @Override

@@ -1,0 +1,94 @@
+<project name="downloadDependencies" default="install">
+
+    <property file="build.properties" />
+    <property name="swt.version.full" value="R-3.6.1-201009090800" />
+    <property name="swt.version" value="3.6.1" />
+
+    <target name="install" depends="extract">
+        <install groupId="kkckkc.jsourcepad.ext.swt" artifactId="swt-win32-win32-x86" version="${swt.version}"
+                 src="target/download/swt/swt-win32-win32-x86.jar" />
+        <install groupId="kkckkc.jsourcepad.ext.swt" artifactId="swt-gtk-linux-x86" version="${swt.version}"
+                 src="target/download/swt/swt-gtk-linux-x86.jar" />
+        <install groupId="kkckkc.jsourcepad.ext.swt" artifactId="swt-gtk-linux-x86_64" version="${swt.version}"
+                 src="target/download/swt/swt-gtk-linux-x86_64.jar" />
+        <install groupId="kkckkc.jsourcepad.ext.swt" artifactId="swt-cocoa-macosx" version="${swt.version}"
+                 src="target/download/swt/swt-cocoa-macosx.jar" />
+        <install groupId="kkckkc.jsourcepad.ext.djnative" artifactId="djnative" version="0.9.9"
+                 src="target/download/djnative/DJNativeSwing.jar" />
+        <install groupId="kkckkc.jsourcepad.ext.djnative" artifactId="djnative-swt" version="0.9.9"
+                 src="target/download/djnative/DJNativeSwing-SWT.jar" />
+    </target>
+
+    <target name="extract" depends="download">
+        <mkdir dir="target/download/swt" />
+
+        <extract-swt src="target/download/download/swt-${swt.version}-win32-win32-x86.zip"
+                     dest="target/download/swt/swt-win32-win32-x86.jar" />
+        <extract-swt src="target/download/download/swt-${swt.version}-gtk-linux-x86.zip"
+                     dest="target/download/swt/swt-gtk-linux-x86.jar" />
+        <extract-swt src="target/download/download/swt-${swt.version}-gtk-linux-x86_64.zip"
+                     dest="target/download/swt/swt-gtk-linux-x86_64.jar" />
+        <extract-swt src="target/download/download/swt-${swt.version}-cocoa-macosx.zip"
+                     dest="target/download/swt/swt-cocoa-macosx.jar" />
+
+        <unzip src="target/download/download/djnative.zip"
+                dest="target/download/djnative">
+            <patternset>
+                <include name="**/DJNativeSwing.jar"/>
+                <include name="**/DJNativeSwing-SWT.jar"/>
+            </patternset>
+            <mapper type="flatten" />
+        </unzip>
+    </target>
+
+    <target name="download">
+        <mkdir dir="target/download/download" />
+
+        <get usetimestamp="true" src="http://ftp.ing.umu.se/mirror/eclipse/eclipse/downloads/drops/${swt.version.full}/swt-${swt.version}-win32-win32-x86.zip" dest="target/download/download" />
+        <get usetimestamp="true" src="http://ftp.ing.umu.se/mirror/eclipse/eclipse/downloads/drops/${swt.version.full}/swt-${swt.version}-gtk-linux-x86.zip" dest="target/download/download" />
+        <get usetimestamp="true" src="http://ftp.ing.umu.se/mirror/eclipse/eclipse/downloads/drops/${swt.version.full}/swt-${swt.version}-gtk-linux-x86_64.zip" dest="target/download/download" />
+        <get usetimestamp="true" src="http://ftp.ing.umu.se/mirror/eclipse/eclipse/downloads/drops/${swt.version.full}/swt-${swt.version}-cocoa-macosx.zip" dest="target/download/download" />
+
+        <get usetimestamp="true" src="http://downloads.sourceforge.net/project/djproject/DJ%20Native%20Swing/0.9.9%20preview/DJNativeSwing-SWT-0-9-9-20101215.zip?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fdjproject%2Ffiles%2FDJ%2520Native%2520Integration%2F1.0.1%2F&amp;ts=1293693819&amp;use_mirror=ignum2"
+            dest="target/download/download/djnative.zip" />
+    </target>
+
+    <macrodef name="extract-swt">
+        <attribute name="dest" />
+        <attribute name="src" />
+        <sequential>
+            <unzip src="@{src}"
+                    dest="target/download/swt">
+                <patternset>
+                    <include name="**/swt.jar"/>
+                </patternset>
+                <mapper type="flatten" />
+            </unzip>
+            <rename src="target/download/swt/swt.jar" dest="@{dest}" />
+        </sequential>
+    </macrodef>
+
+    <macrodef name="install">
+        <attribute name="groupId" />
+        <attribute name="artifactId" />
+        <attribute name="version" />
+        <attribute name="src" />
+        <sequential>
+            <java classname="org.codehaus.classworlds.Launcher" fork="true"
+                  dir=".">
+                <jvmarg value="-Xmx512m"/>
+                <classpath>
+                    <fileset dir="${maven.home}/boot">
+                        <include name="*.jar"/>
+                    </fileset>
+                    <fileset dir="${maven.home}/lib">
+                        <include name="*.jar"/>
+                    </fileset>
+                </classpath>
+                <sysproperty key="classworlds.conf" value="${maven.home}/bin/m2.conf"/>
+                <sysproperty key="maven.home" value="${maven.home}"/>
+                <arg line="install:install-file -DgroupId=@{groupId} -DartifactId=@{artifactId} -Dversion=@{version} -Dpackaging=jar -Dfile=@{src}"/>
+            </java>
+        </sequential>
+    </macrodef>
+</project>

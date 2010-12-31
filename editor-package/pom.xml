@@ -30,6 +30,16 @@
                 </dependency>
             </dependencies>
         </profile>
+        <profile>
+            <id>webview</id>
+            <dependencies>
+                <dependency>
+                    <groupId>kkckkc.jsourcepad</groupId>
+                    <artifactId>editor-webview</artifactId>
+                    <version>0.0.1-SNAPSHOT</version>
+                </dependency>
+            </dependencies>
+        </profile>
     </profiles>
     <build>
         <plugins>

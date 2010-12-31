@@ -5,11 +5,13 @@ import com.google.common.base.Function;
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
 import kkckkc.jsourcepad.model.*;
-import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.bundle.snippet.Snippet;
 import kkckkc.jsourcepad.util.Config;
-import kkckkc.jsourcepad.util.io.*;
+import kkckkc.jsourcepad.util.io.NullWriter;
+import kkckkc.jsourcepad.util.io.ScriptExecutor;
 import kkckkc.jsourcepad.util.io.ScriptExecutor.Execution;
+import kkckkc.jsourcepad.util.io.TeeWriter;
+import kkckkc.jsourcepad.util.io.UISupportCallback;
 import kkckkc.syntaxpane.model.Interval;
 import kkckkc.utils.Os;
 import kkckkc.utils.io.FileUtils;
@@ -19,14 +21,13 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletResponse;
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
-import java.awt.*;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 @SuppressWarnings("restriction")
 public class CommandBundleItem implements BundleItem<Void> {
@@ -217,11 +218,21 @@ public class CommandBundleItem implements BundleItem<Void> {
 
                     to.getParentFile().mkdirs();
 
-                    Files.write(
-                            "#!/bin/bash\n" +
-                            shebangLine + " \"$TM_BUNDLE_SUPPORT/" + f.getName() + ".real\" $*",
-                            wrapper,
-                            Charsets.US_ASCII);
+                    // TODO: Need to check different script types
+                    if (f.getCanonicalPath().endsWith(".rb")) {
+                        Files.write(
+                                "#!/usr/bin/env ruby\n" +
+                                "exec %Q!" + shebangLine + " \"#{ENV['TM_BUNDLE_SUPPORT']}/" + f.getName() + ".real\" #{ARGV.join(\" \")}!",
+                                wrapper,
+                                Charsets.US_ASCII);
+
+                    } else {
+                        Files.write(
+                                "#!/bin/bash\n" +
+                                shebangLine + " \"$TM_BUNDLE_SUPPORT/" + f.getName() + ".real\" $*",
+                                wrapper,
+                                Charsets.US_ASCII);
+                    }
 
                     Files.write(contents, to);
                 } else {
@@ -317,31 +328,63 @@ public class CommandBundleItem implements BundleItem<Void> {
 	public static class HtmlExecutionMethod implements ExecutionMethod {
 		private Window window;
         private Writer writer;
-        private CountDownLatch requestSentLatch;
-        private CountDownLatch executionCompletedLatch;
+        private BlockingQueue<Object> outputQueue;
         private String path;
 
         private static Logger logger = LoggerFactory.getLogger(HtmlExecutionMethod.class);
+        private Writer processWriter;
+
+
+        private Object SENTINEL = new Object();
 
         public HtmlExecutionMethod(Window window, WindowManager wm) {
 			this.window = window;
-		}
+            outputQueue = new LinkedBlockingQueue<Object>();
+        }
 
         @Override
         public Writer getWriter() {
-            return new TransformingWriter(writer, TransformingWriter.CHUNK_BY_LINE,
-                    new Function<String, String>() {
-                        public String apply(String s) {
-                            s = s.replaceAll("file://(?!localhost)", "http://localhost:" + Config.getHttpPort() + "/files");
-                            return s;
+            final StringBuilder buffer = new StringBuilder();
+            final Function<String, String> transformation = new Function<String, String>() {
+                public String apply(String s) {
+                    s = s.replaceAll("file://(?!localhost)", "http://localhost:" + Config.getHttpPort() + "/files");
+                    return s;
+                }
+            };
+
+            processWriter = new Writer() {
+                @Override
+                public void write(char[] cbuf, int off, int len) throws IOException {
+                    for (int i = off; i < (off + len); i++) {
+                        buffer.append(cbuf[i]);
+                        if (cbuf[i] == '\n') {
+                           flushBuffer();
                         }
-                    });
+                    }
+                }
+
+                private void flushBuffer() {
+                    String transformedResult = transformation.apply(buffer.toString());
+                    outputQueue.add(transformedResult);
+                    buffer.setLength(0);
+                }
+
+                @Override
+                public void flush() throws IOException {
+                    flushBuffer();
+                }
+
+                @Override
+                public void close() throws IOException {
+                    flushBuffer();
+                    outputQueue.add(SENTINEL);
+                }
+            };
+            return processWriter;
         }
 
         @Override
         public void preExecute() {
-            requestSentLatch = new CountDownLatch(1);
-
             CommandBundleServer server = Application.get().getBeanFactory().getBean(CommandBundleServer.class);
             long id = server.register(new CommandBundleServer.Handler() {
                 public void handle(HttpServletResponse resp) throws IOException {
@@ -379,33 +422,40 @@ public class CommandBundleItem implements BundleItem<Void> {
                             "        return {};" +
                             "    } " +
                             "}; " +
-                            "exec = TextMate.system;" +
                             "</script>");
 
-                    executionCompletedLatch = new CountDownLatch(1);
-                    requestSentLatch.countDown();
-
+                    Object line;
                     try {
-                        executionCompletedLatch.await(5, TimeUnit.MINUTES);
+                        while ((line = outputQueue.take()) != SENTINEL) {
+                            writer.write(line.toString());
+                        }
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
+
+                    writer.write(
+                            "<script>\n" +
+                            "document.body.onclick = function(e) { " +
+                            "  var target = e.target || e.srcElement; " +
+                            "  if (target.tagName.toLowerCase() == 'a') { " +
+                            "    if (target.href.match(/^txmt:\\/\\/open/)) { " +
+                            "      location.href = target.href.replace(/txmt:\\/\\/open\\/?\\?([^'\" \\t\\n\\f\\r]+)/, 'http://localhost:' + TextMate.port + '/cmd/open?windowId=' + TextMate.windowId + '&$1');" +
+                            "      return false;\n" +
+                            "    } " +
+                            "  }" +
+                            "}" +
+                            "</script>");
+                    writer.close();
                 }
             });
 
             path = "/command/" + id;
 
             try {
-                Desktop.getDesktop().browse(new URI("http://localhost:" + Config.getHttpPort() + path));
+                Application.get().getBrowser().show(new URI("http://localhost:" + Config.getHttpPort() + path), false);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             } catch (URISyntaxException e) {
-                throw new RuntimeException(e);
-            }
-
-            try {
-                requestSentLatch.await(20, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -413,24 +463,10 @@ public class CommandBundleItem implements BundleItem<Void> {
         @Override
         public void postExecute() {
             try {
-                writer.write(
-                        "<script>\n" +
-                        "document.body.onclick = function(e) { " +
-                        "  var target = e.target || e.srcElement; " +
-                        "  if (target.tagName.toLowerCase() == 'a') { " +
-                        "    if (target.href.match(/^txmt:\\/\\/open/)) { " +
-                        "      location.href = target.href.replace(/txmt:\\/\\/open\\/?\\?([^'\" \\t\\n\\f\\r]+)/, 'http://localhost:' + TextMate.port + '/cmd/open?windowId=' + TextMate.windowId + '&$1');" +
-                        "      return false;\n" +
-                        "    } " +
-                        "  }" +
-                        "}" +
-                        "</script>");
-
-                writer.close();
+                processWriter.close();
             } catch (IOException e) {
-                logger.error("Error closing HTTP stream", e);
+                throw new RuntimeException(e);
             }
-            executionCompletedLatch.countDown();
         }
 
         @Override
