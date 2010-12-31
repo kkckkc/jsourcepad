@@ -4,6 +4,7 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Function;
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
+import com.google.common.io.Resources;
 import kkckkc.jsourcepad.model.*;
 import kkckkc.jsourcepad.model.bundle.snippet.Snippet;
 import kkckkc.jsourcepad.util.Config;
@@ -391,38 +392,13 @@ public class CommandBundleItem implements BundleItem<Void> {
                     resp.setContentType("text/html");
 
                     writer = resp.getWriter();
+                    writer.write("<script>\n");
                     writer.write(
-                            "<script>" +
-                            "TextMate = {}; " +
-                            "TextMate.port = " + Config.getHttpPort() + "; " +
-                            "TextMate.windowId = " + window.getId() + "; " +
-                            "TextMate.system = function (cmd, handler) { " +
-                            "    if (handler == null) { " +
-                            "        xhr = new XMLHttpRequest(); " +
-                            "        xhr.open('GET', 'http://localhost:' + TextMate.port + '/cmd/exec?cmd=' + escape(cmd), false); " +
-                            "        xhr.send(null); " +
-                            "        return { " +
-                            "            outputString: xhr.responseText, " +
-                            "            errorString: null, " +
-                            "            status: xhr.getResponseHeader('X-ResponseCode') " +
-                            "        }; " +
-                            "    } else { " +
-                            "        xhr = new XMLHttpRequest(); " +
-                            "        xhr.open('GET', 'http://localhost:' + TextMate.port + '/cmd/exec?cmd=' + escape(cmd), false); " +
-                            "        xhr.onreadystatechange = function() { " +
-                            "            if (xhr.readyState == 4 && xhr.status != 404) { " +
-                            "                handler({" +
-                            "                    outputString: xhr.responseText, " +
-                            "                    errorString: null, " +
-                            "                    status: xhr.getResponseHeader('X-ResponseCode') " +
-                            "                }); " +
-                            "            } " +
-                            "        };" +
-                            "        xhr.send(null); " +
-                            "        return {};" +
-                            "    } " +
-                            "}; " +
-                            "</script>");
+                            Resources.toString(Resources.getResource(this.getClass(), "/textmate.js"), Charsets.UTF_8).
+                            replaceAll("@port@", Integer.toString(Config.getHttpPort())).
+                            replaceAll("@windowId@", Integer.toString(window.getId()))
+                    );
+                    writer.write("\n</script>");
 
                     Object line;
                     try {

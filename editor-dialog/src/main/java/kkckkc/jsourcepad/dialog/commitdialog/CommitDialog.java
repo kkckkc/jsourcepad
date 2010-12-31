@@ -14,6 +14,7 @@ import kkckkc.jsourcepad.model.bundle.EnvironmentProvider;
 import kkckkc.jsourcepad.util.Cygwin;
 import kkckkc.jsourcepad.util.io.ScriptExecutor;
 import kkckkc.jsourcepad.util.io.UISupportCallback;
+import kkckkc.jsourcepad.util.ui.WindowFocusUtils;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -142,9 +143,7 @@ public class CommitDialog implements Dialog {
                     jdialog.setLocationRelativeTo(window.getContainer());
                     jdialog.setLocationByPlatform(true);
 
-                    jdialog.setAlwaysOnTop(true);
-                    jdialog.setVisible(true);
-                    jdialog.setAlwaysOnTop(false);
+                    WindowFocusUtils.showAndFocusDialog(jdialog);
 
 
                     if (returnValue == 0) {

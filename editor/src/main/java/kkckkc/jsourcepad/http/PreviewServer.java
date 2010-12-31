@@ -12,6 +12,7 @@ import kkckkc.jsourcepad.util.io.ScriptExecutor;
 import kkckkc.jsourcepad.util.io.UISupportCallback;
 import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
 import kkckkc.jsourcepad.util.messagebus.Subscription;
+import kkckkc.jsourcepad.util.ui.WindowFocusUtils;
 import kkckkc.syntaxpane.model.Interval;
 import kkckkc.syntaxpane.model.LineManager;
 import kkckkc.utils.StringUtils;
@@ -142,8 +143,7 @@ public class PreviewServer {
                     }
 
                     // Trigger toFront
-                    window.getContainer().setAlwaysOnTop(true);
-                    window.getContainer().setAlwaysOnTop(false);
+                    WindowFocusUtils.focusWindow(window.getContainer());
 
                     String line = req.getParameter("line");
                     if (line != null) {

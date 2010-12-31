@@ -2,6 +2,7 @@ package kkckkc.jsourcepad.dialog.tmdialog;
 
 import com.google.common.collect.Maps;
 import kkckkc.jsourcepad.model.Window;
+import kkckkc.jsourcepad.util.ui.WindowFocusUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -67,9 +68,7 @@ public abstract class BaseTmDialogDelegate implements TmDialogDelegate {
             jdialog.setLocationByPlatform(true);
         }
 
-        jdialog.setAlwaysOnTop(true);
-        jdialog.setVisible(true);
-        jdialog.setAlwaysOnTop(false);
+        WindowFocusUtils.showAndFocusDialog(jdialog);
     }
 
     protected abstract void buildDialog(JPanel panel);

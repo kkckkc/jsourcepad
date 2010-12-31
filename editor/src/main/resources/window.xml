@@ -6,8 +6,8 @@
 
 	<!-- Domain model -->
 	<bean id="window" class="kkckkc.jsourcepad.model.WindowImpl" />
-	<bean id="docList" class="kkckkc.jsourcepad.model.DocListImpl" />
-	<bean id="project" class="kkckkc.jsourcepad.model.ProjectImpl">
+	<bean id="docList" class="kkckkc.jsourcepad.model.DocListImpl" lazy-init="false"/>
+	<bean id="project" class="kkckkc.jsourcepad.model.ProjectImpl" lazy-init="false">
         <property name="projectDir" value="${projectDir}" />
     </bean>
 
