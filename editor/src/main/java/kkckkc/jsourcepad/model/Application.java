@@ -43,12 +43,12 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
 	private StyleScheme cachedStyleScheme;
     
     private GlobalSettingsManager settingsManager;
-    private PersistenceManagerImpl persistenceManager;
+    private PersistentCacheManagerImpl persistentCacheManager;
 
     protected Application() {
         this.threadPool = Executors.newCachedThreadPool();
         this.settingsManager = new GlobalSettingsManager();
-        this.persistenceManager = new PersistenceManagerImpl();
+        this.persistentCacheManager = new PersistentCacheManagerImpl();
     }
 
 	public static Application get() {
@@ -62,7 +62,7 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
 
         // Bootstrapped bean
         beanFactory.registerSingleton("settingsManager", application.getSettingsManager());
-        beanFactory.registerSingleton("persistenceManager", application.getPersistenceManager());
+        beanFactory.registerSingleton("persistentCacheManager", application.getPersistentCacheManager());
 		beanFactory.registerSingleton("beanFactoryLoader", loader);
 		beanFactory.registerSingleton("application", application);
 
@@ -89,8 +89,8 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
     }
 
 
-    public PersistenceManager getPersistenceManager() {
-        return persistenceManager;
+    public PersistentCacheManager getPersistentCacheManager() {
+        return persistentCacheManager;
     }
 
     public SettingsManager getSettingsManager() {

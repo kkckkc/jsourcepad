@@ -1,5 +1,4 @@
 [ ] Store last location and size for the embedded browser preview
-[ ] Remove PersistenceManager
 
 [ ] Fix Project domain model. Move stuff from FileTreeModel. Move decorators
 

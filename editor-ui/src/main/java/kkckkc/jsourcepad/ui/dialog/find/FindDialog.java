@@ -1,16 +1,19 @@
 package kkckkc.jsourcepad.ui.dialog.find;
 
 import kkckkc.jsourcepad.Dialog;
-import kkckkc.jsourcepad.model.*;
+import kkckkc.jsourcepad.model.Buffer;
+import kkckkc.jsourcepad.model.FindHistory;
+import kkckkc.jsourcepad.model.Finder;
 import kkckkc.jsourcepad.model.Window;
+import kkckkc.jsourcepad.model.settings.SettingsManager;
 import kkckkc.syntaxpane.model.Interval;
 import kkckkc.syntaxpane.model.LineManager;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
-import javax.swing.*;
+import javax.swing.JComboBox;
 import java.awt.Dialog.ModalityType;
-import java.awt.*;
+import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -155,12 +158,11 @@ public class FindDialog implements Dialog<FindDialogView> {
     }
 
     private void registerHistory(String settingsKey, JComboBox field) {
-        PersistenceManager pm = Application.get().getPersistenceManager();
+        SettingsManager settingsManager = window.getProject().getSettingsManager();
+        FindHistory history = settingsManager.get(FindHistory.class);
 
-        FindHistory history = pm.load(FindHistory.class);
-        if (history == null) history = new FindHistory();
         history.addEntry(settingsKey, (String) field.getSelectedItem());
-        pm.save(FindHistory.class, history);
+        settingsManager.update(history);
 
         if (history.getHistory(settingsKey) != null) {
             field.removeAllItems();

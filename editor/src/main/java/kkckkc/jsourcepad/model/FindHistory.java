@@ -2,13 +2,14 @@
 package kkckkc.jsourcepad.model;
 
 import com.google.common.collect.Maps;
+import kkckkc.jsourcepad.model.settings.ProjectSetting;
+import kkckkc.jsourcepad.model.settings.SettingsManager;
 
-import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class FindHistory implements Serializable {
+public class FindHistory implements ProjectSetting {
     private static final int MAX_SIZE = 20;
 
     private Map<String, LinkedList<String>> history;
@@ -44,4 +45,8 @@ public class FindHistory implements Serializable {
         this.history = history;
     }
 
+    @Override
+    public SettingsManager.Setting getDefault() {
+        return new FindHistory();
+    }
 }

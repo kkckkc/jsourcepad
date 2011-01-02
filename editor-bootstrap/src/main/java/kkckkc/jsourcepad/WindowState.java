@@ -1,48 +1,77 @@
 package kkckkc.jsourcepad;
 
+import com.google.common.collect.Lists;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.WindowManager;
+import kkckkc.jsourcepad.model.settings.SettingsManager;
 
 import java.io.File;
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
-public class WindowState implements Serializable {
+public class WindowState implements SettingsManager.Setting {
 
-    private List<WindowData> windows = new ArrayList<WindowData>();
+    private List<String> projectDirs = Lists.newArrayList();
+    private String focusedProject;
+
+    public List<String> getProjectDirs() {
+        return projectDirs;
+    }
+
+    public void setProjectDirs(List<String> projectDirs) {
+        this.projectDirs = projectDirs;
+    }
+
+    public String getFocusedProject() {
+        return focusedProject;
+    }
+
+    public void setFocusedProject(String focusedProject) {
+        this.focusedProject = focusedProject;
+    }
+
+    @Override
+    public SettingsManager.Setting getDefault() {
+        return new WindowState();
+    }
 
     public static void save() {
-        WindowState windowState = new WindowState();
+        List<String> projectDirs = Lists.newArrayList();
+        String focusedWindow;
 
         WindowManager wm = Application.get().getWindowManager();
         for (Window window : wm.getWindows()) {
-            WindowData wd = new WindowData();
-            if (window.getProject() != null) {
-                wd.project = window.getProject().getProjectDir();
-            }
-            wd.focused = window == wm.getFocusedWindow();
-            windowState.windows.add(wd);
+            File projectDir = window.getProject().getProjectDir();
+            projectDirs.add(projectDir == null ? null : projectDir.toString());
 
             window.saveState();
         }
 
-        Application.get().getPersistenceManager().save(WindowState.class, windowState);
+        File focusedProjectDir = wm.getFocusedWindow().getProject().getProjectDir();
+        focusedWindow = focusedProjectDir == null ? null : focusedProjectDir.toString();
+
+        WindowState windowState = new WindowState();
+        windowState.setFocusedProject(focusedWindow);
+        windowState.setProjectDirs(projectDirs);
+
+        Application.get().getSettingsManager().update(windowState);
     }
 
     public static void restore() {
-        WindowState windowState = Application.get().getPersistenceManager().load(WindowState.class);
-        if (windowState == null) return;
+        WindowState windowState = Application.get().getSettingsManager().get(WindowState.class);
 
         Window windowToFocus = null;
 
         WindowManager wm = Application.get().getWindowManager();
-        for (WindowData wd : windowState.windows) {
-            Window window = wm.newWindow(wd.project);
+        for (String projectDir : windowState.getProjectDirs()) {
+            Window window = wm.newWindow(projectDir == null ? null : new File(projectDir));
             window.restoreState();
 
-            if (wd.focused) windowToFocus = window;
+            if ((windowState.getFocusedProject() == null && projectDir == null) ||
+                (windowState.getFocusedProject() != null &&
+                        windowState.getFocusedProject().equals(projectDir))) {
+                windowToFocus = window;
+            }
         }
 
         if (windowToFocus != null) {
@@ -50,9 +79,5 @@ public class WindowState implements Serializable {
         }
     }
 
-    static class WindowData implements Serializable {
-        File project;
-        boolean focused;
-    }
 
 }

@@ -17,7 +17,7 @@ import kkckkc.utils.PerformanceLogger;
 import kkckkc.utils.plist.GeneralPListReader;
 import kkckkc.utils.plist.PListReader;
 
-import javax.swing.*;
+import javax.swing.KeyStroke;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileFilter;
@@ -433,7 +433,7 @@ public class BundleManagerImpl implements BundleManager {
         public CachingPListReader(boolean loadFromDisk) {
             this.loadFromDisk = loadFromDisk;
             if (loadFromDisk) {
-                cache = (Map<String, Object>) Application.get().getPersistenceManager().load("bundle.cache");
+                cache = (Map<String, Object>) Application.get().getPersistentCacheManager().load("bundle.cache");
                 if (cache == null) {
                     this.loadFromDisk = false;
                     cache = Maps.newHashMap();
@@ -457,7 +457,7 @@ public class BundleManagerImpl implements BundleManager {
 
         public void close() {
             if (! loadFromDisk)
-                Application.get().getPersistenceManager().save("bundle.cache", cache);
+                Application.get().getPersistentCacheManager().save("bundle.cache", cache);
             cache.clear();
         }
     }

@@ -5,12 +5,12 @@ import kkckkc.utils.PerformanceLogger;
 
 import java.io.*;
 
-public class PersistenceManagerImpl implements PersistenceManager {
-    private static final String SUFFIX = ".ser";
+public class PersistentCacheManagerImpl implements PersistentCacheManager {
+    private static final String SUFFIX = ".cache";
 
     private File settingsDir;
 
-    public PersistenceManagerImpl() {
+    public PersistentCacheManagerImpl() {
         settingsDir = Config.getCacheFolder();
         settingsDir.mkdirs();
         settingsDir.mkdir();

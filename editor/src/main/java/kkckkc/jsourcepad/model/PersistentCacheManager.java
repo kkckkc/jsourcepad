@@ -1,6 +1,6 @@
 package kkckkc.jsourcepad.model;
 
-public interface PersistenceManager {
+public interface PersistentCacheManager {
     public void save(String key, Object object);
     public <T> void save(Class<T> key, T object);
 
