@@ -16,13 +16,8 @@ public class TabManagerImpl implements TabManager, SettingsManager.Listener<TabP
     private Subscription subscription;
 
 	public TabManagerImpl(Doc doc) {
-        if (doc.getDocList().getWindow().getProject() != null) {
-            SettingsManager settingsManager = doc.getDocList().getWindow().getProject().getSettingsManager();
-            subscription = settingsManager.subscribe(TabProjectSettings.class, this, true);
-        } else {
-            SettingsManager settingsManager = Application.get().getSettingsManager();
-		    subscription = settingsManager.subscribe(TabProjectSettings.class, this, true);
-        }
+        SettingsManager settingsManager = doc.getDocList().getWindow().getProject().getSettingsManager();
+        subscription = settingsManager.subscribe(TabProjectSettings.class, this, true);
 	}
 
     @PreDestroy

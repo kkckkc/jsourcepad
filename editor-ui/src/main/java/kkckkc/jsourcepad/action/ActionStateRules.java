@@ -3,6 +3,7 @@ package kkckkc.jsourcepad.action;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.Window;
+import kkckkc.jsourcepad.util.Null;
 import kkckkc.jsourcepad.util.action.ActionContext;
 import kkckkc.jsourcepad.util.action.ActionStateRule;
 import kkckkc.syntaxpane.model.Interval;
@@ -100,7 +101,7 @@ public class ActionStateRules {
         @Override
         public boolean shouldBeEnabled(ActionContext actionContext) {
             Window w = Application.get().getWindowManager().getWindow(actionContext.getComponent());
-            return w.getProject() != null;
+            return Null.Utils.isNotNull(w.getProject());
         }
     };
 

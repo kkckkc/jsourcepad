@@ -11,6 +11,7 @@ import kkckkc.jsourcepad.theme.DefaultTheme;
 import kkckkc.jsourcepad.theme.Theme;
 import kkckkc.jsourcepad.util.BeanFactoryLoader;
 import kkckkc.jsourcepad.util.Config;
+import kkckkc.jsourcepad.util.Null;
 import kkckkc.jsourcepad.util.command.CommandExecutor;
 import kkckkc.jsourcepad.util.io.ErrorDialog;
 import kkckkc.jsourcepad.util.messagebus.AbstractMessageBus;
@@ -167,7 +168,7 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
 
         if (file.isDirectory()) {
             for (Window w : wm.getWindows()) {
-                if (w.getProject() == null) continue;
+                if (Null.Utils.isNull(w.getProject())) continue;
                 if (file.equals(w.getProject().getProjectDir())) {
                     return w;
                 }
@@ -180,7 +181,7 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
             Window windowToUse = null;
 
             for (Window w : wm.getWindows()) {
-                if (w.getProject() == null && windowToUse == null) {
+                if (Null.Utils.isNull(w.getProject()) && windowToUse == null) {
                     windowToUse = w;
                 } else {
                     if (FileUtils.isAncestorOf(file, w.getProject().getProjectDir())) {

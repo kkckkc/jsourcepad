@@ -59,7 +59,7 @@ public class GlobalSettingsManager extends AbstractSettingsManager {
 			XMLEncoder e = new XMLEncoder(new FileOutputStream(file));
 			e.writeObject(setting);
 			e.close();
-			
+
 			Application.get().topic(SettingsManager.Listener.class).post().settingUpdated(setting);
 		} catch (IOException e) {
 			System.err.println(e.getMessage());

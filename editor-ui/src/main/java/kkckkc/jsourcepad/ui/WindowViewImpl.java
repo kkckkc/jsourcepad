@@ -7,6 +7,7 @@ import kkckkc.jsourcepad.ui.statusbar.CurrentPosition;
 import kkckkc.jsourcepad.ui.statusbar.LanguageView;
 import kkckkc.jsourcepad.ui.statusbar.SymbolView;
 import kkckkc.jsourcepad.ui.statusbar.TabView;
+import kkckkc.jsourcepad.util.Null;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
@@ -45,7 +46,7 @@ public class WindowViewImpl implements WindowView {
         blv = window.getPresenter(DocListPresenter.class);
 
         WindowSettings ws = Application.get().getSettingsManager().get(WindowSettings.class);
-        showProjectDrawer = ws.isShowProjectDrawer() && window.getProject() != null;
+        showProjectDrawer = ws.isShowProjectDrawer() && Null.Utils.isNotNull(window.getProject());
 
         if (showProjectDrawer) {
             frame.add(splitpane, BorderLayout.CENTER);

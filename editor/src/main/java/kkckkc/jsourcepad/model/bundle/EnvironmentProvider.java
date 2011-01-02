@@ -10,6 +10,7 @@ import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.util.Config;
 import kkckkc.jsourcepad.util.Cygwin;
+import kkckkc.jsourcepad.util.Null;
 import kkckkc.jsourcepad.util.action.ActionManager;
 import kkckkc.jsourcepad.util.io.SystemEnvironmentHelper;
 import kkckkc.syntaxpane.model.Interval;
@@ -61,7 +62,7 @@ public class EnvironmentProvider {
             }
 		}
 
-        if (window.getProject() != null) {
+        if (Null.Utils.isNotNull(window.getProject())) {
 		    environment.put("TM_PROJECT_DIRECTORY", formatPath(window.getProject().getProjectDir().getPath()));
         }
 
@@ -92,7 +93,7 @@ public class EnvironmentProvider {
 		List<File> files = Lists.newArrayList();
         ActionManager actionManager = window.getActionManager();
         if (! (actionManager.getActionContext().get(ActionContextKeys.FOCUSED_COMPONENT) instanceof Doc)) {
-            if (window.getProject() != null) {
+            if (Null.Utils.isNotNull(window.getProject())) {
 			    files = window.getProject().getSelectedFiles();
             }
 		} else {

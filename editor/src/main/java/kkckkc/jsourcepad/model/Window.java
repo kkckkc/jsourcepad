@@ -1,14 +1,13 @@
 package kkckkc.jsourcepad.model;
 
 import kkckkc.jsourcepad.ScopeRoot;
-import kkckkc.jsourcepad.model.bundle.MacroEngine;
 import kkckkc.jsourcepad.util.action.AcceleratorManager;
 import kkckkc.jsourcepad.util.action.ActionManager;
 import kkckkc.jsourcepad.util.command.CommandExecutor;
 import kkckkc.jsourcepad.util.messagebus.MessageBus;
 
 import javax.script.ScriptEngine;
-import javax.swing.*;
+import javax.swing.JFrame;
 
 
 public interface Window extends MessageBus, ScopeRoot {
@@ -16,6 +15,7 @@ public interface Window extends MessageBus, ScopeRoot {
 
     public void beginWait(boolean showWait, Runnable cancelAction);
     public void endWait();
+
 
     public interface FocusListener {
 		public void focusGained(Window window);
@@ -31,7 +31,10 @@ public interface Window extends MessageBus, ScopeRoot {
 	public ScriptEngine getScriptEngine();
     public CommandExecutor getCommandExecutor();
 
-	public MacroEngine getMacroEngine();
-
     public JFrame getContainer();
+
+    public void requestFocus();
+
+    public void saveState();
+    public void restoreState();
 }

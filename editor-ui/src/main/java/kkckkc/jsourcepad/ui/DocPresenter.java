@@ -20,8 +20,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.Action;
+import javax.swing.JComponent;
+import javax.swing.KeyStroke;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeListener;
@@ -70,14 +72,10 @@ public class DocPresenter implements Presenter<DocView> {
 
 		Application app = Application.get();
 
-        subscriptions.add(app.getSettingsManager().subscribe(new SettingsListener(), false));
-        if (window.getProject() != null) {
-            subscriptions.add(window.getProject().getSettingsManager().subscribe(
-                    new ProjectSettingsListener(window.getProject().getSettingsManager()), false));
-        } else {
-            subscriptions.add(app.getSettingsManager().subscribe(
-                    new ProjectSettingsListener(app.getSettingsManager()), false));
-        }
+        subscriptions.add(app.getSettingsManager().subscribe(Setting.class, new SettingsListener(), false));
+
+        SettingsManager sm = window.getProject().getSettingsManager();
+        subscriptions.add(sm.subscribe(Setting.class, new ProjectSettingsListener(sm), false));
 
 		sourcePane.getEditorPane().getKeymap().addActionForKeyStroke(
                 KeyStroke.getKeyStroke((char) KeyEvent.VK_ENTER), new IndentAction());
@@ -193,8 +191,9 @@ public class DocPresenter implements Presenter<DocView> {
 	        	GutterSettings gutterSettings = (GutterSettings) settings;
 	        	view.getSourcePane().setFoldings(gutterSettings.isFoldings());
                 view.getSourcePane().setLineNumbers(gutterSettings.isLineNumbers());
-	        }
-
+	        } else {
+                return;
+            }
 
 	        view.redraw();
 	    }
@@ -215,7 +214,9 @@ public class DocPresenter implements Presenter<DocView> {
 	        } else if (settings instanceof EditModeProjectSettings) {
 	        	EditModeProjectSettings editModeProjectSettings = (EditModeProjectSettings) settings;
 	        	view.getSourcePane().setOverwriteMode(editModeProjectSettings.isOverwriteMode());
-	        }
+	        } else {
+                return;
+            }
 
 	        view.redraw();
 	    }

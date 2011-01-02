@@ -6,6 +6,7 @@ import kkckkc.jsourcepad.model.Project;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.bundle.BundleStructure;
 import kkckkc.jsourcepad.util.BeanFactoryLoader;
+import kkckkc.jsourcepad.util.Null;
 import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -34,7 +35,7 @@ public class BundleEditorPlugin implements Plugin {
         if (scope == BeanFactoryLoader.DOCUMENT) {
             Window window = (Window) parent;
             File file = (File) context;
-            if (window.getProject() != null && BundleStructure.isOfAnyType(file)) {
+            if (Null.Utils.isNotNull(window.getProject()) && BundleStructure.isOfAnyType(file)) {
                 return new ClassPathResource("document-bundle-editor.xml");
             }
         } else if (scope == BeanFactoryLoader.WINDOW) {

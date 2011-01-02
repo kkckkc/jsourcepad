@@ -1,6 +1,6 @@
 package kkckkc.jsourcepad.model.settings;
 
-public class EditModeProjectSettings implements SettingsManager.ProjectSetting {
+public class EditModeProjectSettings implements ProjectSetting {
 
     private boolean overwriteMode;
     private boolean freehandMode;

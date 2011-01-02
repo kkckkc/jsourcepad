@@ -1,6 +1,6 @@
 package kkckkc.jsourcepad.model.settings;
 
-public class IgnorePatternProjectSettings implements SettingsManager.ProjectSetting {
+public class IgnorePatternProjectSettings implements ProjectSetting {
     private String pattern;
 
     public String getPattern() {

@@ -1,9 +1,7 @@
 package kkckkc.jsourcepad.action;
 
-import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Buffer;
 import kkckkc.jsourcepad.model.Window;
-import kkckkc.jsourcepad.model.settings.SettingsManager;
 import kkckkc.jsourcepad.model.settings.TabProjectSettings;
 import kkckkc.jsourcepad.util.action.BaseAction;
 import kkckkc.syntaxpane.model.Interval;
@@ -20,7 +18,7 @@ public class TextConvertTabsToSpacesAction extends BaseAction {
 
 	@Override
     public void actionPerformed(ActionEvent e) {
-        TabProjectSettings ts = getSettingsManager().get(TabProjectSettings.class);
+        TabProjectSettings ts = window.getProject().getSettingsManager().get(TabProjectSettings.class);
 
 		Buffer activeBuffer = window.getDocList().getActiveDoc().getActiveBuffer();
 
@@ -33,16 +31,6 @@ public class TextConvertTabsToSpacesAction extends BaseAction {
         text = text.replace("\t", builder.toString());
 
 		activeBuffer.replaceText(selectionOrCurrentLine, text, null);
-    }
-
-    private SettingsManager getSettingsManager() {
-        SettingsManager settingsManager;
-        if (window.getProject() != null) {
-            settingsManager = window.getProject().getSettingsManager();
-        } else {
-            settingsManager = Application.get().getSettingsManager();
-        }
-        return settingsManager;
     }
 
 }

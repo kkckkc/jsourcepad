@@ -44,11 +44,6 @@ public abstract class AbstractSettingsManager implements SettingsManager {
         return new SettingsSubscription(listenerPair);
     }
 
-    @Override
-    public <T extends Setting> Subscription subscribe(Listener<?> listener, boolean fireAtInit) {
-	    return subscribe(Setting.class, (Listener<Setting>) listener, fireAtInit);
-    }
-
     class SettingsSubscription implements Subscription {
         private Pair<Class, Listener> listener;
 

@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
 import javax.annotation.PreDestroy;
-import javax.swing.*;
+import javax.swing.JOptionPane;
 import java.io.*;
 import java.util.List;
 
@@ -187,10 +187,8 @@ public class DocImpl implements Doc, ScopeRoot, BeanFactoryAware {
 		getActiveBuffer().clearModified();
 
         Project p = getDocList().getWindow().getProject();
-        if (p != null) {
-            p.refresh(backingFile);
-            p.refresh(backingFile.getParentFile());
-        }
+        p.refresh(backingFile);
+        p.refresh(backingFile.getParentFile());
 		window.topic(Doc.StateListener.class).post().modified(this, true, false);
 	}
 
@@ -209,10 +207,8 @@ public class DocImpl implements Doc, ScopeRoot, BeanFactoryAware {
         this.backingTimestamp = file.lastModified();
 
         Project p = getDocList().getWindow().getProject();
-        if (p != null) {
-            p.refresh(file);
-            p.refresh(file.getParentFile());
-        }
+        p.refresh(file);
+        p.refresh(file.getParentFile());
 		window.topic(Doc.StateListener.class).post().modified(this, true, false);
 	}
 

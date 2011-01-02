@@ -98,22 +98,12 @@ public class TabView extends JLabel implements DocList.Listener, ActionListener,
 			newSettings = new TabProjectSettings(doc.getTabManager().isSoftTabs(), size);
 		}
 
-        getSettingsManager().update(newSettings);
+        window.getProject().getSettingsManager().update(newSettings);
         updateLabel(newSettings);
     }
 
 
-    private SettingsManager getSettingsManager() {
-        SettingsManager settingsManager;
-        if (window.getProject() != null) {
-            settingsManager = window.getProject().getSettingsManager();
-        } else {
-            settingsManager = Application.get().getSettingsManager();
-        }
-        return settingsManager;
-    }
-
-	@Override
+    @Override
     public void settingUpdated(TabProjectSettings settings) {
 		updateLabel(settings);
     }

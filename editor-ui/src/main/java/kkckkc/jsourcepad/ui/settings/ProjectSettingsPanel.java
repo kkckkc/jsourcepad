@@ -4,6 +4,7 @@ import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.settings.IgnorePatternProjectSettings;
 import kkckkc.jsourcepad.model.settings.SettingsPanel;
+import kkckkc.jsourcepad.util.Null;
 
 public class ProjectSettingsPanel implements SettingsPanel {
     private ProjectSettingsPanelView view;
@@ -31,7 +32,7 @@ public class ProjectSettingsPanel implements SettingsPanel {
     public boolean load() {
         Window window = Application.get().getWindowManager().getFocusedWindow();
 
-        if (window.getProject() == null) return false;
+        if (Null.Utils.isNull(window.getProject())) return false;
 
         IgnorePatternProjectSettings setting = window.getProject().getSettingsManager().get(IgnorePatternProjectSettings.class);
         view.getExcludePattern().setText(setting.getPattern());
@@ -43,7 +44,7 @@ public class ProjectSettingsPanel implements SettingsPanel {
     public boolean save() {
         Window window = Application.get().getWindowManager().getFocusedWindow();
 
-        if (window.getProject() == null) return false;
+        if (Null.Utils.isNull(window.getProject())) return false;
         
         IgnorePatternProjectSettings setting = window.getProject().getSettingsManager().get(IgnorePatternProjectSettings.class);
         setting.setPattern(view.getExcludePattern().getText());

@@ -3,7 +3,7 @@
  */
 package kkckkc.jsourcepad.model.settings;
 
-public class TabProjectSettings implements SettingsManager.ProjectSetting {
+public class TabProjectSettings implements ProjectSetting {
 	private boolean softTabs;
 	private int tabSize;
 
