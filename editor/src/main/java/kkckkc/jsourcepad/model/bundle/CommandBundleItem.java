@@ -414,6 +414,10 @@ public class CommandBundleItem implements BundleItem<Void> {
                             "document.body.onclick = function(e) { " +
                             "  e = e || window.event; " +
                             "  var target = e.target || e.srcElement; " +
+                            "  while (target.tagName.toLowerCase() != 'a') { " +
+                            "    target = target.parentNode; " +
+                            "    if (target.tagName.toLowerCase() == 'body') return true; " +
+                            "  } " +
                             "  if (target.tagName.toLowerCase() == 'a') { " +
                             "    if (target.href.match(/^txmt:\\/\\/open/)) { " +
                             "      location.href = target.href.replace(/txmt:\\/\\/open\\/?\\?([^'\" \\t\\n\\f\\r]+)/, 'http://localhost:' + TextMate.port + '/cmd/open?windowId=' + TextMate.windowId + '&$1');" +

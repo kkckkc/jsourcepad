@@ -1,12 +1,6 @@
-[x] Dialog wait for input should not close
-[x] tm_dialog2 -ep
-[x] Change tab size doesn't work
-[x] Change theme on the fly
-[x] Width of margin highlight
-[x] Remove weak subscriptions on message buses. Verify explicit unsubscription on each
-[x] Line number alignment
+[ ] Check textmate preferences like used in the todo bundle
+[ ] Store last location and size for the embedded browser preview
 
-[x] Bundle key bindings from project tree
 [ ] Fix Project domain model. Move stuff from FileTreeModel. Move decorators
 
 ([ ] Rethink tab settings)
