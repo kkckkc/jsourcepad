@@ -8,6 +8,7 @@ import kkckkc.jsourcepad.theme.Theme;
 import kkckkc.jsourcepad.util.BeanFactoryLoader;
 import kkckkc.utils.Os;
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -51,8 +52,9 @@ public class OsxTheme implements Theme {
         return ts.getThemeId() != null && ts.getThemeId().equals(getId());
     }
 
+
     @Override
-    public <P, C> Resource getOverridesLocation(BeanFactoryLoader.Scope<P, C> scope, P parent, C context) {
+    public <P, C> Resource getOverridesLocation(BeanFactoryLoader.Scope<P, C> scope, P parent, C context, DefaultListableBeanFactory container) {
 		if (scope == BeanFactoryLoader.DOCUMENT) {
 			return new ClassPathResource("/osx-document.xml");
 		} else if (scope == BeanFactoryLoader.WINDOW) {
@@ -64,7 +66,7 @@ public class OsxTheme implements Theme {
     }
 
     @Override
-    public <P, C> void init(BeanFactoryLoader.Scope<P, C> scope, P parent, C context, BeanFactory container) {
+    public <P, C> void init(BeanFactoryLoader.Scope<P, C> scope, P parent, C context, DefaultListableBeanFactory container) {
         if (scope == BeanFactoryLoader.WINDOW) {
             Window window = container.getBean(Window.class);
             OsxMenu.init(container, window);

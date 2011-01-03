@@ -2,6 +2,9 @@ package kkckkc.jsourcepad.theme.osx;
 
 import kkckkc.jsourcepad.ui.WindowViewImpl;
 
+import javax.swing.*;
+import java.awt.*;
+
 public class OsxWindowViewImpl extends WindowViewImpl {
 
 	@Override

@@ -2,8 +2,10 @@ package kkckkc.jsourcepad.theme.osx;
 
 import sun.swing.SwingUtilities2;
 
+import javax.swing.*;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
+import java.awt.*;
 
 public class DocumentTabbedPaneUI extends BasicTabbedPaneUI {
 	private static final Insets NO_INSETS = new Insets(3, 0, 0, 0);
