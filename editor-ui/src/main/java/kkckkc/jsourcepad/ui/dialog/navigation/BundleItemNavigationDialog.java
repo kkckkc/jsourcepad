@@ -2,23 +2,38 @@ package kkckkc.jsourcepad.ui.dialog.navigation;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import kkckkc.jsourcepad.model.Application;
+import kkckkc.jsourcepad.model.Doc;
+import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.bundle.Bundle;
 import kkckkc.jsourcepad.model.bundle.BundleItemSupplier;
 import kkckkc.jsourcepad.util.QueryUtils;
+import kkckkc.syntaxpane.model.Scope;
+import kkckkc.syntaxpane.style.Match;
 import kkckkc.utils.io.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.swing.*;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JList;
+import javax.swing.JTextField;
 import javax.swing.event.ListSelectionEvent;
-import java.awt.*;
+import java.awt.Component;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.Collections;
 
 public class BundleItemNavigationDialog extends NavigationDialog {
+
+    private Window window;
+
+    @Autowired
+    public void setWindow(Window window) {
+        this.window = window;
+    }
 
     public void show() {
         super.show();
@@ -78,9 +93,25 @@ public class BundleItemNavigationDialog extends NavigationDialog {
         java.util.List<BundleItemSupplier> dest = Lists.newArrayList();
 
         Predicate<String> predicate = QueryUtils.makePredicate(query);
+        Predicate<BundleItemSupplier> scopePredicate = Predicates.alwaysTrue();
+
+        Doc activeDoc = window.getDocList().getActiveDoc();
+        if (activeDoc != null) {
+            final Scope scope = activeDoc.getActiveBuffer().getInsertionPoint().getScope();
+            scopePredicate = new Predicate<BundleItemSupplier>() {
+                @Override
+                public boolean apply(BundleItemSupplier input) {
+                    if (input.getActivator().getScopeSelector() == null) return true;
+                    Match match = input.getActivator().getScopeSelector().matches(scope, -1);
+                    return match != null && match.isMatch();
+                }
+            };
+        }
 
         for (BundleItemSupplier p : all) {
-            if (predicate.apply(p.getName())) dest.add(p);
+            if (predicate.apply(p.getName()) && scopePredicate.apply(p)) {
+                dest.add(p);
+            }
         }
 
         Ordering<BundleItemSupplier> scoringOrdering = Ordering.natural().onResultOf(

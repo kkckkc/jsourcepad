@@ -14,7 +14,7 @@ public class ScopeSelector {
 	public void addRule(Rule rule) {
 		this.rules.add(rule);
 	}
-	
+
 	public Match matches(Scope scope, int depth) {
 		Match match = Match.NO_MATCH;
 		for (Rule rule : rules) {

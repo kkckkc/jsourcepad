@@ -4,7 +4,7 @@
 
 ([ ] Rethink tab settings)
 
-[ ] Select Bundle Item should filter out unavailable due to scope
+[x] Select Bundle Item should filter out unavailable due to scope
 [-] Disposable
 [ ] Multiple invocations of select current scope should make it bigger
 
