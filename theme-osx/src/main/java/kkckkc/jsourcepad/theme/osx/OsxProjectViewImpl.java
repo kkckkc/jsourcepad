@@ -2,6 +2,7 @@ package kkckkc.jsourcepad.theme.osx;
 
 import kkckkc.jsourcepad.model.DocList;
 import kkckkc.jsourcepad.model.Project;
+import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.Window.FocusListener;
 import kkckkc.jsourcepad.ui.ProjectViewImpl;
 import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
