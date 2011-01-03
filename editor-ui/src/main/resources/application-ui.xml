@@ -16,5 +16,7 @@
 
     <bean id="errorDialog" class="kkckkc.jsourcepad.ui.dialog.error.ErrorDialogImpl" lazy-init="true"/>
     <bean id="errorDialogView" class="kkckkc.jsourcepad.ui.dialog.error.ErrorDialogViewImpl" autowire="constructor" lazy-init="true"/>
-    
+
+    <bean id="action-group-file-open-recent" class="kkckkc.jsourcepad.action.OpenRecentActionGroup" autowire="constructor" lazy-init="false"/>
+
 </beans>

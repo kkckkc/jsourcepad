@@ -19,4 +19,5 @@
     <bean id="previewServer" class="kkckkc.jsourcepad.http.PreviewServer" lazy-init="false" />
 
     <bean id="browser" class="kkckkc.jsourcepad.model.SystemBrowser" />
+
 </beans>

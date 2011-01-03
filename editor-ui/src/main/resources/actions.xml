@@ -13,6 +13,7 @@
 			<list>
                 <ref local="action-file-new" />
 				<ref local="action-file-open" />
+                <ref bean="action-group-file-open-recent" />
 				<null />
 
 				<ref local="action-file-close" />

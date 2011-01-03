@@ -50,6 +50,10 @@ public class DocListImpl implements DocList {
 
 	@Override
 	public Doc open(File file) {
+        if (docs.size() == 1 && ! docs.get(0).isBackedByFile() && ! docs.get(0).isModified()) {
+            close(docs.get(0));
+        }
+
 		int i = 0;
 		for (Doc doc : docs) {
 			if (file.equals(doc.getFile())) {
