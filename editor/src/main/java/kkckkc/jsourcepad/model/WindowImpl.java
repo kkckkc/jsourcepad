@@ -10,6 +10,7 @@ import kkckkc.jsourcepad.util.action.ActionManager;
 import kkckkc.jsourcepad.util.command.CommandExecutor;
 import kkckkc.jsourcepad.util.messagebus.AbstractMessageBus;
 import kkckkc.jsourcepad.util.messagebus.MessageBus;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -20,11 +21,8 @@ import javax.script.Bindings;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-import javax.swing.JFrame;
-import javax.swing.RootPaneContainer;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Rectangle;
+import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.util.List;
 
@@ -44,6 +42,7 @@ public class WindowImpl extends AbstractMessageBus implements MessageBus, ScopeR
         container = new JFrame();
     }
 
+    @NotNull
     public ScriptEngine getScriptEngine() {
 		if (scriptEngine == null) {
 			ScriptEngineManager mgr = new ScriptEngineManager();
@@ -58,6 +57,7 @@ public class WindowImpl extends AbstractMessageBus implements MessageBus, ScopeR
 		return scriptEngine;
 	}
 
+    @NotNull
     @Override
     public CommandExecutor getCommandExecutor() {
         return beanFactory.getBean(CommandExecutor.class);
@@ -97,14 +97,16 @@ public class WindowImpl extends AbstractMessageBus implements MessageBus, ScopeR
 	    this.actionManager = actionManager;
     }
 	
-	@Override
+	@NotNull
+    @Override
 	public Project getProject() {
 		Project project = beanFactory.getBean(Project.class);
         if (project.getProjectDir() == null) return new NullProjectImpl();
         return project;
 	}
 
-	@Override
+	@NotNull
+    @Override
 	public DocList getDocList() {
 		return beanFactory.getBean(DocList.class);
 	}
@@ -119,11 +121,13 @@ public class WindowImpl extends AbstractMessageBus implements MessageBus, ScopeR
 		this.beanFactory = (DefaultListableBeanFactory) beanFactory;
 	}
 
-	@Override
+	@NotNull
+    @Override
 	public ActionManager getActionManager() {
 		return actionManager;
 	}
 
+    @NotNull
     @Override
     public AcceleratorManager getAcceleratorManager() {
         return beanFactory.getBean(AcceleratorManager.class);

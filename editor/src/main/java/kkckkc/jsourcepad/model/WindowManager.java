@@ -1,5 +1,7 @@
 package kkckkc.jsourcepad.model;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.awt.*;
 import java.io.File;
 import java.util.Collection;
@@ -15,13 +17,13 @@ public interface WindowManager {
     public Window getWindow(int id);
 	public Window getWindow(Container jframe);
     public Window getFocusedWindow();
-	
-	public Window newWindow(File file);
-	public void closeWindow(Window window);
-	
-	public Collection<Window> getWindows();
 
-    public void minimize(Window window);
-    public void maximize(Window window);
+    @NotNull public Window newWindow(File file);
+	public void closeWindow(@NotNull Window window);
+	
+	@NotNull public Collection<Window> getWindows();
+
+    public void minimize(@NotNull Window window);
+    public void maximize(@NotNull Window window);
 
 }

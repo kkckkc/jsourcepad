@@ -3,6 +3,7 @@ package kkckkc.jsourcepad.model;
 import com.google.common.collect.Maps;
 import kkckkc.jsourcepad.util.BeanFactoryLoader;
 import kkckkc.utils.swing.ComponentUtils;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
@@ -53,6 +54,7 @@ public class WindowManagerImpl implements WindowManager {
         return focusedWindow;
     }
 
+    @NotNull
     @Override
 	public Window newWindow(File file) {
         Properties props = new Properties();
@@ -90,26 +92,27 @@ public class WindowManagerImpl implements WindowManager {
 	}
 
 	@Override
-	public void closeWindow(Window window) {
+	public void closeWindow(@NotNull Window window) {
         window.getBeanFactory().destroySingletons();
 
 		openWindows.remove(window.getContainer());
 		app.topic(Listener.class).post().destroyed(window);
 	}
 
-	@Override
+	@NotNull
+    @Override
     public Collection<Window> getWindows() {
 	    return openWindows.values();
     }
 
     @Override
-    public void minimize(Window window) {
+    public void minimize(@NotNull Window window) {
         JFrame container = window.getContainer();
         container.setState(JFrame.ICONIFIED);
     }
 
     @Override
-    public void maximize(Window window) {
+    public void maximize(@NotNull Window window) {
         JFrame container = window.getContainer();
         if (container.getState() == JFrame.MAXIMIZED_BOTH) {
             container.setState(JFrame.NORMAL);
