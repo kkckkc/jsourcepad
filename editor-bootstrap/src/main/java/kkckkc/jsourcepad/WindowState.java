@@ -65,7 +65,6 @@ public class WindowState implements SettingsManager.Setting {
         WindowManager wm = Application.get().getWindowManager();
         for (String projectDir : windowState.getProjectDirs()) {
             Window window = wm.newWindow(projectDir == null ? null : new File(projectDir));
-            window.restoreState();
 
             if ((windowState.getFocusedProject() == null && projectDir == null) ||
                 (windowState.getFocusedProject() != null &&

@@ -125,6 +125,7 @@ public class WindowPresenter implements Presenter<WindowView>, DocList.Listener 
             }
         });
 
+        window.restoreState();
         window.topic(DocList.Listener.class).subscribe(DispatchStrategy.ASYNC_EVENT, WindowPresenter.this);
         frame.setVisible(true);
 

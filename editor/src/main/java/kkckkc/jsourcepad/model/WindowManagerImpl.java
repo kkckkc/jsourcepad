@@ -6,8 +6,8 @@ import kkckkc.utils.swing.ComponentUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
-import javax.swing.JFrame;
-import java.awt.Container;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 import java.io.File;
@@ -85,8 +85,6 @@ public class WindowManagerImpl implements WindowManager {
             }
         });
         focusedWindow = window;
-
-        window.restoreState();
 
         return window;
 	}
