@@ -322,9 +322,11 @@ public class FileTreeModel implements TreeModel {
 
     public static class CellRenderer extends DefaultTreeCellRenderer {
         private List<DecorationRenderer> decorationRenderers;
+        private IconProvider iconProvider;
 
-        public CellRenderer(List<DecorationRenderer> decorationRenderers) {
+        public CellRenderer(IconProvider iconProvider, List<DecorationRenderer> decorationRenderers) {
             this.decorationRenderers = decorationRenderers;
+            this.iconProvider = iconProvider;
 			if (Os.isMac()) {
 				setBackgroundNonSelectionColor(null);
 				setBackgroundSelectionColor(null);
@@ -360,21 +362,9 @@ public class FileTreeModel implements TreeModel {
 		private Icon getNodeIcon(Node node) {
             File file = node.getFile();
 		    if (file != null && file.isDirectory()) {
-				if (Os.isMac()) {
-					return UIManager.getDefaults().getIcon("FileChooser.newFolderIcon");
-                } else if (Os.isWindows()) {
-                    return UIManager.getDefaults().getIcon("FileChooser.newFolderIcon");
-				} else {
-					return new ImageIcon("/usr/share/icons/Human/16x16/places/folder.png");
-				}
-			} else {
-				if (Os.isMac()) {
-					return UIManager.getDefaults().getIcon("FileView.fileIcon");
-                } else if (Os.isWindows()) {
-                    return UIManager.getDefaults().getIcon("FileView.fileIcon");
-				} else {
-					return new ImageIcon("/usr/share/icons/gnome/16x16/mimetypes/text-x-generic.png");
-				}
+                return iconProvider.getIcon(IconProvider.Type.FOLDER);
+            } else {
+                return iconProvider.getIcon(IconProvider.Type.FILE);
 			}
 	    }
 	}

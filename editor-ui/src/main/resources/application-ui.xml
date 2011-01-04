@@ -19,4 +19,5 @@
 
     <bean id="action-group-file-open-recent" class="kkckkc.jsourcepad.action.OpenRecentActionGroup" autowire="constructor" lazy-init="false"/>
 
+    <bean id="iconProvider" class="kkckkc.jsourcepad.ui.IconProviderImpl" />
 </beans>

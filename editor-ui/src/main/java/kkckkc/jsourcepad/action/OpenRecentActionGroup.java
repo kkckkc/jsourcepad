@@ -4,16 +4,16 @@ import com.google.common.collect.Lists;
 import kkckkc.jsourcepad.command.global.OpenCommand;
 import kkckkc.jsourcepad.model.*;
 import kkckkc.jsourcepad.model.settings.SettingsManager;
+import kkckkc.jsourcepad.ui.IconProvider;
 import kkckkc.jsourcepad.util.Null;
 import kkckkc.jsourcepad.util.action.ActionGroup;
 import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
 import kkckkc.jsourcepad.util.messagebus.Subscription;
 import kkckkc.utils.io.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.UIManager;
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.util.IdentityHashMap;
@@ -24,9 +24,15 @@ import java.util.Map;
 public class OpenRecentActionGroup extends ActionGroup implements WindowManager.Listener, DocList.Listener {
 
     private Map<Window, Subscription> subscriptions = new IdentityHashMap<Window, Subscription>();
+    private IconProvider iconProvider;
 
     public OpenRecentActionGroup() {
         super("Open Recent");
+    }
+
+    @Autowired
+    public void setIconProvider(IconProvider iconProvider) {
+        this.iconProvider = iconProvider;
     }
 
     @PostConstruct
@@ -85,17 +91,17 @@ public class OpenRecentActionGroup extends ActionGroup implements WindowManager.
     }
 
 
-    private static class OpenRecentAction extends AbstractAction {
+    private class OpenRecentAction extends AbstractAction {
         private File file;
 
         public OpenRecentAction(String s) {
-            super(s);
             File f = new File(s);
             if (f.isDirectory()) {
-                putValue(AbstractAction.SMALL_ICON, UIManager.getDefaults().getIcon("FileChooser.newFolderIcon"));
+                putValue(AbstractAction.SMALL_ICON, iconProvider.getIcon(IconProvider.Type.FOLDER));
             } else {
-                putValue(AbstractAction.SMALL_ICON, UIManager.getDefaults().getIcon("FileView.fileIcon"));
+                putValue(AbstractAction.SMALL_ICON, iconProvider.getIcon(IconProvider.Type.FILE));
             }
+            putValue(AbstractAction.NAME, f.getName());
             this.file = f;
         }
 

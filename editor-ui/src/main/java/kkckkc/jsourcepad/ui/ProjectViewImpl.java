@@ -1,6 +1,7 @@
 package kkckkc.jsourcepad.ui;
 
 import com.google.common.collect.Lists;
+import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.DocList;
 import kkckkc.jsourcepad.model.Project;
 import kkckkc.jsourcepad.model.Window;
@@ -54,7 +55,7 @@ public class ProjectViewImpl extends JTree implements ProjectView, MouseListener
         List<FileTreeModel.DecorationRenderer> dest = Lists.newArrayList();
         dest.addAll(renderers.values());
 
-        setCellRenderer(new FileTreeModel.CellRenderer(dest));
+        setCellRenderer(new FileTreeModel.CellRenderer(Application.get().getBeanFactory().getBean(IconProvider.class), dest));
     }
 
     @Override

@@ -55,7 +55,10 @@ public class GtkTheme implements Theme {
 			return new ClassPathResource("/gtk-document.xml");
 		} else if (scope == BeanFactoryLoader.WINDOW) {
 			return new ClassPathResource("/gtk-window.xml");
+		} else if (scope == BeanFactoryLoader.APPLICATION) {
+			return new ClassPathResource("/gtk-application.xml");
 		}
+
 
 		return null;
     }
