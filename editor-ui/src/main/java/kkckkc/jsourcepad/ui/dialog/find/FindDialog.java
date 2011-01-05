@@ -1,19 +1,17 @@
 package kkckkc.jsourcepad.ui.dialog.find;
 
 import kkckkc.jsourcepad.Dialog;
+import kkckkc.jsourcepad.command.window.FindCommand;
 import kkckkc.jsourcepad.model.Buffer;
-import kkckkc.jsourcepad.model.FindHistory;
 import kkckkc.jsourcepad.model.Finder;
 import kkckkc.jsourcepad.model.Window;
-import kkckkc.jsourcepad.model.settings.SettingsManager;
 import kkckkc.syntaxpane.model.Interval;
 import kkckkc.syntaxpane.model.LineManager;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
-import javax.swing.JComboBox;
 import java.awt.Dialog.ModalityType;
-import java.awt.EventQueue;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -38,6 +36,49 @@ public class FindDialog implements Dialog<FindDialogView> {
     @PostConstruct
     public void init() {
         view.getJDialog().setModalityType(ModalityType.DOCUMENT_MODAL);
+
+
+        view.getNext().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                next();
+            }
+        });
+
+        view.getPrevious().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                previous();
+            }
+        });
+
+        view.getReplace().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                replace();
+            }
+        });
+
+        view.getReplaceAll().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Buffer buffer = window.getDocList().getActiveDoc().getActiveBuffer();
+                Interval scope = getScope(buffer, buffer.getSelection());
+                replaceAll(scope);
+            }
+        });
+
+        view.getFindField().getEditor().getEditorComponent().addKeyListener(new KeyListener() {
+            public void keyTyped(KeyEvent e) { }
+            public void keyReleased(KeyEvent e) { }
+
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    EventQueue.invokeLater(new Runnable() {
+                        public void run() {
+                            next();
+                            close();
+                        }
+                    });
+                }
+            }
+        });
     }
 
     public void show() {
@@ -59,125 +100,72 @@ public class FindDialog implements Dialog<FindDialogView> {
 
         view.getFindField().getEditor().selectAll();
 
-        view.getNext().addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                next(buffer);
-            }
-        });
-
-        view.getPrevious().addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                previous(buffer);
-            }
-        });
-
-        view.getReplace().addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                replace(buffer);
-            }
-        });
-
-        view.getReplaceAll().addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                replaceAll(buffer, scope);
-            }
-        });
-
-        view.getFindField().getEditor().getEditorComponent().addKeyListener(new KeyListener() {
-            public void keyTyped(KeyEvent e) { }
-            public void keyReleased(KeyEvent e) { }
-
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    EventQueue.invokeLater(new Runnable() {
-                        public void run() {
-                            next(buffer);
-                            close();
-                        }
-                    });
-                }
-            }
-        });
-
         view.getJDialog().setVisible(true);
     }
 
-    private Interval next(Buffer buffer) {
-        Finder finder = buffer.newFinder(null, (String) view.getFindField().getSelectedItem(), createOptions());
-        int position = buffer.getInsertionPoint().getPosition();
-        Interval selection = buffer.getSelection();
-        if (selection != null) {
-            position = selection.getEnd();
-        }
-        registerHistory("find", view.getFindField());
-        Interval interval = finder.forward(position);
-        view.getReplace().setEnabled(interval != null);
+    private void next() {
+        FindCommand findCommand = new FindCommand(FindCommand.Action.NEXT);
+        findCommand.setFindString((String) view.getFindField().getSelectedItem());
+        applyOptions(findCommand);
 
-        return interval;
+        window.getCommandExecutor().executeSync(findCommand);
+
+        view.getReplace().setEnabled(findCommand.isFound());
+        updateHistory(findCommand, true, false);
     }
 
-    private Interval previous(Buffer buffer) {
-        Finder finder = buffer.newFinder(null, (String) view.getFindField().getSelectedItem(), createOptions());
+    private void previous() {
+        FindCommand findCommand = new FindCommand(FindCommand.Action.PREVIOUS);
+        findCommand.setFindString((String) view.getFindField().getSelectedItem());
+        applyOptions(findCommand);
 
-        int position = buffer.getInsertionPoint().getPosition();
-        Interval selection = buffer.getSelection();
-        if (selection != null) {
-            position = selection.getStart();
-        }
+        window.getCommandExecutor().executeSync(findCommand);
 
-        registerHistory("find", view.getFindField());
-
-        Interval interval = finder.backward(position);
-        view.getReplace().setEnabled(interval != null);
-
-        return interval;
+        view.getReplace().setEnabled(findCommand.isFound());
+        updateHistory(findCommand, true, false);
     }
 
-    private void replace(Buffer buffer) {
-        registerHistory("replace", view.getReplaceField());
-        
-        Finder finder = buffer.getFinder();
-        finder.setReplacement((String) view.getReplaceField().getSelectedItem());
-        finder.replace();
+    private void replace() {
+        FindCommand findCommand = new FindCommand(FindCommand.Action.REPLACE);
+        findCommand.setReplaceString((String) view.getReplaceField().getSelectedItem());
+        window.getCommandExecutor().executeSync(findCommand);
+        updateHistory(findCommand, false, true);
     }
 
-    private void replaceAll(Buffer buffer, Interval scope) {
-        Finder.Options options = createOptions();
-        options.setWrapAround(false);
-        Finder finder = buffer.newFinder(null, (String) view.getFindField().getSelectedItem(), options);
+    private void replaceAll(Interval scope) {
+        FindCommand findCommand = new FindCommand(FindCommand.Action.REPLACE_ALL);
+        findCommand.setReplaceString((String) view.getReplaceField().getSelectedItem());
+        findCommand.setFindString((String) view.getFindField().getSelectedItem());
+        applyOptions(findCommand);
+        findCommand.setWrapAround(false);
+        findCommand.setScope(scope);
 
-        registerHistory("find", view.getFindField());
-        registerHistory("replace", view.getReplaceField());
-
-
-        finder.setReplacement((String) view.getReplaceField().getSelectedItem());
-
-        finder.replaceAll(scope);
+        window.getCommandExecutor().executeSync(findCommand);
+        updateHistory(findCommand, true, true);
 
         close();
     }
 
-    private void registerHistory(String settingsKey, JComboBox field) {
-        SettingsManager settingsManager = window.getProject().getSettingsManager();
-        FindHistory history = settingsManager.get(FindHistory.class);
+    private void updateHistory(FindCommand findCommand, boolean find, boolean replace) {
+        if (find && findCommand.getFindHistory() != null) {
+            view.getFindField().removeAllItems();
+            for (String value : findCommand.getFindHistory()) {
+                view.getFindField().addItem(value);
+            }
+        }
 
-        history.addEntry(settingsKey, (String) field.getSelectedItem());
-        settingsManager.update(history);
-
-        if (history.getHistory(settingsKey) != null) {
-            field.removeAllItems();
-            for (String value : history.getHistory(settingsKey)) {
-                field.addItem(value);
+        if (replace && findCommand.getReplaceHistory() != null) {
+            view.getReplaceField().removeAllItems();
+            for (String value : findCommand.getReplaceHistory()) {
+                view.getReplaceField().addItem(value);
             }
         }
     }
 
-    private Finder.Options createOptions() {
-        Finder.Options options = new Finder.Options();
-        options.setCaseSensitive(view.getIsCaseSensitive().isSelected());
-        options.setRegexp(view.getIsRegularExpression().isSelected());
-        options.setWrapAround(view.getIsWrapAround().isSelected());
-        return options;
+    private void applyOptions(FindCommand findCommand) {
+        findCommand.setCaseSensitive(view.getIsCaseSensitive().isSelected());
+        findCommand.setRegularExpression(view.getIsRegularExpression().isSelected());
+        findCommand.setWrapAround(view.getIsWrapAround().isSelected());
     }
 
     @Override

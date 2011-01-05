@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 public class Finder {
     private final Buffer buffer;
     private final Pattern pattern;
-    private final Interval scope;
+    private Interval scope;
     private final Options options;
     private final String searchFor;
     private String replacement;
@@ -65,7 +65,17 @@ public class Finder {
         if (! matcher.matches()) return;
 
         buffer.replaceText(buffer.getSelection(), matcher.replaceAll(replacement), null);
+
+        if (scope.contains(selectionInterval.getStart())) {
+            scope = Interval.createWithLength(scope.getStart(), scope.getLength() - (selectionInterval.getLength() - replacement.length()));
+        } else if (selectionInterval.getStart() <= scope.getStart()) {
+            scope = Interval.createWithLength(scope.getStart() - (selectionInterval.getLength() - replacement.length()), scope.getLength());
+        }
+
+        selectionInterval = Interval.createWithLength(selectionInterval.getStart(), replacement.length());
         buffer.setSelection(selectionInterval);
+
+
     }
 
     public Interval getScope() {
@@ -124,15 +134,24 @@ public class Finder {
     }
 
     public void replaceAll(Interval scope) {
-        int position = scope == null ? 0 : scope.getStart();
-        int end = scope == null ? 0 : Integer.MAX_VALUE;
+        if (scope == null) scope = buffer.getCompleteDocument();
+        int position = scope.getStart();
+        int end = scope.getEnd();
 
         Interval interval;
         while ((interval = forward(position)) != null) {
             if (interval.getStart() >= end) return;
-            
-            position = interval.getEnd();
+
             replace();
+
+            if (scope.contains(position)) {
+                scope = Interval.createWithLength(scope.getStart(), scope.getLength() - (interval.getLength() - replacement.length()));
+            } else if (position <= scope.getStart()) {
+                scope = Interval.createWithLength(scope.getStart() - (interval.getLength() - replacement.length()), scope.getLength());
+            }
+
+            position = interval.getStart() + replacement.length();
+            if (position >= buffer.getLength()) return;
         }
     }
 

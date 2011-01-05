@@ -23,6 +23,8 @@ public abstract class AbstractCommandExecutor implements CommandExecutor {
             } catch (InvocationTargetException e) {
                 throw new RuntimeException(e);
             }
+        } else {
+            doExecute(command);
         }
     }
 
