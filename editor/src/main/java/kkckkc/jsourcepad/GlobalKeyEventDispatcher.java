@@ -9,15 +9,22 @@ import kkckkc.jsourcepad.util.action.ActionGroup;
 import kkckkc.jsourcepad.util.action.DelegatingAction;
 import kkckkc.jsourcepad.util.action.MenuFactory;
 import kkckkc.syntaxpane.model.Scope;
+import kkckkc.utils.Os;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JComponent;
+import javax.swing.JPopupMenu;
+import javax.swing.KeyStroke;
+import java.awt.EventQueue;
+import java.awt.KeyEventDispatcher;
+import java.awt.MouseInfo;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.Collection;
 
 public class GlobalKeyEventDispatcher implements KeyEventDispatcher {
 
+    private boolean windowsKeyDown = false;
     private final BundleManager bundleManager;
 
     public GlobalKeyEventDispatcher(BundleManager bundleManager) {
@@ -26,6 +33,7 @@ public class GlobalKeyEventDispatcher implements KeyEventDispatcher {
 
     public boolean dispatchKeyEvent(final KeyEvent e) {
         if (e.getID() == KeyEvent.KEY_RELEASED) {
+            if (e.getKeyCode() == KeyEvent.VK_WINDOWS) windowsKeyDown = false;
             return false;
         }
         if (e.getKeyCode() == KeyEvent.VK_CONTROL || e.getKeyCode() == KeyEvent.VK_SHIFT || e.getKeyCode() == KeyEvent.VK_META || e.getKeyCode() == KeyEvent.VK_META || e.getKeyCode() == KeyEvent.VK_ALT) {
@@ -40,6 +48,18 @@ public class GlobalKeyEventDispatcher implements KeyEventDispatcher {
         Window window = Application.get().getWindowManager().getWindow((JComponent) e.getComponent());
         if (window == null) {
             return false;
+        }
+
+        // Hack to treat windows key as meta on windows
+        if (Os.isWindows()) {
+            if (e.getKeyCode() == KeyEvent.VK_WINDOWS) {
+                windowsKeyDown = true;
+                return true;
+            }
+
+            if (windowsKeyDown) {
+                e.setModifiers(e.getModifiers() | KeyEvent.META_MASK | KeyEvent.META_DOWN_MASK);
+            }
         }
 
         Scope scope = null;
