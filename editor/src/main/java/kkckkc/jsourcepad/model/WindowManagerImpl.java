@@ -93,6 +93,7 @@ public class WindowManagerImpl implements WindowManager {
 
 	@Override
 	public void closeWindow(@NotNull Window window) {
+        window.saveState();
         window.getBeanFactory().destroySingletons();
 
 		openWindows.remove(window.getContainer());
