@@ -5,12 +5,12 @@ import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.bundle.BundleItem;
 import kkckkc.jsourcepad.model.bundle.BundleItemSupplier;
 import kkckkc.jsourcepad.model.bundle.BundleMenuProvider;
+import kkckkc.jsourcepad.util.action.BaseAction;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
-public class BundleAction extends AbstractAction {
+public class BundleAction extends BaseAction {
 
 	private BundleItemSupplier ref;
 
@@ -26,7 +26,7 @@ public class BundleAction extends AbstractAction {
     }
 	
 	@Override
-    public void actionPerformed(ActionEvent e) {
+    public void performAction(ActionEvent e) {
 		BundleItem bi = ref.get();
 		try {
 			Window window = Application.get().getWindowManager().getWindow((Container) e.getSource());

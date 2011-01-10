@@ -16,7 +16,7 @@ public class ViewShowHideProjectDrawerAction extends BaseAction implements Prese
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void performAction(ActionEvent e) {
         SettingsManager settingsManager = Application.get().getSettingsManager();
 
         WindowSettings ws = settingsManager.get(WindowSettings.class);

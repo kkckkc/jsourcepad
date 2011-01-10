@@ -23,7 +23,7 @@ public class EditorAction extends BaseAction {
     }
 
 	@Override
-    public void actionPerformed(ActionEvent e) {
+    public void performAction(ActionEvent e) {
         TextComponentCommand command = new TextComponentCommand();
         command.setAction(this.action);
 

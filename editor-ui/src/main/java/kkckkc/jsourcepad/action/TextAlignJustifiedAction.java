@@ -20,7 +20,7 @@ public class TextAlignJustifiedAction extends BaseAction {
 	}
 
 	@Override
-    public void actionPerformed(ActionEvent e) {
+    public void performAction(ActionEvent e) {
         StyleSettings ss = Application.get().getSettingsManager().get(StyleSettings.class);
 
 		Buffer b = window.getDocList().getActiveDoc().getActiveBuffer();

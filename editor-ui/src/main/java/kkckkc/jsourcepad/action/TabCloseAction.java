@@ -19,7 +19,7 @@ public class TabCloseAction extends BaseAction {
 		this.docList = docList;
 	}
 
-	public void actionPerformed(ActionEvent e) {
+	public void performAction(ActionEvent e) {
         Integer tabIndex = actionContext.get(ActionContextKeys.TAB_INDEX);
 		if (tabIndex == null) {
             if (docList.getActiveDoc() == null) return;

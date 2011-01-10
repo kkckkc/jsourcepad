@@ -15,7 +15,7 @@ public class TabCloseAllAction extends BaseAction {
 		this.docList = docList;
 	}
 
-	public void actionPerformed(ActionEvent e) {
+	public void performAction(ActionEvent e) {
 		for (Doc doc : docList.getDocs()) {
 			doc.close();
 		}

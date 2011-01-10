@@ -6,6 +6,7 @@ import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.bundle.Bundle;
 import kkckkc.jsourcepad.model.bundle.BundleListener;
 import kkckkc.jsourcepad.util.action.ActionGroup;
+import kkckkc.jsourcepad.util.action.BaseAction;
 import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
 import kkckkc.syntaxpane.parse.grammar.Language;
 import kkckkc.utils.PerformanceLogger;
@@ -67,7 +68,7 @@ public class LanguageActionGroup extends ActionGroup implements BundleListener {
         rebuildMenu(Application.get());
     }
 
-    public static class LanguageAction extends AbstractAction {
+    public static class LanguageAction extends BaseAction {
 		private Language language;
 		private Application application;
 
@@ -78,7 +79,7 @@ public class LanguageActionGroup extends ActionGroup implements BundleListener {
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
+		public void performAction(ActionEvent e) {
 			language.compile();
 
 			Window window = application.getWindowManager().getWindow((JComponent) e.getSource());

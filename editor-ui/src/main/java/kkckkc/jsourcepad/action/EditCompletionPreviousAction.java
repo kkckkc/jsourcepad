@@ -11,7 +11,7 @@ public class EditCompletionPreviousAction extends BaseAction {
 	}
 
 	@Override
-    public void actionPerformed(ActionEvent e) {
+    public void performAction(ActionEvent e) {
         CompletionCommand command = new CompletionCommand();
         command.setDirection(CompletionCommand.Direction.PREVIOUS);
         commandExecutor.execute(command);

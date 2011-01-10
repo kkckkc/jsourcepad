@@ -19,7 +19,7 @@ public class FileCloseAction extends BaseAction {
 	}
 	
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void performAction(ActionEvent e) {
 		WindowManager wm = app.getWindowManager();
 		Window window = wm.getWindow((JComponent) e.getSource());
 		wm.closeWindow(window);

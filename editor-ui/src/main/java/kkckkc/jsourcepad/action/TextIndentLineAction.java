@@ -16,7 +16,7 @@ public class TextIndentLineAction extends BaseAction {
 	}
 	
 	@Override
-    public void actionPerformed(ActionEvent e) {
+    public void performAction(ActionEvent e) {
 		Buffer activeBuffer = window.getDocList().getActiveDoc().getActiveBuffer();
 		Interval selectionOrCurrentLine = activeBuffer.getSelectionOrCurrentLine();
 		activeBuffer.indent(selectionOrCurrentLine);

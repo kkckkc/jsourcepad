@@ -10,7 +10,7 @@ import java.awt.event.ActionEvent;
 public class BundlesBundleEditorShowAction extends BaseAction {
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void performAction(ActionEvent e) {
         WindowManager wm = Application.get().getWindowManager();
 		wm.newWindow(Config.getBundlesFolder());
 	}

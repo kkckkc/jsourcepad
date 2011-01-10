@@ -17,7 +17,7 @@ public class TextConvertTabsToSpacesAction extends BaseAction {
 	}
 
 	@Override
-    public void actionPerformed(ActionEvent e) {
+    public void performAction(ActionEvent e) {
         TabProjectSettings ts = window.getProject().getSettingsManager().get(TabProjectSettings.class);
 
 		Buffer activeBuffer = window.getDocList().getActiveDoc().getActiveBuffer();

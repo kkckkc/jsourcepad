@@ -10,7 +10,7 @@ import java.awt.event.ActionEvent;
 public class ViewFontIncreaseAction extends BaseAction {
 
 	@Override
-    public void actionPerformed(ActionEvent e) {
+    public void performAction(ActionEvent e) {
 		SettingsManager settingsManager = Application.get().getSettingsManager();
 		
 		FontSettings fontSettings = settingsManager.get(FontSettings.class);

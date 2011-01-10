@@ -15,7 +15,7 @@ public class WindowZoomAction extends BaseAction {
     }
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void performAction(ActionEvent e) {
         Application.get().getWindowManager().maximize(window);
     }
 

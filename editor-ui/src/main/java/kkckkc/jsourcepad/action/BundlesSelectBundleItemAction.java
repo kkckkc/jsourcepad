@@ -15,7 +15,7 @@ public class BundlesSelectBundleItemAction extends BaseAction {
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void performAction(ActionEvent e) {
         BundleItemNavigationDialog dialog = window.getPresenter(BundleItemNavigationDialog.class);
         dialog.show();
     }

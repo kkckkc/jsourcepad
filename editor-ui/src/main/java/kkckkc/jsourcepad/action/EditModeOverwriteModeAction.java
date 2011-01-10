@@ -7,9 +7,7 @@ import kkckkc.jsourcepad.util.action.BaseAction;
 import kkckkc.jsourcepad.util.action.Presenter;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.swing.Action;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JMenuItem;
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 public class EditModeOverwriteModeAction extends BaseAction implements Presenter.Menu {
@@ -26,7 +24,7 @@ public class EditModeOverwriteModeAction extends BaseAction implements Presenter
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void performAction(ActionEvent e) {
         SettingsManager settingsManager = window.getProject().getSettingsManager();
 
         EditModeProjectSettings editModeProjectSettings = settingsManager.get(EditModeProjectSettings.class);

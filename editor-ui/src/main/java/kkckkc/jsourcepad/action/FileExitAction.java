@@ -7,7 +7,7 @@ import java.awt.event.ActionEvent;
 public class FileExitAction extends BaseAction {
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void performAction(ActionEvent e) {
 		System.exit(0);
 	}
 

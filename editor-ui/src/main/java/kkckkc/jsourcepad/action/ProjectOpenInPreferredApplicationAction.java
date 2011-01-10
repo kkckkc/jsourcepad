@@ -14,7 +14,7 @@ public class ProjectOpenInPreferredApplicationAction extends BaseAction {
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void performAction(ActionEvent e) {
         Object[] tp = actionContext.get(ActionContextKeys.SELECTION);
 
         try {

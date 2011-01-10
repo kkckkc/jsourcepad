@@ -18,7 +18,7 @@ public class FileSaveAsAction extends BaseAction {
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void performAction(ActionEvent e) {
 		final Doc doc = actionContext.get(ActionContextKeys.ACTIVE_DOC);
 		fileSaveDialog.show(new File("."), new FileChooserCallback() {
 			@Override

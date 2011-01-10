@@ -19,7 +19,7 @@ public class TextAlignRightAction extends BaseAction {
 	}
 
 	@Override
-    public void actionPerformed(ActionEvent e) {
+    public void performAction(ActionEvent e) {
         StyleSettings ss = Application.get().getSettingsManager().get(StyleSettings.class);
 
 		Buffer activeBuffer = window.getDocList().getActiveDoc().getActiveBuffer();

@@ -15,7 +15,7 @@ public class EditPastePreviousAction extends BaseAction {
 	}
 
 	@Override
-    public void actionPerformed(ActionEvent e) {
+    public void performAction(ActionEvent e) {
         Doc activeDoc = actionContext.get(ActionContextKeys.ACTIVE_DOC);
 
         ClipboardManager cm = Application.get().getClipboardManager();

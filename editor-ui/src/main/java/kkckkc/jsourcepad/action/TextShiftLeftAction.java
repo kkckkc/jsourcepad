@@ -16,7 +16,7 @@ public class TextShiftLeftAction extends BaseAction {
 	}
 	
 	@Override
-    public void actionPerformed(ActionEvent e) {
+    public void performAction(ActionEvent e) {
 		Buffer activeBuffer = window.getDocList().getActiveDoc().getActiveBuffer();
 		Interval selectionOrCurrentLine = activeBuffer.getSelectionOrCurrentLine();
 		activeBuffer.shift(selectionOrCurrentLine, -1);

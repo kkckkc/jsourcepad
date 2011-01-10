@@ -20,7 +20,7 @@ public class FileOpenProjectAction extends BaseAction {
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void performAction(ActionEvent e) {
 		directoryOpenDialog.show(new File("."), new FileChooserCallback() {
 			@Override
 			public void cancel() {

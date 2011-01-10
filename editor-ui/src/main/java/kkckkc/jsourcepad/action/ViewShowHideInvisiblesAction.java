@@ -15,7 +15,7 @@ public class ViewShowHideInvisiblesAction extends BaseAction implements Presente
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void performAction(ActionEvent e) {
         SettingsManager settingsManager = Application.get().getSettingsManager();
 
         StyleSettings ws = settingsManager.get(StyleSettings.class);

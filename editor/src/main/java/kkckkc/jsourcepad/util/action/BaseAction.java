@@ -1,5 +1,6 @@
 package kkckkc.jsourcepad.util.action;
 
+import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.util.command.CommandExecutor;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
@@ -17,6 +18,16 @@ public abstract class BaseAction extends AbstractAction implements BeanNameAware
     protected ActionManager actionManager;
     protected AcceleratorManager acceleratorManager;
     protected CommandExecutor commandExecutor;
+
+    public BaseAction() {}
+
+    public BaseAction(String name) {
+        super(name);
+    }
+
+    public BaseAction(Action delegate) {
+        putValue("wrappedAction", delegate);
+    }
 
     @Autowired
     public void setCommandExecutor(CommandExecutor commandExecutor) {
@@ -36,6 +47,10 @@ public abstract class BaseAction extends AbstractAction implements BeanNameAware
     @Autowired
     public void setAcceleratorManager(AcceleratorManager acceleratorManager) {
         this.acceleratorManager = acceleratorManager;
+    }
+
+    public Action getDelegate() {
+        return (Action) getValue("wrappedAction");
     }
 
     protected void setActionStateRules(ActionStateRule... rules) {
@@ -60,9 +75,13 @@ public abstract class BaseAction extends AbstractAction implements BeanNameAware
 	}
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public final void actionPerformed(ActionEvent e) {
+        Application.get().getWindowManager().getFocusedWindow().
+                topic(ActionPerformedListener.class).post().actionPerformed(this, e);
+        performAction(e);
     }
+
+    protected abstract void performAction(ActionEvent e);
 
     @Override
     public void setBeanName(String beanName) {
@@ -109,5 +128,9 @@ public abstract class BaseAction extends AbstractAction implements BeanNameAware
     @Override
     public void actionContextUpdated(ActionContext actionContext) {
         updateActionState();
+    }
+
+    public interface ActionPerformedListener {
+        public void actionPerformed(BaseAction baseAction, ActionEvent e);
     }
 }

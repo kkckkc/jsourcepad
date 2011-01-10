@@ -16,7 +16,7 @@ public class NavigationGotoLineAction extends BaseAction {
 	}
 
 	@Override
-    public void actionPerformed(ActionEvent e) {
+    public void performAction(ActionEvent e) {
         GotoLineDialog gotoLineDialog = window.getPresenter(GotoLineDialog.class);
         gotoLineDialog.show();
     }

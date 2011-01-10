@@ -3,8 +3,9 @@ package kkckkc.jsourcepad.ui;
 import com.google.common.collect.Lists;
 import kkckkc.jsourcepad.Presenter;
 import kkckkc.jsourcepad.action.ActionContextKeys;
-import kkckkc.jsourcepad.action.text.IndentAction;
+import kkckkc.jsourcepad.action.text.NewlineAction;
 import kkckkc.jsourcepad.action.text.TabAction;
+import kkckkc.jsourcepad.command.window.TextComponentCommand;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Buffer;
 import kkckkc.jsourcepad.model.Doc;
@@ -13,6 +14,7 @@ import kkckkc.jsourcepad.model.settings.*;
 import kkckkc.jsourcepad.model.settings.SettingsManager.Listener;
 import kkckkc.jsourcepad.model.settings.SettingsManager.Setting;
 import kkckkc.jsourcepad.util.action.ActionContext;
+import kkckkc.jsourcepad.util.action.BaseAction;
 import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
 import kkckkc.jsourcepad.util.messagebus.Subscription;
 import kkckkc.syntaxpane.ScrollableSourcePane;
@@ -20,13 +22,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.swing.Action;
-import javax.swing.JComponent;
-import javax.swing.KeyStroke;
-import java.awt.Point;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.beans.PropertyChangeListener;
 import java.util.List;
 
 public class DocPresenter implements Presenter<DocView> {
@@ -37,6 +36,7 @@ public class DocPresenter implements Presenter<DocView> {
 	// Collaborators
 	protected DocView view;
     protected Window window;
+    protected InsertTextCommandManager insertTextCommandManager;
 
     private List<Subscription> subscriptions = Lists.newArrayList();
 
@@ -59,6 +59,11 @@ public class DocPresenter implements Presenter<DocView> {
 	    this.doc = doc;
     }
 
+    @Autowired
+    public void setInsertTextCommandManager(InsertTextCommandManager insertTextCommandManager) {
+        this.insertTextCommandManager = insertTextCommandManager;
+    }
+
     @PreDestroy
     public void destroy() {
         for (Subscription subscription : subscriptions) subscription.unsubscribe();
@@ -68,7 +73,8 @@ public class DocPresenter implements Presenter<DocView> {
     public void init() {
 		sourcePane = view.getSourcePane();
 
- 		doc.getActiveBuffer().bind(sourcePane.getEditorPane());
+        JEditorPane editorPane = sourcePane.getEditorPane();
+        doc.getActiveBuffer().bind(editorPane);
 
 		Application app = Application.get();
 
@@ -77,28 +83,29 @@ public class DocPresenter implements Presenter<DocView> {
         SettingsManager sm = window.getProject().getSettingsManager();
         subscriptions.add(sm.subscribe(Setting.class, new ProjectSettingsListener(sm), false));
 
-		sourcePane.getEditorPane().getKeymap().addActionForKeyStroke(
-                KeyStroke.getKeyStroke((char) KeyEvent.VK_ENTER), new IndentAction());
+        editorPane.getActionMap().put("jsourcepad-newline", new NewlineAction());
+        editorPane.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(new Character('\n'), 0), "none");
+        editorPane.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "jsourcepad-newline");
 
-		sourcePane.getEditorPane().getKeymap().removeKeyStrokeBinding(
-                KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0));
-		sourcePane.getEditorPane().getKeymap().addActionForKeyStroke(
-                KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), new TabAction());
+        editorPane.getActionMap().put("jsourcepad-tab", new TabAction());
+        editorPane.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(new Character('\t'), 0), "none");
+        editorPane.getInputMap(JComponent.WHEN_FOCUSED).remove(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0));
+        editorPane.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), "jsourcepad-tab");
 
-        sourcePane.getEditorPane().getKeymap().addActionForKeyStroke(
-                KeyStroke.getKeyStroke(KeyEvent.VK_HOME, 0),
-                sourcePane.getEditorPane().getActionMap().get("caret-begin-line"));
-        sourcePane.getEditorPane().getKeymap().addActionForKeyStroke(
-                KeyStroke.getKeyStroke(KeyEvent.VK_END, 0),
-                sourcePane.getEditorPane().getActionMap().get("caret-end-line"));
+        editorPane.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_HOME, 0), "caret-begin-line");
+        editorPane.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_END, 0), "caret-end-line");
 
-		sourcePane.getEditorPane().requestFocus();
+		editorPane.requestFocus();
 		
 		sourcePane.setFont(Application.get().getSettingsManager().get(FontSettings.class).asFont());
 
         wrapClipboardAction("copy", sourcePane);
         wrapClipboardAction("cut", sourcePane);
 
+        editorPane.getKeymap().setDefaultAction(
+                insertTextCommandManager.getDefaultTypedAction(editorPane.getKeymap().getDefaultAction()));
+
+        wrapAllActions(sourcePane);
 
         actionContext = new ActionContext();
         actionContext.put(ActionContextKeys.ACTIVE_DOC, doc);
@@ -109,49 +116,35 @@ public class DocPresenter implements Presenter<DocView> {
         subscriptions.add(doc.getDocList().getWindow().topic(Doc.StateListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, ACTION_CONTEXT_UPDATER));
         
         ActionContext.set(view.getComponent(), actionContext);
-
     }
-	
-	public String getTitle() {
+
+
+    private void wrapAllActions(ScrollableSourcePane sourcePane) {
+        ActionMap am = sourcePane.getEditorPane().getActionMap();
+        for (final Object action : am.allKeys()) {
+            final Action a = am.get(action);
+            if (a instanceof InsertTextCommandManager.DefaultTypedAction) continue;
+            am.put(action, new BaseAction(a) {
+                @Override
+                protected void performAction(ActionEvent e) {
+                    TextComponentCommand textComponentCommand = new TextComponentCommand();
+                    textComponentCommand.setAction(action.toString());
+                    window.getCommandExecutor().execute(textComponentCommand);
+                }
+            });
+        }
+    }
+
+    public String getTitle() {
 		return doc.getTitle();
 	}
 
     private void wrapClipboardAction(String action, ScrollableSourcePane sourcePane) {
         final Action a = sourcePane.getEditorPane().getActionMap().get(action);
 
-        sourcePane.getEditorPane().getActionMap().put(action, new Action() {
+        sourcePane.getEditorPane().getActionMap().put(action, new BaseAction() {
             @Override
-            public Object getValue(String key) {
-                return a.getValue(key);
-            }
-
-            @Override
-            public void putValue(String key, Object value) {
-                a.putValue(key, value);
-            }
-
-            @Override
-            public void setEnabled(boolean enabled) {
-                a.setEnabled(enabled);
-            }
-
-            @Override
-            public boolean isEnabled() {
-                return a.isEnabled();
-            }
-
-            @Override
-            public void addPropertyChangeListener(PropertyChangeListener listener) {
-                a.addPropertyChangeListener(listener);
-            }
-
-            @Override
-            public void removePropertyChangeListener(PropertyChangeListener listener) {
-                a.removePropertyChangeListener(listener);
-            }
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
+            public void performAction(ActionEvent e) {
                 a.actionPerformed(e);
                 Application.get().getClipboardManager().register();
             }

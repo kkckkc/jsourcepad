@@ -18,7 +18,7 @@ public class NavigationGotoSymbolAction extends BaseAction {
 
     
 	@Override
-    public void actionPerformed(ActionEvent e) {
+    public void performAction(ActionEvent e) {
 		SymbolNavigationDialog dialog = window.getPresenter(SymbolNavigationDialog.class);
 		dialog.show();
     }

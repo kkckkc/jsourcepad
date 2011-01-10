@@ -15,7 +15,7 @@ public class PreferencesAction extends BaseAction {
 	}
 
 	@Override
-    public void actionPerformed(ActionEvent e) {
+    public void performAction(ActionEvent e) {
         settingsDialog.show();
     }
 

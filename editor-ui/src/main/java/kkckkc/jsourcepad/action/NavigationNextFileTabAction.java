@@ -14,7 +14,7 @@ public class NavigationNextFileTabAction extends BaseAction {
 	}
 	
 	@Override
-    public void actionPerformed(ActionEvent e) {
+    public void performAction(ActionEvent e) {
 		int idx = window.getDocList().getActive();
 		
 		idx++;

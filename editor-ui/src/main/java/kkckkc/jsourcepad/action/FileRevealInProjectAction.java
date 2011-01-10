@@ -14,7 +14,7 @@ public class FileRevealInProjectAction extends BaseAction {
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void performAction(ActionEvent e) {
         Doc doc = actionContext.get(ActionContextKeys.ACTIVE_DOC);
         File file = doc.getFile();
 

@@ -16,7 +16,7 @@ public class TextUnwrapSelectionAction extends BaseAction {
 	}
 
 	@Override
-    public void actionPerformed(ActionEvent e) {
+    public void performAction(ActionEvent e) {
 		Buffer activeBuffer = window.getDocList().getActiveDoc().getActiveBuffer();
 
         Interval selectionOrCurrentParagraph = activeBuffer.getSelectionOrCurrentParagraph();

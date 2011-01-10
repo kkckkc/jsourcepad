@@ -15,7 +15,7 @@ public class ProjectRefreshAction extends BaseAction {
         setActionStateRules(ActionStateRules.HAS_PROJECT);
 	}
 	
-    public void actionPerformed(ActionEvent e) {
+    public void performAction(ActionEvent e) {
         Object[] selection = actionContext.get(ActionContextKeys.SELECTION);
         boolean folderClicked =
                 selection != null &&

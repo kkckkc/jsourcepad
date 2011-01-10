@@ -17,10 +17,10 @@ public class FileSaveAllAction extends BaseAction {
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void performAction(ActionEvent e) {
         for (int i = 0; i < window.getDocList().getDocCount(); i++) {
             window.getDocList().setActive(i);
-            fileSaveAction.actionPerformed(e);
+            fileSaveAction.performAction(e);
         }
 	}
 }

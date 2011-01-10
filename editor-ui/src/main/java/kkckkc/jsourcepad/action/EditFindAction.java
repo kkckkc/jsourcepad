@@ -15,7 +15,7 @@ public class EditFindAction extends BaseAction {
 	}
 	
 	@Override
-    public void actionPerformed(ActionEvent e) {
+    public void performAction(ActionEvent e) {
 		FindDialog dialog = window.getPresenter(FindDialog.class);
 		dialog.show();
 

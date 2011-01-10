@@ -24,7 +24,7 @@ public class TextExecuteLineInsertingResultAction extends BaseAction {
 	}
 	
 	@Override
-    public void actionPerformed(ActionEvent e) {
+    public void performAction(ActionEvent e) {
 		final Buffer activeBuffer = window.getDocList().getActiveDoc().getActiveBuffer();
 		final Interval selectionOrCurrentLine = activeBuffer.getSelectionOrCurrentLine();
 		

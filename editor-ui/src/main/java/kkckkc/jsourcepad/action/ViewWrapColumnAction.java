@@ -36,7 +36,7 @@ public class ViewWrapColumnAction extends BaseAction implements Presenter.Menu, 
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void performAction(ActionEvent e) {
         int newValue = column;
         if (column == 0) {
             String s = JOptionPane.showInputDialog("Enter column width");

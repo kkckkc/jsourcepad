@@ -18,7 +18,7 @@ public class WindowShowWebPreviewAction extends BaseAction {
     }
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void performAction(ActionEvent e) {
         final Doc doc = actionContext.get(ActionContextKeys.ACTIVE_DOC);
 
         String path = "/preview/" + doc.getDocList().getWindow().getId();

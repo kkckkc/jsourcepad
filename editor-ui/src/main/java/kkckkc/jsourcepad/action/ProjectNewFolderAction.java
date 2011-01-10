@@ -17,7 +17,7 @@ public class ProjectNewFolderAction extends BaseAction {
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void performAction(ActionEvent e) {
         Object[] tp = actionContext.get(ActionContextKeys.SELECTION);
         File file = (File) tp[0];
 

@@ -22,7 +22,7 @@ public class EditPasteFromHistoryAction extends BaseAction {
 	}
 
 	@Override
-    public void actionPerformed(ActionEvent e) {
+    public void performAction(ActionEvent e) {
         Doc activeDoc = actionContext.get(ActionContextKeys.ACTIVE_DOC);
 
         ClipboardManager cm = Application.get().getClipboardManager();
@@ -46,7 +46,7 @@ public class EditPasteFromHistoryAction extends BaseAction {
     }
 
 
-    public static class PasteAction extends AbstractAction {
+    public static class PasteAction extends BaseAction {
         private final String text;
         private final Buffer buffer;
 
@@ -57,7 +57,7 @@ public class EditPasteFromHistoryAction extends BaseAction {
         }
 
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void performAction(ActionEvent e) {
             buffer.insertText(buffer.getInsertionPoint().getPosition(), text, null);
         }
     }

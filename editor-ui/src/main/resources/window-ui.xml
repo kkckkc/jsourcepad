@@ -39,4 +39,6 @@
     <bean id="newFileDialog" class="kkckkc.jsourcepad.ui.dialog.newfile.NewFileDialog" />
 
 
+    <bean id="insertTextCommandManager" class="kkckkc.jsourcepad.ui.InsertTextCommandManager" />
+
 </beans>

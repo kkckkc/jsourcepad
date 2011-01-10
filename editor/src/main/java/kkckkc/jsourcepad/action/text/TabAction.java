@@ -7,6 +7,7 @@ import kkckkc.jsourcepad.model.bundle.BundleItemSupplier;
 import kkckkc.jsourcepad.model.bundle.BundleMenuProvider;
 import kkckkc.jsourcepad.model.bundle.snippet.SnippetUtils;
 import kkckkc.jsourcepad.util.action.ActionGroup;
+import kkckkc.jsourcepad.util.action.BaseAction;
 import kkckkc.jsourcepad.util.action.MenuFactory;
 import kkckkc.syntaxpane.model.Interval;
 import kkckkc.syntaxpane.model.Scope;
@@ -16,8 +17,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.Collection;
 
-public final class TabAction extends AbstractAction {
-    public void actionPerformed(final ActionEvent e) {
+public final class TabAction extends BaseAction {
+    public void performAction(final ActionEvent e) {
         Doc doc = Application.get().getWindowManager().getFocusedWindow().getDocList().getActiveDoc();
 
     	InsertionPoint ip = doc.getActiveBuffer().getInsertionPoint();

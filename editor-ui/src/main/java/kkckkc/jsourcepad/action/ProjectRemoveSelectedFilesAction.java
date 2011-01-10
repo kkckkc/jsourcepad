@@ -21,7 +21,7 @@ public class ProjectRemoveSelectedFilesAction extends BaseAction {
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void performAction(ActionEvent e) {
         int confirm = JOptionPane.showConfirmDialog((Component) e.getSource(), "Really Delete");
         if (confirm == JOptionPane.OK_OPTION) {
             Project project = window.getProject();

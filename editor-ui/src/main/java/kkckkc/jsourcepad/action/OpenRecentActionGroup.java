@@ -7,6 +7,7 @@ import kkckkc.jsourcepad.model.settings.SettingsManager;
 import kkckkc.jsourcepad.ui.IconProvider;
 import kkckkc.jsourcepad.util.Null;
 import kkckkc.jsourcepad.util.action.ActionGroup;
+import kkckkc.jsourcepad.util.action.BaseAction;
 import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
 import kkckkc.jsourcepad.util.messagebus.Subscription;
 import kkckkc.utils.io.FileUtils;
@@ -91,7 +92,7 @@ public class OpenRecentActionGroup extends ActionGroup implements WindowManager.
     }
 
 
-    private class OpenRecentAction extends AbstractAction {
+    private class OpenRecentAction extends BaseAction {
         private File file;
 
         public OpenRecentAction(String s) {
@@ -106,7 +107,7 @@ public class OpenRecentActionGroup extends ActionGroup implements WindowManager.
         }
 
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void performAction(ActionEvent e) {
             if (file.isDirectory()) {
                 Application.get().getWindowManager().newWindow(file);
             } else {

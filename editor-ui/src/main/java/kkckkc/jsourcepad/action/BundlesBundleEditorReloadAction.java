@@ -8,7 +8,7 @@ import java.awt.event.ActionEvent;
 public class BundlesBundleEditorReloadAction extends BaseAction {
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void performAction(ActionEvent e) {
         Application.get().getBundleManager().reload();
 	}
 

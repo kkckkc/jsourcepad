@@ -22,7 +22,7 @@ public class ViewFullscreenAction extends BaseAction {
 	boolean isMaximized = false;
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void performAction(ActionEvent e) {
         final JFrame frame = w.getContainer();
 
         final boolean wasVisible = frame.isVisible();

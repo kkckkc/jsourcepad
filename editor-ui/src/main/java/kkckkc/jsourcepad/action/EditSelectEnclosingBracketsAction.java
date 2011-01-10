@@ -17,7 +17,7 @@ public class EditSelectEnclosingBracketsAction extends BaseAction {
 	}
 
 	@Override
-    public void actionPerformed(ActionEvent e) {
+    public void performAction(ActionEvent e) {
         Doc activeDoc = actionContext.get(ActionContextKeys.ACTIVE_DOC);
 		Buffer buffer = activeDoc.getActiveBuffer();
 

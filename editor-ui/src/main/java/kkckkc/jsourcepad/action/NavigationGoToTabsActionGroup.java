@@ -83,7 +83,7 @@ public class NavigationGoToTabsActionGroup extends ActionGroup implements DocLis
         }
 
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void performAction(ActionEvent e) {
             window.getDocList().setActive(doc);
         }
 

@@ -15,7 +15,7 @@ public class ViewFoldCurrentBlockAction extends BaseAction {
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void performAction(ActionEvent e) {
         Doc doc = actionContext.get(ActionContextKeys.ACTIVE_DOC);
         Buffer buffer = doc.getActiveBuffer();
 

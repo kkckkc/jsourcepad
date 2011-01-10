@@ -16,7 +16,7 @@ public class NavigationGotoFileAction extends BaseAction {
 	}
 	
 	@Override
-    public void actionPerformed(ActionEvent e) {
+    public void performAction(ActionEvent e) {
 		QuickNavigationDialog dialog = window.getPresenter(QuickNavigationDialog.class);
 		dialog.show();
     }

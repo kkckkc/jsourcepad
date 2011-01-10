@@ -17,7 +17,7 @@ public class TextExecuteScriptAction extends BaseAction {
 	}
 	
 	@Override
-    public void actionPerformed(ActionEvent e) {
+    public void performAction(ActionEvent e) {
 		final Buffer activeBuffer = window.getDocList().getActiveDoc().getActiveBuffer();
 		
 		Interval selection = activeBuffer.getSelection();

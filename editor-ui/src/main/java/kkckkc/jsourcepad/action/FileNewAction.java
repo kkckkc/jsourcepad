@@ -13,7 +13,7 @@ public class FileNewAction extends BaseAction {
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void performAction(ActionEvent e) {
 		final Window window = Application.get().getWindowManager().getWindow((JComponent) e.getSource());
 		window.getDocList().create();
 	}

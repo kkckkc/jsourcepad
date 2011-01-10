@@ -15,7 +15,7 @@ public class WindowMinimizeAction extends BaseAction {
     }
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void performAction(ActionEvent e) {
         Application.get().getWindowManager().minimize(window);
     }
 

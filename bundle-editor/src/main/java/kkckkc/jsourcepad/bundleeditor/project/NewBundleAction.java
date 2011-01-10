@@ -26,7 +26,7 @@ public class NewBundleAction extends BaseAction {
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void performAction(ActionEvent e) {
         Window window = Application.get().getWindowManager().getWindow((JComponent) e.getSource());
 
         NewBundleDialog dialog = new NewBundleDialog();

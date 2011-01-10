@@ -18,7 +18,7 @@ public class ViewGutterFoldingsAction extends BaseAction implements Presenter.Me
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void performAction(ActionEvent e) {
         SettingsManager settingsManager = Application.get().getSettingsManager();
 
         GutterSettings settings = settingsManager.get(GutterSettings.class);
