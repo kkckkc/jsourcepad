@@ -23,7 +23,7 @@ public class TextmateScopeSelectorParser {
         List<String> positiveRule = new ArrayList<String>(5);
         List<String> negativeRule = new ArrayList<String>(5);
 
-        int positionOfMinus = t.indexOf(" - ");
+        int positionOfMinus = t.indexOf(" -");
 
         // Parse positive rules
         String s = positionOfMinus < 0 ? t : t.substring(0, positionOfMinus);

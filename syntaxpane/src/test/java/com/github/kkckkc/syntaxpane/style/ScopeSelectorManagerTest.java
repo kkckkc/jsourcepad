@@ -1,5 +1,6 @@
 package com.github.kkckkc.syntaxpane.style;
 
+import com.google.common.collect.Maps;
 import junit.framework.TestCase;
 import kkckkc.syntaxpane.model.Scope;
 import kkckkc.syntaxpane.parse.grammar.SimpleContext;

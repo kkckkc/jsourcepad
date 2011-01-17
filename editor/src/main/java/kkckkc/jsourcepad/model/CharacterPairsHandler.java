@@ -74,7 +74,6 @@ public class CharacterPairsHandler extends DocumentFilter {
 	    	fb.replace(offset, length, text, attrs);
 	    	return;
 	    }
-	    
 
 	    boolean handled = false;
     	if (length > 0) {
