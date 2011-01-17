@@ -538,7 +538,7 @@ public class BufferImpl implements Buffer {
 	
 	@Override
     public void beginRestrictedEditing(final RestrictedEditor restrictedEditor) {
-		restrictedEditor.init(textComponent.getKeymap());
+		restrictedEditor.init(textComponent.getInputMap(), textComponent.getActionMap());
 		this.restrictedEditor = restrictedEditor;
 	}
 

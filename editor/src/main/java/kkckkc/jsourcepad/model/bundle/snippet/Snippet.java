@@ -339,25 +339,28 @@ public class Snippet {
 		private static final String SHIFT_TAB = "shift TAB";
 		private static final String TAB = "TAB";
 
-		private Keymap keymap;
+		private Object tabAction;
+		private Object shiftTabAction;
 
-		private Action tabAction;
-		private Action shiftTabAction;
+        private InputMap inputMap;
+        private ActionMap actionMap;
 
-		@Override
-	    public void init(Keymap keymap) {
-		    this.keymap = keymap;
+
+        @Override
+        public void init(InputMap inputMap, ActionMap actionMap) {
+		    this.inputMap = inputMap;
+		    this.actionMap = actionMap;
 
 		    // Save
-		    tabAction = keymap.getAction(KeyStroke.getKeyStroke(TAB));
-		    shiftTabAction = keymap.getAction(KeyStroke.getKeyStroke(SHIFT_TAB));
+		    tabAction = inputMap.get(KeyStroke.getKeyStroke(TAB));
+		    shiftTabAction = inputMap.get(KeyStroke.getKeyStroke(SHIFT_TAB));
 
 		    // Remove
-	    	keymap.removeKeyStrokeBinding(KeyStroke.getKeyStroke(TAB));
-	    	keymap.removeKeyStrokeBinding(KeyStroke.getKeyStroke(SHIFT_TAB));
+	    	inputMap.remove(KeyStroke.getKeyStroke(TAB));
+	    	inputMap.remove(KeyStroke.getKeyStroke(SHIFT_TAB));
 
 		    // Install new actions
-	    	keymap.addActionForKeyStroke(KeyStroke.getKeyStroke(TAB), new AbstractAction() {
+            actionMap.put("jsourcepad-snippet-tab", new AbstractAction() {
                 public void actionPerformed(ActionEvent e) {
             		SnippetConstituent nextConstituent = findNextTabStop();
             		if (nextConstituent != null) {
@@ -371,7 +374,9 @@ public class Snippet {
             		}
                 }
 	    	});
-	    	keymap.addActionForKeyStroke(KeyStroke.getKeyStroke(SHIFT_TAB), new AbstractAction() {
+            inputMap.put(KeyStroke.getKeyStroke(TAB), "jsourcepad-snippet-tab");
+
+	    	actionMap.put("jsourcepad-snippet-shift-tab", new AbstractAction() {
                 public void actionPerformed(ActionEvent e) {
             		SnippetConstituent nextConstituent = findPreviousTabStop();
             		if (nextConstituent != null) {
@@ -382,22 +387,22 @@ public class Snippet {
             		}
                 }
 	    	});
+            inputMap.put(KeyStroke.getKeyStroke(SHIFT_TAB), "jsourcepad-snippet-shift-tab");
 	    }
 
 		private void destroy() {
 	    	buffer.endRestrictedEditing();
 
-	    	keymap.removeKeyStrokeBinding(KeyStroke.getKeyStroke(TAB));
-	    	keymap.removeKeyStrokeBinding(KeyStroke.getKeyStroke(SHIFT_TAB));
+	    	inputMap.remove(KeyStroke.getKeyStroke(TAB));
+	    	inputMap.remove(KeyStroke.getKeyStroke(SHIFT_TAB));
 
-	    	keymap.addActionForKeyStroke(KeyStroke.getKeyStroke(TAB), tabAction);
+	    	inputMap.put(KeyStroke.getKeyStroke(TAB), tabAction);
 	    	if (shiftTabAction != null) {
-	    		keymap.addActionForKeyStroke(KeyStroke.getKeyStroke(SHIFT_TAB), shiftTabAction);
+	    		inputMap.put(KeyStroke.getKeyStroke(SHIFT_TAB), shiftTabAction);
 	    	}
         }
 
-
-		@Override
+        @Override
 	    public void caretPositionChanged(int position) {
             if (! changeTrackingEnabled) return;
 		    if (isOutsideOfAnchor(position)) {

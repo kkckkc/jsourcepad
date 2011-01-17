@@ -19,9 +19,9 @@ import java.util.Collection;
 
 public final class TabAction extends BaseAction {
     public void performAction(final ActionEvent e) {
-        Doc doc = Application.get().getWindowManager().getFocusedWindow().getDocList().getActiveDoc();
+        final Doc doc = Application.get().getWindowManager().getFocusedWindow().getDocList().getActiveDoc();
 
-    	InsertionPoint ip = doc.getActiveBuffer().getInsertionPoint();
+    	final InsertionPoint ip = doc.getActiveBuffer().getInsertionPoint();
 
         if (doc.getActiveBuffer().getCurrentLine() == null) {
             insertTab(doc, ip);
@@ -30,7 +30,7 @@ public final class TabAction extends BaseAction {
 
     	String s = doc.getActiveBuffer().getCurrentLine().getText();
     	
-    	String token = SnippetUtils.getSnippet(s);
+    	final String token = SnippetUtils.getSnippet(s);
     	
 		Scope scope = ip.getScope();
 		
@@ -39,9 +39,19 @@ public final class TabAction extends BaseAction {
             insertTab(doc, ip);
         } else {
 			final ActionGroup tempActionGroup = new ActionGroup();
-			
+
+            Action firstAction = null;
 			for (BundleItemSupplier r : items) {
-				tempActionGroup.add(BundleMenuProvider.getActionForItem(r.getUUID()));
+                final Action delegate = BundleMenuProvider.getActionForItem(r.getUUID());
+                if (firstAction == null) firstAction = delegate;
+				tempActionGroup.add(new AbstractAction((String) delegate.getValue(Action.NAME)) {
+
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        doc.getActiveBuffer().remove(new Interval(ip.getPosition() - token.length(), ip.getPosition()));
+                        delegate.actionPerformed(e);
+                    }
+                });
 			}
 			
 			if (tempActionGroup.size() > 1) {
@@ -61,8 +71,7 @@ public final class TabAction extends BaseAction {
 				
 			} else {
 				doc.getActiveBuffer().remove(new Interval(ip.getPosition() - token.length(), ip.getPosition()));
-				tempActionGroup.getItems().get(0).actionPerformed(
-						new ActionEvent(e.getSource(), 1, null));
+				firstAction.actionPerformed(new ActionEvent(e.getSource(), 1, null));
 				
 			}
 		}

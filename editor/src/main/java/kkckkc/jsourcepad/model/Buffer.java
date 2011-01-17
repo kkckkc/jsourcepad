@@ -81,10 +81,10 @@ public interface Buffer {
 	public void endRestrictedEditing();
 	
 	interface RestrictedEditor {
-		public void init(Keymap keymap);
+        public void init(InputMap inputMap, ActionMap actionMap);
 		public void caretPositionChanged(int position);
 		public void textChanged(DocumentEvent de);
-	}
+    }
 
 	interface Highlight {
 		public void clear();
