@@ -1,5 +1,6 @@
 [x] Store last location and size for the embedded browser preview
 [ ] Make sure to update action state on startup
+[ ] Harmonize (using test) the various PatternFactory implementations
 
 [ ] Fix Project domain model. Move stuff from FileTreeModel. Move decorators
 

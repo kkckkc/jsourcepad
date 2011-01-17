@@ -7,12 +7,22 @@ import kkckkc.jsourcepad.bundleeditor.manifest.ManifestBundleDocViewImpl;
 import kkckkc.jsourcepad.bundleeditor.model.BundleDocImpl;
 import kkckkc.jsourcepad.bundleeditor.template.TemplateBundleDocPresenter;
 import kkckkc.jsourcepad.bundleeditor.template.TemplateBundleDocViewImpl;
+import kkckkc.jsourcepad.command.window.InsertTextCommand;
 import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.bundle.BundleStructure;
 import kkckkc.jsourcepad.ui.DocListPresenter;
 import kkckkc.jsourcepad.ui.DocPresenter;
+import kkckkc.jsourcepad.ui.InsertTextCommandManager;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class BundleDocListPresenter extends DocListPresenter {
+
+    private InsertTextCommandManager insertTextCommandManager;
+
+    @Autowired
+    public void setInsertTextCommandManager(InsertTextCommandManager insertTextCommandManager) {
+        this.insertTextCommandManager = insertTextCommandManager;
+    }
 
     @Override
     protected DocPresenter createPresenter(Doc doc) {
@@ -30,6 +40,7 @@ public class BundleDocListPresenter extends DocListPresenter {
             presenter.setDoc(doc);
             presenter.setWindow(docList.getWindow());
             presenter.setView(new CommandBundleDocViewImpl());
+            presenter.setInsertTextCommandManager(insertTextCommandManager);
             presenter.init();
 
             return presenter;
@@ -40,6 +51,7 @@ public class BundleDocListPresenter extends DocListPresenter {
            presenter.setDoc(doc);
            presenter.setWindow(docList.getWindow());
            presenter.setView(new TemplateBundleDocViewImpl());
+            presenter.setInsertTextCommandManager(insertTextCommandManager);
            presenter.init();
 
            return presenter;
@@ -50,6 +62,7 @@ public class BundleDocListPresenter extends DocListPresenter {
             presenter.setDoc(doc);
             presenter.setWindow(docList.getWindow());
             presenter.setView(new ManifestBundleDocViewImpl());
+            presenter.setInsertTextCommandManager(insertTextCommandManager);
             presenter.init();
 
             return presenter;
@@ -61,6 +74,7 @@ public class BundleDocListPresenter extends DocListPresenter {
             presenter.setDoc(doc);
             presenter.setWindow(docList.getWindow());
             presenter.setView(new BasicBundleDocViewImpl());
+            presenter.setInsertTextCommandManager(insertTextCommandManager);
             presenter.init();
 
             return presenter;

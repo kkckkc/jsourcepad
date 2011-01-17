@@ -129,6 +129,7 @@ public class DocPresenter implements Presenter<DocView> {
                 protected void performAction(ActionEvent e) {
                     TextComponentCommand textComponentCommand = new TextComponentCommand();
                     textComponentCommand.setAction(action.toString());
+                    textComponentCommand.setActionEvent(e);
                     window.getCommandExecutor().execute(textComponentCommand);
                 }
             });

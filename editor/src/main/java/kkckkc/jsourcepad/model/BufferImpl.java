@@ -414,6 +414,7 @@ public class BufferImpl implements Buffer {
     	    		indentCount--;
     			}
     		}
+
     	} else {
     		Line prevprev = document.getLineManager().getPrevious(prev);
     		if (prevprev != null) {
@@ -422,7 +423,11 @@ public class BufferImpl implements Buffer {
     			}
     		}
     	}
-    	
+
+        if (matches(decrease, current.getCharSequence(false))) {
+            indentCount--;
+        }
+
     	// Remove old indent
 		String s;
 		while ((s = doc.getTabManager().getFirstIndentionString(current.getCharSequence(false))) != null) {
@@ -432,7 +437,7 @@ public class BufferImpl implements Buffer {
 		}
 
     	String indent = doc.getTabManager().createIndent(indentCount);
-        doc.getActiveBuffer().insertText(position, indent, null);
+        doc.getActiveBuffer().insertText(current.getStart(), indent, null);
     }
 
 	private boolean matches(String pattern, CharSequence charSequence) {

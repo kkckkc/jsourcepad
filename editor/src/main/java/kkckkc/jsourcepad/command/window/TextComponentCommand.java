@@ -12,6 +12,8 @@ import java.awt.event.ActionEvent;
 public class TextComponentCommand extends AbstractWindowCommand {
     @CommandProperty private String action;
 
+    private ActionEvent actionEvent;
+
     public void setAction(String action) {
         this.action = action;
     }
@@ -28,7 +30,12 @@ public class TextComponentCommand extends AbstractWindowCommand {
             if (baseAction.getDelegate() != null) a = baseAction.getDelegate();
         }
 
-        ActionEvent event = new ActionEvent(buffer.getTextComponent(), (int) System.currentTimeMillis(), null);
-        a.actionPerformed(event);
+        if (actionEvent == null)
+            actionEvent = new ActionEvent(buffer.getTextComponent(), (int) System.currentTimeMillis(), null);
+        a.actionPerformed(actionEvent);
+    }
+
+    public void setActionEvent(ActionEvent e) {
+        this.actionEvent = e;
     }
 }
