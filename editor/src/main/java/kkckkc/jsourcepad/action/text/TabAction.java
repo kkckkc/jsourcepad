@@ -1,6 +1,7 @@
 package kkckkc.jsourcepad.action.text;
 
 import kkckkc.jsourcepad.model.Application;
+import kkckkc.jsourcepad.model.Buffer;
 import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.InsertionPoint;
 import kkckkc.jsourcepad.model.bundle.BundleItemSupplier;
@@ -13,6 +14,7 @@ import kkckkc.syntaxpane.model.Interval;
 import kkckkc.syntaxpane.model.Scope;
 
 import javax.swing.*;
+import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.Collection;
@@ -59,11 +61,18 @@ public final class TabAction extends BaseAction {
 				EventQueue.invokeLater(new Runnable() {
                     public void run() {
         				JPopupMenu jpm = new MenuFactory().buildPopup(tempActionGroup, null);
-        				Point point = MouseInfo.getPointerInfo().getLocation();
-        				
-        				Point componentPosition = ((Component) e.getSource()).getLocationOnScreen();
-        				
-        				point.translate(- (int) componentPosition.getX(), - (int) componentPosition.getY());
+
+                        Buffer buffer = doc.getActiveBuffer();
+                        Point point;
+                        try {
+                            point = buffer.getTextComponent().modelToView(buffer.getInsertionPoint().getPosition()).getLocation();
+                            point.translate(10, 0);
+                        } catch (BadLocationException e1) {
+                            point = MouseInfo.getPointerInfo().getLocation();
+
+                            Point componentPosition = ((Component) e.getSource()).getLocationOnScreen();
+                            point.translate(- (int) componentPosition.getX(), - (int) componentPosition.getY());
+                        }
 
                         jpm.show((Component) e.getSource(), point.x, point.y);
                     }
