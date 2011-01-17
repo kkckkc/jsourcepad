@@ -9,4 +9,9 @@ public abstract class AbstractWindowCommand implements WindowCommand {
     public void setWindow(Window window) {
         this.window = window;
     }
+
+    @Override
+    public Window getWindow() {
+        return window;
+    }
 }

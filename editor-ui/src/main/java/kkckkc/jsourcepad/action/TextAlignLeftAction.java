@@ -1,5 +1,6 @@
 package kkckkc.jsourcepad.action;
 
+import kkckkc.jsourcepad.command.window.TextAlignLeftCommand;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Buffer;
 import kkckkc.jsourcepad.model.Window;
@@ -20,27 +21,7 @@ public class TextAlignLeftAction extends BaseAction {
 
 	@Override
     public void performAction(ActionEvent e) {
-        StyleSettings ss = Application.get().getSettingsManager().get(StyleSettings.class);
-
-		Buffer activeBuffer = window.getDocList().getActiveDoc().getActiveBuffer();
-
-		TextInterval selectionOrCurrentLine = activeBuffer.getSelectionOrCurrentLine();
-        String text = selectionOrCurrentLine.getText();
-
-        StringBuilder builder = new StringBuilder();
-        StringTokenizer tok = new StringTokenizer(text, "\n", true);
-        while (tok.hasMoreTokens()) {
-            String line = tok.nextToken();
-            if (line.equals("\n")) builder.append(line);
-            left(line, builder, ss.getWrapColumn());
-        }
-
-		activeBuffer.replaceText(selectionOrCurrentLine, builder.toString(), null);
-    }
-
-    private void left(String line, StringBuilder builder, int wrapColumn) {
-        line = line.trim();
-        builder.append(line);
+        window.getCommandExecutor().execute(new TextAlignLeftCommand());
     }
 
 }

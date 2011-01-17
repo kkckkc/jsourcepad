@@ -3,10 +3,7 @@ package kkckkc.jsourcepad.ui;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.settings.WindowSettings;
-import kkckkc.jsourcepad.ui.statusbar.CurrentPosition;
-import kkckkc.jsourcepad.ui.statusbar.LanguageView;
-import kkckkc.jsourcepad.ui.statusbar.SymbolView;
-import kkckkc.jsourcepad.ui.statusbar.TabView;
+import kkckkc.jsourcepad.ui.statusbar.*;
 import kkckkc.jsourcepad.util.Null;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -71,7 +68,9 @@ public class WindowViewImpl implements WindowView {
 		statusBarPanel.add(processStatusBarView(new TabView(window)));
 		statusBarPanel.add(delimiter());
 		statusBarPanel.add(processStatusBarView(new SymbolView(window)));
-		
+        statusBarPanel.add(delimiter());
+        statusBarPanel.add(processStatusBarView(new MacroRecordingView(window)));
+
 		frame.add(statusBarPanel, BorderLayout.SOUTH);
 
         FixedGlassPane glass = new FixedGlassPane(frame);

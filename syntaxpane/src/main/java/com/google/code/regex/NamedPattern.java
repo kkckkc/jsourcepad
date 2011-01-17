@@ -23,7 +23,7 @@ public class NamedPattern {
 
     private NamedPattern(String regex, int i) {
     	namedPattern = regex;
-    	pattern = buildStandardPattern(regex);
+    	pattern = buildStandardPattern(regex, i);
     	groupNames = extractGroupNames(regex);
 	}
 
@@ -72,8 +72,8 @@ public class NamedPattern {
 		return groupNames;
 	}
 
-	static Pattern buildStandardPattern(String namedPattern) {
-		return Pattern.compile(NAMED_GROUP_PATTERN.matcher(namedPattern).replaceAll("("));
+	static Pattern buildStandardPattern(String namedPattern, int options) {
+		return Pattern.compile(NAMED_GROUP_PATTERN.matcher(namedPattern).replaceAll("("), options);
 	}
 
 }

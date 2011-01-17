@@ -63,6 +63,12 @@ public class WindowImpl extends AbstractMessageBus implements MessageBus, ScopeR
         return beanFactory.getBean(CommandExecutor.class);
     }
 
+    @NotNull
+    @Override
+    public MacroManager getMacroManager() {
+        return beanFactory.getBean(MacroManager.class);
+    }
+
     public int getId() {
         return id;
     }

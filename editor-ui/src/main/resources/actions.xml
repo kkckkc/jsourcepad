@@ -245,6 +245,18 @@
 						</list>
 					</property>
 				</bean>
+                <bean parent="action-group">
+                    <constructor-arg><value>Macros</value></constructor-arg>
+                    <property name="items">
+                        <list>
+                            <ref local="action-bundles-macros-start-recording" />
+                            <ref local="action-bundles-macros-abort-recording" />
+                            <null />
+                            <ref local="action-bundles-macros-save-last-recording" />
+                            <ref local="action-bundles-macros-replay-last-recording" />
+                        </list>
+                    </property>
+                </bean>
                 <null />
             </list>
         </property>
@@ -427,6 +439,10 @@
     <bean id="action-bundles-bundle-editor-show" parent="action" class="kkckkc.jsourcepad.action.BundlesBundleEditorShowAction" autowire="constructor"/>
     <bean id="action-bundles-bundle-editor-reload" parent="action" class="kkckkc.jsourcepad.action.BundlesBundleEditorReloadAction" autowire="constructor"/>
     <bean id="action-bundles-select-bundle-item" parent="action" class="kkckkc.jsourcepad.action.BundlesSelectBundleItemAction" autowire="constructor"/>
+    <bean id="action-bundles-macros-start-recording" parent="action" class="kkckkc.jsourcepad.action.BundlesMacrosStartRecordingAction" autowire="constructor"/>
+    <bean id="action-bundles-macros-abort-recording" parent="action" class="kkckkc.jsourcepad.action.BundlesMacrosAbortRecordingAction" autowire="constructor"/>
+    <bean id="action-bundles-macros-save-last-recording" parent="action" class="kkckkc.jsourcepad.action.BundlesMacrosSaveLastRecordingAction" autowire="constructor"/>
+    <bean id="action-bundles-macros-replay-last-recording" parent="action" class="kkckkc.jsourcepad.action.BundlesMacrosReplayLastRecordingAction" autowire="constructor"/>
 
     <!-- **********************************************************************************************************************
          *  WINDOW MENU

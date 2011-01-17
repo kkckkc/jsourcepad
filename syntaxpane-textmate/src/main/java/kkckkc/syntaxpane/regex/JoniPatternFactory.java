@@ -62,18 +62,23 @@ public class JoniPatternFactory implements PatternFactory {
 	
 	@Override
     public Pattern create(String s) {
-		synchronized (CACHE) {
-			if (CACHE.containsKey(s)) {
-				return CACHE.get(s);
-			}
-
-			JoniPattern p = new JoniPattern(s.toCharArray());
-			CACHE.put(s, p);
-			return p;
-		}
+        return create(s, 0);
 	}
-	
-	private static char[] getCharArray(CharSequence cs) {
+
+    @Override
+    public Pattern create(String s, int options) {
+        synchronized (CACHE) {
+            if (CACHE.containsKey(s + "_" + options)) {
+                return CACHE.get(s + "_" + options);
+            }
+
+            JoniPattern p = new JoniPattern(s.toCharArray(), options);
+            CACHE.put(s + "_" + options, p);
+            return p;
+        }
+    }
+
+    private static char[] getCharArray(CharSequence cs) {
 		if (cs instanceof String) {
 			return ((String) cs).toCharArray();
 		} else {
@@ -90,9 +95,11 @@ public class JoniPatternFactory implements PatternFactory {
 	public static class JoniPattern implements Pattern {
 		private Regex re;
 		private char[] sc;
+        private int options;
 
-		public JoniPattern(char[] ch) {
+        public JoniPattern(char[] ch, int options) {
 	        this.sc = ch;
+            this.options = options;
         }
 
 		@Override
@@ -105,7 +112,9 @@ public class JoniPatternFactory implements PatternFactory {
 		private void makeRe() {
 	        if (re == null) {
 	    		try {
-	    			this.re = new Regex(sc, 0, sc.length, Option.DEFAULT, null, SYNTAX);
+                    int opts = Option.DEFAULT;
+                    if ((this.options & PatternFactory.CASE_INSENSITIVE) != 0) opts |= Option.IGNORECASE;
+	    			this.re = new Regex(sc, 0, sc.length, opts, null, SYNTAX);
 	    		} catch (Exception e) {
 	    			throw new RuntimeException("Invalid regexp: " + new String(sc), e);
 	    		}
@@ -223,6 +232,13 @@ public class JoniPatternFactory implements PatternFactory {
             }
 
             return builder.toString();
+        }
+
+        @Override
+        public String replace(String replacement) {
+            StringBuilder b = new StringBuilder();
+            appendReplacement(replacement, b);
+            return b.toString();
         }
 
         private void appendReplacement(String replacement, StringBuilder builder) {

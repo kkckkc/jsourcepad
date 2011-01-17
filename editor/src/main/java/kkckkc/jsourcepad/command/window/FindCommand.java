@@ -5,6 +5,7 @@ import kkckkc.jsourcepad.model.FindHistory;
 import kkckkc.jsourcepad.model.Finder;
 import kkckkc.jsourcepad.model.settings.SettingsManager;
 import kkckkc.jsourcepad.util.command.AbstractWindowCommand;
+import kkckkc.jsourcepad.util.command.CommandProperty;
 import kkckkc.syntaxpane.model.Interval;
 
 import java.util.List;
@@ -25,13 +26,13 @@ public class FindCommand extends AbstractWindowCommand {
 
     public static enum Action { NEXT, PREVIOUS, REPLACE, REPLACE_ALL }
 
-    private Action action;
-    private String findString;
-    private String replaceString;
+    @CommandProperty private Action action;
+    @CommandProperty private String findString;
+    @CommandProperty private String replaceString;
 
-    private boolean caseSensitive;
-    private boolean regularExpression;
-    private boolean wrapAround;
+    @CommandProperty private boolean caseSensitive;
+    @CommandProperty private boolean regularExpression;
+    @CommandProperty private boolean wrapAround;
 
     public List<String> getFindHistory() {
         return findHistory;

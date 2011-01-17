@@ -67,7 +67,10 @@ public class DocListImpl implements DocList {
 		try {
 			doc.open(file);
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			// Ignore
+            // TODO: Logging
+            System.err.println("Cannot open " + file);
+            return null;
 		}
 		docs.add(doc);
 		window.topic(Listener.class).post().created(doc);

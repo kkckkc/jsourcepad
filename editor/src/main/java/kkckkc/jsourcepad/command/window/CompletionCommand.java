@@ -2,11 +2,12 @@ package kkckkc.jsourcepad.command.window;
 
 import kkckkc.jsourcepad.model.Buffer;
 import kkckkc.jsourcepad.util.command.AbstractWindowCommand;
+import kkckkc.jsourcepad.util.command.CommandProperty;
 
 public class CompletionCommand extends AbstractWindowCommand {
     public static enum Direction { NEXT, PREVIOUS }
 
-    private Direction direction;
+    @CommandProperty private Direction direction;
 
     public void setDirection(Direction direction) {
         this.direction = direction;

@@ -1,14 +1,20 @@
 package kkckkc.jsourcepad.util.command;
 
+import kkckkc.jsourcepad.model.Application;
+
 import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
 
 public abstract class AbstractCommandExecutor implements CommandExecutor {
+    protected abstract void prepareCommand(Command command);
+
     @Override
     public void execute(final Command command) {
         if (! EventQueue.isDispatchThread()) {
             EventQueue.invokeLater(new EventQueueContinuation(command));
         } else {
+            prepareCommand(command);
+            Application.get().topic(CommandExecutor.Listener.class).post().commandExecuted(command);
             doExecute(command);
         }
     }
@@ -24,6 +30,8 @@ public abstract class AbstractCommandExecutor implements CommandExecutor {
                 throw new RuntimeException(e);
             }
         } else {
+            prepareCommand(command);
+            Application.get().topic(CommandExecutor.Listener.class).post().commandExecuted(command);
             doExecute(command);
         }
     }
@@ -37,6 +45,8 @@ public abstract class AbstractCommandExecutor implements CommandExecutor {
 
         @Override
         public void run() {
+            prepareCommand(command);
+            Application.get().topic(CommandExecutor.Listener.class).post().commandExecuted(command);
             doExecute(command);
         }
     }

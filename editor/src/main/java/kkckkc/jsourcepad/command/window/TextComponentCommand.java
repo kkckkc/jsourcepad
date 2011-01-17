@@ -4,12 +4,13 @@ import kkckkc.jsourcepad.model.Buffer;
 import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.util.action.BaseAction;
 import kkckkc.jsourcepad.util.command.AbstractWindowCommand;
+import kkckkc.jsourcepad.util.command.CommandProperty;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 public class TextComponentCommand extends AbstractWindowCommand {
-    private String action;
+    @CommandProperty private String action;
 
     public void setAction(String action) {
         this.action = action;

@@ -22,12 +22,22 @@ public class BundleItemFactory {
                 case TEMPLATE:
                     return getTemplate(bundleItemSupplier, file);
 
+                case MACRO:
+                    return getMacro(bundleItemSupplier, file);
+
                 default:
                     throw new RuntimeException("Unsupported bundle item " + file);
             }
 		} catch (IOException ioe) {
 			throw new RuntimeException(ioe);
 		}
+    }
+
+    private static BundleItem getMacro(BundleItemSupplier bundleItemSupplier, File file) throws IOException {
+        GeneralPListReader gpl = new GeneralPListReader();
+        Map map = (Map) gpl.read(file);
+
+        return MacroBundleItem.create(bundleItemSupplier, map);
     }
 
 

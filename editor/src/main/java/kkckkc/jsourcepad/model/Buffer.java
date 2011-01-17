@@ -16,6 +16,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 
 public interface Buffer {
+    JTextComponent getTextComponent();
+
     public interface InsertionPointListener {
 		public void update(InsertionPoint insertionPoint);
 	}

@@ -1,20 +1,23 @@
 package kkckkc.jsourcepad.util.command;
 
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
+import com.google.common.collect.Maps;
+import kkckkc.jsourcepad.model.Window;
+import kkckkc.utils.Pair;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
-import java.util.List;
+import java.beans.BeanInfo;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
+import java.util.Map;
 
-public class CommandMapperManagerImpl implements CommandMapperManager, BeanFactoryAware {
-    private BeanFactory beanFactory;
+public class CommandMapperManagerImpl implements CommandMapperManager {
+    private Window window;
 
-    private List<CommandMapper> mappers;
-
-    @Override
-    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-        this.beanFactory = beanFactory;
+    @Autowired
+    public void setWindow(Window window) {
+        this.window = window;
     }
 
     @PostConstruct
@@ -23,20 +26,75 @@ public class CommandMapperManagerImpl implements CommandMapperManager, BeanFacto
     }
     
     @Override
-    public Command read(Object externalRepresentation) {
-        for (CommandMapper mapper : mappers) {
-            Command command = mapper.read(externalRepresentation);
-            if (command != null) return command;
+    public Command fromExternalRepresentation(Pair<Class, Map<String, ?>> externalRepresentation) {
+        try {
+            Class commandClass = externalRepresentation.getFirst();
+            Map<String, ?> properties = externalRepresentation.getSecond();
+
+            Command c = (Command) commandClass.newInstance();
+
+            for (String key : properties.keySet()) {
+                Field field = findField(commandClass, key);
+                if (field == null) {
+                    // TODO: Change to logging
+                    System.err.println("Unknown field " + key);
+                    continue;
+                }
+
+                field.setAccessible(true);
+                field.set(c, properties.get(key));
+            }
+
+            if (c instanceof WindowCommand) {
+                ((WindowCommand) c).setWindow(window);
+            }
+
+            return c;
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
-        throw new RuntimeException("Cannot read command " + externalRepresentation); 
     }
 
     @Override
-    public Object write(Command command) {
-        for (CommandMapper mapper : mappers) {
-            Object exRep = mapper.write(command);
-            if (exRep != null) return exRep;
-        }
-        throw new RuntimeException("Cannot write command " + command);
+    public Pair<Class, Map<String, ?>> toExternalRepresentation(Command command) {
+        return new Pair<Class, Map<String, ?>>(command.getClass(), getPropertyMap(command));
     }
+
+    private Map<String, ?> getPropertyMap(Object command) {
+        Map<String, Object> destinationMap = Maps.newHashMap();
+        try {
+            Class commandClass = command.getClass();
+            BeanInfo beanInfo = Introspector.getBeanInfo(commandClass);
+            for (PropertyDescriptor pd : beanInfo.getPropertyDescriptors()) {
+                if ("class".equals(pd.getName())) continue;
+
+                Field field = findField(commandClass, pd.getName());
+                if (field == null) {
+                    System.err.println("Could not find field " + pd.getName());
+                    continue;
+                }
+                if (field.getAnnotation(CommandProperty.class) != null) {
+                    field.setAccessible(true);
+                    destinationMap.put(pd.getName(), field.get(command));
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return destinationMap;
+    }
+
+    private Field findField(Class clazz, String name) {
+        for (Field field : clazz.getDeclaredFields()) {
+            if (field.getName().equals(name)) return field;
+        }
+
+        if (Object.class.equals(clazz)) return null;
+
+        return findField(clazz.getSuperclass(), name);
+    }
+
 }

@@ -2,11 +2,12 @@ package kkckkc.jsourcepad.command.window;
 
 import kkckkc.jsourcepad.model.Buffer;
 import kkckkc.jsourcepad.util.command.AbstractWindowCommand;
+import kkckkc.jsourcepad.util.command.CommandProperty;
 
 public class InsertTextCommand extends AbstractWindowCommand {
 
     private boolean noExecute;
-    private String text;
+    @CommandProperty private String text;
 
     public void setNoExecute(boolean noExecute) {
         this.noExecute = noExecute;

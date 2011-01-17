@@ -33,6 +33,12 @@ public class TextmateLanguageParser {
                 s = s.replaceAll("\\\\n", "\n");
                 return delegate.create(s);
             }
+
+            @Override
+            public kkckkc.syntaxpane.regex.Pattern create(String s, int options) {
+                // Not used
+                return create(s);
+            }
         };
 	}
 

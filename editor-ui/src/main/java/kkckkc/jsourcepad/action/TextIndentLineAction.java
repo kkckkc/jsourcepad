@@ -1,9 +1,8 @@
 package kkckkc.jsourcepad.action;
 
-import kkckkc.jsourcepad.model.Buffer;
+import kkckkc.jsourcepad.command.window.TextIndentLineCommand;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.util.action.BaseAction;
-import kkckkc.syntaxpane.model.Interval;
 
 import java.awt.event.ActionEvent;
 
@@ -17,9 +16,7 @@ public class TextIndentLineAction extends BaseAction {
 	
 	@Override
     public void performAction(ActionEvent e) {
-		Buffer activeBuffer = window.getDocList().getActiveDoc().getActiveBuffer();
-		Interval selectionOrCurrentLine = activeBuffer.getSelectionOrCurrentLine();
-		activeBuffer.indent(selectionOrCurrentLine);
+        window.getCommandExecutor().execute(new TextIndentLineCommand());
     }
 
 }

@@ -12,8 +12,8 @@
     </bean>
 
     <bean id="commandExecutor" class="kkckkc.jsourcepad.util.command.WindowCommandExecutorImpl" />
-
-
+    <bean id="macroManager" class="kkckkc.jsourcepad.model.MacroManagerImpl" />
+    <bean id="commandMapperManager" class="kkckkc.jsourcepad.util.command.CommandMapperManagerImpl" />
 
 	<!-- Utils -->
 	<bean id="actionManager" class="kkckkc.jsourcepad.util.action.ActionManager" />

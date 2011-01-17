@@ -7,14 +7,25 @@ public class NamedPatternFactory implements PatternFactory {
 	public Pattern create(String s) {
 		return new NamedPatternFacade(s);
 	}
-	
-	public static class NamedPatternFacade implements Pattern {
+
+    @Override
+    public Pattern create(String s, int options) {
+        return new NamedPatternFacade(s, options);
+    }
+
+    public static class NamedPatternFacade implements Pattern {
 		private NamedPattern namedPattern;
 
 		public NamedPatternFacade(String pattern) {
 			this.namedPattern = NamedPattern.compile(pattern, java.util.regex.Pattern.COMMENTS);
 		}
-		
+
+        public NamedPatternFacade(String pattern, int options) {
+            int opts = java.util.regex.Pattern.COMMENTS;
+            if ((options & PatternFactory.CASE_INSENSITIVE) != 0) opts |= java.util.regex.Pattern.CASE_INSENSITIVE;
+            this.namedPattern = NamedPattern.compile(pattern, opts);
+        }
+
 		@Override
         public Matcher matcher(CharSequence cs) {
 	        return new NamedMatcherFacade(this.namedPattern.matcher(cs));
@@ -97,6 +108,11 @@ public class NamedPatternFactory implements PatternFactory {
         public String replaceAll(String replacement) {
 	        return namedMatcher.replaceAll(replacement);
         }
-		
-	}
+
+        @Override
+        public String replace(String replacement) {
+            return namedMatcher.replaceFirst(replacement);
+        }
+
+    }
 }

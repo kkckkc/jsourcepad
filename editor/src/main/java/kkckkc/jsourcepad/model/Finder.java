@@ -2,10 +2,9 @@ package kkckkc.jsourcepad.model;
 
 import com.google.common.collect.Lists;
 import kkckkc.syntaxpane.model.Interval;
+import kkckkc.syntaxpane.regex.*;
 
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Finder {
     private final Buffer buffer;
@@ -14,6 +13,9 @@ public class Finder {
     private final Options options;
     private final String searchFor;
     private String replacement;
+
+    private Matcher matcher;
+    private Interval foundInterval;
 
     public Finder(Buffer buffer, Interval scope, String searchFor, Options options) {
         this.buffer = buffer;
@@ -25,9 +27,11 @@ public class Finder {
     }
 
     private Pattern makePattern(String searchFor) {
-        if (! options.isRegexp()) searchFor = Pattern.quote(searchFor);
+        PatternFactory patternFactory = new JoniPatternFactory();
+        if (! options.isRegexp())
+            patternFactory = new LiteralPatternFactory();
 
-        return Pattern.compile(searchFor, options.isCaseSensitive() ? Pattern.CASE_INSENSITIVE : 0);
+        return patternFactory.create(searchFor, options.isCaseSensitive() ? 0 : PatternFactory.CASE_INSENSITIVE);
     }
 
     public String getReplacement() {
@@ -57,25 +61,22 @@ public class Finder {
     }
 
     public void replace() {
-        Interval selectionInterval = buffer.getSelection();
-        String selection = buffer.getText(selectionInterval);
+        String actualReplacement = doReplace();
 
-        Matcher matcher = pattern.matcher(selection);
+        buffer.setSelection(Interval.createWithLength(foundInterval.getStart(), actualReplacement.length()));
+        foundInterval = null;
+    }
 
-        if (! matcher.matches()) return;
+    private String doReplace() {
+        String actualReplacement = matcher.replace(replacement);
+        buffer.replaceText(foundInterval, actualReplacement, null);
 
-        buffer.replaceText(buffer.getSelection(), matcher.replaceAll(replacement), null);
-
-        if (scope.contains(selectionInterval.getStart())) {
-            scope = Interval.createWithLength(scope.getStart(), scope.getLength() - (selectionInterval.getLength() - replacement.length()));
-        } else if (selectionInterval.getStart() <= scope.getStart()) {
-            scope = Interval.createWithLength(scope.getStart() - (selectionInterval.getLength() - replacement.length()), scope.getLength());
+        if (scope.contains(foundInterval.getStart())) {
+            scope = Interval.createWithLength(scope.getStart(), scope.getLength() - (foundInterval.getLength() - actualReplacement.length()));
+        } else if (foundInterval.getStart() <= scope.getStart()) {
+            scope = Interval.createWithLength(scope.getStart() - (foundInterval.getLength() - actualReplacement.length()), scope.getLength());
         }
-
-        selectionInterval = Interval.createWithLength(selectionInterval.getStart(), replacement.length());
-        buffer.setSelection(selectionInterval);
-
-
+        return actualReplacement;
     }
 
     public Interval getScope() {
@@ -92,9 +93,9 @@ public class Finder {
 
     private Interval findForward(int position) {
         String text = buffer.getText(new Interval(position, scope.getEnd()));
-        Matcher matcher = pattern.matcher(text);
+        matcher = pattern.matcher(text);
         if (matcher.find()) {
-            return Interval.offset(new Interval(matcher.start(), matcher.end()), position);
+            return (foundInterval = Interval.offset(new Interval(matcher.start(), matcher.end()), position));
         }
 
         if (! options.isWrapAround()) return null;
@@ -102,24 +103,26 @@ public class Finder {
         text = buffer.getText(new Interval(scope.getStart(), position));
         matcher = pattern.matcher(text);
         if (matcher.find()) {
-            return Interval.offset(new Interval(matcher.start(), matcher.end()), scope.getStart());
+            return (foundInterval = Interval.offset(new Interval(matcher.start(), matcher.end()), scope.getStart()));
         }
 
-        return null;
+        return (foundInterval = null);
     }
 
     private Interval findBackward(int position) {
         String text = buffer.getText(new Interval(scope.getStart(), position));
 
         List<Interval> matches = Lists.newArrayList();
-        Matcher matcher = pattern.matcher(text);
-        while (matcher.find()) {
+        matcher = pattern.matcher(text);
+        int p = 0;
+        while (matcher.find(p)) {
             matches.add(Interval.offset(new Interval(matcher.start(), matcher.end()), scope.getStart()));
+            p = matcher.end();
         }
 
-        if (! matches.isEmpty()) return matches.get(matches.size() - 1);
+        if (! matches.isEmpty()) return (foundInterval = matches.get(matches.size() - 1));
 
-        if (! options.isWrapAround()) return null;
+        if (! options.isWrapAround()) return (foundInterval = null);
 
         text = buffer.getText(new Interval(position, scope.getEnd()));
         matcher = pattern.matcher(text);
@@ -128,9 +131,9 @@ public class Finder {
             matches.add(Interval.offset(new Interval(matcher.start(), matcher.end()), position));
         }
 
-        if (! matches.isEmpty()) return matches.get(matches.size() - 1);
+        if (! matches.isEmpty()) return (foundInterval = matches.get(matches.size() - 1));
 
-        return null;
+        return (foundInterval = null);
     }
 
     public void replaceAll(Interval scope) {
@@ -139,10 +142,10 @@ public class Finder {
         int end = scope.getEnd();
 
         Interval interval;
-        while ((interval = forward(position)) != null) {
+        while ((interval = findForward(position)) != null) {
             if (interval.getStart() >= end) return;
 
-            replace();
+            doReplace();
 
             if (scope.contains(position)) {
                 scope = Interval.createWithLength(scope.getStart(), scope.getLength() - (interval.getLength() - replacement.length()));

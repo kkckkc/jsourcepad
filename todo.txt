@@ -1,4 +1,5 @@
 [x] Store last location and size for the embedded browser preview
+[ ] Make sure to update action state on startup
 
 [ ] Fix Project domain model. Move stuff from FileTreeModel. Move decorators
 
@@ -8,7 +9,6 @@
 [-] Disposable
 [ ] Multiple invocations of select current scope should make it bigger
 
-[ ] Cygwin testing
 [ ] Implement proper completion
 [ ] Debugging for commands
 

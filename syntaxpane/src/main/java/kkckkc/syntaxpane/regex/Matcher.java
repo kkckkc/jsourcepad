@@ -28,4 +28,5 @@ public interface Matcher {
 
 	String replaceAll(String replacement);
 
+    String replace(String replacement);
 }

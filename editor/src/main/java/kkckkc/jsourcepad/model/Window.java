@@ -32,6 +32,7 @@ public interface Window extends MessageBus, ScopeRoot {
 
 	@NotNull public ScriptEngine getScriptEngine();
     @NotNull public CommandExecutor getCommandExecutor();
+    @NotNull public MacroManager getMacroManager();
 
     public JFrame getContainer();
 

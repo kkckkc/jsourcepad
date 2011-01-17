@@ -20,4 +20,6 @@
 
     <bean id="browser" class="kkckkc.jsourcepad.model.SystemBrowser" />
 
+    <bean id="macroEncodingManager" class="kkckkc.jsourcepad.model.bundle.macro.MacroEncodingManager" lazy-init="true" />
+
 </beans>

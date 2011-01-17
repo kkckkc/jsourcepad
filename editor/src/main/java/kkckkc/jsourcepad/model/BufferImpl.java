@@ -85,7 +85,12 @@ public class BufferImpl implements Buffer {
         document.setDocumentFilter(null);
     }
 
-	@Override
+    @Override
+    public JTextComponent getTextComponent() {
+        return textComponent;
+    }
+
+    @Override
 	public void bind(final JTextComponent jtc) {
 		jtc.setDocument(document);
         this.caret = jtc.getCaret();
