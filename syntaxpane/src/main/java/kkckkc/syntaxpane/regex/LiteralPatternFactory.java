@@ -59,7 +59,7 @@ public class LiteralPatternFactory implements PatternFactory {
         @Override
         public boolean matchesAll() {
             find(0);
-            return start == 0 && end == (text.length() - 1);
+            return start == 0 && end == text.length();
         }
 
         @Override
@@ -116,11 +116,12 @@ public class LiteralPatternFactory implements PatternFactory {
 
         @Override
         public String replaceAll(String replacement) {
-            return null;
+            return text.replaceAll(java.util.regex.Pattern.quote(pattern),
+                    java.util.regex.Matcher.quoteReplacement(replacement));
         }
 
         @Override
-        public String replace(String replacement) {
+        public String replacementString(String replacement) {
             return replacement;
         }
     }

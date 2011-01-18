@@ -66,7 +66,7 @@ public class NamedPatternFactory implements PatternFactory {
 
 		@Override
         public boolean find() {
-	        return namedMatcher.find();
+	        return namedMatcher.find(0);
         }
 
 		@Override
@@ -81,7 +81,7 @@ public class NamedPatternFactory implements PatternFactory {
 
 		@Override
         public boolean matches() {
-	        return namedMatcher.matches();
+	        return namedMatcher.find();
         }
 
         @Override
@@ -110,8 +110,14 @@ public class NamedPatternFactory implements PatternFactory {
         }
 
         @Override
-        public String replace(String replacement) {
-            return namedMatcher.replaceFirst(replacement);
+        public String replacementString(String replacement) {
+            if (find()) {
+                StringBuffer b = new StringBuffer();
+                namedMatcher.appendReplacement(b, replacement);
+                return b.substring(start());
+            } else {
+                return replacement;
+            }
         }
 
     }

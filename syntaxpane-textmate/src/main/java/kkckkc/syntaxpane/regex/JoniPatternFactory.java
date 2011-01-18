@@ -235,7 +235,7 @@ public class JoniPatternFactory implements PatternFactory {
         }
 
         @Override
-        public String replace(String replacement) {
+        public String replacementString(String replacement) {
             StringBuilder b = new StringBuilder();
             appendReplacement(replacement, b);
             return b.toString();

@@ -68,7 +68,7 @@ public class Finder {
     }
 
     private String doReplace() {
-        String actualReplacement = matcher.replace(replacement);
+        String actualReplacement = matcher.replacementString(replacement);
         buffer.replaceText(foundInterval, actualReplacement, null);
 
         if (scope.contains(foundInterval.getStart())) {
