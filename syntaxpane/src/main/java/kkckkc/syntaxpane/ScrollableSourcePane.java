@@ -183,6 +183,11 @@ public class ScrollableSourcePane extends JPanel {
         return wrapColumn;
     }
 
+    @Override
+    public boolean requestFocusInWindow() {
+        return editorPane.requestFocusInWindow();
+    }
+
     private static final class SourceJEditorPane extends JEditorPane {
         private boolean overwriteMode;
 

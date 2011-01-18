@@ -16,6 +16,10 @@ import javax.annotation.PostConstruct;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.text.html.parser.DocumentParser;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 
 public class DocListPresenter implements Presenter<DocListView>, DocList.Listener, Doc.StateListener {
@@ -70,7 +74,15 @@ public class DocListPresenter implements Presenter<DocListView>, DocList.Listene
                 actionGroup.setActionContext(a);
             }
         });
-		
+
+        // Hack to focus correctly when displayed for the first time
+        tabbedPane.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                docList.getActiveDoc().getPresenter(DocPresenter.class).getComponent().requestFocusInWindow();
+                tabbedPane.removeComponentListener(this);
+            }
+        });
     }	
 	
 	public JComponent getJComponent() {
@@ -90,6 +102,7 @@ public class DocListPresenter implements Presenter<DocListView>, DocList.Listene
     @Override
 	public void selected(int index, Doc doc) {
 		tabbedPane.setSelectedIndex(index);
+        doc.getPresenter(DocPresenter.class).getComponent().requestFocusInWindow();
 	}
 
 	@Override
