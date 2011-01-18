@@ -18,9 +18,6 @@ public class StringUtils {
 		return dest.toString();
 	}
 
-
- 
-
     public static String removePrefix(String s, String prefix) {
         if (s.startsWith(prefix)) {
             return s.substring(prefix.length());

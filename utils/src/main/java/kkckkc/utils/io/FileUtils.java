@@ -48,16 +48,16 @@ public class FileUtils {
 
     public static List<File> recurse(File root) {
         List<File> dest = new ArrayList<File>();
-        recurse(root, dest);
+        recurseWorker(root, dest);
         return dest;
     }
 
-    private static void recurse(File root, List<File> dest) {
+    private static void recurseWorker(File root, List<File> dest) {
         dest.add(root);
         File[] children = root.listFiles();
         if (children != null) {
             for (File f : children) {
-                recurse(f, dest);
+                recurseWorker(f, dest);
             }
         }
     }
