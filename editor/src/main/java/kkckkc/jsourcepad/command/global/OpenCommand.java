@@ -54,7 +54,7 @@ public class OpenCommand implements Command {
                 Doc doc = window.getDocList().create();
                 try {
                     doc.getActiveBuffer().setText(
-                            Application.get().getLanguageManager().getLanguage(StringUtils.firstLine(content), new File("")),
+                            Application.get().getLanguageManager().getLanguage(StringUtils.beforeFirst(content, "\n"), new File("")),
                             new BufferedReader(new StringReader(content)));
                 } catch (IOException e) {
                     throw new RuntimeException(e);

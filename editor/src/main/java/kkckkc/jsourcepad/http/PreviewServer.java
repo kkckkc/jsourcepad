@@ -127,8 +127,8 @@ public class PreviewServer {
                     resp.setStatus(204);
 
                     String url = req.getParameter("url");
-                    url = StringUtils.removePrefix(url, "http://localhost:" + Config.getHttpPort() + "/files");
-                    url = StringUtils.removePrefix(url, "file://");
+                    url = StringUtils.stripPrefix(url, "http://localhost:" + Config.getHttpPort() + "/files");
+                    url = StringUtils.stripPrefix(url, "file://");
 
                     Window window;
                     if (req.getParameter("windowId") != null) {

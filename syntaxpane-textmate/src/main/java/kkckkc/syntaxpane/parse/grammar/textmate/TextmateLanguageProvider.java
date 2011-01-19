@@ -24,7 +24,7 @@ public class TextmateLanguageProvider implements LanguageManager.Provider {
 	private File root;
 	
 	public TextmateLanguageProvider(String root) {
-		this.root = new File(FileUtils.expandAbbreviations(root));
+		this.root = new File(FileUtils.expandTildeNotation(root));
 	}
 	
 	public Map<String, Language> getLanguages(LanguageManager languageManager) {

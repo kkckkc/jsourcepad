@@ -70,7 +70,7 @@ public class NewFileDialog implements Dialog<NewFileDialogView>, ActionListener,
         });
 
         try {
-            view.getLocationField().setText(FileUtils.abbreviate(baseFolder.getCanonicalPath()));
+            view.getLocationField().setText(FileUtils.shortenWithTildeNotation(baseFolder.getCanonicalPath()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -83,7 +83,7 @@ public class NewFileDialog implements Dialog<NewFileDialogView>, ActionListener,
                     TemplateBundleItem bi = (TemplateBundleItem) bis.get();
                     String ext = bi.getExtension();
                     if (ext != null) {
-                        view.getFileNameField().setText(FileUtils.getBaseName(view.getFileNameField().getText()) + "." + ext);
+                        view.getFileNameField().setText(FileUtils.getBaseName(new File(view.getFileNameField().getText())) + "." + ext);
                     }
                 }
             }
@@ -108,7 +108,7 @@ public class NewFileDialog implements Dialog<NewFileDialogView>, ActionListener,
         BundleItemSupplier bis = (BundleItemSupplier) view.getTemplateField().getSelectedItem();
         BundleItem bi = bis.get();
         try {
-            File file = new File(new File(FileUtils.expandAbbreviations(view.getLocationField().getText())), view.getFileNameField().getText());
+            File file = new File(new File(FileUtils.expandTildeNotation(view.getLocationField().getText())), view.getFileNameField().getText());
 
             bi.execute(window, file);
 

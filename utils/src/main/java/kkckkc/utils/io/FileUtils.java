@@ -1,5 +1,8 @@
 package kkckkc.utils.io;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -7,13 +10,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FileUtils {
-	public static File newTempFile(String prefix, String suffix) throws IOException {
+
+    /**
+     * Creates a temporary file that is automatically deleted on exit
+     */
+	public static File createDeleteOnExitTempFile(String prefix, String suffix) throws IOException {
 		File tempFile = File.createTempFile(prefix, suffix);
 		tempFile.deleteOnExit();
 		return tempFile;
 	}
 
-    public static boolean isAncestorOf(File descendant, File ancestor) {
+    /**
+     * Checks if a file is an ancestor of another file. Being an ancestor of another file means
+     * appearing somewhere in the "path" of the descendant
+     */
+    public static boolean isAncestorOf(@Nullable File descendant, @Nullable File ancestor) {
+        if (descendant == null || ancestor == null) return false;
         if (ancestor.equals(descendant)) {
             return false;
         }
@@ -25,51 +37,58 @@ public class FileUtils {
         return descendant != null;
     }
 
-    public static String getBaseName(File file) {
-        String s = file.getName();
-        return getBaseName(s);
+    /**
+     * Removes the extension from a filename, i.e. the last dot and everything after it
+     */
+    public static String getBaseName(@NotNull File file) {
+        String fileName = file.getName();
+        if (fileName.indexOf('.') < 0) return fileName;
+        return fileName.substring(0, fileName.lastIndexOf('.'));
     }
 
-    public static String getBaseName(String s) {
-        if (! s.contains(".")) return s;
-        return s.substring(0, s.lastIndexOf('.'));
-    }
-
-    public static String abbreviate(String path) {
-        if (path.startsWith(System.getProperty("user.home") + File.separator)) {
-            return "~" + path.substring(System.getProperty("user.home").length());
+    /**
+     * Replaces any occurrences of the users home folder in the path with a tilde, effectively
+     * shorting the path of a file for display purposes
+     */
+    public static @NotNull String shortenWithTildeNotation(@NotNull String path) {
+        String home = System.getProperty("user.home");
+        if (path.startsWith(home + File.separator)) {
+            return "~" + path.substring(home.length());
         }
         return path;
     }
 
-    public static String expandAbbreviations(String text) {
-        return text.replaceAll("~", System.getProperty("user.home").replace('\\', '/'));
+    /**
+     * Opposite of shortenWithTildeNotation, i.e. replacing any occurrences of ~ with
+     * the full path of the users home directory
+     */
+    public static @NotNull String expandTildeNotation(@NotNull String text) {
+        if (text.startsWith("~")) return System.getProperty("user.home").replace('\\', '/') + text.substring(1);
+        return text;
     }
 
-    public static List<File> recurse(File root) {
-        List<File> dest = new ArrayList<File>();
-        recurseWorker(root, dest);
-        return dest;
+    public static @NotNull List<File> findAllFiles(@NotNull File root) {
+        List<File> fileList = new ArrayList<File>();
+        findAllFilesWorker(root, fileList);
+        return fileList;
     }
 
-    private static void recurseWorker(File root, List<File> dest) {
-        dest.add(root);
+    private static void findAllFilesWorker(File root, List<File> fileList) {
+        fileList.add(root);
         File[] children = root.listFiles();
-        if (children != null) {
-            for (File f : children) {
-                recurseWorker(f, dest);
-            }
-        }
+        if (children == null) return;
+
+        for (File f : children) findAllFilesWorker(f, fileList);
     }
 
     public static byte[] readBytes(File file) throws IOException {
 		FileInputStream fis = new FileInputStream(file);
         try {
-            byte[] dest = new byte[fis.available()];
-            fis.read(dest);
+            byte[] bytes = new byte[fis.available()];
+            fis.read(bytes);
             fis.close();
 
-            return dest;
+            return bytes;
         } finally {
             fis.close();
         }

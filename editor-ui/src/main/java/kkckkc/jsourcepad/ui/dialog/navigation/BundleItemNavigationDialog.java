@@ -49,7 +49,7 @@ public class BundleItemNavigationDialog extends NavigationDialog {
 	}
 
     private String getBundleName(BundleItemSupplier bis) {
-        return FileUtils.getBaseName(bis.getFile().getParentFile().getParentFile().getName());
+        return FileUtils.getBaseName(bis.getFile().getParentFile().getParentFile());
     }
 
     @Override

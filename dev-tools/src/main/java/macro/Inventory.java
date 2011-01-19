@@ -14,7 +14,7 @@ public class Inventory {
 	private static Map<String, String> commandset = new HashMap<String, String>();
 	
 	public static void main(String... args) throws IOException {
-		recurse(new File("/home/magnus/.jsourcepad/Shared/Bundles"));
+		recurse(new File("/home/magnus/.jsourcepad/Bundles"));
 		
 		int i = 0;
 		for (String s: commandset.keySet()) {

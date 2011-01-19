@@ -183,7 +183,7 @@ public class CommandBundleItem implements BundleItem<Void> {
 
         // Get newest timestamp of the Support folder
         long timestamp = 0;
-        List<File> files = FileUtils.recurse(supportFolder);
+        List<File> files = FileUtils.findAllFiles(supportFolder);
         for (File f : files) {
             timestamp = Math.max(timestamp, f.lastModified());
         }

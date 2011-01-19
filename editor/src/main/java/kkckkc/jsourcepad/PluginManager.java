@@ -1,7 +1,5 @@
 package kkckkc.jsourcepad;
 
-import kkckkc.utils.IteratorIterable;
-
 import java.util.*;
 
 public class PluginManager {
@@ -19,7 +17,9 @@ public class PluginManager {
         ServiceLoader<Plugin> loader = ServiceLoader.load(Plugin.class);
 
         List<Plugin> available = new ArrayList<Plugin>();
-        for (Plugin p : new IteratorIterable<Plugin>(loader.iterator())) {
+        Iterator<Plugin> iterator = loader.iterator();
+        while (iterator.hasNext()) {
+            Plugin p = iterator.next();
             if (! filter || p.isEnabled()) available.add(p);
         }
 

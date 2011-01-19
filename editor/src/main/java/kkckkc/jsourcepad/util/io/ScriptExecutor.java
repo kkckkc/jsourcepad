@@ -115,7 +115,7 @@ public class ScriptExecutor {
 	
 
 	protected ProcessBuilder getProcess(Execution execution, Map<String, String> environment) throws IOException {
-		execution.tempScriptFile = FileUtils.newTempFile("jsourcepad", ".sh");
+		execution.tempScriptFile = FileUtils.createDeleteOnExitTempFile("jsourcepad", ".sh");
 		execution.tempScriptFile.setExecutable(true);
         execution.script = script;
         Files.write(script, execution.tempScriptFile, Charsets.UTF_8);

@@ -3,7 +3,6 @@ package kkckkc.utils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -16,88 +15,12 @@ import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class DomUtil {
-	public static <T> Iterable<T> asIterable(final NodeList nl, final Class<T> clazz) {
-		return new IteratorIterable<T>(
-			new Iterator<T>() {
-				int position = 0;
-				
-				public boolean hasNext() {
-					return position < nl.getLength();
-				}
-
-				public T next() {
-					T t = clazz.cast(nl.item(position));
-					position++;
-					return t;
-				}
-
-				public void remove() { }
-			}
-		);
-	}
-
 	public static Iterable<Element> getChildren(final Element e, final String name) {
-		return new IteratorIterable<Element>(
-			new Iterator<Element>() {
-				private Element next = findNext();
-				
-				private Element findNext() {
-					for(Node node = (next == null ? e.getFirstChild() : next.getNextSibling());
-						node != null; node = node.getNextSibling()){
-						if (node.getNodeType() == Node.ELEMENT_NODE) {
-							if (node.getNodeName().equals(name)) {
-								next = (Element) node;
-								return next;
-							}
-						}
-					}
-					return null;
-				}
-				
-				public boolean hasNext() {
-					return next != null;
-				}
-
-				public Element next() {
-					Element e = next;
-					next = findNext();
-					return e;
-				}
-
-				public void remove() { }
-			}
-		);
+		return new ElementChildrenIterator(e, name);
 	}
 
 	public static Iterable<Element> getChildren(final Element e) {
-		return new IteratorIterable<Element>(
-			new Iterator<Element>() {
-				private Element next = findNext();
-				
-				private Element findNext() {
-					for(Node node = (next == null ? e.getFirstChild() : next.getNextSibling());
-						node != null; node = node.getNextSibling()){
-						if (node.getNodeType() == Node.ELEMENT_NODE) {
-							next = (Element) node;
-							return next;
-						}
-					}
-					return null;
-				}
-				
-				public boolean hasNext() {
-					return next != null;
-				}
-
-				public Element next() {
-					Element e = next;
-					next = findNext();
-					return e;
-				}
-
-				public void remove() { }
-			}
-		);
+        return new ElementChildrenIterator(e);
 	}
 
 	public static Element getChild(Element e, String name) {
@@ -142,7 +65,9 @@ public class DomUtil {
 		factory.setNamespaceAware(false);
 		try {
 			factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-		} catch (ParserConfigurationException e) { }
+		} catch (ParserConfigurationException e) {
+            // Ignore
+        }
 	}
 
 	static byte[] bytes = "<?xml version='1.0' encoding='UTF-8'?>".getBytes();
@@ -177,25 +102,6 @@ public class DomUtil {
 		}
 	}
 
-    public static Document newDocument() {
-        try {
-            DocumentBuilder builder = documentBuilderPool.poll();
-            if (builder == null) {
-                builder = factory.newDocumentBuilder();
-                builder.setEntityResolver(ENTITY_RESOLVER);
-            }
-
-            Document document = builder.newDocument();
-
-            builder.reset();
-            documentBuilderPool.offer(builder);
-
-            return document;
-        } catch (ParserConfigurationException e) {
-            throw new RuntimeException("Can't create parser", e);
-        }
-    }
-
 	public static Document parse(File file) throws FileNotFoundException {
 		BufferedReader reader = new BufferedReader(new FileReader(file));
 		try {
@@ -208,4 +114,51 @@ public class DomUtil {
 			}
 		}
 	}
+
+
+    private static class ElementChildrenIterator implements Iterator<Element>, Iterable<Element> {
+        private Element next;
+        private final Element e;
+        private final String name;
+
+        public ElementChildrenIterator(Element e, String name) {
+            this.e = e;
+            this.name = name;
+            findNext();
+        }
+
+        public ElementChildrenIterator(Element e) {
+            this(e, null);
+        }
+
+        private void findNext() {
+            for(Node node = (next == null ? e.getFirstChild() : next.getNextSibling());
+                node != null; node = node.getNextSibling()){
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    if (name == null || node.getNodeName().equals(name)) {
+                        next = (Element) node;
+                        return;
+                    }
+                }
+            }
+            next = null;
+        }
+
+        public boolean hasNext() {
+            return next != null;
+        }
+
+        public Element next() {
+            Element e = next;
+            findNext();
+            return e;
+        }
+
+        public void remove() { }
+
+        @Override
+        public Iterator<Element> iterator() {
+            return this;
+        }
+    }
 }
