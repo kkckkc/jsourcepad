@@ -13,7 +13,7 @@ import static org.joni.constants.MetaChar.INEFFECTIVE_META_CHAR;
 
 public class JoniPatternFactory implements PatternFactory {
 
-	private static final int MAX_ENTRIES = 100;
+	private static final int MAX_ENTRIES = 1000;
 	private static final Map<String, JoniPattern> CACHE = new LinkedHashMap<String, JoniPattern>(MAX_ENTRIES, .75F, true) {
 	    protected boolean removeEldestEntry(Map.Entry<String, JoniPattern> eldest) {  
 	      return size() > MAX_ENTRIES;  
@@ -109,7 +109,7 @@ public class JoniPatternFactory implements PatternFactory {
 	        return new JoniMatcher(re.matcher(chars), chars);
         }
 
-		private void makeRe() {
+		private synchronized void makeRe() {
 	        if (re == null) {
 	    		try {
                     int opts = Option.DEFAULT;
@@ -241,9 +241,10 @@ public class JoniPatternFactory implements PatternFactory {
             return b.toString();
         }
 
+        static java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("\\(\\?([0-9]+):([^):]+)(:([^)]+))?\\)");
+
         private void appendReplacement(String replacement, StringBuilder builder) {
             // Remove all conditionals
-            java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("\\(\\?([0-9]+):([^):]+)(:([^)]+))?\\)");
             java.util.regex.Matcher matcher = pattern.matcher(replacement);
 
             StringBuffer buf = new StringBuffer();

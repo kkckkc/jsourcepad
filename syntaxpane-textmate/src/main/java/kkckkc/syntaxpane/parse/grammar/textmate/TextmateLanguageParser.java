@@ -1,11 +1,10 @@
 package kkckkc.syntaxpane.parse.grammar.textmate;
 
 import kkckkc.syntaxpane.parse.grammar.*;
-import kkckkc.syntaxpane.parse.grammar.util.DefaultPatternSupplier;
+import kkckkc.syntaxpane.parse.grammar.util.PatternSupplier;
 import kkckkc.syntaxpane.regex.JoniPatternFactory;
 import kkckkc.syntaxpane.regex.PatternFactory;
 import kkckkc.utils.plist.PListReaderFacade;
-import kkckkc.utils.plist.PListReader;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,11 +12,13 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 public class TextmateLanguageParser {
+    private static Pattern CHANGE_BACKREF = Pattern.compile("\\\\([0-9]+)");
 	private static final Comparator<SubPatternContext> SUBPATTERN_COMPARATOR = new Comparator<SubPatternContext>() {
         public int compare(SubPatternContext object1, SubPatternContext object2) {
 	        return new Integer(object1.getSubPatternIdx()).compareTo(object2.getSubPatternIdx());
         }
 	};
+
 	private File file;
 	private PatternFactory factory;
 	private String rootScope;
@@ -30,7 +31,7 @@ public class TextmateLanguageParser {
             @Override
             public kkckkc.syntaxpane.regex.Pattern create(String s) {
                 // TODO: Investigate if this is really needed
-                s = s.replaceAll("\\\\n", "\n");
+                //s = s.replaceAll("\\\\n", "\n");
                 return delegate.create(s);
             }
 
@@ -43,20 +44,20 @@ public class TextmateLanguageParser {
 	}
 
 	public Language parse() throws IOException {
-		PListReaderFacade r = new PListReaderFacade();
+		PListReaderFacade plistReader = new PListReaderFacade();
 
-		Map m = (Map) r.read(file);
+		Map props = (Map) plistReader.read(file);
 		
-		Language l = new Language((String) m.get("scopeName"));
-		l.setName((String) m.get("name"));
+		Language language = new Language((String) props.get("scopeName"));
+		language.setName((String) props.get("name"));
 		
-		if (m.containsKey("firstLineMatch")) 
-			l.setFirstLinePattern(new DefaultPatternSupplier((String) m.get("firstLineMatch"), factory));
+		if (props.containsKey("firstLineMatch"))
+			language.setFirstLinePattern(new PatternSupplier((String) props.get("firstLineMatch"), factory));
 		
-		l.setFoldStart(new DefaultPatternSupplier((String) m.get("foldingStartMarker"), factory));
-		l.setFoldEnd(new DefaultPatternSupplier((String) m.get("foldingStopMarker"), factory));
+		language.setFoldStart(new PatternSupplier((String) props.get("foldingStartMarker"), factory));
+		language.setFoldEnd(new PatternSupplier((String) props.get("foldingStopMarker"), factory));
 		
-		List<String> fileTypes = (List<String>) m.get("fileTypes");
+		List<String> fileTypes = (List<String>) props.get("fileTypes");
 		if (fileTypes != null && ! fileTypes.isEmpty()) {
 			StringBuilder fileTypePattern = new StringBuilder();
 			for (String s : fileTypes) {
@@ -64,23 +65,23 @@ public class TextmateLanguageParser {
 			}
 			fileTypePattern.setLength(fileTypePattern.length() - 1);
 
-			l.setFileNamePattern(new DefaultPatternSupplier(fileTypePattern.toString(), factory));
+			language.setFileNamePattern(new PatternSupplier(fileTypePattern.toString(), factory));
 		}
 		
-		rootScope = (String) m.get("scopeName");
-		RootContext rc = new RootContext(rootScope);
+		rootScope = (String) props.get("scopeName");
+		RootContext rootContext = new RootContext(rootScope);
 		
 		List<Context> contexts = new ArrayList<Context>();
-		for (Map entry : ((List<Map>) m.get("patterns"))) {
+		for (Map entry : ((List<Map>) props.get("patterns"))) {
 			contexts.add(parseContext(entry));
 		}
-		rc.setChildReferences(contexts.toArray(new Context[contexts.size()]));
+		rootContext.setChildReferences(contexts.toArray(new Context[contexts.size()]));
 
-		l.setRootContext(rc);
+		language.setRootContext(rootContext);
 		
-		if (m.containsKey("repository")) {
+		if (props.containsKey("repository")) {
 			contexts = new ArrayList<Context>();
-			for (Map.Entry entry : ((Map<?, ?>) m.get("repository")).entrySet()) {
+			for (Map.Entry entry : ((Map<?, ?>) props.get("repository")).entrySet()) {
 				Context c = buildContainerList((Map) entry.getValue(), (String) entry.getKey());
 				c.setId((String) entry.getKey());
 				c.setName((String) entry.getKey());
@@ -92,10 +93,10 @@ public class TextmateLanguageParser {
 				}
 				contexts.add(c);
 			}
-			l.setSupportingContexts(contexts.toArray(new Context[contexts.size()]));
+			language.setSupportingContexts(contexts.toArray(new Context[contexts.size()]));
 		}
 		
-		return l;
+		return language;
 	}
 	
 	private Context parseContext(Map entry) {
@@ -248,7 +249,6 @@ public class TextmateLanguageParser {
 	    return context;
     }
 
-    Pattern CHANGE_BACKREF = Pattern.compile("\\\\([0-9]+)");
     private String fixBackrefs(String s) {
         return CHANGE_BACKREF.matcher(s).replaceAll("\\\\%{$1@start}");
     }
@@ -273,16 +273,4 @@ public class TextmateLanguageParser {
 		
 		return sc;
     }
-	
-	private static void recurse(File file, PListReader r) throws IOException {
-		for (File childFile : file.listFiles()) {
-			if (childFile.getName().endsWith(".plist") || childFile.getName().endsWith(".tmLanguage")) {
-				if (file.getName().equals("Syntaxes")) {
-					TextmateLanguageParser lp = new TextmateLanguageParser(childFile);
-				}
-			} else if (childFile.isDirectory()) {
-				recurse(childFile, r);
-			}
-		}
 	}
-}

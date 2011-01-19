@@ -3,7 +3,7 @@ package kkckkc.syntaxpane.parse.grammar.gtksourceview;
 import com.google.common.base.Suppliers;
 import kkckkc.syntaxpane.parse.grammar.*;
 import kkckkc.syntaxpane.parse.grammar.SubPatternContext.Where;
-import kkckkc.syntaxpane.parse.grammar.util.DefaultPatternSupplier;
+import kkckkc.syntaxpane.parse.grammar.util.PatternSupplier;
 import kkckkc.syntaxpane.regex.NamedPatternFactory;
 import kkckkc.syntaxpane.regex.Pattern;
 import kkckkc.syntaxpane.regex.PatternFactory;
@@ -47,7 +47,7 @@ public class GtkSourceViewLanguageParser {
         		if (key.equals("globs")) {
         			language.setFileNamePattern(
         					Suppliers.memoize(
-        							new DefaultPatternSupplier(makeRegexpFromGlob(value), factory)));
+        							new PatternSupplier(makeRegexpFromGlob(value), factory)));
         		}
 	        }
         }

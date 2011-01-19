@@ -6,12 +6,12 @@ import kkckkc.syntaxpane.regex.PatternFactory;
 
 
 
-public class DefaultPatternSupplier implements Supplier<Pattern> {
+public class PatternSupplier implements Supplier<Pattern> {
 
 	private String patternString;
 	private PatternFactory factory;
 
-	public DefaultPatternSupplier(String patternString, PatternFactory factory) {
+	public PatternSupplier(String patternString, PatternFactory factory) {
 		this.patternString = patternString;
 		this.factory = factory;
 	}
