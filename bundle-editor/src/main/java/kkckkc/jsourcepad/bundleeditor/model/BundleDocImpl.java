@@ -7,7 +7,7 @@ import kkckkc.jsourcepad.model.*;
 import kkckkc.jsourcepad.model.bundle.Bundle;
 import kkckkc.jsourcepad.model.bundle.BundleStructure;
 import kkckkc.syntaxpane.parse.grammar.LanguageManager;
-import kkckkc.utils.plist.GeneralPListReader;
+import kkckkc.utils.plist.PListReaderFacade;
 import kkckkc.utils.plist.NIOLegacyPListReader;
 import kkckkc.utils.plist.PListFormatter;
 import kkckkc.utils.plist.XMLPListWriter;
@@ -91,7 +91,7 @@ public class BundleDocImpl extends DocImpl {
         this.backingFile = file;
         this.backingTimestamp = file.lastModified();
 
-        GeneralPListReader pl = new GeneralPListReader();
+        PListReaderFacade pl = new PListReaderFacade();
         plist = (Map<String, Object>) pl.read(file);
 
         this.uuid = (String) plist.get("uuid");

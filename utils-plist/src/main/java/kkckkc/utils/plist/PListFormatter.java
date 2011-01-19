@@ -7,10 +7,10 @@ public class PListFormatter {
     private static Logger logger = Logger.getLogger(PListFormatter.class.toString());
 
     private Comparator<String> mapKeyComparator;
-    private boolean useTextmateFormatting;
+    private boolean useTextMateFormatting;
 
-    public PListFormatter(boolean useTextmateFormatting) {
-        this.useTextmateFormatting = useTextmateFormatting;
+    public PListFormatter(boolean useTextMateFormatting) {
+        this.useTextMateFormatting = useTextMateFormatting;
     }
 
     public PListFormatter() {
@@ -31,7 +31,7 @@ public class PListFormatter {
 	    } else if (o instanceof List) {
 	    	formatList((List) o, dest, i, shortNotation);
 	    } else if (o instanceof String) {
-            if (useTextmateFormatting) {
+            if (useTextMateFormatting) {
                 dest.append("'").append(((String) o).replaceAll("'", "''")).append("'");
             } else {
 	    	    dest.append("\"").append(((String) o).replaceAll("\"", "\\\\\"")).append("\"");

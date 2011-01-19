@@ -4,7 +4,7 @@ import kkckkc.syntaxpane.parse.grammar.Language;
 import kkckkc.syntaxpane.parse.grammar.LanguageManager;
 import kkckkc.syntaxpane.parse.grammar.RootContext;
 import kkckkc.utils.io.FileUtils;
-import kkckkc.utils.plist.GeneralPListReader;
+import kkckkc.utils.plist.PListReaderFacade;
 import kkckkc.utils.plist.PListReader;
 
 import java.io.File;
@@ -35,7 +35,7 @@ public class TextmateLanguageProvider implements LanguageManager.Provider {
 	public void reload(LanguageManager languageManager) {
 		languages = new HashMap<String, Language>();
 		
-		GeneralPListReader r = new GeneralPListReader();
+		PListReaderFacade r = new PListReaderFacade();
 		try {
 	        recurse(languageManager, root, r);
         } catch (Exception e) {

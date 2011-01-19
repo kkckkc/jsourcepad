@@ -1,7 +1,7 @@
 package kkckkc.jsourcepad.model.bundle;
 
 import kkckkc.jsourcepad.model.bundle.snippet.SnippetBundleItem;
-import kkckkc.utils.plist.GeneralPListReader;
+import kkckkc.utils.plist.PListReaderFacade;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,7 +34,7 @@ public class BundleItemFactory {
     }
 
     private static BundleItem getMacro(BundleItemSupplier bundleItemSupplier, File file) throws IOException {
-        GeneralPListReader gpl = new GeneralPListReader();
+        PListReaderFacade gpl = new PListReaderFacade();
         Map map = (Map) gpl.read(file);
 
         return MacroBundleItem.create(bundleItemSupplier, map);
@@ -42,14 +42,14 @@ public class BundleItemFactory {
 
 
     private static BundleItem getTemplate(BundleItemSupplier bundleItemSupplier, File file) throws IOException {
-        GeneralPListReader gpl = new GeneralPListReader();
+        PListReaderFacade gpl = new PListReaderFacade();
         Map map = (Map) gpl.read(file);
 
         return TemplateBundleItem.create(bundleItemSupplier, map);
     }
 
     private static BundleItem getCommand(BundleItemSupplier bundleItemSupplier, File file) throws IOException {
-		GeneralPListReader gpl = new GeneralPListReader();
+		PListReaderFacade gpl = new PListReaderFacade();
 		Map map = (Map) gpl.read(file);
 
 	    return CommandBundleItem.create(bundleItemSupplier, map);
@@ -57,7 +57,7 @@ public class BundleItemFactory {
 
 
 	private static BundleItem getSnippet(BundleItemSupplier bundleItemSupplier, File file) throws IOException {
-		GeneralPListReader gpl = new GeneralPListReader();
+		PListReaderFacade gpl = new PListReaderFacade();
 		Map map = (Map) gpl.read(file);
 
 	    return SnippetBundleItem.create(bundleItemSupplier, map);

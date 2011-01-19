@@ -6,33 +6,29 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 
 public class NIOLegacyPListReader {
-
-    private boolean textmateFormatting;
+    private boolean textMateFormatting;
 
     public NIOLegacyPListReader() {
         this(false);
     }
     
-    public NIOLegacyPListReader(boolean textmateFormatting) {
-        this.textmateFormatting = textmateFormatting;
+    public NIOLegacyPListReader(boolean textMateFormatting) {
+        this.textMateFormatting = textMateFormatting;
     }
     
-	public Object read(byte[] bytearr) {
-		// Start parsing
-		String s = new String(bytearr);
-		Tokenizer tokenizer = new Tokenizer(s);
+	public Object read(byte[] bytes) {
+		Tokenizer tokenizer = new Tokenizer(new String(bytes));
 		return parseObject(tokenizer, tokenizer.nextToken());
 	}
-
 	
 	private Object parseObject(Tokenizer tokenizer, Token token) {
 		switch (token.type) {
 		case LEFT_BRACE:
-			return parseDictionary(tokenizer, token);
+			return parseDictionary(tokenizer);
         case LEFT_PAR:
-            return parseList(tokenizer, token);
+            return parseList(tokenizer);
 		case QUOTE:
-			return parseString(tokenizer, token);
+			return parseString(tokenizer);
         case LITERAL:
             return token.getValue().toString();
 		default:
@@ -40,45 +36,42 @@ public class NIOLegacyPListReader {
 		}
 	}
 
-    private List<Object> parseList(Tokenizer tokenizer, Token token) {
-        List<Object> dest = new ArrayList<Object>();
+    private List<Object> parseList(Tokenizer tokenizer) {
+        List<Object> list = new ArrayList<Object>();
         while (tokenizer.peekNextToken().getType() != TokenType.RIGHT_PAR) {
-            dest.add(parseObject(tokenizer, tokenizer.nextToken()));
+            list.add(parseObject(tokenizer, tokenizer.nextToken()));
             if (tokenizer.peekNextToken().getType() == TokenType.COMMA)
                 tokenizer.nextToken(TokenType.COMMA);
         }
         tokenizer.nextToken(TokenType.RIGHT_PAR);
-        return dest;
+        return list;
     }
 
-
-	private Map<Object, Object> parseDictionary(Tokenizer tokenizer, Token token) {
-		Map<Object, Object> dest = new LinkedHashMap<Object, Object>();
+	private Map<Object, Object> parseDictionary(Tokenizer tokenizer) {
+		Map<Object, Object> dictionary = new LinkedHashMap<Object, Object>();
 		while (tokenizer.peekNextToken().getType() != TokenType.RIGHT_BRACE) {
-			parseDictionaryEntry(dest, tokenizer);
+			parseDictionaryEntry(dictionary, tokenizer);
 		}
 		tokenizer.nextToken(TokenType.RIGHT_BRACE);
-		return dest;
+		return dictionary;
 	}
 
-
-	private void parseDictionaryEntry(Map<Object, Object> dest, Tokenizer tokenizer) {
+	private void parseDictionaryEntry(Map<Object, Object> destinationMap, Tokenizer tokenizer) {
 		Object key = parseObject(tokenizer, tokenizer.nextToken());
 		tokenizer.nextToken(TokenType.EQUALS);
 		Object value = parseObject(tokenizer, tokenizer.nextToken());
 		tokenizer.nextToken(TokenType.SEMICOLON);
-		dest.put(key, value);
+		destinationMap.put(key, value);
 	}
 
-
-	private String parseString(Tokenizer tokenizer, Token token) {
+	private String parseString(Tokenizer tokenizer) {
 		Token stringContent = tokenizer.nextToken(TokenType.STRING);
 		tokenizer.nextToken(TokenType.QUOTE);
 		return stringContent.getValue().toString();
 	}
 
 	
-    static enum TokenizerState { INITIAL, INSTRING, INDQSTRING }
+    static enum TokenizerState { INITIAL, IN_STRING, IN_DOUBLE_QUOTED_STRING }
     static enum TokenType { LEFT_BRACE, RIGHT_BRACE, LEFT_PAR, RIGHT_PAR, QUOTE, SEMICOLON, EQUALS, STRING, LITERAL, COMMA }
 
 	class Tokenizer {
@@ -86,7 +79,7 @@ public class NIOLegacyPListReader {
 		private int position;
 
         private TokenizerState state = TokenizerState.INITIAL;
-		private Queue<Token> tokenQueue = new ConcurrentLinkedQueue<Token>();
+		private Queue<Token> tokenQueue = new LinkedList<Token>();
 		
 		public Tokenizer(CharSequence buffer) {
 			this.buffer = buffer;
@@ -127,11 +120,11 @@ public class NIOLegacyPListReader {
 						else if (c == '=') tokenQueue.add(new Token(TokenType.EQUALS, position, buffer, buffer.subSequence(position, position + 1)));
 						else if (c == '\'') {
 							tokenQueue.add(new Token(TokenType.QUOTE, position, buffer, buffer.subSequence(position, position + 1)));
-							state = TokenizerState.INSTRING;
+							state = TokenizerState.IN_STRING;
 							tokenQueueConsistent = false;
                         } else if (c == '"') {
                             tokenQueue.add(new Token(TokenType.QUOTE, position, buffer, buffer.subSequence(position, position + 1)));
-                            state = TokenizerState.INDQSTRING;
+                            state = TokenizerState.IN_DOUBLE_QUOTED_STRING;
                             tokenQueueConsistent = false;
                         } else if (Character.isJavaIdentifierPart(c)) {
                             int start = position;
@@ -146,8 +139,8 @@ public class NIOLegacyPListReader {
 						}
 						break;
 						
-					case INSTRING:
-                        if (textmateFormatting && c == '\'' && buffer.charAt(position + 1) == '\'') {
+					case IN_STRING:
+                        if (textMateFormatting && c == '\'' && buffer.charAt(position + 1) == '\'') {
                             position += 1;
                             tokenQueueConsistent = false;
                         } else if (c == '\'') {
@@ -161,7 +154,7 @@ public class NIOLegacyPListReader {
 						}
 						break;
 
-                    case INDQSTRING:
+                    case IN_DOUBLE_QUOTED_STRING:
                         if (c == '\\') {
                             position++;
                             tokenQueueConsistent = false;
@@ -187,7 +180,7 @@ public class NIOLegacyPListReader {
             StringBuilder builder = new StringBuilder();
 
             boolean inEscape = false;
-            if (textmateFormatting) {
+            if (textMateFormatting) {
                 for (int i = 0; i < charSequence.length(); i++) {
                     char c = charSequence.charAt(i);
                     if (! inEscape) {

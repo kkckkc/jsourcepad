@@ -1,7 +1,7 @@
 package kkckkc.jsourcepad.model.bundle;
 
 import junit.framework.TestCase;
-import kkckkc.utils.plist.GeneralPListReader;
+import kkckkc.utils.plist.PListReaderFacade;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
@@ -20,7 +20,7 @@ public class TextmateKeystrokeEncodingTest extends TestCase {
         for (File f : root.listFiles()) {
             if (f.isDirectory()) recurse(f);
             else if (BundleStructure.isOfAnyType(f)) {
-                Map m = (Map) new GeneralPListReader().read(f);
+                Map m = (Map) new PListReaderFacade().read(f);
                 String keyEquivalent = (String) m.get("keyEquivalent");
                 if (keyEquivalent == null || "".equals(keyEquivalent)) continue;
 

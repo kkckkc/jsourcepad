@@ -1,7 +1,6 @@
 package kkckkc.utils.plist;
 
 import java.io.IOException;
-import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -14,136 +13,154 @@ public class NIOBinaryPListReader {
 
 	private List<Object> objects;
 
-
 	public Object read(byte[] bytes) throws IOException {
 		ByteBuffer buffer = ByteBuffer.wrap(bytes);
 
-		int length = buffer.remaining();
-		
-		String s = readAsciiString(buffer, 0, 6);
-		if (! "bplist".equals(s)) {
-			throw new RuntimeException("Incorrect fileformat");
-		}
-		
-		s = readAsciiString(buffer, 6, 2);
-		if (! "00".equals(s)) {
-			throw new RuntimeException("Incorrect fileformat version");
-		}
+        checkFileFormat(buffer);
+        checkFileFormatVersion(buffer);
 
-		buffer.position(length - 32);
-		buffer.getLong();
-		long refCount = buffer.getLong();
-		
+        long refCount = getRefCount(buffer);
+		boolean useShortsForRefs = refCount >= 256;
+
+        // Start reading the objects
 		buffer.position(8);
 		
-		List<Object> objects = new ArrayList<Object>();
+		this.objects = new ArrayList<Object>();
 		for (int i = 0; i <= refCount; i++) {
-			int data = fb(buffer.get());
-			
+			int data = unsignedByteToInt(buffer.get());
+
+            // The recordType is found in the high order nibble
 			int recordType = (data & 0xF0) >> 4;
-		
-			if (recordType == 0) {
-				if ((data & 0xF) == 15) continue;
-				objects.add(readSimple(data, buffer));
-			} else if (recordType == 1) {
-				objects.add(readInteger(data, buffer));
-			} else if (recordType == 2) {
-				objects.add(readReal(data, buffer));
-			} else if (recordType == 4) {
-                objects.add(readData(data, buffer));
-			} else if (recordType == 5) {
-				Object o = readString(data, buffer);
-				objects.add(o);
-			} else if (recordType == 6) {
-				objects.add(readUnicodeString(data, buffer));
-			} else if (recordType == 10) {
-				objects.add(readArray(data, buffer, refCount >= 256));
-			} else if (recordType == 13) {
-				objects.add(readDictionary(data, buffer, refCount >= 256));
-			} else {
-                logger.severe("Unsupported recordType " + recordType);
-			}
+
+            switch (recordType) {
+                case 0:
+                    if ((data & 0xF) == 15) continue;
+				    objects.add(readSimple(data));
+                    break;
+                case 1:
+                    objects.add(readInteger(data, buffer));
+                    break;
+                case 2:
+                    objects.add(readReal(data, buffer));
+                    break;
+                case 4:
+                    objects.add(readData(data, buffer));
+                    break;
+                case 5:
+				    objects.add(readString(data, buffer));
+                    break;
+                case 6:
+                    objects.add(readUnicodeString(data, buffer));
+                    break;
+                case 10:
+                    objects.add(readArray(data, buffer, useShortsForRefs));
+                    break;
+                case 13:
+                    objects.add(readDictionary(data, buffer, useShortsForRefs));
+                    break;
+                default:
+                    logger.severe("Unsupported recordType " + recordType);
+            }
 		}
 		
-		this.objects = objects;
 		return resolve(objects.get(0));
 	}
-	
-	public final int fb(byte b) {
+
+    private long getRefCount(ByteBuffer buffer) {
+        int length = buffer.remaining();
+        buffer.position(length - 32);
+        buffer.getLong();
+        return buffer.getLong();
+    }
+
+    private void checkFileFormatVersion(ByteBuffer buffer) {
+        String version = readAsciiString(buffer, 6, 2);
+        if (! "00".equals(version)) {
+            throw new RuntimeException("Incorrect fileformat version");
+        }
+    }
+
+    private void checkFileFormat(ByteBuffer buffer) {
+        String fileFormat = readAsciiString(buffer, 0, 6);
+        if (! "bplist".equals(fileFormat)) {
+            throw new RuntimeException("Incorrect fileformat");
+        }
+    }
+
+    public final int unsignedByteToInt(byte b) {
 		return (int)b & 0xFF;
 	}
-	
-	
-	private Object readData(int data, ByteBuffer raf) throws IOException {
-        int count = readCount(data, raf);
+
+	private Object readData(int data, ByteBuffer buffer) throws IOException {
+        int count = readCount(data, buffer);
         byte[] bytes = new byte[count];
-        raf.get(bytes);
+        buffer.get(bytes);
         return bytes;    
     }
 
-	private Object readReal(int data, ByteBuffer raf) throws IOException {
+	private Object readReal(int data, ByteBuffer buffer) throws IOException {
 		int count = 1 << (data & 0xf);
         switch (count) {
         case 4 :
-            return raf.getFloat();
+            return buffer.getFloat();
         case 8 :
-            return raf.getDouble();
+            return buffer.getDouble();
         default :
             throw new IOException("parseReal: unsupported byte count:"+count);
         }
     }
 
-	private Object readInteger(int data, ByteBuffer raf) {
+	private Object readInteger(int data, ByteBuffer buffer) {
 		int byteCount = 1 << (data & 0xf);
-		int dest = 0;
+		int integer = 0;
 		for (int i = 0; i < byteCount; i++) {
-			int b = fb(raf.get());
-			dest = (dest << 8) | b;
+			int b = unsignedByteToInt(buffer.get());
+			integer = (integer << 8) | b;
 		}
 
-		return dest;
+		return integer;
 	}
 
-	private String readUnicodeString(int data, ByteBuffer raf) throws IOException {
-		int count = readCount(data, raf);
+	private String readUnicodeString(int data, ByteBuffer buffer) throws IOException {
+		int count = readCount(data, buffer);
 		
 		char[] chars = new char[count];
 		for (int i = 0; i < count; i++) {
-			chars[i] = raf.getChar();
+			chars[i] = buffer.getChar();
 		}
 		return new String(chars);
 	}
 
-	private Object readArray(int data, ByteBuffer raf, final boolean readshort) throws IOException {
-		int count = readCount(data, raf); 
+	private Object readArray(int data, ByteBuffer buffer, final boolean readShorts) throws IOException {
+		int count = readCount(data, buffer);
 		
-		Ref[] dest = new Ref[count];
+		Ref[] array = new Ref[count];
 		for (int i = 0; i < count; i++) {
-			if (readshort) {
-				dest[i] = new Ref(raf.getShort());
+			if (readShorts) {
+				array[i] = new Ref(buffer.getShort());
 			} else {
-				dest[i] = new Ref(fb(raf.get()));
+				array[i] = new Ref(unsignedByteToInt(buffer.get()));
 			}
 		}
 		
-		return new RefCollection(RefCollection.ARRAY, dest);
+		return new RefCollection(RefCollection.ARRAY, array);
 	}
 
-	private int readCount(int data, ByteBuffer raf) {
+	private int readCount(int data, ByteBuffer buffer) {
 		int count = (data & 0xF); 
 		if (count == 15) {
-			int m = fb(raf.get());
+			int m = unsignedByteToInt(buffer.get());
 			int byteCount = 1 << (m & 0xf);
 			count = 0;
 			for (int i = 0; i < byteCount; i++) {
-				int b = fb(raf.get());
+				int b = unsignedByteToInt(buffer.get());
 				count = (count << 8) | b;
 			}
 		}
 		return count;
 	}
 
-	private Object readSimple(int data, Buffer raf) {
+	private Object readSimple(int data) {
 		int type = data & 0xF;
 		if (type == 0) return null;
 		else if (type == 8) return Boolean.FALSE;
@@ -174,62 +191,62 @@ public class NIOBinaryPListReader {
     }
 
 	private List<Object> resolveList(RefCollection rc) {
-		List<Object> dest = new ArrayList<Object>(rc.getRefs().length);
+		List<Object> objectList = new ArrayList<Object>(rc.getRefs().length);
 		for (Ref ref : rc.getRefs()) {
-			dest.add(resolve(ref.resolve()));
+			objectList.add(resolve(ref.resolve()));
 		}
-		return dest;
+		return objectList;
 	}
 
 	private Map<Object, Object> resolveMap(RefCollection rc) {
 		int refCount = rc.getRefs().length / 2;
-		Map<Object, Object> dest = new LinkedHashMap<Object, Object>(refCount);
+		Map<Object, Object> map = new LinkedHashMap<Object, Object>(refCount);
 		
 		Ref[] refs = rc.getRefs();
 		for (int i = 0; i < refCount; i++) {
 			Ref key = refs[i * 2];
 			Ref value = refs[(i * 2) + 1];
-			dest.put(resolve(key.resolve()), resolve(value.resolve()));
+			map.put(resolve(key.resolve()), resolve(value.resolve()));
 		}
 		
-		return dest;
+		return map;
 	}
 	
-	private String readString(int data, ByteBuffer raf) throws IOException {
-		int count = readCount(data, raf);
+	private String readString(int data, ByteBuffer buffer) throws IOException {
+		int count = readCount(data, buffer);
 
 		byte[] bytes = new byte[count];
-		raf.get(bytes);
+		buffer.get(bytes);
 		return new String(bytes);
 	}
 
-	private Object readDictionary(int data, ByteBuffer raf, final boolean ints) throws IOException {
-		int count = readCount(data, raf); 
+	private Object readDictionary(int data, ByteBuffer buffer, final boolean readShorts) throws IOException {
+		int count = readCount(data, buffer);
 		
 		Ref[] refs = new Ref[count * 2];
 		for (int i = 0; i < count; i++) {
-			if (ints) {
-				refs[i * 2] = new Ref(raf.getShort());
+			if (readShorts) {
+				refs[i * 2] = new Ref(buffer.getShort());
 			} else {
-				refs[i * 2] = new Ref(fb(raf.get()));
+				refs[i * 2] = new Ref(unsignedByteToInt(buffer.get()));
 			}
 		}
 		
 		for (int i = 0; i < count; i++) {
-			if (ints) {
-				refs[(i * 2) + 1] = new Ref(raf.getShort());
+			if (readShorts) {
+				refs[(i * 2) + 1] = new Ref(buffer.getShort());
 			} else {
-				refs[(i * 2) + 1] = new Ref(fb(raf.get()));
+				refs[(i * 2) + 1] = new Ref(unsignedByteToInt(buffer.get()));
 			}
 		}
 		
 		return new RefCollection(RefCollection.DICTIONARY, refs);
 	}
 
-	private String readAsciiString(ByteBuffer buf, int offset, int length) {
+	private String readAsciiString(ByteBuffer buffer, int offset, int length) {
 		byte[] bytes = new byte[length];
-		buf.position(offset);
-		buf.get(bytes);
+		buffer.position(offset);
+		buffer.get(bytes);
 		return new String(bytes);
 	}
 	
@@ -250,7 +267,7 @@ public class NIOBinaryPListReader {
 		}
 	}
 	
-	final class RefCollection {
+	final static class RefCollection {
 		public static final int ARRAY = 1, DICTIONARY = 2;
 		
 		private int type;

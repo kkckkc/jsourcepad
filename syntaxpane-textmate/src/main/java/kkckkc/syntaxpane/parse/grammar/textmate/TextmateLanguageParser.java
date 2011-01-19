@@ -4,7 +4,7 @@ import kkckkc.syntaxpane.parse.grammar.*;
 import kkckkc.syntaxpane.parse.grammar.util.DefaultPatternSupplier;
 import kkckkc.syntaxpane.regex.JoniPatternFactory;
 import kkckkc.syntaxpane.regex.PatternFactory;
-import kkckkc.utils.plist.GeneralPListReader;
+import kkckkc.utils.plist.PListReaderFacade;
 import kkckkc.utils.plist.PListReader;
 
 import java.io.File;
@@ -43,7 +43,7 @@ public class TextmateLanguageParser {
 	}
 
 	public Language parse() throws IOException {
-		GeneralPListReader r = new GeneralPListReader();
+		PListReaderFacade r = new PListReaderFacade();
 
 		Map m = (Map) r.read(file);
 		

@@ -1,8 +1,7 @@
 package kkckkc.syntaxpane.parse.grammar.textmate;
 	
 import kkckkc.syntaxpane.style.*;
-import kkckkc.utils.plist.GeneralPListReader;
-import kkckkc.utils.plist.PListUtils;
+import kkckkc.utils.plist.PListReaderFacade;
 
 import java.awt.*;
 import java.io.File;
@@ -15,10 +14,12 @@ public class TextmateStyleParser implements kkckkc.syntaxpane.style.StyleParser 
 
 	@Override
     public StyleScheme parse(final File file) {
-	    GeneralPListReader p = new GeneralPListReader();
+	    PListReaderFacade p = new PListReaderFacade();
         try {
-        	final List<?> settings = PListUtils.get(p.read(file), List.class, "settings");
-			final Map<?, ?> global = PListUtils.get(settings, Map.class, 0, "settings");
+            Map m = (Map) p.read(file);
+
+        	final List<?> settings = (List<?>) m.get("settings");
+			final Map<?, ?> global = (Map<?, ?>) ((Map) settings.get(0)).get("settings");
 			
 			final Map<ScopeSelector, TextStyle> selectors = new HashMap<ScopeSelector, TextStyle>();
 			for (int i = 1; i < settings.size(); i++) {

@@ -14,7 +14,7 @@ import kkckkc.syntaxpane.style.ScopeSelector;
 import kkckkc.syntaxpane.style.ScopeSelectorManager;
 import kkckkc.utils.Pair;
 import kkckkc.utils.PerformanceLogger;
-import kkckkc.utils.plist.GeneralPListReader;
+import kkckkc.utils.plist.PListReaderFacade;
 import kkckkc.utils.plist.PListReader;
 
 import javax.swing.KeyStroke;
@@ -445,7 +445,7 @@ public class BundleManagerImpl implements BundleManager {
 
         @Override
         public Object read(File file) throws IOException {
-            if (delegate == null) delegate = new GeneralPListReader();
+            if (delegate == null) delegate = new PListReaderFacade();
 
             String key = file.toString();
             if (cache.containsKey(key)) return cache.get(key);

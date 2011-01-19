@@ -3,6 +3,7 @@ package kkckkc.utils.plist;
 import nanoxml.XMLElement;
 
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -10,14 +11,14 @@ import java.util.*;
 
 public class NIOXMLPListReader {
 
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
 	public Object read(byte[] bytes) throws IOException {
         XMLElement xmlElement = new XMLElement();
         xmlElement.parseString(new String(bytes, "utf-8"));
 
-        XMLElement xe = (XMLElement) xmlElement.getChildren().iterator().next();
-        return parseElement(xe);
+        // Parse, starting with the root element
+        return parseElement((XMLElement) xmlElement.getChildren().iterator().next());
 	}
 
 	private Object parseElement(XMLElement e) {
@@ -41,11 +42,11 @@ public class NIOXMLPListReader {
 	}
 
 	private List<Object> parseArray(XMLElement e) {
-		List<Object> l = new ArrayList<Object>();
-        for (XMLElement xe : ((Collection<XMLElement>) e.getChildren())) {
-            l.add(parseElement(xe));
+		List<Object> array = new ArrayList<Object>();
+        for (XMLElement child : ((Collection<XMLElement>) e.getChildren())) {
+            array.add(parseElement(child));
         }
-		return l;
+		return array;
 	}
 
     private Integer parseInteger(XMLElement e) {
@@ -59,8 +60,8 @@ public class NIOXMLPListReader {
     private Date parseDate(XMLElement e) {
         try {
             return dateFormat.parse(e.getContent());
-        } catch (ParseException e1) {
-            throw new RuntimeException(e1);
+        } catch (ParseException parseException) {
+            throw new RuntimeException(parseException);
         }
     }
 

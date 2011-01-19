@@ -1,7 +1,7 @@
 package macro;
 
 import kkckkc.jsourcepad.model.bundle.MacroEngine;
-import kkckkc.utils.plist.GeneralPListReader;
+import kkckkc.utils.plist.PListReaderFacade;
 import kkckkc.utils.plist.PListFormatter;
 
 import java.io.File;
@@ -34,7 +34,7 @@ public class Inventory {
 	    	if (file.isDirectory()) {
 	    		recurse(file);
 	    	} else if (file.getName().endsWith("tmMacro") || (file.isFile() && dir.getName().endsWith("Macros"))) {
-	    		GeneralPListReader gpl = new GeneralPListReader();
+	    		PListReaderFacade gpl = new PListReaderFacade();
 	    		Map props = (Map) gpl.read(file);
 	    		
 	    		List<Map> commands = (List<Map>) props.get("commands");
