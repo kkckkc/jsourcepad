@@ -30,6 +30,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class BufferImpl implements Buffer {
+    private static Pattern WORD_PATTERN = Pattern.compile("\\w*");
+
 	// State
 	private InsertionPoint insertionPoint;
 	private TextInterval selection;
@@ -101,7 +103,6 @@ public class BufferImpl implements Buffer {
             @Override
             public void run() {
                 BufferImpl.this.caret = jtc.getCaret();
-                BufferImpl.this.caret.addChangeListener(completionManager);
                 BufferImpl.this.caret.addChangeListener(new ChangeListener() {
                     @Override
                     public void stateChanged(ChangeEvent e) {
@@ -585,11 +586,10 @@ public class BufferImpl implements Buffer {
 		String line = getText(lineInterval);
 		int index = getInsertionPoint().getLineIndex();
 		
-		Pattern p = Pattern.compile("(^| )+(\\w*)");
-		Matcher matcher = p.matcher(line);
+		Matcher matcher = WORD_PATTERN.matcher(line);
 		while (matcher.find()) {
-			if (matcher.groupCount() > 1 && matcher.start(2) <= index && matcher.end(2) >= index) {
-				return new BufferTextInterval(lineInterval.getStart() + matcher.start(2), lineInterval.getStart() + matcher.end(2));
+			if (matcher.start() <= index && matcher.end() >= index) {
+				return new BufferTextInterval(lineInterval.getStart() + matcher.start(), lineInterval.getStart() + matcher.end());
 			}
 		}
 		

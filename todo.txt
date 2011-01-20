@@ -10,7 +10,7 @@
 [-] Disposable
 [ ] Multiple invocations of select current scope should make it bigger
 
-[ ] Implement proper completion
+[x] Implement proper completion
 [ ] Debugging for commands
 
 [ ] Buffer should be DI

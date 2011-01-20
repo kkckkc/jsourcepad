@@ -73,17 +73,19 @@ public class EnvironmentProvider {
         }
         lastBundleItemSupplier = bundleItemSupplier;
 
-        File bundleFolder = bundleItemSupplier.getFile().getParentFile().getParentFile();
-        if (Os.isMac()) {
-            environment.put("TM_BUNDLE_SUPPORT",
-                    formatPath(new File(bundleFolder, "Support").getPath()));
-            paths.add(new File(bundleFolder, "Support/bin"));
-        } else {
-            environment.put("TM_BUNDLE_SUPPORT",
-                    formatPath(new File(
-                            Config.getTempFolder(), "Bundles/" + bundleFolder.getName() + "/Support").getPath()));
-            paths.add(new File(
-                            Config.getTempFolder(), "Bundles/" + bundleFolder.getName() + "/Support/bin"));
+        if (bundleItemSupplier != null) {
+            File bundleFolder = bundleItemSupplier.getFile().getParentFile().getParentFile();
+            if (Os.isMac()) {
+                environment.put("TM_BUNDLE_SUPPORT",
+                        formatPath(new File(bundleFolder, "Support").getPath()));
+                paths.add(new File(bundleFolder, "Support/bin"));
+            } else {
+                environment.put("TM_BUNDLE_SUPPORT",
+                        formatPath(new File(
+                                Config.getTempFolder(), "Bundles/" + bundleFolder.getName() + "/Support").getPath()));
+                paths.add(new File(
+                                Config.getTempFolder(), "Bundles/" + bundleFolder.getName() + "/Support/bin"));
+            }
         }
 
 
