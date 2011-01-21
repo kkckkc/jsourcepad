@@ -10,6 +10,8 @@
 [-] Disposable
 [ ] Multiple invocations of select current scope should make it bigger
 
+[ ] Word characters
+
 [x] Implement proper completion
 [ ] Debugging for commands
 

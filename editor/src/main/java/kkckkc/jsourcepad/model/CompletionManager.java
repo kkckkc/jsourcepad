@@ -4,14 +4,14 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import kkckkc.jsourcepad.model.bundle.BundleManager;
 import kkckkc.jsourcepad.model.bundle.EnvironmentProvider;
 import kkckkc.jsourcepad.util.io.ScriptExecutor;
 import kkckkc.jsourcepad.util.io.UISupportCallback;
-import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
-import kkckkc.jsourcepad.util.messagebus.Subscription;
 import kkckkc.syntaxpane.model.Interval;
 import kkckkc.syntaxpane.model.Scope;
+import kkckkc.syntaxpane.model.TextInterval;
 import kkckkc.utils.Pair;
 
 import javax.swing.event.ChangeEvent;
@@ -23,7 +23,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CompletionManager {
+public class CompletionManager implements ChangeListener {
     private static Pattern WORD_PATTERN = Pattern.compile("\\w*");
 
     private BufferImpl buffer;
@@ -32,14 +32,17 @@ public class CompletionManager {
     private int currentCompletion;
     private Interval previousCompletion;
 
-    private boolean enabled  = true;
     private boolean isNewCompletion = true;
 
-    private Scope currentScope;
-    private int currentPosition = -1;
+    private int completeStartPosition = -1;
+
+    private boolean enabled = true;
+    private Set<String> completionSet;
+    private BundleManager bundleManager;
 
     public CompletionManager(BufferImpl buffer) {
         this.buffer = buffer;
+        this.bundleManager = Application.get().getBundleManager();
     }
 
     public void completeNext() {
@@ -48,8 +51,7 @@ public class CompletionManager {
         if (! isNewCompletion) {
             currentCompletion++;
             if (currentCompletion >= completions.size()) {
-                currentCompletion = completions.size() - 1;
-                return;
+                currentCompletion = 0;
             }
         }
 
@@ -62,105 +64,68 @@ public class CompletionManager {
         if (! isNewCompletion) {
             currentCompletion--;
             if (currentCompletion < 0) {
-                currentCompletion = 0;
-                return;
+                currentCompletion = completions.size() - 1;
             }
         }
 
         insertCompletion();
     }
 
-
-
     private void insertCompletion() {
         if (completions.isEmpty()) return;
 
-        disable();
-        
+        this.enabled = false;
+
         if (previousCompletion != null) {
+            buffer.setSelection(Interval.createEmpty(this.completeStartPosition));
             buffer.remove(previousCompletion);
         }
 
         String text = completions.get(currentCompletion);
-        String word = buffer.getCurrentWord().getText();
+        String word = getPrefix();
 
         text = text.substring(word.length());
 
         int pos = buffer.getInsertionPoint().getPosition();
         buffer.insertText(pos, text, null);
-        buffer.setSelection(Interval.createEmpty(pos));
-
-        enable();
 
         previousCompletion = Interval.createWithLength(pos, text.length());
-    }
 
-    private void enable() {
         this.enabled = true;
     }
 
-    private void disable() {
-        this.enabled = false;
+    private String getPrefix() {
+        TextInterval interval = buffer.getCurrentWord();
+        return buffer.getText(new Interval(interval.getStart(),
+                Math.min(buffer.getInsertionPoint().getPosition(), interval.getEnd())));
     }
 
-
     private void complete() {
-        InsertionPoint ip = buffer.getInsertionPoint();
-        Scope scope = ip.getScope();
-
-        if (currentScope != null &&
-            scope.getPath().equals(currentScope.getPath()) &&
-            currentPosition == ip.getPosition()) {
+        if (completions != null) {
             isNewCompletion = false;
             return;
         }
 
-        this.currentScope = scope;
-        this.currentPosition = ip.getPosition();
+        InsertionPoint ip = buffer.getInsertionPoint();
+
+        this.completeStartPosition = ip.getPosition();
 
         this.isNewCompletion = true;
         this.currentCompletion = 0;
         this.previousCompletion = null;
-
-        BundleManager bundleManager = Application.get().getBundleManager();
-        Object o = bundleManager.getPreference("completions", this.currentScope);
-        Integer disableDefault = (Integer) bundleManager.getPreference("disableDefaultCompletion", this.currentScope);
-        String completionCommand = (String) bundleManager.getPreference("completionCommand", this.currentScope);
-
-        String word = buffer.getCurrentWord().getText();
-
+        completionSet = Sets.newHashSet();
         completions = Lists.newArrayList();
-        if (o != null && o instanceof List) {
-            for (String s : (List<String>) o) {
-                if (s.startsWith(word)) completions.add(s);
-            }
-        }
 
-        if (completionCommand != null) {
-            ScriptExecutor scriptExecutor = new ScriptExecutor(completionCommand, Application.get().getThreadPool());
-            scriptExecutor.setShowStderr(false);
+        Scope scope = ip.getScope();
+        String word = getPrefix();
 
-            try {
-                Window window = buffer.getDoc().getDocList().getWindow();
-                ScriptExecutor.Execution ex = scriptExecutor.execute(
-                        new UISupportCallback(window),
-                        new StringReader(""),
-                        EnvironmentProvider.getEnvironment(window, null));
-                ex.waitForCompletion();
+        completeStaticCompletions(scope, word);
+        completeUsingCommand(scope);
+        completeUsingWordsInDocument(scope, word);
+    }
 
-                for (String line : Splitter.on("\n").omitEmptyStrings().trimResults().split(ex.getStdout())) {
-                    completions.add(line);
-                }
-
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            } catch (ExecutionException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
+    private void completeUsingWordsInDocument(Scope scope, String word) {
+        Integer disableDefault = (Integer) bundleManager.getPreference("disableDefaultCompletion", scope);
         if (disableDefault == null || disableDefault != 1) {
             Map<String, Integer> wordToPositionDistanceMap = Maps.newHashMap();
             String s = buffer.getCompleteDocument().getText();
@@ -172,9 +137,9 @@ public class CompletionManager {
                 if (! w.startsWith(word)) continue;
 
                 int position = matcher.start();
-                int distance = Math.abs(position - currentPosition);
+                int distance = Math.abs(position - completeStartPosition);
 
-                if (position == currentPosition - word.length()) continue;
+                if (position == completeStartPosition - word.length()) continue;
 
                 if (wordToPositionDistanceMap.containsKey(w)) {
                     int curDistance = wordToPositionDistanceMap.get(w);
@@ -198,10 +163,65 @@ public class CompletionManager {
                 }
             });
 
-            for (Pair<String, Integer> p : tempList) completions.add(p.getFirst());
+            for (Pair<String, Integer> p : tempList) {
+                s = p.getFirst();
+                if (! completionSet.contains(s)) {
+                    completionSet.add(s);
+                    completions.add(s);
+                }
+            }
         }
     }
 
+    private void completeUsingCommand(Scope scope) {
+        String completionCommand = (String) bundleManager.getPreference("completionCommand", scope);
+        if (completionCommand != null) {
+            ScriptExecutor scriptExecutor = new ScriptExecutor(completionCommand, Application.get().getThreadPool());
+            scriptExecutor.setShowStderr(false);
 
+            try {
+                Window window = buffer.getDoc().getDocList().getWindow();
+                ScriptExecutor.Execution ex = scriptExecutor.execute(
+                        new UISupportCallback(window),
+                        new StringReader(""),
+                        EnvironmentProvider.getEnvironment(window, null));
+                ex.waitForCompletion();
 
+                for (String line : Splitter.on("\n").omitEmptyStrings().trimResults().split(ex.getStdout())) {
+                    if (! completionSet.contains(line)) {
+                        completionSet.add(line);
+                        completions.add(line);
+                    }
+                }
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private void completeStaticCompletions(Scope scope, String word) {
+        Object o = bundleManager.getPreference("completions", scope);
+        if (o != null && o instanceof List) {
+            for (String s : (List<String>) o) {
+                if (s.startsWith(word)) {
+                    if (! completionSet.contains(s)) {
+                        completionSet.add(s);
+                        completions.add(s);
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        if (this.enabled) {
+            this.completions = null;
+        }
+    }
 }

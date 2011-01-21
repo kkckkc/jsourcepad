@@ -125,6 +125,8 @@ public class BufferImpl implements Buffer {
                         }
                     }
                 });
+
+                BufferImpl.this.caret.addChangeListener(completionManager);
             }
         });
 
@@ -153,7 +155,7 @@ public class BufferImpl implements Buffer {
 	    document.setDocumentFilter(characterPairsHandler);
 
         undoManager = new CompoundUndoManager(jtc);
-        
+
 		postInsertionPointUpdate();
 	}
 
