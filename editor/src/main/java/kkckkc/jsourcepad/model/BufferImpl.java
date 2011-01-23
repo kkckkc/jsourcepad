@@ -4,6 +4,7 @@ import kkckkc.jsourcepad.model.Doc.StateListener;
 import kkckkc.jsourcepad.model.Finder.Options;
 import kkckkc.jsourcepad.model.bundle.BundleManager;
 import kkckkc.jsourcepad.model.bundle.PrefKeys;
+import kkckkc.jsourcepad.model.settings.AdvancedSettings;
 import kkckkc.jsourcepad.util.ui.CompoundUndoManager;
 import kkckkc.syntaxpane.model.*;
 import kkckkc.syntaxpane.model.LineManager.Line;
@@ -30,7 +31,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class BufferImpl implements Buffer {
-    private static Pattern WORD_PATTERN = Pattern.compile("\\w*");
+    private static Pattern WORD_PATTERN;
 
 	// State
 	private InsertionPoint insertionPoint;
@@ -73,6 +74,14 @@ public class BufferImpl implements Buffer {
 		this.anchorManager = new AnchorManager();
 
         this.completionManager = new CompletionManager(this);
+
+        synchronized (BufferImpl.class) {
+            if (WORD_PATTERN == null) {
+                AdvancedSettings advancedSettings = Application.get().getSettingsManager().get(AdvancedSettings.class);
+                WORD_PATTERN = Pattern.compile(advancedSettings.getWordPattern());
+            }
+        }
+
     }
 
     public void close() {

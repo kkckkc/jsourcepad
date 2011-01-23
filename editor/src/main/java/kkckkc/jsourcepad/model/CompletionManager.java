@@ -7,6 +7,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import kkckkc.jsourcepad.model.bundle.BundleManager;
 import kkckkc.jsourcepad.model.bundle.EnvironmentProvider;
+import kkckkc.jsourcepad.model.settings.AdvancedSettings;
 import kkckkc.jsourcepad.util.io.ScriptExecutor;
 import kkckkc.jsourcepad.util.io.UISupportCallback;
 import kkckkc.syntaxpane.model.Interval;
@@ -24,7 +25,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CompletionManager implements ChangeListener {
-    private static Pattern WORD_PATTERN = Pattern.compile("\\w*");
+    private static Pattern WORD_PATTERN;
 
     private BufferImpl buffer;
 
@@ -43,6 +44,13 @@ public class CompletionManager implements ChangeListener {
     public CompletionManager(BufferImpl buffer) {
         this.buffer = buffer;
         this.bundleManager = Application.get().getBundleManager();
+
+        synchronized (CompletionManager.class) {
+            if (WORD_PATTERN == null) {
+                AdvancedSettings advancedSettings = Application.get().getSettingsManager().get(AdvancedSettings.class);
+                WORD_PATTERN = Pattern.compile(advancedSettings.getWordPattern());
+            }
+        }
     }
 
     public void completeNext() {
