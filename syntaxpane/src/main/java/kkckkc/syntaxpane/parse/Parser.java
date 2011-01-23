@@ -153,7 +153,13 @@ public class Parser {
 					break;
 				} else {
 					if (child.isOnceOnly()) matchers[matcherIdx] = null;
-					
+
+                    // If a not a container context and length is 0, we will enter an infinite loop
+                    if (! (child instanceof ContainerContext) && matcher.start() == matcher.end()) {
+                        iterator.ignore();
+                        continue;
+                    }
+
 					Scope c = child.createScope(scope, matcher);
 					if (child instanceof ContainerContext) {
 						// Sub context, simulate recursive call by putting context on stack and moving position
@@ -161,7 +167,7 @@ public class Parser {
 						position = matcher.end();
 						newContextToParse = true;
 						break;
-					}
+                    }
 				}
 			}
 		} while (newContextToParse);
