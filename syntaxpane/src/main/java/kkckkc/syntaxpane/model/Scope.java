@@ -9,7 +9,7 @@ import java.util.*;
 public class Scope {
     private int start;
     private int end;
-	private List<Scope> children;
+	private LinkedList<Scope> children;
 	private Context context;
 	private Scope parent;
 
@@ -41,7 +41,7 @@ public class Scope {
 		return context;
 	}
 
-	public final List<Scope> getChildren() {
+	public final LinkedList<Scope> getChildren() {
 		return children;
 	}
 
