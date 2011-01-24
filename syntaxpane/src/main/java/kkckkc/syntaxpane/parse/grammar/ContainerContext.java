@@ -1,6 +1,7 @@
 package kkckkc.syntaxpane.parse.grammar;
 
 import kkckkc.syntaxpane.model.Scope;
+import kkckkc.syntaxpane.model.ScopeWithAttributes;
 import kkckkc.syntaxpane.parse.grammar.SubPatternContext.Where;
 import kkckkc.syntaxpane.regex.Matcher;
 import kkckkc.syntaxpane.regex.Pattern;
@@ -62,17 +63,24 @@ public class ContainerContext extends MatchableContext {
 	
 	public Scope createScope(Scope parent, Matcher matcher) {
 		Scope scope;
-		if (isStyleInside()) {
-			scope = new Scope(matcher.end(), matcher.end(), this, parent);
-		} else {
-			scope = new Scope(matcher.start(), matcher.end(), this, parent);
-		}
 
 		if (endPattern != null && !contentNameContext && endPatternExpression.indexOf("@start") >= 0) {
-			for (int i = 0; i < matcher.groupCount(); i++) {
-				scope.addAttribute(i + "@start", matcher.group(i));
+			if (isStyleInside()) {
+                scope = new ScopeWithAttributes(matcher.end(), matcher.end(), this, parent);
+            } else {
+                scope = new ScopeWithAttributes(matcher.start(), matcher.end(), this, parent);
+            }
+
+            for (int i = 0; i < matcher.groupCount(); i++) {
+				((ScopeWithAttributes) scope).addAttribute(i + "@start", matcher.group(i));
 			}
-		}
+		} else {
+            if (isStyleInside()) {
+                scope = new Scope(matcher.end(), matcher.end(), this, parent);
+            } else {
+                scope = new Scope(matcher.start(), matcher.end(), this, parent);
+            }
+        }
 		
 		buildSubPatternScopes(scope, matcher, Where.START);
 		return scope;
@@ -94,11 +102,11 @@ public class ContainerContext extends MatchableContext {
 		if (endPattern != null && endPatternExpression.indexOf("@start") >= 0) {
 			String p = endPatternExpression;
             if (contentNameContext) {
-                for (Map.Entry<String, String> entry : scope.getParent().getAttributes().entrySet()) {
+                for (Map.Entry<String, String> entry : ((ScopeWithAttributes) scope.getParent()).getAttributes().entrySet()) {
                     p = StringUtils.replace(p, "\\%{" + entry.getKey() + "}", entry.getValue());
                 }
-            } else if (scope.getAttributes() != null) {
-                for (Map.Entry<String, String> entry : scope.getAttributes().entrySet()) {
+            } else if (scope instanceof ScopeWithAttributes && ((ScopeWithAttributes) scope).getAttributes() != null) {
+                for (Map.Entry<String, String> entry : ((ScopeWithAttributes) scope).getAttributes().entrySet()) {
                     p = StringUtils.replace(p, "\\%{" + entry.getKey() + "}", entry.getValue());
                 }
             }

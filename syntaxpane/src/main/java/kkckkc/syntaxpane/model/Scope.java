@@ -6,14 +6,13 @@ import java.util.*;
 
 
 
-public final class Scope {
+public class Scope {
     private int start;
     private int end;
 	private List<Scope> children;
 	private Context context;
 	private Scope parent;
-	private Map<String, String> attributes;
-	
+
 	public Scope(int start, int end, Context context, Scope parent) {
 		this.start = Math.min(start, end);
 		this.end = Math.max(start, end);
@@ -34,23 +33,23 @@ public final class Scope {
 		scope.parent = this;
 	}
 
-	public Scope getParent() {
+	public final Scope getParent() {
 		return parent;
 	}
 
-	public Context getContext() {
+	public final Context getContext() {
 		return context;
 	}
 
-	public List<Scope> getChildren() {
+	public final List<Scope> getChildren() {
 		return children;
 	}
 
-	public void close(int offset) {
+	public final void close(int offset) {
 		this.end = offset;
 	}
 
-	public Scope getForPosition(int o) {
+	public final Scope getForPosition(int o) {
 		if (children == null) return this;
 		for (Scope child : children) {
 			if (child.contains(o)) {
@@ -60,19 +59,19 @@ public final class Scope {
 		return this;
 	}
 
-    public boolean contains(int i) {
+    public final boolean contains(int i) {
         return i >= start && i <= end;
     }
 
-    public int getStart() {
+    public final int getStart() {
 		return start;
 	}
 
-	public int getEnd() {
+	public final int getEnd() {
 		return end;
 	}
 
-	public String getPath() {
+	public final String getPath() {
 		StringBuilder b = new StringBuilder(60);
 		buildPath(b);
 		return b.toString();
@@ -87,7 +86,7 @@ public final class Scope {
 		if (n != null) b.append(n);
 	}
 
-	public StringBuilder toXml(CharSequence s) {
+	public final StringBuilder toXml(CharSequence s) {
 		StringBuilder b = new StringBuilder();
 		b.append("<").append(context.getId()).append(">");
 		if (children == null || children.isEmpty()) {
@@ -118,30 +117,26 @@ public final class Scope {
 		return b;
 	}
 
-	private CharSequence safesubstring(CharSequence s, int start, int end) {
+	private final CharSequence safesubstring(CharSequence s, int start, int end) {
 		start = Math.min(s.length(), Math.max(start, 0));
 		end = Math.min(s.length(), end);
 		return s.subSequence(start, end);
 	}
 
-	public String toString() {
+	public final String toString() {
 		return super.toString() + " " + getPath() + " ("
 				+ System.identityHashCode(this) + ")";
 	}
 
 	public Scope copy() {
-		Scope copy = new Scope(Integer.MAX_VALUE, Integer.MIN_VALUE, getContext(), parent == null ? null : parent.copy());
-		if (this.attributes != null) {
-			copy.attributes = new HashMap<String, String>(attributes);
-		}
-		return copy;
+		return new Scope(Integer.MAX_VALUE, Integer.MIN_VALUE, getContext(), parent == null ? null : parent.copy());
 	}
 
-	public Iterable<Scope> getAncestors() {
+	public final Iterable<Scope> getAncestors() {
 		return new ScopeAncestorIterator();
 	}
 
-	public Scope getRoot() {
+	public final Scope getRoot() {
 		Scope scope = this;
 		while (scope.parent != null) {
 			scope = scope.parent;
@@ -149,11 +144,11 @@ public final class Scope {
 		return scope;
 	}
 
-	public boolean hasChildren() {
+	public final boolean hasChildren() {
 		return children != null && ! children.isEmpty();
 	}
 
-	public boolean hasSameSignature(Scope scope) {
+	public final boolean hasSameSignature(Scope scope) {
 		Scope current = this;
 		Scope compareWith = scope;
 		
@@ -176,19 +171,8 @@ public final class Scope {
 		}
 	}
 
-	public void makeOpenEnded() {
+	public final void makeOpenEnded() {
 		this.end = Integer.MAX_VALUE;
-	}
-
-	public void addAttribute(String key, String value) {
-		if (this.attributes == null) {
-			this.attributes = new HashMap<String, String>();
-		}
-		this.attributes.put(key, value);
-	}
-
-	public Map<String, String> getAttributes() {
-		return attributes;
 	}
 
     private class ScopeAncestorIterator implements Iterator<Scope>, Iterable<Scope> {
