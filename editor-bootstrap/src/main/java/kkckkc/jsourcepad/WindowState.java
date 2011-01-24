@@ -47,7 +47,7 @@ public class WindowState implements SettingsManager.Setting {
             window.saveState();
         }
 
-        File focusedProjectDir = wm.getFocusedWindow().getProject().getProjectDir();
+        File focusedProjectDir = wm.getFocusedWindow() == null ? null : wm.getFocusedWindow().getProject().getProjectDir();
         focusedWindow = focusedProjectDir == null ? null : focusedProjectDir.toString();
 
         WindowState windowState = new WindowState();

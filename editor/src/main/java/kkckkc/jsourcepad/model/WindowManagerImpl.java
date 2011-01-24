@@ -96,6 +96,8 @@ public class WindowManagerImpl implements WindowManager {
         window.saveState();
         window.getBeanFactory().destroySingletons();
 
+        if (focusedWindow == window) focusedWindow = null;
+
 		openWindows.remove(window.getContainer());
 		app.topic(Listener.class).post().destroyed(window);
 	}
