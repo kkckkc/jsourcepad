@@ -6,14 +6,18 @@ import java.util.*;
 
 
 
-public final class Scope extends Interval {
+public final class Scope {
+    private int start;
+    private int end;
 	private List<Scope> children;
 	private Context context;
 	private Scope parent;
 	private Map<String, String> attributes;
 	
 	public Scope(int start, int end, Context context, Scope parent) {
-		super(start, end);
+		this.start = Math.min(start, end);
+		this.end = Math.max(start, end);
+
 		this.children = null; 
 		this.context = context;
 		this.parent = parent;
@@ -56,6 +60,18 @@ public final class Scope extends Interval {
 		return this;
 	}
 
+    public boolean contains(int i) {
+        return i >= start && i <= end;
+    }
+
+    public int getStart() {
+		return start;
+	}
+
+	public int getEnd() {
+		return end;
+	}
+
 	public String getPath() {
 		StringBuilder b = new StringBuilder(60);
 		buildPath(b);
@@ -75,7 +91,7 @@ public final class Scope extends Interval {
 		StringBuilder b = new StringBuilder();
 		b.append("<").append(context.getId()).append(">");
 		if (children == null || children.isEmpty()) {
-			int end = getEnd();
+			int end = this.end;
 			if (end == -1) {
 				b.append(safesubstring(s, start, s.length()));
 			} else {
@@ -84,14 +100,14 @@ public final class Scope extends Interval {
 		} else {
 			int o = start;
 			for (Scope c : children) {
-				if (c.getStart() > 0)
-					b.append(safesubstring(s, o, c.getStart()));
+				if (c.start > 0)
+					b.append(safesubstring(s, o, c.start));
 				b.append(c.toXml(s));
-				o = c.getEnd();
+				o = c.end;
 			}
 
-			int end = getEnd();
-			int start = children.get(children.size() - 1).getEnd();
+			int end = this.end;
+			int start = children.get(children.size() - 1).end;
 			if (end == -1) {
 				b.append(safesubstring(s, start, s.length()));
 			} else {
@@ -122,26 +138,7 @@ public final class Scope extends Interval {
 	}
 
 	public Iterable<Scope> getAncestors() {
-		return new Iterable<Scope>() {
-			public Iterator<Scope> iterator() {
-				return new Iterator<Scope>() {
-					private Scope current = Scope.this;
-
-					public boolean hasNext() {
-						return current != null;
-					}
-
-					public Scope next() {
-						Scope scope = current;
-						current = current.parent;
-						return scope;
-					}
-
-					public void remove() {
-					}
-				};
-			}
-		};
+		return new ScopeAncestorIterator();
 	}
 
 	public Scope getRoot() {
@@ -162,10 +159,10 @@ public final class Scope extends Interval {
 		
 		while (true) {
 			String i1 = current.getContext().getId();
-			if (i1 == null) i1 = "none";
+			if (i1 == null) i1 = "_";
 			String i2 = compareWith.getContext().getId();
-			if (i2 == null) i2 = "none";
-			
+			if (i2 == null) i2 = "_";
+
 			if (! i1.equals(i2))
 				return false;
 			
@@ -193,4 +190,26 @@ public final class Scope extends Interval {
 	public Map<String, String> getAttributes() {
 		return attributes;
 	}
+
+    private class ScopeAncestorIterator implements Iterator<Scope>, Iterable<Scope> {
+        private Scope current = Scope.this;
+
+        public boolean hasNext() {
+            return current != null;
+        }
+
+        public Scope next() {
+            Scope scope = current;
+            current = current.parent;
+            return scope;
+        }
+
+        public void remove() {
+        }
+
+        @Override
+        public Iterator<Scope> iterator() {
+            return this;
+        }
+    }
 }
