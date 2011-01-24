@@ -217,7 +217,7 @@ public class Parser {
     }
 
     private Scope copyScopeOfPreviousLine(Scope scope) {
-	    scope = scope.copy(Integer.MIN_VALUE, Integer.MAX_VALUE);
+	    scope = scope.copy();
 	    
 	    // Remove all that ends at line end
 	    while (true) {

@@ -6,11 +6,11 @@ import java.util.*;
 
 
 
-public class Scope extends Interval {
-	private ArrayList<Scope> children;
+public final class Scope extends Interval {
+	private List<Scope> children;
 	private Context context;
 	private Scope parent;
-	private HashMap<String, String> attributes;
+	private Map<String, String> attributes;
 	
 	public Scope(int start, int end, Context context, Scope parent) {
 		super(start, end);
@@ -24,7 +24,7 @@ public class Scope extends Interval {
 
 	private void addChild(Scope scope) {
 		if (children == null) {
-			children = new ArrayList<Scope>(10);
+			children = new LinkedList<Scope>();
 		}
 		children.add(scope);
 		scope.parent = this;
@@ -71,21 +71,6 @@ public class Scope extends Interval {
 		if (n != null) b.append(n);
 	}
 
-	public void dump() {
-		dump(0);
-	}
-
-	private void dump(int lvl) {
-		for (int i = 0; i < (lvl * 4); i++) {
-			System.out.print(" ");
-		}
-		System.out.println(this);
-		if (children == null) return;
-		for (Scope c : children) {
-			c.dump(lvl + 1);
-		}
-	}
-
 	public StringBuilder toXml(CharSequence s) {
 		StringBuilder b = new StringBuilder();
 		b.append("<").append(context.getId()).append(">");
@@ -128,13 +113,8 @@ public class Scope extends Interval {
 				+ System.identityHashCode(this) + ")";
 	}
 
-	public Scope copy(int start, int end) {
-		Scope copy;
-		if (parent == null) {
-			copy = new Scope(start, end, getContext(), null);
-		} else {
-			copy = new Scope(start, end, getContext(), parent.copy(start, end));
-		}
+	public Scope copy() {
+		Scope copy = new Scope(Integer.MAX_VALUE, Integer.MIN_VALUE, getContext(), parent == null ? null : parent.copy());
 		if (this.attributes != null) {
 			copy.attributes = new HashMap<String, String>(attributes);
 		}
@@ -195,11 +175,7 @@ public class Scope extends Interval {
 				continue;
 			}
 
-			if (current.getParent() == null && compareWith.getParent() == null) {
-				return true;
-			}
-
-			return false;
+			return current.getParent() == compareWith.getParent();
 		}
 	}
 
