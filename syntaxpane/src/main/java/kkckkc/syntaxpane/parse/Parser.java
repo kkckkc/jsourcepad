@@ -100,6 +100,9 @@ public class Parser {
 	}
 	
 	private Scope parseLine(Scope scope, LineManager.Line line) {
+        if (line.getIdx() == 7004)
+            System.out.println("Parser.parseLine " + line.getIdx());
+
 		CharSequence seq = line.getCharSequence(true);
 		
 		// Apply previous scope to all of this line
