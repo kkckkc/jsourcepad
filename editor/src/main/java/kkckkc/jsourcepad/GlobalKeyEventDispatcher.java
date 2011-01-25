@@ -11,13 +11,8 @@ import kkckkc.jsourcepad.util.action.MenuFactory;
 import kkckkc.syntaxpane.model.Scope;
 import kkckkc.utils.Os;
 
-import javax.swing.JComponent;
-import javax.swing.JPopupMenu;
-import javax.swing.KeyStroke;
-import java.awt.EventQueue;
-import java.awt.KeyEventDispatcher;
-import java.awt.MouseInfo;
-import java.awt.Point;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.Collection;
@@ -45,6 +40,8 @@ public class GlobalKeyEventDispatcher implements KeyEventDispatcher {
         if ((Character.isLetter(e.getKeyChar()) || Character.isDigit(e.getKeyChar())) && e.getModifiers() <= 1) {
             return false;
         }
+        if (e.getComponent() instanceof JFrame) return false;
+        
         Window window = Application.get().getWindowManager().getWindow((JComponent) e.getComponent());
         if (window == null) {
             return false;

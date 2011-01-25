@@ -57,6 +57,7 @@ public class InsertTextCommandManager implements BaseAction.ActionPerformedListe
 
     @Override
     public void actionPerformed(BaseAction baseAction, ActionEvent e) {
+        if (window.getDocList().getActiveDoc() == null) return;
         DocPresenter dp = window.getDocList().getActiveDoc().getPresenter(DocPresenter.class);
         complete(((ScrollableSourcePane) dp.getComponent()).getEditorPane());
     }
