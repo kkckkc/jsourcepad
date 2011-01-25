@@ -13,6 +13,7 @@ public class MacroRecordingView extends JPanel implements MacroManager.Listener 
 
     public MacroRecordingView(Window window) {
         window.topic(MacroManager.Listener.class).subscribe(DispatchStrategy.ASYNC_EVENT, this);
+        setOpaque(false);
     }
 
     public Dimension getPreferredSize() {
@@ -31,7 +32,7 @@ public class MacroRecordingView extends JPanel implements MacroManager.Listener 
             g2.setColor(null);
         }
 
-        g2.fillOval(0, 0, SIZE, SIZE);
+        g2.fillOval(1, 1, SIZE - 2, SIZE - 2);
     }
 
     @Override
