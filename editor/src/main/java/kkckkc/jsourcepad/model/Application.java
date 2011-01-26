@@ -45,6 +45,8 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
     private GlobalSettingsManager settingsManager;
     private PersistentCacheManagerImpl persistentCacheManager;
 
+    private BundleManager bundleManager;
+
     protected Application() {
         this.threadPool = Executors.newCachedThreadPool();
         this.settingsManager = new GlobalSettingsManager();
@@ -141,7 +143,8 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
     }
 
 	public BundleManager getBundleManager() {
-		return beanFactory.getBean(BundleManager.class);   
+        if (bundleManager == null) bundleManager = beanFactory.getBean(BundleManager.class);
+		return bundleManager;
     }
 
 	public Theme getTheme() {
