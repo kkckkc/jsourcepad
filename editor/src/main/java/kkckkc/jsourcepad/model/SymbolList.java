@@ -38,7 +38,7 @@ public class SymbolList {
 			line = lm.getNext(line);
 		}
 
-        System.out.println(System.currentTimeMillis() - l);
+        // System.out.println(System.currentTimeMillis() - l);
 
 		return symbols;
 	}
