@@ -10,19 +10,30 @@ import java.util.List;
 
 public class ScopeSelector {
 	private List<Rule> rules = new ArrayList<Rule>();
-	
+	private Rule rule;
+
 	public void addRule(Rule rule) {
+        if (this.rule == null && this.rules.isEmpty())
+            this.rule = rule;
+        else if (this.rule != null)
+            this.rule = null;
+        
 		this.rules.add(rule);
 	}
 
 	public Match matches(Scope scope, int depth) {
 		Match match = Match.NO_MATCH;
-		for (Rule rule : rules) {
-			Match m = rule.matches(scope, depth);
-			if (m.compareTo(match) > 0) {
-				match = m;
-			}
-		}
+        if (rule != null) {
+            Match m = rule.matches(scope, depth);
+            if (m.isMatch()) return m;
+        } else {
+            for (Rule rule : rules) {
+                Match m = rule.matches(scope, depth);
+                if (m.compareTo(match) > 0) {
+                    match = m;
+                }
+            }
+        }
 		return match;
 	}
 
@@ -62,7 +73,7 @@ public class ScopeSelector {
 			
 			int i = 0;
 			int j = 0;
-			
+
 			Iterator<String> ruleIterator = r.iterator();
 			String currentRule = ruleIterator.next();
 			while (scope != null) {
@@ -96,12 +107,17 @@ public class ScopeSelector {
 		private int matches(String scopeElement, String ruleElement) {
 			if (ruleElement == null) return 0;
 			if (scopeElement == null) return 0;
-			
-			if (scopeElement.startsWith(ruleElement)) {
-				if (scopeElement.length() == ruleElement.length() || 
-					scopeElement.charAt(ruleElement.length()) == '.')
-					return ruleElement.length();	
-			}
+
+            int reL = ruleElement.length();
+            int seL = scopeElement.length();
+            if (seL < reL) return -1;
+
+            if ((reL == seL || scopeElement.charAt(reL) == '.') &&
+                scopeElement.charAt(reL - 1) == ruleElement.charAt(reL - 1) && // This actually improves performance, though strictly covered by startsWith
+                (reL > 4 && seL > 4 && scopeElement.charAt(4) == ruleElement.charAt(4)) && // This actually improves performance, though strictly covered by startsWith
+                scopeElement.startsWith(ruleElement))
+                return reL;
+
 			return -1;
 		}
 		

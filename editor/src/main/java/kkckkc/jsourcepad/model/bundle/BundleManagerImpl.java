@@ -204,7 +204,7 @@ public class BundleManagerImpl implements BundleManager {
         for (Bundle bundle : bundles) {
             for (Map.Entry<String, Map<ScopeSelector, Object>> entry : bundle.getPreferences().entrySet()) {
                 if (! preferences.containsKey(entry.getKey())) {
-                    preferences.put(entry.getKey(), entry.getValue());
+                    preferences.put(entry.getKey(), new LinkedHashMap(entry.getValue()));
                 } else {
                     preferences.get(entry.getKey()).putAll(entry.getValue());
                 }

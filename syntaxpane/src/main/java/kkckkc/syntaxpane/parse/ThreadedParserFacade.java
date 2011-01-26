@@ -50,10 +50,11 @@ public class ThreadedParserFacade {
             //    start = Math.min(e.getInterval().getStart(), start);
             //}
         }
-        parse(new Entry(parser, new Interval(start, end), changeEvent));
+        parse(new Entry(parser, new Interval(start, end), changeEvent), System.currentTimeMillis());
     }
 
-    private void parse(Entry entry) {
+    static int id = 0;
+    private void parse(Entry entry, final long startTime) {
         lock.lock();
         try {
             activeEntry = entry;
@@ -73,9 +74,11 @@ public class ThreadedParserFacade {
                 executorService.execute(new Runnable() {
                     @Override
                     public void run() {
-                        parseNextEntry();
+                        parseNextEntry(startTime);
                     }
                 });
+            } else {
+                // System.out.println("Parsing took " + (System.currentTimeMillis() - startTime) + "ms (" + (id++) + ")");
             }
 
             activeEntry = null;
@@ -91,14 +94,14 @@ public class ThreadedParserFacade {
         }
     }
 
-    private void parseNextEntry() {
+    private void parseNextEntry(long startTime) {
         Entry foundEntry = parseQueue.removeFirst();
 
         if (foundEntry == null || foundEntry.isCancelled()) {
             return;
         }
 
-        parse(foundEntry);
+        parse(foundEntry, startTime);
     }
 
     public void addListener(Listener listener) {
