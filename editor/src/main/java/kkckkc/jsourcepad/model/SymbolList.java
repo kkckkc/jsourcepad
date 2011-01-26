@@ -14,6 +14,7 @@ import kkckkc.syntaxpane.model.Scope;
 import kkckkc.utils.Pair;
 
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 public class SymbolList {
@@ -33,6 +34,7 @@ public class SymbolList {
 		Line line = lm.getLineByPosition(0);
 		while (line != null) {
 			Scope root = line.getScope().getRoot();
+
 			visit(line, root, root, symbols);
 			
 			line = lm.getNext(line);
@@ -44,22 +46,35 @@ public class SymbolList {
 	}
 
 	private void visit(Line line, Scope scope, Scope root, List<Pair<String, Integer>> symbolList) {
-		Object o = bundleManager.getPreference(PrefKeys.SYMBOL_SHOW_IN_LIST, scope);
-		if (root != scope && o != null) {
-			String symbol = line.getCharSequence(false).subSequence(scope.getStart(), scope.getEnd()).toString();
-			
-			String transformation = (String) bundleManager.getPreference(PrefKeys.SYMBOL_TRANSFORMATION, scope);
-			if (transformation != null) {
-				symbol = SedUtils.applySedExpressions(symbol, transformation);
-			}
-			symbolList.add(new Pair<String, Integer>(symbol, line.getStart() + scope.getStart()));
-		} else if (scope.hasChildren()) {
-            List<Scope> children = scope.getChildren();
-            int size = children.size();
-            for (int i = 0; i < size; i++) {
-                visit(line, children.get(i), root, symbolList);
+        Object o = null;
+
+        LinkedList<Scope> queue = new LinkedList<Scope>();
+        queue.add(scope);
+
+        while (! queue.isEmpty()) {
+            scope = queue.removeFirst();
+
+            // Skip multiline scopes
+            if (scope.getStart() != Integer.MIN_VALUE || scope.getEnd() != Integer.MAX_VALUE)
+                o = bundleManager.getPreference(PrefKeys.SYMBOL_SHOW_IN_LIST, scope);
+
+            if (root != scope && o != null) {
+                String symbol = line.getCharSequence(false).subSequence(scope.getStart(), scope.getEnd()).toString();
+
+                String transformation = (String) bundleManager.getPreference(PrefKeys.SYMBOL_TRANSFORMATION, scope);
+                if (transformation != null) {
+                    symbol = SedUtils.applySedExpressions(symbol, transformation);
+                }
+                symbolList.add(new Pair<String, Integer>(symbol, line.getStart() + scope.getStart()));
+            } else if (scope.hasChildren()) {
+                List<Scope> children = scope.getChildren();
+                int size = children.size();
+                for (int i = 0; i < size; i++) {
+                    queue.addFirst(children.get(i));
+                }
             }
-		}
+        }
+
     }
 
     public List<Pair<String, Integer>> getSymbols(final String query) {
