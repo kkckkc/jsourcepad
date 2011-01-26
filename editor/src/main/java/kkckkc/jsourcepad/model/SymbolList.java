@@ -18,32 +18,34 @@ import java.util.List;
 
 public class SymbolList {
 	private Buffer buffer;
+    private BundleManager bundleManager;
 
-	public SymbolList(Buffer buffer) {
+    public SymbolList(Buffer buffer) {
 		this.buffer = buffer;
+        this.bundleManager = Application.get().getBundleManager();
 	}
 	
 	public List<Pair<String, Integer>> getSymbols() {
+        long l = System.currentTimeMillis();
 		List<Pair<String, Integer>> symbols = Lists.newArrayList();
 
 		LineManager lm = buffer.getLineManager();
 		Line line = lm.getLineByPosition(0);
 		while (line != null) {
 			Scope root = line.getScope().getRoot();
-			visit(line, root, symbols);
+			visit(line, root, root, symbols);
 			
 			line = lm.getNext(line);
-		}	
-		
+		}
+
+        // System.out.println(System.currentTimeMillis() - l);
+
 		return symbols;
 	}
-	
 
-	private void visit(Line line, Scope scope, List<Pair<String, Integer>> symbolList) {
-		BundleManager bundleManager = Application.get().getBundleManager();
-		
+	private void visit(Line line, Scope scope, Scope root, List<Pair<String, Integer>> symbolList) {
 		Object o = bundleManager.getPreference(PrefKeys.SYMBOL_SHOW_IN_LIST, scope);
-		if (scope.getRoot() != scope && o != null) {
+		if (root != scope && o != null) {
 			String symbol = line.getCharSequence(false).subSequence(scope.getStart(), scope.getEnd()).toString();
 			
 			String transformation = (String) bundleManager.getPreference(PrefKeys.SYMBOL_TRANSFORMATION, scope);
@@ -52,9 +54,11 @@ public class SymbolList {
 			}
 			symbolList.add(new Pair<String, Integer>(symbol, line.getStart() + scope.getStart()));
 		} else if (scope.hasChildren()) {
-        	for (Scope sc : scope.getChildren()) {
-        		visit(line, sc, symbolList);
-        	}
+            List<Scope> children = scope.getChildren();
+            int size = children.size();
+            for (int i = 0; i < size; i++) {
+                visit(line, children.get(i), root, symbolList);
+            }
 		}
     }
 

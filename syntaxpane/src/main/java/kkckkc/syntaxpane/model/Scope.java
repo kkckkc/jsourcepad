@@ -9,7 +9,7 @@ import java.util.*;
 public class Scope {
     private int start;
     private int end;
-	private LinkedList<Scope> children;
+	private List<Scope> children;
 	private Context context;
 	private Scope parent;
 
@@ -27,7 +27,7 @@ public class Scope {
 
 	private void addChild(Scope scope) {
 		if (children == null) {
-			children = new LinkedList<Scope>();
+			children = new ArrayList<Scope>();
 		}
 		children.add(scope);
 		scope.parent = this;
@@ -41,7 +41,7 @@ public class Scope {
 		return context;
 	}
 
-	public final LinkedList<Scope> getChildren() {
+	public final List<Scope> getChildren() {
 		return children;
 	}
 
@@ -174,6 +174,10 @@ public class Scope {
 	public final void makeOpenEnded() {
 		this.end = Integer.MAX_VALUE;
 	}
+
+    public Scope getLastChild() {
+        return children.get(children.size() - 1);
+    }
 
     private class ScopeAncestorIterator implements Iterator<Scope>, Iterable<Scope> {
         private Scope current = Scope.this;

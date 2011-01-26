@@ -37,9 +37,16 @@ public class ScopeSelectorManager {
 
 	public <T> T getMatch(Scope scope, Map<ScopeSelector, T> selectors) {
         if (selectors == null) return null;
-		List<T> matches = getMatches(scope, selectors);
-		if (matches == null || matches.isEmpty()) return null;
-		return matches.get(0);
+
+        for (Map.Entry<ScopeSelector, T> entry : selectors.entrySet()) {
+            Match m = entry.getKey().matches(scope, -1);
+
+            if (! m.isMatch()) continue;
+
+            return entry.getValue();
+        }
+
+        return null;
 	}
 
 	private int calcDepth(Scope scope) {

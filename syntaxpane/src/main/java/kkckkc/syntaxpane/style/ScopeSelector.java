@@ -62,7 +62,7 @@ public class ScopeSelector {
 			
 			int i = 0;
 			int j = 0;
-			
+
 			Iterator<String> ruleIterator = r.iterator();
 			String currentRule = ruleIterator.next();
 			while (scope != null) {
@@ -96,12 +96,16 @@ public class ScopeSelector {
 		private int matches(String scopeElement, String ruleElement) {
 			if (ruleElement == null) return 0;
 			if (scopeElement == null) return 0;
-			
-			if (scopeElement.startsWith(ruleElement)) {
-				if (scopeElement.length() == ruleElement.length() || 
-					scopeElement.charAt(ruleElement.length()) == '.')
-					return ruleElement.length();	
-			}
+
+            int reL = ruleElement.length();
+            int seL = scopeElement.length();
+            if (seL < reL) return -1;
+
+            if ((reL == seL || scopeElement.charAt(reL) == '.') &&
+                    scopeElement.charAt(reL - 1) == ruleElement.charAt(reL - 1) && // This actually improves performance, though strictly not neccessary
+                    scopeElement.startsWith(ruleElement))
+                return reL;
+
 			return -1;
 		}
 		

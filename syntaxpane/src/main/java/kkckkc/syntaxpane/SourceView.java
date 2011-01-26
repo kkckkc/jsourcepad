@@ -142,7 +142,7 @@ public class SourceView extends FoldablePlainView implements ThreadedParserFacad
 
 			// Draw tail
 			int end = Math.min(scope.getEnd(), line.getLength());
-			int start = scope.getChildren().getLast().getEnd();
+			int start = scope.getLastChild().getEnd();
 
 			if (end > start) {
 				int f = Math.max(start, s);
