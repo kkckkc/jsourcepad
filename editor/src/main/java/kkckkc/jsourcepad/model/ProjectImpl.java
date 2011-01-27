@@ -32,6 +32,8 @@ public class ProjectImpl implements Project, DocList.Listener, Window.FocusListe
 
     private WeakHashMap<File, Long> refreshTimestamps = new WeakHashMap<File, Long>();
 
+    private ProjectFinder finder;
+
 	// Collaborators
 	private File projectDir;
 	private Window window;
@@ -44,7 +46,7 @@ public class ProjectImpl implements Project, DocList.Listener, Window.FocusListe
 
     private Predicate<File> predicate;
 
-	@Autowired
+    @Autowired
 	public void setWindow(Window window) {
 	    this.window = window;
     }
@@ -222,6 +224,17 @@ public class ProjectImpl implements Project, DocList.Listener, Window.FocusListe
     public void unregister(File file) {
         Preconditions.checkArgument(file.isDirectory(), "File must be directory");
         fileMonitor.unregister(file);
+    }
+
+    @Override
+    public ProjectFinder getFinder() {
+        return finder;
+    }
+
+    @Override
+    public ProjectFinder newFinder(File baseDirectory, String searchFor, ProjectFinder.Options options) {
+        this.finder = new ProjectFinder(baseDirectory == null ? projectDir : baseDirectory, searchFor, options, predicate);
+        return this.finder;
     }
 
     @Override

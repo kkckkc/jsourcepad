@@ -23,6 +23,9 @@
 	<bean id="findDialog" class="kkckkc.jsourcepad.ui.dialog.find.FindDialog" />
 	<bean id="findDialogView" class="kkckkc.jsourcepad.ui.dialog.find.FindDialogViewImpl" />
 
+    <bean id="findInProjectDialog" class="kkckkc.jsourcepad.ui.dialog.find.FindInProjectDialog" />
+    <bean id="findInProjectDialogView" class="kkckkc.jsourcepad.ui.dialog.find.FindInProjectDialogView" />
+
 	<bean id="quickNavigationDialog" class="kkckkc.jsourcepad.ui.dialog.navigation.QuickNavigationDialog" />
 	<bean id="quickNavigationDialogView" class="kkckkc.jsourcepad.ui.dialog.navigation.QuickNavigationDialogViewImpl" autowire="constructor" scope="prototype"/>
 

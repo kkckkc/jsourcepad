@@ -55,4 +55,14 @@ public class NullProjectImpl implements Null, Project {
     @Override
     public void unregister(File file) {
     }
+
+    @Override
+    public ProjectFinder getFinder() {
+        return null;
+    }
+
+    @Override
+    public ProjectFinder newFinder(File baseDirectory, String searchFor, ProjectFinder.Options options) {
+        return null;  
+    }
 }

@@ -76,7 +76,7 @@
 					<property name="items">
 						<list>
 							<ref local="action-edit-find-find" />
-                            <!-- Find in project -->
+                            <ref local="action-edit-find-find-in-project" />
                             <null />
 							<ref local="action-edit-find-next" />
 							<ref local="action-edit-find-previous" />
@@ -352,6 +352,7 @@
     <bean id="action-edit-select-enclosing-bracket" parent="action" class="kkckkc.jsourcepad.action.EditSelectEnclosingBracketsAction" autowire="constructor" />
     <bean id="action-edit-select-current-scope" parent="action" class="kkckkc.jsourcepad.action.EditSelectCurrentScopeAction" autowire="constructor" />
     <bean id="action-edit-find-find" parent="action" class="kkckkc.jsourcepad.action.EditFindAction" autowire="constructor"/>
+    <bean id="action-edit-find-find-in-project" parent="action" class="kkckkc.jsourcepad.action.EditFindFindInProjectAction" autowire="constructor"/>
 	<bean id="action-edit-find-next" parent="action" class="kkckkc.jsourcepad.action.EditFindNextAction" autowire="constructor"/>
 	<bean id="action-edit-find-previous" parent="action" class="kkckkc.jsourcepad.action.EditFindPreviousAction" autowire="constructor"/>
     <bean id="action-edit-find-replace-all" parent="action" class="kkckkc.jsourcepad.action.EditFindReplaceAllAction" autowire="constructor"/>

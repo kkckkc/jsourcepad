@@ -2,6 +2,7 @@ package kkckkc.jsourcepad.model;
 
 import com.google.common.base.Predicate;
 import kkckkc.jsourcepad.model.settings.SettingsManager;
+import kkckkc.syntaxpane.model.Interval;
 
 import java.io.File;
 import java.util.List;
@@ -26,4 +27,8 @@ public interface Project {
 
     public void register(File file);
     public void unregister(File file);
+
+    public ProjectFinder getFinder();
+    public ProjectFinder newFinder(File baseDirectory, String searchFor, ProjectFinder.Options options);
+
 }
