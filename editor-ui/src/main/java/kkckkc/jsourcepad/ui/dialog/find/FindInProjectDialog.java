@@ -2,8 +2,11 @@ package kkckkc.jsourcepad.ui.dialog.find;
 
 import com.google.common.base.Function;
 import kkckkc.jsourcepad.Dialog;
+import kkckkc.jsourcepad.model.Buffer;
+import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.ProjectFinder;
 import kkckkc.jsourcepad.model.Window;
+import kkckkc.syntaxpane.model.Interval;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
@@ -13,10 +16,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 
 public class FindInProjectDialog implements Dialog<FindInProjectDialogView> {
     private FindInProjectDialogView view;
@@ -24,7 +24,7 @@ public class FindInProjectDialog implements Dialog<FindInProjectDialogView> {
 
     @PostConstruct
     public void init() {
-        view.getJDialog().setModalityType(java.awt.Dialog.ModalityType.DOCUMENT_MODAL);
+        view.getJDialog().setModalityType(java.awt.Dialog.ModalityType.MODELESS);
 
         view.getSearchFor().addKeyListener(new KeyListener() {
             public void keyTyped(KeyEvent e) { }
@@ -41,6 +41,37 @@ public class FindInProjectDialog implements Dialog<FindInProjectDialogView> {
             @Override
             public void actionPerformed(ActionEvent e) {
                 find();
+            }
+        });
+
+        view.getResults().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() != 2) return;
+
+                int selRow = view.getResults().getRowForLocation(e.getX(), e.getY());
+                if (selRow == -1) return;
+                TreePath selPath = view.getResults().getPathForLocation(e.getX(), e.getY());
+
+                if (((DefaultMutableTreeNode) selPath.getLastPathComponent()).getUserObject() instanceof ProjectFinder.Entry) {
+                    final ProjectFinder.Entry entry = (ProjectFinder.Entry) ((DefaultMutableTreeNode) selPath.getLastPathComponent()).getUserObject();
+                    final Doc doc = window.getDocList().open(entry.getFile());
+                    EventQueue.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            doc.getActiveBuffer().scrollTo(entry.getOffset(), Buffer.ScrollAlignment.MIDDLE);
+                            doc.getActiveBuffer().setSelection(Interval.createWithLength(entry.getOffset(), entry.getLength()));
+                            window.getContainer().requestFocus();
+                        }
+                    });
+                }
+            }
+        });
+
+        view.getReplaceButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                
             }
         });
     }
@@ -105,7 +136,7 @@ public class FindInProjectDialog implements Dialog<FindInProjectDialogView> {
                             treeModel.insertNodeInto(fileNode, root, root.getChildCount());
                         }
 
-                        final DefaultMutableTreeNode lineNode = new DefaultMutableTreeNode(entry.getLineNumber() + ":" + entry.getPosition() + " - " + entry.getLine().trim());
+                        final DefaultMutableTreeNode lineNode = new DefaultMutableTreeNode(entry);
                         treeModel.insertNodeInto(lineNode, fileNode, fileNode.getChildCount());
                     }
                 });

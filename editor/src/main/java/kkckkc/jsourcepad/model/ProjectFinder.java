@@ -190,6 +190,10 @@ public class ProjectFinder {
         public int getOffset() {
             return offset;
         }
+
+        public String toString() {
+            return getLineNumber() + ":" + getPosition() + " - " + getLine().trim();
+        }
     }
 
     public static class Options {
