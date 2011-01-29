@@ -107,7 +107,14 @@ public class DocListPresenter implements Presenter<DocListView>, DocList.Listene
 	@Override
 	public void modified(Doc doc, boolean newState, boolean oldState) {
         if (newState == oldState) return;
-		tabbedPane.setTitleAt(doc.getDocList().getActive(), doc.getTitle());
+
+        int i = 0;
+        for (Doc d : doc.getDocList().getDocs()) {
+            if (d == doc) {
+                tabbedPane.setTitleAt(i, doc.getTitle());
+            }
+            i++;
+        }
 	}
 
 	@Override

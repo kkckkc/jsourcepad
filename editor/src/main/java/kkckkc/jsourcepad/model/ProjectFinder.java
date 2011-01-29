@@ -14,9 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class ProjectFinder {
     private List<Entry> entries;
@@ -98,7 +96,7 @@ public class ProjectFinder {
 
     public void replace(List<Entry> entries, String replaceWith, Replacer replacer, Function<Entry, Void> callback) {
         if (entries == null || entries.isEmpty()) {
-            callback.apply(null);
+            if (callback != null) callback.apply(null);
             return;
         }
 
@@ -119,7 +117,7 @@ public class ProjectFinder {
 
             try {
                 replacer.replace(entry.getFile(), offset, entry.getMatch(), replaceWith);
-                callback.apply(entry);
+                if (callback != null) callback.apply(entry);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -130,12 +128,16 @@ public class ProjectFinder {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        callback.apply(null);
+        if (callback != null) callback.apply(null);
     }
 
 
     private ExecutorService getExecutorService() {
         return Application.get().getThreadPool();
+    }
+
+    public List<Entry> getEntries() {
+        return entries;
     }
 
 
@@ -226,8 +228,9 @@ public class ProjectFinder {
         @Override
         public void replace(File file, int offset, String replaceThis, String replaceWithThis) throws IOException {
             if (currentFile == null || !file.equals(currentFile)) {
-                save();
-                open(file);
+                if (currentFile != null) save(currentFile, currentContents.toString());
+                currentContents = open(file);
+                currentFile = file;
             }
 
             if (! currentContents.substring(offset, offset + replaceThis.length()).equals(replaceThis)) {
@@ -238,20 +241,19 @@ public class ProjectFinder {
             currentContents.replace(offset, offset + replaceThis.length(), replaceWithThis);
         }
 
-        private void open(File file) throws IOException {
-            currentFile = file;
-            currentContents = new StringBuilder(Files.toString(file, Charsets.UTF_8));
+        protected StringBuilder open(File file) throws IOException {
+            return new StringBuilder(Files.toString(file, Charsets.UTF_8));
         }
 
-        private void save() throws IOException {
-            if (currentFile == null) return;
+        protected void save(File file, String contents) throws IOException {
+            if (file == null) return;
 
-            Files.write(currentContents, currentFile, Charsets.UTF_8);
+            Files.write(contents, file, Charsets.UTF_8);
         }
 
         @Override
         public void done() throws IOException {
-            save();
+            save(currentFile, currentContents.toString());
         }
     }
 

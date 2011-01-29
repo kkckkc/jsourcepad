@@ -1,6 +1,6 @@
 [ ] Save macro
 [ ] More macros
-[ ] Find in Project
+[x] Find in Project
 
 [ ] Window menu
 [ ] Freehanded editing

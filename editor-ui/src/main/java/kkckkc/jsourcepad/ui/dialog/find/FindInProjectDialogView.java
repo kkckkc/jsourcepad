@@ -1,14 +1,15 @@
 package kkckkc.jsourcepad.ui.dialog.find;
 
 import kkckkc.jsourcepad.View;
+import kkckkc.jsourcepad.util.ui.BaseJDialog;
 import net.miginfocom.swing.MigLayout;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
 import javax.swing.tree.TreeNode;
-import java.awt.*;
+import java.awt.Container;
 
-public class FindInProjectDialogView extends JDialog implements View {
+public class FindInProjectDialogView extends BaseJDialog implements View {
 
     private JTextField searchFor;
     private JTextField replaceWith;
