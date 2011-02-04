@@ -15,8 +15,8 @@ public class EditSelectCurrentScopeAction extends BaseAction {
     public void performAction(ActionEvent e) {
 		Doc activeDoc = actionContext.get(ActionContextKeys.ACTIVE_DOC);
 		Buffer buffer = activeDoc.getActiveBuffer();
-
-        buffer.setSelection(buffer.getCurrentScope());
+		
+		buffer.setSelection(buffer.getCurrentScope());
     }
 
 }

@@ -106,6 +106,8 @@ public class FileTreeModel implements TreeModel {
     public void refresh(File node) {
         Node parent = makeNode(node);
 
+        if (! expandedNodes.containsKey(parent)) return;
+
         Node[] currentChildren = expandedNodes.get(parent);
         expandedNodes.remove(parent);
         Node[] tobeChildren = getChildren(parent);
