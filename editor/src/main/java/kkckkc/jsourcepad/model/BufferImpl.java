@@ -610,32 +610,48 @@ public class BufferImpl implements Buffer {
     @Override
     public TextInterval getCurrentScope() {
         Scope scope = insertionPoint.getScope();
+        TextInterval interval = getMultiLineScope(scope);
+
+        while (getSelection() != null && getSelection().contains(interval)) {
+            scope = scope.getParent();
+            if (scope == null) return getCompleteDocument();
+
+            interval = getMultiLineScope(scope);
+        }
+
+        return interval;
+    }
+
+    private TextInterval getMultiLineScope(final Scope scope) {
         String path = scope.getPath();
+
         Line line = getLineManager().getLineByPosition(insertionPoint.getPosition());
 
-        while (scope.getStart() == Integer.MIN_VALUE) {
+        Scope currentScope = scope;
+        while (currentScope.getStart() == Integer.MIN_VALUE) {
             line = getLineManager().getPrevious(line);
-            scope = document.getScopeForPosition(line.getEnd());
-            while (! scope.getPath().equals(path)) {
-                scope = scope.getParent();
+            if (line == null) break;
+            currentScope = document.getScopeForPosition(line.getEnd());
+            while (! currentScope.getPath().equals(path)) {
+                currentScope = currentScope.getParent();
             }
         }
 
-        int start = line.getStart() + scope.getStart();
+        int start = line == null ? 0 : line.getStart() + currentScope.getStart();
 
-
-        scope = insertionPoint.getScope();
+        currentScope = scope;
         line = getLineManager().getLineByPosition(insertionPoint.getPosition());
 
-        while (scope.getEnd() == Integer.MAX_VALUE) {
+        while (currentScope.getEnd() == Integer.MAX_VALUE) {
             line = getLineManager().getNext(line);
-            scope = document.getScopeForPosition(line.getStart());
-            while (! scope.getPath().equals(path)) {
-                scope = scope.getParent();
+            if (line == null) break;
+            currentScope = document.getScopeForPosition(line.getStart());
+            while (! currentScope.getPath().equals(path)) {
+                currentScope = currentScope.getParent();
             }
         }
 
-        int end = line.getStart() + scope.getEnd();
+        int end = line == null ? getLength() : (line.getStart() + currentScope.getEnd());
 
         return new BufferTextInterval(start, end);
     }

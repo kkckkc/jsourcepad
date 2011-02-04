@@ -5,10 +5,12 @@
 [ ] Window menu
 [ ] Freehanded editing
 [ ] Bookmarks
-[ ] Multiple invocations of select current scope should make it bigger
+[x] Multiple invocations of select current scope should make it bigger
 [ ] Rework FoldManager and support fold level actions
 [ ] Text > Move Selection
 [ ] Text > Edit Each Line in Selection
+
+[ ] Optimize root scope
 
 [ ] Style navigation dialog on mac
 
@@ -20,4 +22,3 @@
 [ ] Move actions to plist format
 [ ] Buffer should be DI
 [-] Disposable
-
