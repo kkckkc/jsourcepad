@@ -1,72 +1,69 @@
 <project name="package" default="all" basedir="."
          xmlns:rsel="antlib:org.apache.tools.ant.types.resources.selectors">
 
+
     <property file="${basedir}/build.properties" />
     <property file="${basedir}/build.properties.sample" />
 
     <property name="revision" value="11961" />
 
-    <condition property="isMac">
-        <os family="mac" />
-    </condition>
+    <property name="dir.temp" value="target/temp" />
+    <property name="dir.shared" value="target/shared" />
+    <property name="dir.apps" value="target/apps" />
 
-    <condition property="isWindows">
-        <os family="windows" />
-    </condition>
+    <target name="clean">
+        <delete dir="${dir.temp}" />
+        <delete dir="${dir.apps}" />
+    </target>
 
-    <condition property="isUnix">
-        <os family="unix" />
-    </condition>
+    <target name="general">
+        <echo message="Build ID: ${buildId}" />
 
-    <target name="all">
-        <delete dir="target/package" quiet="true"/>
+        <delete dir="${dir.temp}" quiet="true"/>
 
         <!-- Remove current module classpath -->
-        <restrict id="test">
+        <restrict id="_all_but_current_module">
             <path path="${runtime_classpath}"/>
             <rsel:not>
                 <rsel:name name="**/classes"/>
             </rsel:not>
         </restrict>
-        <pathconvert property="t" refid="test"/>
+        <pathconvert property="lib_classpath" refid="_all_but_current_module"/>
 
         <!-- Copy to lib dir -->
-        <mkdir dir="target/package"/>
-        <mkdir dir="target/package/lib"/>
-        <copy todir="target/package/lib" flatten="true">
-            <path path="${t}"/>
+        <mkdir dir="${dir.temp}"/>
+        <mkdir dir="${dir.temp}/lib"/>
+        <copy todir="${dir.temp}/lib" flatten="true">
+            <path path="${lib_classpath}"/>
             <chainedmapper>
                 <flattenmapper/>
             </chainedmapper>
         </copy>
 
-        <available file="target/Shared" property="share.present"/>
-        <antcall target="checkout-share" />
-
-        <antcall target="build-mac-app" />
-        <antcall target="build-zip-app" />
+        <available file="${dir.shared}/Shared" property="share.present"/>
+        <antcall target="share-update" />
     </target>
 
-    <target name="checkout-share"
-            depends="checkout-share-checkout,checkout-share-update">
-        <antcall target="overlay-share" />
+    <target name="share-update"
+            depends="share-scm-checkout,share-scm-update">
+        <antcall target="share-overlay" />
     </target>
 
-    <target name="overlay-share">
-        <copy todir="target/Shared/Support" overwrite="true" verbose="true">
+    <target name="share-overlay">
+        <copy todir="${dir.shared}/Shared/Support" overwrite="true" verbose="true">
             <fileset dir="Support">
                 <include name="**/*" />
             </fileset>
         </copy>
     </target>
 
-    <target name="checkout-share-checkout" unless="share.present">
-        <mkdir dir="target/Shared" />
-        <exec dir="target/Shared" executable="${svn}">
+    <target name="share-scm-checkout" unless="share.present">
+        <mkdir dir="${dir.shared}/Shared" />
+        <exec dir="${dir.shared}/Shared" executable="${svn}">
             <arg value="checkout" />
             <arg value="http://svn.textmate.org/trunk/Themes" />
         </exec>
-        <exec dir="target/Shared" executable="${svn}">
+        <exec dir="${dir.shared}/Shared" executable="${svn}">
             <arg value="checkout" />
             <arg value="-r" />
             <arg value="${revision}" />
@@ -74,16 +71,16 @@
         </exec>
     </target>
 
-    <target name="checkout-share-update" if="share.present">
-        <exec command="${svn} update target/Shared/Themes" />
-        <exec command="${svn} update -r ${revision} target/Shared/Support" />
+    <target name="share-scm-update" if="share.present">
+        <exec command="${svn} update ${dir.shared}/Shared/Themes" />
+        <exec command="${svn} update -r ${revision} ${dir.shared}/Shared/Support" />
     </target>
 
-    <target name="build-mac-app" if="isMac">
-        <mkdir dir="target/package/mac" />
+    <target name="build-osx-app" depends="general">
+        <mkdir dir="${dir.temp}/mac" />
 
         <path id="lib-classpath">
-            <fileset dir="target/package/lib" includes="*.jar" />
+            <fileset dir="${dir.temp}/lib" includes="*.jar" />
         </path>
 
         <pathconvert property="cp" refid="lib-classpath" pathsep=":">
@@ -95,38 +92,40 @@
             </mapper>
         </pathconvert>
 
-
-        <copy todir="target/package/mac">
+        <copy todir="${dir.temp}/mac">
             <fileset dir="mac" />
              <filterset>
                 <filter token="CLASSPATH" value="${cp}"/>
             </filterset>
         </copy>
 
-        <copy todir="target/package/mac/JSourcePad.app/Contents/MacOS"
+        <copy todir="${dir.temp}/mac/JSourcePad.app/Contents/MacOS"
               file="/System/Library/Frameworks/JavaVM.framework/Versions/Current/Resources/MacOS/JavaApplicationStub" />
 
-        <exec command="chmod +x target/package/mac/JSourcePad.app/Contents/MacOS/JavaApplicationStub" />
+        <exec command="chmod +x ${dir.temp}/mac/JSourcePad.app/Contents/MacOS/JavaApplicationStub" />
 
-        <copy todir="target/package/mac/JSourcePad.app/Contents/Resources/Java">
-            <fileset dir="target/package/lib" />
+        <copy todir="${dir.temp}/mac/JSourcePad.app/Contents/Resources/Java">
+            <fileset dir="${dir.temp}/lib" />
         </copy>
 
-        <copy todir="target/package/mac/JSourcePad.app/Contents/Resources/Shared">
-            <fileset dir="target/Shared">
+        <copy todir="${dir.temp}/mac/JSourcePad.app/Contents/Resources/Shared">
+            <fileset dir="${dir.shared}/Shared">
                 <exclude name="**/LaTeXUtils.rb" />
                 <exclude name="**/.svn" />
             </fileset>
         </copy>
 
-        <exec command="/Developer/Tools/SetFile -a B target/package/mac/JSourcePad.app" />
+        <exec command="/Developer/Tools/SetFile -a B ${dir.temp}/mac/JSourcePad.app" />
+
+        <!-- TODO: Create DMG file -->
+        <copy file="${dir.temp}/mac/JSourcePad.app" tofile="${dir.apps}/jsourcepad-osx-${buildId}.app" />
     </target>
 
-    <target name="build-zip-app">
-        <mkdir dir="target/package/zip-app" />
+    <target name="build-win32-app" depends="general">
+        <mkdir dir="${dir.temp}/win32-app" />
 
         <path id="lib-classpath">
-            <fileset dir="target/package/lib" includes="*.jar" />
+            <fileset dir="${dir.temp}/lib" includes="*.jar" />
         </path>
 
         <pathconvert property="cp" refid="lib-classpath" pathsep=";">
@@ -138,43 +137,80 @@
             </mapper>
         </pathconvert>
 
-        <pathconvert property="unix-cp" refid="lib-classpath" pathsep=":">
-            <mapper>
-                <chainedmapper>
-                <flattenmapper/>
-                <regexpmapper from="^(.*)\.jar$$" to="lib/\1.jar" />
-                </chainedmapper>
-            </mapper>
-        </pathconvert>
-
-        <copy todir="target/package/zip-app">
+        <copy todir="${dir.temp}/win32-app">
              <fileset dir="zip/contents" />
              <filterset>
                 <filter token="CLASSPATH" value="${cp}"/>
-                <filter token="UNIXCLASSPATH" value="${unix-cp}"/>
             </filterset>
         </copy>
 
-        <copy todir="target/package/zip-app/lib">
-            <fileset dir="target/package/lib" />
+        <copy todir="${dir.temp}/win32-app/lib">
+            <fileset dir="${dir.temp}/lib" />
         </copy>
 
-        <antcall target="build-exe" />
+        <taskdef name="launch4j"
+            classname="net.sf.launch4j.ant.Launch4jTask"
+            classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar" />
+        <launch4j configFile="zip/launch4j.xml" outfile="${dir.temp}/win32-app/jsourcepad.exe" />
 
-        <zip file="target/package/jsourcepad.zip">
-            <zipfileset dir="target/package/zip-app" prefix="jsourcepad" />
-            <zipfileset dir="target/Shared" prefix="jsourcepad/Shared">
+        <zip file="${dir.temp}/win32-app/jsourcepad.zip">
+            <zipfileset dir="${dir.temp}/win32-app" prefix="jsourcepad">
+                <exclude name="**/jsourcepad.sh" />
+            </zipfileset>
+            <zipfileset dir="${dir.shared}/Shared" prefix="jsourcepad/Shared">
                 <exclude name="**/LaTeXUtils.rb" />
                 <exclude name="**/.svn" />
             </zipfileset>
         </zip>
+
+        <copy file="${dir.temp}/win32-app/jsourcepad.zip" tofile="${dir.apps}/jsourcepad-win32-${buildId}.zip" />
     </target>
 
-    <target name="build-exe" if="launch4j.dir">
-        <taskdef name="launch4j"
-            classname="net.sf.launch4j.ant.Launch4jTask"
-            classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar" />
-        <launch4j configFile="zip/launch4j.xml" outfile="target/package/zip-app/jsourcepad.exe" />
+    <target name="build-linux-app" depends="general">
+        <mkdir dir="${dir.temp}/linux-app" />
+
+        <path id="lib-classpath">
+            <fileset dir="${dir.temp}/lib" includes="*.jar" />
+        </path>
+
+        <pathconvert property="unix-cp" refid="lib-classpath" pathsep=":">
+            <mapper>
+                <chainedmapper>
+                <flattenmapper/>
+                <regexpmapper from="^(.*)\.jar$$" to="$_pwd/lib/\1.jar" />
+                </chainedmapper>
+            </mapper>
+        </pathconvert>
+
+        <copy todir="${dir.temp}/linux-app">
+             <fileset dir="zip/contents" />
+             <filterset>
+                <filter token="UNIXCLASSPATH" value="${unix-cp}"/>
+            </filterset>
+        </copy>
+
+        <copy todir="${dir.temp}/linux-app/lib">
+            <fileset dir="${dir.temp}/lib" />
+        </copy>
+
+        <exec command="chmod +x ${dir.temp}/linux-app/jsourcepad.sh" />
+
+        <tar destfile="${dir.temp}/linux-app/jsourcepad.tar.gz" compression="gzip">
+            <tarfileset dir="${dir.temp}/linux-app" prefix="jsourcepad">
+                <exclude name="**/jsourcepad.bat" />
+                <exclude name="**/jsourcepad.sh" />
+                <exclude name="**/jsourcepad.l4j.ini" />
+            </tarfileset>
+            <tarfileset dir="${dir.temp}/linux-app" prefix="jsourcepad" filemode="755">
+                <include name="**/jsourcepad.sh" />
+            </tarfileset>
+            <tarfileset dir="${dir.shared}/Shared" prefix="jsourcepad/Shared">
+                <exclude name="**/LaTeXUtils.rb" />
+                <exclude name="**/.svn" />
+            </tarfileset>
+        </tar>
+
+        <copy file="${dir.temp}/linux-app/jsourcepad.tar.gz" tofile="${dir.apps}/jsourcepad-${application.name}-${buildId}.tar.gz" />
     </target>
 
 </project>
