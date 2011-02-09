@@ -70,4 +70,15 @@ public class ColorUtils {
 
 		return base;
 	}
+
+
+    public static Color resolveAlpha(Color c, Color background) {
+        if (c.getAlpha() == 0) return c;
+
+        double a = c.getAlpha() / 255d;
+        return new Color(
+                (int) (c.getRed() * a + background.getRed() * (1 - a)),
+                (int) (c.getGreen() * a + background.getGreen() * (1 - a)),
+                (int) (c.getBlue() * a + background.getBlue() * (1 - a)));
+    }
 }

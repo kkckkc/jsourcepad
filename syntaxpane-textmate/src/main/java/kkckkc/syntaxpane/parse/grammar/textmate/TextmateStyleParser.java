@@ -53,7 +53,7 @@ public class TextmateStyleParser implements kkckkc.syntaxpane.style.StyleParser 
 			
 			final Color caretColor = color(global, "caret");
 			final Color lineSelectionColor = color(global, "lineHighlight");
-			final Color invisibles = color(global, "invisibles");
+			final Color invisibles = ColorUtils.resolveAlpha(color(global, "invisibles"), textStyle.getBackground());
 				
 			final Style rightMarginStyle = new StyleBean(
 					ColorUtils.offset(color(global, "background"), 2), 

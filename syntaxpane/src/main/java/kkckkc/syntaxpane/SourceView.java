@@ -86,7 +86,7 @@ public class SourceView extends FoldablePlainView implements ThreadedParserFacad
 		getDocument().getText(p0, p1 - p0, segment);
 
 		g.setColor(sourcePane.getStyleScheme().getInvisiblesColor());
-		
+
 		int width = g.getFontMetrics().stringWidth(" ");
         
         // Draw hidden characters
