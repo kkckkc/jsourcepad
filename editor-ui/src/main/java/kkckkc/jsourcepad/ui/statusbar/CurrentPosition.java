@@ -16,6 +16,6 @@ public class CurrentPosition extends JLabel implements Buffer.InsertionPointList
 
 	@Override
     public void update(InsertionPoint ip) {
-	    setText((ip.getLineNumber() + 1) + ":" + (ip.getLineIndex() + 1) + " (" + ip.getPosition() + ")");
+	    setText((ip.getLineNumber() + 1) + ":" + (ip.getLineIndex() + 1));
     }
 }
