@@ -80,9 +80,8 @@ public class TextmateStyleParser implements kkckkc.syntaxpane.style.StyleParser 
 
 	private boolean isStyle(Map<?, ?> styleSettings, String string) {
 		String s = (String) styleSettings.get("fontStyle");
-		if (s == null) return false;
-		
-		return s.indexOf(string) >= 0;
+        return s != null && s.indexOf(string) >= 0;
+
     }
 		
 	private Color color(Map map, String colorProp) {

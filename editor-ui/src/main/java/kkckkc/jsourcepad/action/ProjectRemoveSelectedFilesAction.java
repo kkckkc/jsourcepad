@@ -31,10 +31,8 @@ public class ProjectRemoveSelectedFilesAction extends BaseAction {
                 try {
                     Files.deleteRecursively((File) o);
 
-                    if (project != null) {
-                        project.refresh(((File) o));
-                        project.refresh(((File) o).getParentFile());
-                    }
+                    project.refresh(((File) o));
+                    project.refresh(((File) o).getParentFile());
                 } catch (IOException e1) {
                     throw new RuntimeException(e1);
                 }

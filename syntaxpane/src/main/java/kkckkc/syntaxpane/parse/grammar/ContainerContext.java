@@ -117,7 +117,7 @@ public class ContainerContext extends MatchableContext {
 			}
 		}		
 		
-		return endPattern.matcher(segment);
+		return endPattern == null ? factory.create("$^").matcher(segment) : endPattern.matcher(segment);
 	}
 
 	public Matcher getMatcher(CharSequence seq) {

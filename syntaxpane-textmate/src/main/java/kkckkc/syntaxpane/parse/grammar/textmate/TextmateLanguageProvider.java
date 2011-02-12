@@ -5,7 +5,6 @@ import kkckkc.syntaxpane.parse.grammar.LanguageManager;
 import kkckkc.syntaxpane.parse.grammar.RootContext;
 import kkckkc.utils.io.FileUtils;
 import kkckkc.utils.plist.PListReaderFacade;
-import kkckkc.utils.plist.PListReader;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,7 +42,7 @@ public class TextmateLanguageProvider implements LanguageManager.Provider {
         }
 	}
 	
-	private void recurse(LanguageManager languageManager, File file, PListReader r) throws IOException {
+	private void recurse(LanguageManager languageManager, File file, PListReaderFacade r) throws IOException {
 		for (File childFile : file.listFiles()) {
 			if (childFile.getName().endsWith(".plist") || childFile.getName().endsWith(".tmLanguage")) {
 				if (file.getName().equals("Syntaxes")) {

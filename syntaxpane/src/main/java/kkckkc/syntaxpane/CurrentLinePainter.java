@@ -41,6 +41,7 @@ public class CurrentLinePainter implements Highlighter.HighlightPainter, CaretLi
             }
 			jEditorPane.getHighlighter().addHighlight(0, 0, linePainter);
 		} catch (BadLocationException ble) {
+            throw new RuntimeException(ble);
 		}
 	}
 	
@@ -84,6 +85,7 @@ public class CurrentLinePainter implements Highlighter.HighlightPainter, CaretLi
 						lastHighlight = currentView;
 					}
 				} catch (BadLocationException ble) {
+                    throw new RuntimeException(ble);
 				}
 			}
 		});

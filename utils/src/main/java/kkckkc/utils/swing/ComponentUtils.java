@@ -10,7 +10,7 @@ public class ComponentUtils {
 			if (p instanceof Window || p instanceof Applet) {
 				return p;
 			} else if (p instanceof JPopupMenu) {
-				return getToplevelAncestor((JComponent) ((JPopupMenu) p).getInvoker());
+				return getToplevelAncestor(((JPopupMenu) p).getInvoker());
 			}
 		}
 		return null;

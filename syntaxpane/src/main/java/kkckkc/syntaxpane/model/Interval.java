@@ -50,13 +50,8 @@ public class Interval implements Comparable<Interval> {
 	}
 	
 	public final boolean equals(Object other) {
-		if (other instanceof Interval) {
-			return 
-				((Interval) other).start == start &&
-				((Interval) other).end == end;
-		}
-		return false;
-	}
+        return other instanceof Interval && ((Interval) other).start == start && ((Interval) other).end == end;
+    }
 	
 	public String toString() {
 		return "[" + start + " - " + end + "]";

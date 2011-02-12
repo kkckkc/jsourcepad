@@ -19,6 +19,7 @@ public class ScriptExecutorTest extends TestCase {
 	public void testSimple() throws IOException {
 		ExecutorService s = Executors.newCachedThreadPool();
 		ScriptExecutor se = new ScriptExecutor("echo 'Hej'", s);
+        se.setTextmateSetup(false);
 		se.execute(new CallbackAdapter() {
             public void onDelay(Execution execution) {
             	fail("Delay not expected");
@@ -35,6 +36,7 @@ public class ScriptExecutorTest extends TestCase {
 		
 		ExecutorService s = Executors.newCachedThreadPool();
 		ScriptExecutor se = new ScriptExecutor("sleep 2; echo 'Hej'", s);
+        se.setTextmateSetup(false);
 		se.execute(new CallbackAdapter() {
             public void onFailure(Execution execution) {
             	fail("Failure not expected");
@@ -53,6 +55,7 @@ public class ScriptExecutorTest extends TestCase {
 		
 		ExecutorService s = Executors.newCachedThreadPool();
 		ScriptExecutor se = new ScriptExecutor("sleep 2; echo 'Hej'", s);
+        se.setTextmateSetup(false);
 		se.execute(new CallbackAdapter() {
             public void onDelay(Execution execution) {
             	execution.cancel();

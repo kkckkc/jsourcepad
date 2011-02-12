@@ -26,7 +26,6 @@ public class EditorTest {
         mainThread.start();
 
 */
-		Application app = Application.get();
         waitForEvents();
 
         initialized = true;

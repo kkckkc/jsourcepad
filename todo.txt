@@ -10,8 +10,6 @@
 [ ] Text > Move Selection
 [ ] Text > Edit Each Line in Selection
 
-[ ] Optimize root scope
-
 [ ] Style navigation dialog on mac
 
 [ ] Debugging for commands

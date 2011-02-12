@@ -2,7 +2,9 @@ package kkckkc.syntaxpane.model;
 
 import kkckkc.syntaxpane.parse.grammar.Context;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 
 
@@ -117,7 +119,7 @@ public class Scope {
 		return b;
 	}
 
-	private final CharSequence safesubstring(CharSequence s, int start, int end) {
+	private CharSequence safesubstring(CharSequence s, int start, int end) {
 		start = Math.min(s.length(), Math.max(start, 0));
 		end = Math.min(s.length(), end);
 		return s.subSequence(start, end);

@@ -99,6 +99,8 @@ public class NewBundleItemDialog implements ActionListener, KeyListener {
             type = BundleStructure.Type.SNIPPET;
         } else if (view.getTypeField().getSelectedItem().equals("Template")) {
             type = BundleStructure.Type.TEMPLATE;
+        } else {
+            throw new RuntimeException("Unsupported type");
         }
 
         File folder = new File(this.location, type.getFolder());

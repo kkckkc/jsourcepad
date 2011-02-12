@@ -14,14 +14,12 @@ public class Network {
             connection.connect();
 
             return connection.getContentType().startsWith("text/html");
-
         } catch (MalformedURLException e) {
             return false;
         } catch (IOException e) {
             return false;
         }
     }
-
 
     public static Pair<String, Integer> getProxy(String url) throws URISyntaxException {
         List<Proxy> proxies = ProxySelector.getDefault().select(new URI(url));

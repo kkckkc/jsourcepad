@@ -110,7 +110,7 @@ public class GitVcsDecorator extends AbstractVcsDecorator {
     class RequestProcessor implements Runnable {
         @Override
         public void run() {
-            File gitRoot = null;
+            File gitRoot;
 
             // Abort if the queue is empty
             synchronized (requestQueue) {

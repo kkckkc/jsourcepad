@@ -27,7 +27,6 @@ public class SymbolList {
 	}
 	
 	public List<Pair<String, Integer>> getSymbols() {
-        long l = System.currentTimeMillis();
 		List<Pair<String, Integer>> symbols = Lists.newArrayList();
 
 		LineManager lm = buffer.getLineManager();
@@ -39,8 +38,6 @@ public class SymbolList {
 			
 			line = lm.getNext(line);
 		}
-
-        // System.out.println(System.currentTimeMillis() - l);
 
 		return symbols;
 	}

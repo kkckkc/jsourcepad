@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
 import javax.annotation.PreDestroy;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 import java.io.*;
 import java.util.List;
 
@@ -164,9 +164,8 @@ public class DocImpl implements Doc, ScopeRoot, BeanFactoryAware {
 
 	@Override
 	public boolean isModified() {
-        if (getActiveBuffer() == null) return false;
-		return getActiveBuffer().isModified();
-	}
+        return getActiveBuffer() != null && getActiveBuffer().isModified();
+    }
 
 	@Override
 	public boolean isBackedByFile() {

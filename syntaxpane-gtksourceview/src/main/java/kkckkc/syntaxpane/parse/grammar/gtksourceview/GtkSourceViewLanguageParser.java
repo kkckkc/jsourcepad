@@ -277,9 +277,8 @@ public class GtkSourceViewLanguageParser {
 	}
 
 	private boolean makeBoolean(String attributeValue) {
-		if (attributeValue == null) return false;
-		return "true".equals(attributeValue);
-	}
+        return attributeValue != null && "true".equals(attributeValue);
+    }
 
 	private Pattern makePattern(GtkSourceViewLanguage language, String str) {
 		if (str == null) return null;

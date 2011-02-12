@@ -13,7 +13,7 @@ public class FileUtils {
 		return b.toString();
 	}
 
-	public static String readFile(String file) throws FileNotFoundException, IOException {
+	public static String readFile(String file) throws IOException {
 		return readFile(new FileInputStream(file));
 	}
 }

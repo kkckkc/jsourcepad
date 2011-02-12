@@ -14,10 +14,10 @@ import kkckkc.syntaxpane.style.ScopeSelector;
 import kkckkc.syntaxpane.style.ScopeSelectorManager;
 import kkckkc.utils.Pair;
 import kkckkc.utils.PerformanceLogger;
-import kkckkc.utils.plist.PListReaderFacade;
 import kkckkc.utils.plist.PListReader;
+import kkckkc.utils.plist.PListReaderFacade;
 
-import javax.swing.KeyStroke;
+import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileFilter;

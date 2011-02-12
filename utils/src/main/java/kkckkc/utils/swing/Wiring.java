@@ -1,10 +1,7 @@
 package kkckkc.utils.swing;
 
-import kkckkc.utils.BeanWrapper;
-
 import java.awt.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.beans.*;
 
 public class Wiring {
 	public static void wire(final Component source, final Component destination, final String property) {
@@ -30,4 +27,45 @@ public class Wiring {
 			wire(source, destination, p);
 		}
 	}
+
+
+    private static class BeanWrapper {
+        private Object target;
+        private BeanInfo beanInfo;
+
+        public BeanWrapper(Object target) {
+            this.target = target;
+            try {
+                this.beanInfo = Introspector.getBeanInfo(target.getClass());
+            } catch (IntrospectionException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        public void set(String name, Object value) {
+            try {
+                for (PropertyDescriptor pd : beanInfo.getPropertyDescriptors()) {
+                    if (pd.getName().equals(name)) {
+                        pd.getWriteMethod().invoke(target, value);
+                        return;
+                    }
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        public Object get(String name) {
+            try {
+                for (PropertyDescriptor pd : beanInfo.getPropertyDescriptors()) {
+                    if (pd.getName().equals(name)) {
+                        return pd.getReadMethod().invoke(target);
+                    }
+                }
+                return null;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 }

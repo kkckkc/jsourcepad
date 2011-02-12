@@ -23,11 +23,16 @@ public class ScriptExecutor {
 	private ExecutorService executorService;
     private File directory;
     private boolean showStderr = true;
+    private boolean textmateSetup = true;
 
     public ScriptExecutor(String script, ExecutorService executorService) {
 		this.script = script;
 		this.executorService = executorService;
 	}
+
+    public void setTextmateSetup(boolean textmateSetup) {
+        this.textmateSetup = textmateSetup;
+    }
 
     public void setDelay(int delay) {
         this.delay = delay;
@@ -132,7 +137,7 @@ public class ScriptExecutor {
         List<String> lines = Lists.newArrayList();
         Iterables.addAll(lines, Splitter.on("\n").split(script));
         String firstLine = lines.get(0);
-        String prefix = ". " + Cygwin.makePathForDirectUsage(Config.getSupportFolder().getCanonicalPath()) + "/lib/bash_init.sh;";
+        String prefix = textmateSetup ? (". " + Cygwin.makePathForDirectUsage(Config.getSupportFolder().getCanonicalPath()) + "/lib/bash_init.sh;") : "";
         String cygwinPrefix = "cd " + Cygwin.makePathForDirectUsage(directory == null ? new File(".").getCanonicalPath() : directory.getPath()) + "; ";
         String cygwinSuffix = "";
         if (firstLine.startsWith("#!")) {

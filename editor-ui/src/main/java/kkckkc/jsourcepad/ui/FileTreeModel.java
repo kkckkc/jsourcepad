@@ -70,8 +70,7 @@ public class FileTreeModel implements TreeModel {
 
     public boolean isLeaf(Object node) {
         Node n = (Node) node;
-        if (n.getFile() == null) return true;
-        return ! n.getFile().isDirectory();
+        return n.getFile() == null || !n.getFile().isDirectory();
     }
 
     public void valueForPathChanged(TreePath path, Object newValue) {}
@@ -198,7 +197,9 @@ public class FileTreeModel implements TreeModel {
             return expandedNodes.get(parent);
 
         File[] children = parent.getFile().listFiles(filter);
-        if (children != null) Arrays.sort(children, COMPARATOR);
+        if (children == null) return new Node[0];
+
+        Arrays.sort(children, COMPARATOR);
 
         final Node[] nodes = new Node[children.length];
         for (int i = 0; i < children.length; i++) {
