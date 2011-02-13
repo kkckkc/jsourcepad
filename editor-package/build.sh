@@ -3,8 +3,8 @@ read buildId
 
 cd ..
 mvn -DbuildId=$buildId -Dmaven.test.skip=true -Pwebview,linux install
-#mvn -DbuildId=$buildId -Dmaven.test.skip=true -Pwebview,linux_64 install
-#mvn -DbuildId=$buildId -Dmaven.test.skip=true -Pwebview,win32 install
+mvn -DbuildId=$buildId -Dmaven.test.skip=true -Pwebview,linux_64 install
+mvn -DbuildId=$buildId -Dmaven.test.skip=true -Pwebview,win32 install
 cd -
 
 OS=`uname`
