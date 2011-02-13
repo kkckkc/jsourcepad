@@ -9,6 +9,7 @@ import org.junit.Before;
 
 import java.awt.*;
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -19,6 +20,17 @@ public class EditorTest {
 
     public static void init() throws InterruptedException {
         if (initialized) return;
+
+        try {
+            EventQueue.invokeAndWait(new Runnable() {
+                @Override
+                public void run() {
+                    Application.init();
+                }
+            });
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
 /*
         Bootstrap b = new Bootstrap();
 
@@ -74,6 +86,4 @@ public class EditorTest {
         wm.closeWindow(w);
     }
 
-
-	
 }

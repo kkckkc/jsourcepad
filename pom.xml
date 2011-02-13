@@ -26,6 +26,7 @@
         <module>os-windows</module>
         <module>editor-dialog</module>
         <module>editor-vcs</module>
+        <module>editor-test</module>
     </modules>
 
 
