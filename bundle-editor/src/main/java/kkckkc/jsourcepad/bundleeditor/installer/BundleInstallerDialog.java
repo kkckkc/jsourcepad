@@ -78,21 +78,29 @@ public class BundleInstallerDialog implements Dialog<BundleInstallerDialogView> 
                                 "textmate", "todo", "xml"));
                     }
 
-                    URL url = new URL("http://github.com/api/v2/xml/repos/show/textmate");
-                    final URLConnection conn = url.openConnection();
-                    conn.connect();
+                    int i = 1;
+                    while (true) {
+                        URL url = new URL("http://github.com/api/v2/xml/repos/show/textmate?page=" + i);
+                        final URLConnection conn = url.openConnection();
+                        conn.connect();
 
-                    Document document = DomUtil.parse(new InputSource(conn.getInputStream()));
-                    for (Element e : DomUtil.getChildren(document.getDocumentElement())) {
-                        Element nameE = DomUtil.getChild(e, "name");
-                        String name = DomUtil.getText(nameE);
+                        boolean itemsFound = false;
+                        Document document = DomUtil.parse(new InputSource(conn.getInputStream()));
+                        for (Element e : DomUtil.getChildren(document.getDocumentElement())) {
+                            itemsFound = true;
+                            Element nameE = DomUtil.getChild(e, "name");
+                            String name = DomUtil.getText(nameE);
 
-                        if (! name.endsWith(".tmbundle")) continue;
+                            if (! name.endsWith(".tmbundle")) continue;
 
-                        bundles.add(new BundleTableModel.Entry(
-                                bundleManager.getBundleByDirName(name) != null ||
-                                    preSelectedBundles.contains(name.substring(0, name.lastIndexOf("."))),
-                                bundleManager.getBundleByDirName(name) != null, name, DomUtil.getChildText(e, "url")));
+                            bundles.add(new BundleTableModel.Entry(
+                                    bundleManager.getBundleByDirName(name) != null ||
+                                        preSelectedBundles.contains(name.substring(0, name.lastIndexOf("."))),
+                                    bundleManager.getBundleByDirName(name) != null, name, DomUtil.getChildText(e, "url")));
+                        }
+
+                        if (! itemsFound) break;
+                        i++;
                     }
 
                     Collections.sort(bundles);
