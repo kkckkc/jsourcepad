@@ -17,16 +17,20 @@ import kkckkc.jsourcepad.util.io.ErrorDialog;
 import kkckkc.jsourcepad.util.messagebus.AbstractMessageBus;
 import kkckkc.jsourcepad.util.messagebus.MessageBus;
 import kkckkc.syntaxpane.parse.grammar.LanguageManager;
-import kkckkc.syntaxpane.style.StyleParser;
-import kkckkc.syntaxpane.style.StyleScheme;
+import kkckkc.syntaxpane.parse.grammar.textmate.ColorUtils;
+import kkckkc.syntaxpane.style.*;
 import kkckkc.utils.io.FileUtils;
 import org.mortbay.jetty.servlet.Context;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -129,7 +133,38 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
 			return cachedStyleScheme;
 		
 		StyleScheme scheme = styleParser.parse(source);
-		cachedStyleScheme = scheme;
+
+        scheme = new DelegatingStyleScheme(scheme) {
+            private boolean inited = false;
+            private Map<ScopeSelector, TextStyle> styles;
+
+            private synchronized void init() {
+                BundleManager bundleManager = getBundleManager();
+                Map<String, Map<ScopeSelector,Object>> preferences = bundleManager.getPreferences();
+                Map<ScopeSelector, Object> foregrounds = preferences.get("foreground");
+                Map<ScopeSelector, Object> backgrounds = preferences.get("background");
+
+                Set<ScopeSelector> keys = new HashSet<ScopeSelector>(foregrounds.keySet());
+                keys.retainAll(backgrounds.keySet());
+
+                styles = super.getStyles();
+                for (ScopeSelector scopeSelector : keys) {
+                    styles.put(scopeSelector, new StyleBean(ColorUtils.makeColor((String) foregrounds.get(scopeSelector)),
+                            ColorUtils.makeColor((String) backgrounds.get(scopeSelector))));
+                }
+
+                this.inited = true;
+            }
+
+            @Override
+            public Map<ScopeSelector, TextStyle> getStyles() {
+                if (! inited) init();
+
+                return styles;
+            }
+        };
+
+        cachedStyleScheme = scheme;
 		return scheme;
 	}
 

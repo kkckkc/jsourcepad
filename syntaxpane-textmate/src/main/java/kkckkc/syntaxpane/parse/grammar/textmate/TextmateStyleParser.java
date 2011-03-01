@@ -85,20 +85,8 @@ public class TextmateStyleParser implements kkckkc.syntaxpane.style.StyleParser 
     }
 		
 	private Color color(Map map, String colorProp) {
-		return makeColor((String) map.get(colorProp));
+		return ColorUtils.makeColor((String) map.get(colorProp));
 	}
 	
-	private Color makeColor(String colorString) {
-		if (colorString == null) return null;
 
-		if (colorString.length() > 7) {
-			Integer i = Integer.decode("#" + colorString.substring(1, 7));
-			Integer i2 = Integer.decode("#" + colorString.substring(7));
-
-			return new Color((i >> 16) & 0xFF, (i >> 8) & 0xFF, i & 0xFF, i2);
-			
-		} else {
-			return Color.decode(colorString.substring(0, 7));
-		}
-    }
 }

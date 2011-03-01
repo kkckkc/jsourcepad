@@ -146,12 +146,51 @@ public class ScopeSelector {
 			
 			return builder.toString();
 		}
-	}
-	
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Rule rule1 = (Rule) o;
+
+            if (negativeRule != null ? !negativeRule.equals(rule1.negativeRule) : rule1.negativeRule != null)
+                return false;
+            if (rule != null ? !rule.equals(rule1.rule) : rule1.rule != null) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = rule != null ? rule.hashCode() : 0;
+            result = 31 * result + (negativeRule != null ? negativeRule.hashCode() : 0);
+            return result;
+        }
+    }
 
 
-	
-	public String toString() {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ScopeSelector that = (ScopeSelector) o;
+
+        if (rule != null ? !rule.equals(that.rule) : that.rule != null) return false;
+        if (rules != null ? !rules.equals(that.rules) : that.rules != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = rules != null ? rules.hashCode() : 0;
+        result = 31 * result + (rule != null ? rule.hashCode() : 0);
+        return result;
+    }
+
+    public String toString() {
 		StringBuilder builder = new StringBuilder();
 		for (Rule r : rules) {
 			builder.append(r.toString()).append(", ");

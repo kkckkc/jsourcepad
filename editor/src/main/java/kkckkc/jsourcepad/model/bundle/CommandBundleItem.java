@@ -533,12 +533,12 @@ public class CommandBundleItem implements BundleItem<Void> {
                 if (selection == null || selection.isEmpty()) {
                     if (virtualSelection != null) {
                         selection = virtualSelection;
+                        activeBuffer.remove(selection);
                     } else {
-                        selection = new Interval(0, activeBuffer.getLength());
+//                        selection = new Interval(0, activeBuffer.getLength());
                     }
                 }
 
-                activeBuffer.remove(selection);
 
                 Snippet snippet = new Snippet(s, null);
                 snippet.insert(window, activeBuffer);

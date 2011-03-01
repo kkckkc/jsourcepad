@@ -81,4 +81,18 @@ public class ColorUtils {
                 (int) (c.getGreen() * a + background.getGreen() * (1 - a)),
                 (int) (c.getBlue() * a + background.getBlue() * (1 - a)));
     }
+
+    public static Color makeColor(String colorString) {
+		if (colorString == null) return null;
+
+		if (colorString.length() > 7) {
+			Integer i = Integer.decode("#" + colorString.substring(1, 7));
+			Integer i2 = Integer.decode("#" + colorString.substring(7));
+
+			return new Color((i >> 16) & 0xFF, (i >> 8) & 0xFF, i & 0xFF, i2);
+
+		} else {
+			return Color.decode(colorString.substring(0, 7));
+		}
+    }
 }

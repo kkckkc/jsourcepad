@@ -112,6 +112,7 @@ public class SourceView extends FoldablePlainView implements ThreadedParserFacad
         TextStyle defaultStyle = editorKit.getSourcePane().getStyleScheme().getTextStyle();
         TextStyle style = scopeSelectorManager.getMatch(scope, editorKit
 				.getSourcePane().getStyleScheme().getStyles());
+
 		if (style == null) {
 			style = editorKit.getSourcePane().getStyleScheme().getTextStyle();
 		}

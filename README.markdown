@@ -1,5 +1,5 @@
-JSourePad
-=========
+JSourcePad
+==========
 
 JSourcePad is an attempt to recreate most of TextMate functionality in a
 cross-platform Java application. It tries to create near native user
