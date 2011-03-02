@@ -129,7 +129,7 @@ public class Parser {
 			
 			MatcherCollectionIterator iterator = new MatcherCollectionIterator(matchers);
 			iterator.setPosition(position);
-			
+
 			while (iterator.hasNext()) {
 				Integer matcherIdx = iterator.next();
 				Matcher matcher = matchers[matcherIdx];
@@ -171,12 +171,12 @@ public class Parser {
 				}
 			}
 		} while (newContextToParse);
-		
+
 		// Make sure all scopes are open
 		for (Scope s : scope.getAncestors()) {
 			s.makeOpenEnded();
 		}
-		
+
 		return scope;
 	}
 
