@@ -13,9 +13,15 @@ public final class NewlineAction extends BaseAction {
     public void performAction(ActionEvent e) {
         Doc doc = Application.get().getWindowManager().getFocusedWindow().getDocList().getActiveDoc();
 
-    	InsertionPoint ip = doc.getActiveBuffer().getInsertionPoint();
-
         Buffer buffer = doc.getActiveBuffer();
+
+    	InsertionPoint ip = buffer.getInsertionPoint();
+
+        if (buffer.getSelection() != null && buffer.getSelection().getLength() > 0) {
+            buffer.replaceText(buffer.getSelection(), "\n", null);
+            buffer.setSelection(Interval.createEmpty(buffer.getInsertionPoint().getPosition() + 1));
+            return;
+        }
 
         boolean specialHandlingForBraces = false;
 
