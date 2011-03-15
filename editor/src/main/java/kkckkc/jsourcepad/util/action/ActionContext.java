@@ -52,6 +52,7 @@ public class ActionContext {
 
     public static void set(JComponent component, ActionContext ac) {
         component.putClientProperty(KEY, ac);
+        ac.setComponent(component);
     }
 
 
