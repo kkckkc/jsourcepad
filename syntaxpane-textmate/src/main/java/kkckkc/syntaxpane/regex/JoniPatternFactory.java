@@ -35,7 +35,8 @@ public class JoniPatternFactory implements PatternFactory {
                 		Syntax.OP2_PLUS_POSSESSIVE_REPEAT |
                 		Syntax.OP2_CCLASS_SET_OP | Syntax.OP2_ESC_CAPITAL_C_BAR_CONTROL |
                 		Syntax.OP2_ESC_CAPITAL_M_BAR_META | Syntax.OP2_ESC_V_VTAB |
-                		Syntax.OP2_ESC_H_XDIGIT ),
+                		Syntax.OP2_ESC_H_XDIGIT |
+                        Syntax.OP2_ESC_CAPITAL_Q_QUOTE ),
                 
                 ( Syntax.GNU_REGEX_BV | 
                 		Syntax.ALLOW_INTERVAL_LOW_ABBREV |
@@ -171,6 +172,7 @@ public class JoniPatternFactory implements PatternFactory {
 
 		@Override
         public String group(int i) {
+            if (start(i) == -1) return "";
 	        return new String(chars, start(i), end(i) - start(i));
         }
 

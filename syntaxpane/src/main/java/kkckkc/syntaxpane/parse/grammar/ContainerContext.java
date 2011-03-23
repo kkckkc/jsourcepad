@@ -103,11 +103,11 @@ public class ContainerContext extends MatchableContext {
 			String p = endPatternExpression;
             if (contentNameContext) {
                 for (Map.Entry<String, String> entry : ((ScopeWithAttributes) scope.getParent()).getAttributes().entrySet()) {
-                    p = StringUtils.replace(p, "\\%{" + entry.getKey() + "}", entry.getValue());
+                    p = StringUtils.replace(p, "\\%{" + entry.getKey() + "}", java.util.regex.Pattern.quote(entry.getValue()));
                 }
             } else if (scope instanceof ScopeWithAttributes && ((ScopeWithAttributes) scope).getAttributes() != null) {
                 for (Map.Entry<String, String> entry : ((ScopeWithAttributes) scope).getAttributes().entrySet()) {
-                    p = StringUtils.replace(p, "\\%{" + entry.getKey() + "}", entry.getValue());
+                    p = StringUtils.replace(p, "\\%{" + entry.getKey() + "}", java.util.regex.Pattern.quote(entry.getValue()));
                 }
             }
 			
@@ -115,8 +115,8 @@ public class ContainerContext extends MatchableContext {
 				previousEndPattern = p;
 				endPattern = factory.create(p);
 			}
-		}		
-		
+		}
+
 		return endPattern == null ? factory.create("$^").matcher(segment) : endPattern.matcher(segment);
 	}
 
