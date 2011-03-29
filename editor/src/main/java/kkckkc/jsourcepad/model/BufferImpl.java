@@ -507,18 +507,34 @@ public class BufferImpl implements Buffer {
 		
         @Override
 		public void removeUpdate(DocumentEvent e) {
+            if (e.getOffset() < 80) updateToFirstLine();
 			modify();
 		}
 		
         @Override
 		public void insertUpdate(DocumentEvent e) {
+            if (e.getOffset() < 80) updateToFirstLine();
 			modify();
 		}
 		
         @Override
 		public void changedUpdate(DocumentEvent e) {
+            if (e.getOffset() < 80) updateToFirstLine();
 		}
-		
+
+        private void updateToFirstLine() {
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    String txt = getText(Interval.createWithLength(0, Math.min(getLength(), 80))) + "\n";
+                    Language language = Application.get().getLanguageManager().getLanguage(txt, doc.getFile());
+                    if (language != null && language != document.getLanguage()) {
+                        setLanguage(language);
+                    }
+                }
+            });
+        }
+
 		private void modify() {
 			if (disabled) return;
 

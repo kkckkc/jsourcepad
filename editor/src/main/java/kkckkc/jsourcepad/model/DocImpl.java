@@ -7,6 +7,7 @@ import kkckkc.jsourcepad.model.bundle.Bundle;
 import kkckkc.jsourcepad.model.bundle.BundleListener;
 import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
 import kkckkc.jsourcepad.util.messagebus.Subscription;
+import kkckkc.syntaxpane.model.Interval;
 import kkckkc.syntaxpane.model.LineManager;
 import kkckkc.syntaxpane.model.SourceDocument;
 import kkckkc.syntaxpane.parse.grammar.Language;
@@ -209,6 +210,9 @@ public class DocImpl implements Doc, ScopeRoot, BeanFactoryAware {
         p.refresh(file);
         p.refresh(file.getParentFile());
 		window.topic(Doc.StateListener.class).post().modified(this, true, false);
+
+        Language language = languageManager.getLanguage(buffer.getText(Interval.createWithLength(0, Math.min(buffer.getLength(), 80))), file);
+        this.buffer.setLanguage(language);
 	}
 
 	@Override
