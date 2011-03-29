@@ -16,6 +16,7 @@ public class ContainerContext extends MatchableContext {
 	
 	protected boolean styleInside;
 	protected boolean endAtLineEnd;
+    protected boolean applyEndPatternLast;
 
 	protected String previousEndPattern = "";
 	private PatternFactory factory;
@@ -35,7 +36,15 @@ public class ContainerContext extends MatchableContext {
 		this.beginPattern = factory.create("$^");
 	}
 
-	public void setBegin(Pattern begin) {
+    public boolean isApplyEndPatternLast() {
+        return applyEndPatternLast;
+    }
+
+    public void setApplyEndPatternLast(boolean applyEndPatternLast) {
+        this.applyEndPatternLast = applyEndPatternLast;
+    }
+
+    public void setBegin(Pattern begin) {
 		this.beginPattern = begin;
 	}
 	

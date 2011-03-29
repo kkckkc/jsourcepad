@@ -180,7 +180,8 @@ public class Parser {
 		return scope;
 	}
 
-    private int buildMatchers(Scope scope, Line line, CharSequence seq, MatchableContext def, MatchableContext[] contexts, Matcher[] matchers) {
+    /*
+     private int buildMatchers(Scope scope, Line line, CharSequence seq, MatchableContext def, MatchableContext[] contexts, Matcher[] matchers) {
         int rootMatcherIdx = 0;
         for (MatchableContext context : contexts) {
             if (context == null) continue;
@@ -202,7 +203,47 @@ public class Parser {
             }
         }
         return rootMatcherIdx;
+    }*/
+
+    private int buildMatchers(Scope scope, Line line, CharSequence seq, MatchableContext def, MatchableContext[] contexts, Matcher[] matchers) {
+        int rootMatcherIdx = 0;
+        for (MatchableContext context : contexts) {
+            if (context == null) continue;
+            if (context.isExtendParent()) {
+                matchers[rootMatcherIdx++] = context.getMatcher(seq);
+            }
+        }
+
+        int incr = 0;
+        if (def instanceof ContainerContext) {
+            if (! ((ContainerContext) def).isApplyEndPatternLast()) {
+                matchers[rootMatcherIdx] = ((ContainerContext) def).getEndMatcher(seq, scope);
+                incr = 1;
+            }
+        } else {
+            matchers[rootMatcherIdx] = null;
+            incr = 1;
+        }
+
+        for (int i = 0; i < contexts.length; i++) {
+            if (contexts[i] == null) continue;
+            if (contexts[i].isExtendParent()) continue;
+
+            if (! (contexts[i].isFirstLineOnly() && line.getIdx() > 0)) {
+                matchers[i + incr] = contexts[i].getMatcher(seq);
+            }
+        }
+
+        if (def instanceof ContainerContext) {
+            if (((ContainerContext) def).isApplyEndPatternLast()) {
+                rootMatcherIdx = contexts.length;
+                matchers[rootMatcherIdx] = ((ContainerContext) def).getEndMatcher(seq, scope);
+            }
+        }
+
+        return rootMatcherIdx;
     }
+
 
     private MatchableContext[] findMatchableContexts(MatchableContext def) {
         int i = 0;

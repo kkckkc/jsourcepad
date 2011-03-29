@@ -161,6 +161,12 @@ public class TextmateLanguageParser {
 		context.setId((String) entry.get("name"));
 		context.setName((String) entry.get("name"));
 
+        if (entry.containsKey("applyEndPatternLast")) {
+            context.setApplyEndPatternLast(true);
+        } else {
+            context.setApplyEndPatternLast(false);
+        }
+
 		if (entry.containsKey("disabled")) {
             context.setDisabled(true);
         } else {
