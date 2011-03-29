@@ -195,20 +195,12 @@
 
         <exec command="chmod +x ${dir.temp}/linux-app/jsourcepad.sh" />
 
-        <tar destfile="${dir.temp}/linux-app/jsourcepad.tar.gz" compression="gzip">
-            <tarfileset dir="${dir.temp}/linux-app" prefix="jsourcepad">
-                <exclude name="**/jsourcepad.bat" />
-                <exclude name="**/jsourcepad.sh" />
-                <exclude name="**/jsourcepad.l4j.ini" />
-            </tarfileset>
-            <tarfileset dir="${dir.temp}/linux-app" prefix="jsourcepad" filemode="755">
-                <include name="**/jsourcepad.sh" />
-            </tarfileset>
-            <tarfileset dir="${dir.shared}/Shared" prefix="jsourcepad/Shared">
-                <exclude name="**/LaTeXUtils.rb" />
-                <exclude name="**/.svn" />
-            </tarfileset>
-        </tar>
+        <echo message="tar -zcvf temp/linux-app/jsourcepad.tar.gz shared temp/linux-app --exclude='temp/linux-app/jsourcepad.bat' --exclude='temp/linux-app/jsourcepad.l4j.ini' --exclude='*/.svn' --exclude='*/LaTeXUtils.rb' --show-transformed --transform='s,^shared,jsourcepad,' --transform='s,^temp/linux-app,jsourcepad,'"
+                file="target/package.sh" />
+
+        <exec
+            dir="target"
+            command="bash package.sh" />
 
         <copy file="${dir.temp}/linux-app/jsourcepad.tar.gz" tofile="${dir.apps}/jsourcepad-${application.name}-${buildId}.tar.gz" />
     </target>
