@@ -23,7 +23,7 @@ public class JoniPatternFactory implements PatternFactory {
 	private static final Syntax SYNTAX = new Syntax(
 	        ((  Syntax.GNU_REGEX_OP | Syntax.OP_QMARK_NON_GREEDY |
         		Syntax.OP_ESC_OCTAL3 | Syntax.OP_ESC_X_HEX2 |
-        		Syntax.OP_ESC_C_CONTROL )
+        		Syntax.OP_ESC_C_CONTROL | Syntax.OP_ESC_CONTROL_CHARS )
                 & ~Syntax.OP_ESC_LTGT_WORD_BEGIN_END ),
                 
                 ( Syntax.OP2_QMARK_GROUP_EFFECT |
