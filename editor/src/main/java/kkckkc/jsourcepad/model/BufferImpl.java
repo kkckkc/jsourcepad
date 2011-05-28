@@ -13,6 +13,7 @@ import kkckkc.syntaxpane.regex.JoniPatternFactory;
 import kkckkc.syntaxpane.style.Style;
 import kkckkc.utils.CharSequenceUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -206,7 +207,7 @@ public class BufferImpl implements Buffer {
 	}
 
 	@Override
-    public void insertText(int position, String content, Anchor[] anchors) {
+    public void insertText(int position, String content, @Nullable Anchor[] anchors) {
 		adjustAnchorList(position, anchors);
 		try {
 	        document.insertString(Math.max(position, 0), content, null);
@@ -404,9 +405,7 @@ public class BufferImpl implements Buffer {
     	String increase = (String) bundleManager.getPreference(PrefKeys.INDENT_INCREASE, current.getScope());
     	String indentNextLine = (String) bundleManager.getPreference(PrefKeys.INDENT_NEXT_LINE, current.getScope());
     	String unIndentedLinePattern = (String) bundleManager.getPreference(PrefKeys.INDENT_IGNORE, current.getScope());
-    	
-    	int position = caret.getDot();
-    	
+
     	if (matches(unIndentedLinePattern, prevLine)) {
     		// Do nothing
     	} else if (matches(increase, prevLine)) {
@@ -421,8 +420,7 @@ public class BufferImpl implements Buffer {
     				String s = doc.getTabManager().getFirstIndentionString(prev.getCharSequence(false));
     				Interval interval = Interval.createWithLength(prev.getStart(), s.length());
 	                doc.getActiveBuffer().remove(interval);
-	                position -= s.length();
-    				
+
     	    		indentCount--;
     			}
     		}
@@ -445,7 +443,6 @@ public class BufferImpl implements Buffer {
 		while ((s = doc.getTabManager().getFirstIndentionString(current.getCharSequence(false))) != null) {
 			Interval interval = Interval.createWithLength(current.getStart(), s.length());
             doc.getActiveBuffer().remove(interval);
-            position -= s.length();
 		}
 
     	String indent = doc.getTabManager().createIndent(indentCount);
@@ -528,7 +525,7 @@ public class BufferImpl implements Buffer {
                 public void run() {
                     String txt = getText(Interval.createWithLength(0, Math.min(getLength(), 80))) + "\n";
                     Language language = Application.get().getLanguageManager().getLanguage(txt, doc.getFile());
-                    if (language != null && language != document.getLanguage()) {
+                    if (language != null && language != document.getLanguage() && "default".equals(document.getLanguage().getLanguageId())) {
                         setLanguage(language);
                     }
                 }

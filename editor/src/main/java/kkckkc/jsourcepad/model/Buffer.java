@@ -7,6 +7,7 @@ import kkckkc.syntaxpane.model.TextInterval;
 import kkckkc.syntaxpane.parse.grammar.Language;
 import kkckkc.syntaxpane.style.Style;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -63,7 +64,7 @@ public interface Buffer {
 
 	// Text manipulation
 	public String getText(Interval interval);
-	public void insertText(int position, String content, Anchor[] anchors);
+	public void insertText(int position, String content, @Nullable Anchor[] anchors);
 	public void replaceText(Interval interval, String content, Anchor[] anchors);
 	
 	public void remove(Interval interval);
