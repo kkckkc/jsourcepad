@@ -5,7 +5,6 @@ import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.settings.WindowSettings;
 import kkckkc.jsourcepad.ui.statusbar.*;
 import kkckkc.jsourcepad.util.Null;
-import kkckkc.jsourcepad.util.ui.FileTransferHandlerHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
@@ -17,7 +16,6 @@ import java.awt.event.AWTEventListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
-import java.io.File;
 
 public class WindowViewImpl implements WindowView {
 
@@ -38,22 +36,6 @@ public class WindowViewImpl implements WindowView {
 	@PostConstruct
 	public void init() {
 		frame.setSize(900, 650);
-
-        final FileTransferHandlerHelper fileTransferHandlerHelper = new FileTransferHandlerHelper();
-        frame.setTransferHandler(new TransferHandler() {
-            @Override
-            public boolean canImport(TransferSupport support) {
-                return fileTransferHandlerHelper.containsFiles(support.getDataFlavors());
-            }
-
-            @Override
-            public boolean importData(TransferSupport support) {
-                for (File f : fileTransferHandlerHelper.getFiles(support.getTransferable())) {
-                    window.getDocList().open(f);
-                }
-                return true;
-            }
-        });
 
         splitpane = createSplitPane();
 

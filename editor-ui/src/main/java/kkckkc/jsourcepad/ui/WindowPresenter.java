@@ -16,6 +16,7 @@ import kkckkc.jsourcepad.util.action.CompoundActionGroup;
 import kkckkc.jsourcepad.util.action.MenuFactory;
 import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
 import kkckkc.jsourcepad.util.messagebus.Subscription;
+import kkckkc.jsourcepad.util.ui.FileTransferHandlerHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
@@ -25,6 +26,7 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
+import java.io.File;
 import java.util.Arrays;
 
 
@@ -49,6 +51,22 @@ public class WindowPresenter implements Presenter<WindowView>, DocList.Listener 
 	@PostConstruct
     public void init() throws Exception {
 		frame = window.getContainer();
+
+        final FileTransferHandlerHelper fileTransferHandlerHelper = new FileTransferHandlerHelper();
+        frame.setTransferHandler(new TransferHandler() {
+            @Override
+            public boolean canImport(TransferSupport support) {
+                return fileTransferHandlerHelper.containsFiles(support.getDataFlavors());
+            }
+
+            @Override
+            public boolean importData(TransferSupport support) {
+                for (File f : fileTransferHandlerHelper.getFiles(support.getTransferable())) {
+                    window.getDocList().open(f);
+                }
+                return true;
+            }
+        });
 
         Toolkit toolkit = Toolkit.getDefaultToolkit();
         
