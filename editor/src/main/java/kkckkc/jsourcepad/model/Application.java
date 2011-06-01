@@ -24,7 +24,6 @@ import org.mortbay.jetty.servlet.Context;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
-import java.awt.*;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -143,6 +142,11 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
                 Map<String, Map<ScopeSelector,Object>> preferences = bundleManager.getPreferences();
                 Map<ScopeSelector, Object> foregrounds = preferences.get("foreground");
                 Map<ScopeSelector, Object> backgrounds = preferences.get("background");
+
+                if (foregrounds == null || backgrounds == null) {
+                    this.inited = true;
+                    return;
+                }
 
                 Set<ScopeSelector> keys = new HashSet<ScopeSelector>(foregrounds.keySet());
                 keys.retainAll(backgrounds.keySet());
