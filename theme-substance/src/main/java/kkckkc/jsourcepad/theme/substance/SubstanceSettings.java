@@ -7,6 +7,7 @@ public class SubstanceSettings implements SettingsManager.Setting {
     private String skin;
     private int fontSizeAdjustment;
     private boolean keepMenuSize;
+    private boolean decorateWindowControls;
 
     public String getSkin() {
         return skin;
@@ -38,6 +39,15 @@ public class SubstanceSettings implements SettingsManager.Setting {
         ss.setSkin(null);
         ss.setKeepMenuSize(true);
         ss.setFontSizeAdjustment(0);
+        ss.setDecorateWindowControls(false);
         return ss;
+    }
+
+    public boolean isDecorateWindowControls() {
+        return decorateWindowControls;
+    }
+
+    public void setDecorateWindowControls(boolean decorateWindowControls) {
+        this.decorateWindowControls = decorateWindowControls;
     }
 }

@@ -19,11 +19,12 @@ public class SubstanceSettingsPanel extends JPanel implements SettingsPanel, Set
     private JComboBox skinList;
     private JSlider fontSizeSlider;
     private JCheckBox keepMenuFontSize;
+    private JCheckBox decorateWindowControls;
 
     public SubstanceSettingsPanel() {
         setOpaque(false);
 
-        setLayout(new MigLayout("insets panel,fillx", "[right]r[grow]", "[]u[]r[]r"));
+        setLayout(new MigLayout("insets panel,fillx", "[right]r[grow]", "[]u[]r[]r[]r"));
 
         skinList = new JComboBox(new Vector<SkinInfo>(
                 SubstanceLookAndFeel.getAllSkins().values()));
@@ -46,6 +47,7 @@ public class SubstanceSettingsPanel extends JPanel implements SettingsPanel, Set
         fontSizeSlider.setPaintLabels(true);
         fontSizeSlider.setPaintTicks(true);
         keepMenuFontSize = new JCheckBox();
+        decorateWindowControls = new JCheckBox();
 
         add(new JLabel("Skins:"), "");
         add(skinList, "growx,wrap");
@@ -55,6 +57,9 @@ public class SubstanceSettingsPanel extends JPanel implements SettingsPanel, Set
 
         add(new JLabel("Keep menu font size:"));
         add(keepMenuFontSize, "growx,wrap");
+
+        add(new JLabel("Decorate window borders:"));
+        add(decorateWindowControls, "growx,wrap");
     }
 
     @Override
@@ -86,6 +91,7 @@ public class SubstanceSettingsPanel extends JPanel implements SettingsPanel, Set
         final SubstanceSettings ss = Application.get().getSettingsManager().get(SubstanceSettings.class);
         fontSizeSlider.setValue(ss.getFontSizeAdjustment());
         keepMenuFontSize.setSelected(ss.isKeepMenuSize());
+        decorateWindowControls.setSelected(ss.isDecorateWindowControls());
 
         return true;
     }
@@ -96,6 +102,7 @@ public class SubstanceSettingsPanel extends JPanel implements SettingsPanel, Set
         ss.setSkin(((SkinInfo) skinList.getSelectedItem()).getClassName());
         ss.setFontSizeAdjustment(fontSizeSlider.getValue());
         ss.setKeepMenuSize(keepMenuFontSize.isSelected());
+        ss.setDecorateWindowControls(decorateWindowControls.isSelected());
         Application.get().getSettingsManager().update(ss);
 
         SwingUtilities.invokeLater(new Runnable() {

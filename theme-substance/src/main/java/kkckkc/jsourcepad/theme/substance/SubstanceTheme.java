@@ -48,8 +48,9 @@ public class SubstanceTheme implements Theme {
 
     @Override
     public void activate() {
-        JFrame.setDefaultLookAndFeelDecorated(true);
-        JDialog.setDefaultLookAndFeelDecorated(true);
+        final SubstanceSettings ss = Application.get().getSettingsManager().get(SubstanceSettings.class);
+        JFrame.setDefaultLookAndFeelDecorated(ss.isDecorateWindowControls());
+        JDialog.setDefaultLookAndFeelDecorated(ss.isDecorateWindowControls());
     }
 
     @Override
