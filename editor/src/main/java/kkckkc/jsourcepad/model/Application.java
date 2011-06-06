@@ -149,12 +149,19 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
                 }
 
                 Set<ScopeSelector> keys = new HashSet<ScopeSelector>(foregrounds.keySet());
-                keys.retainAll(backgrounds.keySet());
+                keys.addAll(backgrounds.keySet());
+
+                Style defaultStyle = super.getTextStyle();
 
                 styles = super.getStyles();
                 for (ScopeSelector scopeSelector : keys) {
-                    styles.put(scopeSelector, new StyleBean(ColorUtils.makeColor((String) foregrounds.get(scopeSelector)),
-                            ColorUtils.makeColor((String) backgrounds.get(scopeSelector))));
+                    String foreground = (String) foregrounds.get(scopeSelector);
+                    String background = (String) backgrounds.get(scopeSelector);
+
+                    styles.put(scopeSelector,
+                            new StyleBean(
+                                    foreground == null ? defaultStyle.getColor() : ColorUtils.makeColor(foreground),
+                                    background == null ? defaultStyle.getBackground() : ColorUtils.makeColor(background)));
                 }
 
                 this.inited = true;
