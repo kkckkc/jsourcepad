@@ -104,6 +104,7 @@ public class CompletionManager implements ChangeListener {
 
     private String getPrefix() {
         TextInterval interval = buffer.getCurrentWord();
+        if (interval == null) return "";
         return buffer.getText(new Interval(interval.getStart(),
                 Math.min(buffer.getInsertionPoint().getPosition(), interval.getEnd())));
     }
@@ -126,6 +127,8 @@ public class CompletionManager implements ChangeListener {
 
         Scope scope = ip.getScope();
         String word = getPrefix();
+
+        if ("".equals(word)) return;
 
         completeStaticCompletions(scope, word);
         completeUsingCommand(scope);

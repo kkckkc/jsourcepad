@@ -22,6 +22,7 @@ Features
 
 Bugfixes
  - NPE whith new tabs created by bundles
+ - NPE with completion after space character
  - Lots of bugfixes to make sure the subversion bundle works almost completely
 
 
