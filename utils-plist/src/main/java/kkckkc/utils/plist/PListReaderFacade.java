@@ -12,11 +12,11 @@ public class PListReaderFacade implements PListReader {
 		byte[] bytes = FileUtils.readBytes(file);
 
 		if (bytes[0] == (byte) 'b' && bytes[1] == (byte) 'p') {
-			return new NIOBinaryPListReader().read(bytes);
+			return new BinaryPListReader().read(bytes);
 		} else if (bytes[0] == (byte) '<' && bytes[1] == (byte) '?') {
-			return new NIOXMLPListReader().read(bytes);
+			return new XMLPListReader().read(bytes);
 		} else {
-			return new NIOLegacyPListReader().read(bytes);
+			return new LegacyPListReader().read(bytes);
 		}
 	}
 

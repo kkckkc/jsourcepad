@@ -47,7 +47,7 @@ public class DialogServer implements BeanFactoryAware {
                     writer.append("Dialog " + dialogName + " not found");
 
                     resp.addHeader("X-ResponseCode", "1");
-                    resp.setStatus(200);
+                    resp.setStatus(HttpServletResponse.SC_OK);
 
                     writer.close();
 
@@ -75,7 +75,7 @@ public class DialogServer implements BeanFactoryAware {
                     );
 
                     resp.addHeader("X-ResponseCode", Integer.toString(returnCode));
-                    resp.setStatus(200);
+                    resp.setStatus(HttpServletResponse.SC_OK);
 
                     writer.close();
                 } catch (IOException e) {

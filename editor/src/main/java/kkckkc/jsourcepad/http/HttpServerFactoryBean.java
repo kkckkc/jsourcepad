@@ -14,18 +14,6 @@ public class HttpServerFactoryBean implements FactoryBean<Context> {
         server.start();
 
         return root;
-/*
-		InetSocketAddress addr = new InetSocketAddress(InetAddress.getByName(Config.getLocalhost()), Config.getHttpPort());
-
-        System.out.println("addr = " + addr);
-
-		HttpServer server = HttpServer.create(addr, 0);
-		server.setExecutor(Executors.newCachedThreadPool());
-		server.start();
-
-        System.out.println("HttpServerFactoryBean.getObject");
-
-		return server;*/
     }
 
 	@Override

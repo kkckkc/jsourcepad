@@ -48,18 +48,18 @@ public class TopicImpl<T> implements Topic<T, Pair<Method, Object[]>> {
 
 	@Override
 	public void post(final Pair<Method, Object[]> message) {
-		if (listeners != null) {
-			for (final Pair<DispatchStrategy, T> p : listeners) {
-				p.getFirst().execute(new Runnable() {
-					public void run() {
-						try {
-							message.getFirst().invoke(p.getSecond(), message.getSecond());
-						} catch (Exception e) {
-							throw new RuntimeException(e);
-						}
-					}
-				});
-			}
-		}
+		if (listeners == null) return;
+
+        for (final Pair<DispatchStrategy, T> p : listeners) {
+            p.getFirst().execute(new Runnable() {
+                public void run() {
+                    try {
+                        message.getFirst().invoke(p.getSecond(), message.getSecond());
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+        }
 	}
 }

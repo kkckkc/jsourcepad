@@ -6,7 +6,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import kkckkc.jsourcepad.dialog.Dialog;
 import kkckkc.jsourcepad.model.Window;
-import kkckkc.utils.plist.NIOXMLPListReader;
+import kkckkc.utils.plist.XMLPListReader;
 import kkckkc.utils.plist.XMLPListWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,7 +64,7 @@ public class TmDialog implements Dialog, BeanFactoryAware {
                     final TmDialogDelegate delegate = asynchronousWindows.get(token);
                     if (delegate == null) return ERROR_NOT_FOUND;
 
-                    plist = (Map) new NIOXMLPListReader().read(stdin.getBytes("utf-8"));
+                    plist = (Map) new XMLPListReader().read(stdin.getBytes("utf-8"));
                     delegateLoad(plist, false, delegate);
                     return 0;
                 }
@@ -98,7 +98,7 @@ public class TmDialog implements Dialog, BeanFactoryAware {
                 }
 
                 if (arg.endsWith("p")) {
-                    plist = (Map) new NIOXMLPListReader().read(args[++i].getBytes("utf-8"));
+                    plist = (Map) new XMLPListReader().read(args[++i].getBytes("utf-8"));
                 }
             } else {
                 nib = arg;
@@ -106,7 +106,7 @@ public class TmDialog implements Dialog, BeanFactoryAware {
         }
 
         if (plist == null) {
-            plist = (Map) new NIOXMLPListReader().read(stdin.getBytes("utf-8"));
+            plist = (Map) new XMLPListReader().read(stdin.getBytes("utf-8"));
         }
 
         if (! nib.startsWith("/")) {

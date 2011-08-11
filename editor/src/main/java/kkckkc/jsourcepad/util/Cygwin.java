@@ -4,6 +4,7 @@ import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.settings.ScriptExecutionSettings;
 import kkckkc.utils.Os;
 
+// TODO: Rename to something like ScriptingUtils and implement by strategy pattern
 public class Cygwin {
     public static String makePathForDirectUsage(String path) {
         if (! Os.isWindows()) return path;

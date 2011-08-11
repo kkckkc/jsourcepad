@@ -5,7 +5,6 @@ import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.util.Cygwin;
 import kkckkc.jsourcepad.util.command.Command;
-import kkckkc.utils.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -53,8 +52,11 @@ public class OpenCommand implements Command {
             if (file == null) {
                 Doc doc = window.getDocList().create();
                 try {
+                    int idx = content.indexOf("\n");
+                    String firstLine = idx == -1 ? content : content.substring(0, idx);
+
                     doc.getActiveBuffer().setText(
-                            Application.get().getLanguageManager().getLanguage(StringUtils.beforeFirst(content, "\n"), new File("")),
+                            Application.get().getLanguageManager().getLanguage(firstLine, new File("")),
                             new BufferedReader(new StringReader(content)));
                 } catch (IOException e) {
                     throw new RuntimeException(e);

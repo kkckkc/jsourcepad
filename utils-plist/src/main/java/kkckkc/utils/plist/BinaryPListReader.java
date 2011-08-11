@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-public class NIOBinaryPListReader {
-    private static Logger logger = Logger.getLogger(NIOBinaryPListReader.class.toString());
+public class BinaryPListReader {
+    private static Logger logger = Logger.getLogger(BinaryPListReader.class.toString());
 
 	private List<Object> objects;
 

@@ -14,7 +14,7 @@ public class FileUtils {
     /**
      * Creates a temporary file that is automatically deleted on exit
      */
-	public static File createDeleteOnExitTempFile(String prefix, String suffix) throws IOException {
+	public static @NotNull File createDeleteOnExitTempFile(@NotNull String prefix, @NotNull String suffix) throws IOException {
 		File tempFile = File.createTempFile(prefix, suffix);
 		tempFile.deleteOnExit();
 		return tempFile;
@@ -40,7 +40,7 @@ public class FileUtils {
     /**
      * Removes the extension from a filename, i.e. the last dot and everything after it
      */
-    public static String getBaseName(@NotNull File file) {
+    public static @NotNull String getBaseName(@NotNull File file) {
         String fileName = file.getName();
         if (fileName.indexOf('.') < 0) return fileName;
         return fileName.substring(0, fileName.lastIndexOf('.'));

@@ -1,18 +1,16 @@
 package kkckkc.utils.plist;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 
-
-public class NIOLegacyPListReader {
+public class LegacyPListReader {
     private boolean textMateFormatting;
 
-    public NIOLegacyPListReader() {
+    public LegacyPListReader() {
         this(false);
     }
     
-    public NIOLegacyPListReader(boolean textMateFormatting) {
+    public LegacyPListReader(boolean textMateFormatting) {
         this.textMateFormatting = textMateFormatting;
     }
     

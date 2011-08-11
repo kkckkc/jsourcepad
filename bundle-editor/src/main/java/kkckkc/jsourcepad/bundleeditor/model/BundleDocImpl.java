@@ -7,9 +7,9 @@ import kkckkc.jsourcepad.model.*;
 import kkckkc.jsourcepad.model.bundle.Bundle;
 import kkckkc.jsourcepad.model.bundle.BundleStructure;
 import kkckkc.syntaxpane.parse.grammar.LanguageManager;
-import kkckkc.utils.plist.PListReaderFacade;
-import kkckkc.utils.plist.NIOLegacyPListReader;
+import kkckkc.utils.plist.LegacyPListReader;
 import kkckkc.utils.plist.PListFormatter;
+import kkckkc.utils.plist.PListReaderFacade;
 import kkckkc.utils.plist.XMLPListWriter;
 
 import java.io.BufferedReader;
@@ -142,7 +142,7 @@ public class BundleDocImpl extends DocImpl {
     }
 
     private void savePreferences() throws IOException {
-        plist.put("settings", new NIOLegacyPListReader(true).read(this.buffer.getCompleteDocument().getText().getBytes("utf-8")));
+        plist.put("settings", new LegacyPListReader(true).read(this.buffer.getCompleteDocument().getText().getBytes("utf-8")));
     }
 
     private void loadCommand() throws IOException {
@@ -175,7 +175,7 @@ public class BundleDocImpl extends DocImpl {
     }
 
     private void saveMacro() throws IOException {
-        plist.put("commands", new NIOLegacyPListReader(true).read(this.buffer.getCompleteDocument().getText().getBytes("utf-8")));
+        plist.put("commands", new LegacyPListReader(true).read(this.buffer.getCompleteDocument().getText().getBytes("utf-8")));
     }
 
     private void loadSyntax() throws IOException {
@@ -189,7 +189,7 @@ public class BundleDocImpl extends DocImpl {
     }
 
     private void saveSyntax() throws IOException {
-        plist = (Map) new NIOLegacyPListReader(true).read(this.buffer.getCompleteDocument().getText().getBytes("utf-8"));
+        plist = (Map) new LegacyPListReader(true).read(this.buffer.getCompleteDocument().getText().getBytes("utf-8"));
     }
 
     private void loadDefault() throws IOException {
@@ -200,7 +200,7 @@ public class BundleDocImpl extends DocImpl {
     }
 
     private void saveDefault() throws IOException {
-        plist = (Map) new NIOLegacyPListReader(true).read(this.buffer.getCompleteDocument().getText().getBytes("utf-8"));
+        plist = (Map) new LegacyPListReader(true).read(this.buffer.getCompleteDocument().getText().getBytes("utf-8"));
     }
 
 

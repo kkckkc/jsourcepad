@@ -6,7 +6,6 @@ import kkckkc.syntaxpane.parse.grammar.SubPatternContext.Where;
 import kkckkc.syntaxpane.regex.Matcher;
 import kkckkc.syntaxpane.regex.Pattern;
 import kkckkc.syntaxpane.regex.PatternFactory;
-import kkckkc.utils.StringUtils;
 
 import java.util.Map;
 
@@ -112,11 +111,11 @@ public class ContainerContext extends MatchableContext {
 			String p = endPatternExpression;
             if (contentNameContext) {
                 for (Map.Entry<String, String> entry : ((ScopeWithAttributes) scope.getParent()).getAttributes().entrySet()) {
-                    p = StringUtils.replace(p, "\\%{" + entry.getKey() + "}", java.util.regex.Pattern.quote(entry.getValue()));
+                    p = p.replace("\\%{" + entry.getKey() + "}", java.util.regex.Pattern.quote(entry.getValue()));
                 }
             } else if (scope instanceof ScopeWithAttributes && ((ScopeWithAttributes) scope).getAttributes() != null) {
                 for (Map.Entry<String, String> entry : ((ScopeWithAttributes) scope).getAttributes().entrySet()) {
-                    p = StringUtils.replace(p, "\\%{" + entry.getKey() + "}", java.util.regex.Pattern.quote(entry.getValue()));
+                    p = p.replace("\\%{" + entry.getKey() + "}", java.util.regex.Pattern.quote(entry.getValue()));
                 }
             }
 			

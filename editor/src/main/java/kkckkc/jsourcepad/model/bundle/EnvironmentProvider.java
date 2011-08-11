@@ -15,6 +15,7 @@ import kkckkc.jsourcepad.util.action.ActionManager;
 import kkckkc.jsourcepad.util.io.SystemEnvironmentHelper;
 import kkckkc.syntaxpane.model.Interval;
 import kkckkc.utils.Os;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.Collections;
@@ -31,7 +32,7 @@ public class EnvironmentProvider {
     };
     private static BundleItemSupplier lastBundleItemSupplier;
 
-    public static Map<String, String> getEnvironment(Window window, BundleItemSupplier bundleItemSupplier) {
+    public static Map<String, String> getEnvironment(Window window, @Nullable BundleItemSupplier bundleItemSupplier) {
 		Map<String, String> environment = new HashMap<String, String>(getStaticEnvironment());
 		Doc activeDoc = window.getDocList().getActiveDoc();
 

@@ -1,20 +1,21 @@
 package kkckkc.jsourcepad.util;
 
 import com.google.common.collect.Lists;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.StringTokenizer;
 
 public class TextUtils {
 
-    public static String justifyLine(String s, int width) {
+    public static @NotNull String justifyLine(@NotNull String s, int targetWidth) {
 
         // Remove double spacings
         s = s.replaceAll(" +", " ");
 
         int len = s.length();
 
-        if (len >= width) return s;
+        if (len >= targetWidth) return s;
 
         int spaceCount = 0;
         for (int i = 0; i < len; i++) {
@@ -23,7 +24,7 @@ public class TextUtils {
 
         if (spaceCount == 0) return s;
 
-        int newSpaceCount = spaceCount + (width - len);
+        int newSpaceCount = spaceCount + (targetWidth - len);
 
         int spaceFactor = newSpaceCount / spaceCount;
         int extraSpaceCount = newSpaceCount % spaceCount;
@@ -47,7 +48,7 @@ public class TextUtils {
         return builder.toString();
     }
 
-    public static String[] wrap(String s, int wrapColumn) {
+    public static @NotNull String[] wrap(@NotNull String s, int wrapColumn) {
         List<String> dest = Lists.newArrayList();
 
         StringBuilder currentLine = new StringBuilder(wrapColumn);

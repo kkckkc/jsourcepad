@@ -16,7 +16,10 @@
     <bean id="clipboardManager" class="kkckkc.jsourcepad.model.ClipboardManager" />
 	<bean id="httpServer" class="kkckkc.jsourcepad.http.HttpServerFactoryBean" lazy-init="false" />
 	<bean id="commandBundleServer" class="kkckkc.jsourcepad.model.bundle.CommandBundleServer" lazy-init="false" />
+
     <bean id="previewServer" class="kkckkc.jsourcepad.http.PreviewServer" lazy-init="false" />
+    <bean id="remoteControlServer" class="kkckkc.jsourcepad.http.RemoteControlServer" lazy-init="false" />
+    <bean id="fileServer" class="kkckkc.jsourcepad.http.FileServer" lazy-init="false" />
 
     <bean id="browser" class="kkckkc.jsourcepad.model.SystemBrowser" />
 

@@ -8,9 +8,9 @@ import com.google.common.collect.Ordering;
 import kkckkc.jsourcepad.model.settings.IgnorePatternProjectSettings;
 import kkckkc.jsourcepad.model.settings.ProjectSettingsManager;
 import kkckkc.jsourcepad.model.settings.SettingsManager;
+import kkckkc.jsourcepad.util.AutoSuggestUtils;
 import kkckkc.jsourcepad.util.DefaultFileMonitor;
 import kkckkc.jsourcepad.util.FileMonitor;
-import kkckkc.jsourcepad.util.QueryUtils;
 import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
 import kkckkc.utils.PerformanceLogger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,7 +91,7 @@ public class ProjectImpl implements Project, DocList.Listener, Window.FocusListe
 		
 		List<File> dest = Lists.newArrayList();
 		
-		Predicate<String> predicate = QueryUtils.makePredicate(query);
+		Predicate<String> predicate = AutoSuggestUtils.makePredicate(query);
 		
 		for (File f : cache) {
 			if (predicate.apply(f.getName())) dest.add(f);
@@ -106,7 +106,7 @@ public class ProjectImpl implements Project, DocList.Listener, Window.FocusListe
                     	score -= StringUtils.countOccurrencesOf(from.getPath(), File.separator);
                     	
                     	// Score by matching characters, matches late in string decreases score
-                        score -= QueryUtils.getScorePenalty(from.getName(), query);
+                        score -= AutoSuggestUtils.getScorePenalty(from.getName(), query);
                     	
                 		// Increase score by looking a LRU
                 		Long l = lru.get(from);

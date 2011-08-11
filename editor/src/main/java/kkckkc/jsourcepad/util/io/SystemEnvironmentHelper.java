@@ -34,7 +34,7 @@ public class SystemEnvironmentHelper {
 
         SettingsManager settingsManager = Application.get().getSettingsManager();
         ScriptExecutionSettings settings = settingsManager.get(ScriptExecutionSettings.class);
-        if (settings.getEnvironmentCommandLine() == null || settings.getEnvironmentCommandLine().length == 0) {
+        if (settings.getEnvironmentCommandLine().length == 0) {
             return;
         }
 

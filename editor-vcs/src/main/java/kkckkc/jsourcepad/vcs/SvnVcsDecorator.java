@@ -48,7 +48,7 @@ public class SvnVcsDecorator extends AbstractVcsDecorator {
                 @Override
                 public void onFailure(ScriptExecutor.Execution execution) {
                     ErrorDialog errorDialog = Application.get().getErrorDialog();
-                    errorDialog.show("Script Execution Failed...", execution.getStderr(), null);
+                    errorDialog.show("Script Execution Failed...", execution.getStderr());
                 }
             }, new StringReader(""), EnvironmentProvider.getStaticEnvironment());
         } catch (IOException e) {

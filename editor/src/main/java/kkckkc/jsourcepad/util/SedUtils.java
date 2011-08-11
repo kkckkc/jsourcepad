@@ -1,5 +1,6 @@
 package kkckkc.jsourcepad.util;
 
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,7 +12,7 @@ public class SedUtils {
 
 	private static final Pattern EXPRESSION = Pattern.compile("s/([^/]+)/([^/]+)/([^;]*);"); 
 	
-	public static String applySedExpressions(String text, String expressions) {
+	public static @NotNull String applySedExpressions(@NotNull String text, @NotNull String expressions) {
 		Matcher matcher = EXPRESSION.matcher(expressions);
 		while (matcher.find()) {
 			text = applySedExpression(text, matcher.group());
@@ -19,7 +20,7 @@ public class SedUtils {
 		return text;
 	}
 	
-	public static String applySedExpression(String text, String expression) {
+	public static @NotNull String applySedExpression(@NotNull String text, @NotNull String expression) {
 		Matcher matcher = EXPRESSION.matcher(expression);
 		if (! matcher.find()) return text;
 		

@@ -5,8 +5,6 @@ import kkckkc.jsourcepad.Dialog;
 import kkckkc.jsourcepad.util.io.ErrorDialog;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.awt.*;
-
 public class ErrorDialogImpl implements Dialog<ErrorDialogView>, ErrorDialog {
 
 	private ErrorDialogView view;
@@ -17,7 +15,7 @@ public class ErrorDialogImpl implements Dialog<ErrorDialogView>, ErrorDialog {
 	}
 
     @Override
-    public void show(Throwable details, Container parent) {
+    public void show(Throwable details) {
 		view.setTitle("An exception has occured: " + details.getMessage());
         view.getDetails().setText(Throwables.getStackTraceAsString(details));
 
@@ -25,7 +23,7 @@ public class ErrorDialogImpl implements Dialog<ErrorDialogView>, ErrorDialog {
 	}
 
     @Override
-    public void show(String title, String details, Container parent) {
+    public void show(String title, String details) {
 		view.setTitle(title);
         view.getDetails().setText(details);
 

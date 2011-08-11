@@ -54,7 +54,7 @@ public class UISupportCallback implements Callback {
                 errorDialog.show("Script Execution Failed...",
                     execution.getStderr() +
                     "\n" + "Script Follows:\n" + Strings.repeat("-", 120) + "\n" +
-                    execution.getScript(), parent);
+                    execution.getScript());
             }
 		});
 	}

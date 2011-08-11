@@ -173,7 +173,7 @@ public class GitVcsDecorator extends AbstractVcsDecorator {
                             @Override
                             public void run() {
                                 ErrorDialog errorDialog = Application.get().getErrorDialog();
-                                errorDialog.show("Script Execution Failed...", execution.getStderr(), null);
+                                errorDialog.show("Script Execution Failed...", execution.getStderr());
                             }
                         });
                     }

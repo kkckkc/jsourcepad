@@ -5,6 +5,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
+import kkckkc.jsourcepad.http.RemoteOpenCommand;
 import kkckkc.jsourcepad.model.*;
 import kkckkc.jsourcepad.model.bundle.snippet.Snippet;
 import kkckkc.jsourcepad.util.Config;
@@ -202,7 +203,7 @@ public class CommandBundleItem implements BundleItem<Void> {
             for (File f : files) {
                 if (f.isDirectory()) continue;
 
-                byte[] contents = FileUtils.readBytes(f);
+                byte[] contents = Files.toByteArray(f);
 
                 if (contents[0] == (byte) '#' && contents[1] == (byte) '!') {
                     StringBuilder shebangLine = new StringBuilder();
@@ -420,7 +421,7 @@ public class CommandBundleItem implements BundleItem<Void> {
                             "  } " +
                             "  if (target.tagName.toLowerCase() == 'a') { " +
                             "    if (target.href.match(/^txmt:\\/\\/open/)) { " +
-                            "      location.href = target.href.replace(/txmt:\\/\\/open\\/?\\?([^'\" \\t\\n\\f\\r]+)/, 'http://localhost:' + TextMate.port + '/cmd/open?windowId=' + TextMate.windowId + '&$1');" +
+                            "      location.href = target.href.replace(/txmt:\\/\\/open\\/?\\?([^'\" \\t\\n\\f\\r]+)/, 'http://localhost:' + TextMate.port + '/cmd/" + RemoteOpenCommand.ID + "?" + RemoteOpenCommand.P_WINDOW_ID + "=' + TextMate.windowId + '&$1');" +
                             "      return false;\n" +
                             "    } " +
                             "  }" +

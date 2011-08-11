@@ -1,5 +1,7 @@
 package kkckkc.utils;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -23,7 +25,7 @@ public class DomUtil {
         return new ElementChildrenIterator(e);
 	}
 
-	public static Element getChild(Element e, String name) {
+	public static Element getChild(@NotNull Element e, @NotNull String name) {
 		Element child = null;
 
 		for (Node node = e.getFirstChild();
@@ -44,7 +46,7 @@ public class DomUtil {
 		return getText(child);
 	}
 
-	public static String getText(Element e) {
+	public static String getText(@NotNull Element e) {
 		StringBuilder sb = new StringBuilder(100);
 
 		for(Node child = e.getFirstChild();
@@ -79,7 +81,7 @@ public class DomUtil {
 
 	static ConcurrentLinkedQueue<DocumentBuilder> documentBuilderPool = new ConcurrentLinkedQueue<DocumentBuilder>();
 	
-	public static Document parse(InputSource source) {
+	public static Document parse(@NotNull InputSource source) {
 		try {
 			DocumentBuilder builder = documentBuilderPool.poll();
 		    if (builder == null) {
@@ -102,7 +104,7 @@ public class DomUtil {
 		}
 	}
 
-	public static Document parse(File file) throws FileNotFoundException {
+	public static Document parse(@NotNull File file) throws FileNotFoundException {
 		BufferedReader reader = new BufferedReader(new FileReader(file));
 		try {
 			return parse(new InputSource(reader));
@@ -121,13 +123,13 @@ public class DomUtil {
         private final Element e;
         private final String name;
 
-        public ElementChildrenIterator(Element e, String name) {
+        public ElementChildrenIterator(@NotNull Element e, @Nullable String name) {
             this.e = e;
             this.name = name;
             findNext();
         }
 
-        public ElementChildrenIterator(Element e) {
+        public ElementChildrenIterator(@NotNull Element e) {
             this(e, null);
         }
 

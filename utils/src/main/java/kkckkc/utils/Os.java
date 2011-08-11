@@ -1,19 +1,17 @@
 package kkckkc.utils;
 
 public class Os {
+    private static final String OS_IDENTIFIER = System.getProperty("os.name").toLowerCase();
+
 	public static boolean isMac() {
-        return (getOsIdentifier().indexOf("mac") != -1);
+        return OS_IDENTIFIER.contains("mac");
 	}
 
     public static boolean isLinux() {
-        return (getOsIdentifier().indexOf("linux") != -1);
+        return OS_IDENTIFIER.contains("linux");
     }
 
     public static boolean isWindows() {
-        return (getOsIdentifier().indexOf("windows") != -1);
-    }
-
-    private static String getOsIdentifier() {
-        return System.getProperty("os.name").toLowerCase();
+        return OS_IDENTIFIER.contains("windows");
     }
 }

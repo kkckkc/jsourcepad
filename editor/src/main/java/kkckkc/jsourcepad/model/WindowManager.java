@@ -1,6 +1,7 @@
 package kkckkc.jsourcepad.model;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.io.File;
@@ -18,7 +19,7 @@ public interface WindowManager {
 	public Window getWindow(Container jframe);
     public Window getFocusedWindow();
 
-    @NotNull public Window newWindow(File file);
+    @NotNull public Window newWindow(@Nullable File file);
 	public void closeWindow(@NotNull Window window);
 	
 	@NotNull public Collection<Window> getWindows();

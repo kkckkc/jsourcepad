@@ -10,17 +10,15 @@ import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.bundle.Bundle;
 import kkckkc.jsourcepad.model.bundle.BundleItemSupplier;
-import kkckkc.jsourcepad.util.QueryUtils;
+import kkckkc.jsourcepad.util.AutoSuggestUtils;
 import kkckkc.syntaxpane.model.Scope;
 import kkckkc.syntaxpane.style.Match;
 import kkckkc.utils.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JList;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
-import java.awt.Component;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
@@ -92,7 +90,7 @@ public class BundleItemNavigationDialog extends NavigationDialog {
 
         java.util.List<BundleItemSupplier> dest = Lists.newArrayList();
 
-        Predicate<String> predicate = QueryUtils.makePredicate(query);
+        Predicate<String> predicate = AutoSuggestUtils.makePredicate(query);
         Predicate<BundleItemSupplier> scopePredicate = Predicates.alwaysTrue();
 
         Doc activeDoc = window.getDocList().getActiveDoc();
@@ -120,7 +118,7 @@ public class BundleItemNavigationDialog extends NavigationDialog {
                         int score = 0;
 
                         // Score by matching characters, matches late in string decreases score
-                        score -= QueryUtils.getScorePenalty(p.getName(), query);
+                        score -= AutoSuggestUtils.getScorePenalty(p.getName(), query);
 
                         return score;
                     }

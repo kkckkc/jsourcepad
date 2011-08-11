@@ -6,7 +6,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import kkckkc.jsourcepad.model.bundle.BundleManager;
 import kkckkc.jsourcepad.model.bundle.PrefKeys;
-import kkckkc.jsourcepad.util.QueryUtils;
+import kkckkc.jsourcepad.util.AutoSuggestUtils;
 import kkckkc.jsourcepad.util.SedUtils;
 import kkckkc.syntaxpane.model.LineManager;
 import kkckkc.syntaxpane.model.LineManager.Line;
@@ -78,7 +78,7 @@ public class SymbolList {
         List<Pair<String, Integer>> all = getSymbols();
         List<Pair<String, Integer>> dest = Lists.newArrayList();
 
-        Predicate<String> predicate = QueryUtils.makePredicate(query);
+        Predicate<String> predicate = AutoSuggestUtils.makePredicate(query);
 
         for (Pair<String, Integer> p : all) {
             if (predicate.apply(p.getFirst())) dest.add(p);
@@ -90,7 +90,7 @@ public class SymbolList {
                         int score = 0;
 
                         // Score by matching characters, matches late in string decreases score
-                        score -= QueryUtils.getScorePenalty(p.getFirst(), query);
+                        score -= AutoSuggestUtils.getScorePenalty(p.getFirst(), query);
 
                         return score;
                     }

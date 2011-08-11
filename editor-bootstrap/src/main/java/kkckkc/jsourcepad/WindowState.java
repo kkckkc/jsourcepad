@@ -57,7 +57,9 @@ public class WindowState implements SettingsManager.Setting {
         Application.get().getSettingsManager().update(windowState);
     }
 
-    public static void restore() {
+    public static boolean restore() {
+        boolean windowsRestored = false;
+
         WindowState windowState = Application.get().getSettingsManager().get(WindowState.class);
 
         Window windowToFocus = null;
@@ -65,6 +67,7 @@ public class WindowState implements SettingsManager.Setting {
         WindowManager wm = Application.get().getWindowManager();
         for (String projectDir : windowState.getProjectDirs()) {
             Window window = wm.newWindow(projectDir == null ? null : new File(projectDir));
+            windowsRestored = true;
 
             if ((windowState.getFocusedProject() == null && projectDir == null) ||
                 (windowState.getFocusedProject() != null &&
@@ -76,6 +79,8 @@ public class WindowState implements SettingsManager.Setting {
         if (windowToFocus != null) {
             windowToFocus.requestFocus();
         }
+
+        return windowsRestored;
     }
 
 

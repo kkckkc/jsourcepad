@@ -1,5 +1,7 @@
 package kkckkc.jsourcepad;
 
+import com.google.common.base.Objects;
+
 import java.util.*;
 
 public class PluginManager {
@@ -16,46 +18,41 @@ public class PluginManager {
     private static synchronized List<Plugin> loadPlugins(boolean filter) {
         ServiceLoader<Plugin> loader = ServiceLoader.load(Plugin.class);
 
-        List<Plugin> available = new ArrayList<Plugin>();
-        Iterator<Plugin> iterator = loader.iterator();
-        while (iterator.hasNext()) {
-            Plugin p = iterator.next();
-            if (! filter || p.isEnabled()) available.add(p);
+        List<Plugin> unresolved = new ArrayList<Plugin>();
+        for (Plugin p : loader) {
+            if (! filter || p.isEnabled()) unresolved.add(p);
         }
 
         Map<String, Plugin> resolved = new LinkedHashMap<String, Plugin>();
 
-        int previousSize = -1;
-        while (available.size() != previousSize) {
-            previousSize = available.size();
+        // Loop until there are no more entries being removed from the list of unresolved plugins
+        int lastNumberOfUnresolved = -1;
+        while (unresolved.size() != lastNumberOfUnresolved) {
+            lastNumberOfUnresolved = unresolved.size();
 
-            Iterator<Plugin> it = available.iterator();
+            Iterator<Plugin> it = unresolved.iterator();
             while (it.hasNext()) {
                 Plugin plugin = it.next();
-                if (plugin.getDependsOn() == null || plugin.getDependsOn().length == 0) {
+
+                String[] dependencies = Objects.firstNonNull(plugin.getDependsOn(), new String[] {});
+
+                boolean allDependenciesAreResolved = true;
+                for (String id : dependencies) {
+                    allDependenciesAreResolved &= resolved.containsKey(id);
+                }
+
+                if (allDependenciesAreResolved) {
                     resolved.put(plugin.getId(), plugin);
                     it.remove();
-                } else {
-                    boolean allResolved = true;
-                    for (String id : plugin.getDependsOn()) {
-                        allResolved &= resolved.containsKey(id);
-                    }
-                    if (allResolved) {
-                        resolved.put(plugin.getId(), plugin);
-                        it.remove();
-                    }
                 }
             }
         }
 
-        if (! available.isEmpty()) {
+        if (! unresolved.isEmpty()) {
             throw new RuntimeException("Cannot load plugins due to dependency problems");
         }
 
-        List<Plugin> dest = new ArrayList<Plugin>();
-        dest.addAll(resolved.values());
-
-        return dest;
+        return new ArrayList<Plugin>(resolved.values());
     }
 
     public static Iterable<Plugin> getAllPlugins() {

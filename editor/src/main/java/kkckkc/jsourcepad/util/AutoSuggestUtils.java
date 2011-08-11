@@ -2,7 +2,7 @@ package kkckkc.jsourcepad.util;
 
 import com.google.common.base.Predicate;
 
-public class QueryUtils {
+public class AutoSuggestUtils {
     public static Predicate<String> makePredicate(final String query) {
         return new Predicate<String>() {
                 public boolean apply(String s) {
