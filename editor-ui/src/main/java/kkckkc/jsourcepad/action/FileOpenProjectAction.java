@@ -1,6 +1,7 @@
 package kkckkc.jsourcepad.action;
 
 import kkckkc.jsourcepad.model.Application;
+import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.model.WindowManager;
 import kkckkc.jsourcepad.ui.dialog.filechooser.DirectoryOpenDialog;
 import kkckkc.jsourcepad.ui.dialog.filechooser.FileChooserCallback;
@@ -21,7 +22,13 @@ public class FileOpenProjectAction extends BaseAction {
 
 	@Override
 	public void performAction(ActionEvent e) {
-		directoryOpenDialog.show(new File("."), new FileChooserCallback() {
+        File pwd = new File(".");
+        Doc activeDoc = actionContext.get(ActionContextKeys.ACTIVE_DOC);
+        if (activeDoc != null && activeDoc.isBackedByFile()) {
+            pwd = activeDoc.getFile();
+        }
+
+		directoryOpenDialog.show(pwd, new FileChooserCallback() {
 			@Override
 			public void cancel() {
 			}

@@ -20,7 +20,13 @@ public class FileSaveAsAction extends BaseAction {
 	@Override
 	public void performAction(ActionEvent e) {
 		final Doc doc = actionContext.get(ActionContextKeys.ACTIVE_DOC);
-		fileSaveDialog.show(new File("."), new FileChooserCallback() {
+
+        File pwd = new File(".");
+        if (doc.isBackedByFile()) {
+            pwd = doc.getFile();
+        }
+
+		fileSaveDialog.show(pwd, new FileChooserCallback() {
 			@Override
 			public void cancel() {
 			}
