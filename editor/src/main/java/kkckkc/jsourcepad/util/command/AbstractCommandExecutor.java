@@ -10,29 +10,27 @@ public abstract class AbstractCommandExecutor implements CommandExecutor {
 
     @Override
     public void execute(final Command command) {
+        EventQueueContinuation continuation = new EventQueueContinuation(command);
         if (! EventQueue.isDispatchThread()) {
-            EventQueue.invokeLater(new EventQueueContinuation(command));
+            EventQueue.invokeLater(continuation);
         } else {
-            prepareCommand(command);
-            Application.get().topic(CommandExecutor.Listener.class).post().commandExecuted(command);
-            doExecute(command);
+            continuation.run();
         }
     }
 
     @Override
     public void executeSync(final Command command) {
+        EventQueueContinuation continuation = new EventQueueContinuation(command);
         if (! EventQueue.isDispatchThread()) {
             try {
-                EventQueue.invokeAndWait(new EventQueueContinuation(command));
+                EventQueue.invokeAndWait(continuation);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             } catch (InvocationTargetException e) {
                 throw new RuntimeException(e);
             }
         } else {
-            prepareCommand(command);
-            Application.get().topic(CommandExecutor.Listener.class).post().commandExecuted(command);
-            doExecute(command);
+            continuation.run();
         }
     }
 

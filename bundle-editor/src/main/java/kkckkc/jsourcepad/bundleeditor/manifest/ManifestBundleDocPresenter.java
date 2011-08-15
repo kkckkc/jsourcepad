@@ -68,7 +68,7 @@ public class ManifestBundleDocPresenter extends BasicBundleDocPresenter {
         final BundleDocImpl bDoc = (BundleDocImpl) doc;
         final Bundle bundle = Application.get().getBundleManager().getBundle(bDoc.getName());
 
-        subscription = Application.get().topic(BundleListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, new BundleListener() {
+        subscription = Application.get().topic(BundleListener.class).subscribe(DispatchStrategy.EVENT_ASYNC, new BundleListener() {
 
             @Override
             public void bundleAdded(Bundle bundle) {

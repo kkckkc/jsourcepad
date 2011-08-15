@@ -17,13 +17,11 @@ import java.util.StringTokenizer;
 public class FileTransferHandlerHelper {
     private static final String URI_LIST_MIME_TYPE = "text/uri-list;class=java.lang.String";
 
-    private DataFlavor fileFlavor, stringFlavor;
+    private DataFlavor fileFlavor;
     private DataFlavor uriListFlavor;
 
     public FileTransferHandlerHelper() {
-
         fileFlavor = DataFlavor.javaFileListFlavor;
-        stringFlavor = DataFlavor.stringFlavor;
 
         try {
             uriListFlavor = new DataFlavor(URI_LIST_MIME_TYPE);

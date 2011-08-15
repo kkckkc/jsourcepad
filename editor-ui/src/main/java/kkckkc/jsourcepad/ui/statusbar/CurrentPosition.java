@@ -11,7 +11,7 @@ public class CurrentPosition extends JLabel implements Buffer.InsertionPointList
 	public CurrentPosition(Window window) {
 		setText("--:--");	
 		
-		window.topic(Buffer.InsertionPointListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, this);
+		window.topic(Buffer.InsertionPointListener.class).subscribe(DispatchStrategy.EVENT_ASYNC, this);
 	}
 
 	@Override

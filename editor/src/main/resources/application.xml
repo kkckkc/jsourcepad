@@ -10,6 +10,7 @@
 	</bean>
 	
 	<bean id="languageManager" class="kkckkc.syntaxpane.parse.grammar.LanguageManager" lazy-init="true"/>
+    <bean id="languageSelectionRemembranceManager" class="kkckkc.jsourcepad.model.LanguageSelectionRemembranceManagerImpl" lazy-init="false"/>
 	<bean id="commandExecutor" class="kkckkc.jsourcepad.util.command.ApplicationCommandExecutorImpl" lazy-init="true"/>
 
 	<bean id="styleParser" class="kkckkc.syntaxpane.parse.grammar.textmate.TextmateStyleParser" />

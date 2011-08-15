@@ -144,7 +144,7 @@ public class WindowPresenter implements Presenter<WindowView>, DocList.Listener 
         });
 
         window.restoreState();
-        window.topic(DocList.Listener.class).subscribe(DispatchStrategy.ASYNC_EVENT, WindowPresenter.this);
+        window.topic(DocList.Listener.class).subscribe(DispatchStrategy.EVENT_ASYNC, WindowPresenter.this);
         frame.setVisible(true);
 
         subscription = Application.get().getSettingsManager().subscribe(WindowSettings.class, new SettingsManager.Listener<WindowSettings>() {

@@ -1,6 +1,8 @@
 package kkckkc.utils;
 
-public class Pair<T, U> {
+import java.io.Serializable;
+
+public class Pair<T, U> implements Serializable {
 	protected T first;
 	protected U second;
 	

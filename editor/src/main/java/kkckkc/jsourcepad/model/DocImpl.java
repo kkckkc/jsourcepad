@@ -73,7 +73,7 @@ public class DocImpl implements Doc, ScopeRoot, BeanFactoryAware {
             }
         }));
 
-        subscriptions.add(window.topic(Window.FocusListener.class).subscribe(DispatchStrategy.ASYNC_EVENT,
+        subscriptions.add(window.topic(Window.FocusListener.class).subscribe(DispatchStrategy.EVENT_ASYNC,
                 new Window.FocusListener() {
                     @Override
                     public void focusGained(Window window) {
@@ -87,7 +87,7 @@ public class DocImpl implements Doc, ScopeRoot, BeanFactoryAware {
                     }
                 }));
 
-        subscriptions.add(window.topic(DocList.Listener.class).subscribe(DispatchStrategy.ASYNC_EVENT,
+        subscriptions.add(window.topic(DocList.Listener.class).subscribe(DispatchStrategy.EVENT_ASYNC,
                 new DocList.Listener() {
                     @Override
                     public void created(Doc doc) {
@@ -228,7 +228,8 @@ public class DocImpl implements Doc, ScopeRoot, BeanFactoryAware {
 		br.reset();
 		
 		Language language = languageManager.getLanguage(new String(buffer), file);
-		
+        language = Application.get().getLanguageSelectionRemembranceManager().getUserSelectedLanguage(file, language);
+
 		this.buffer.setText(language, br);
 	}
 

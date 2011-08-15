@@ -19,8 +19,8 @@ public class NavigationGoToTabsActionGroup extends ActionGroup implements DocLis
         super("Go to Tab");
 
         this.window = window;
-        window.topic(DocList.Listener.class).subscribe(DispatchStrategy.ASYNC_EVENT, this);
-        window.topic(Doc.StateListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, this);
+        window.topic(DocList.Listener.class).subscribe(DispatchStrategy.EVENT_ASYNC, this);
+        window.topic(Doc.StateListener.class).subscribe(DispatchStrategy.EVENT_ASYNC, this);
 
         for (Doc doc : window.getDocList().getDocs()) {
             this.items.add(new GoToTabAction(doc));

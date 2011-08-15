@@ -14,7 +14,10 @@ import kkckkc.utils.Os;
 import kkckkc.utils.io.FileUtils;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.*;
 
 public class ScriptExecutor {
@@ -248,12 +251,4 @@ public class ScriptExecutor {
 	        stderrFuture.get();
         }
 	}
-
-    public static Reader noInput() {
-	    return new StringReader("");
-    }
-
-	public static Map<String, String> noEnvironment() {
-	    return Collections.emptyMap();
-    }
 }

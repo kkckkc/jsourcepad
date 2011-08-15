@@ -61,7 +61,7 @@ public class ProjectPresenter implements Presenter<ProjectView>, ProjectImpl.Ref
             }
         }, getDecorators()));
 
-		window.topic(Project.RefreshListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, this);
+		window.topic(Project.RefreshListener.class).subscribe(DispatchStrategy.EVENT_ASYNC, this);
 
 		((JTree) view).getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
 			@Override

@@ -122,6 +122,11 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
         return beanFactory.getBean(Browser.class);
     }
 
+    public LanguageSelectionRemembranceManager getLanguageSelectionRemembranceManager() {
+        return beanFactory.getBean(LanguageSelectionRemembranceManager.class);
+    }
+
+
 	public StyleScheme getStyleScheme(StyleSettings styleSettings) {
 		StyleParser styleParser = beanFactory.getBean(StyleParser.class);
 

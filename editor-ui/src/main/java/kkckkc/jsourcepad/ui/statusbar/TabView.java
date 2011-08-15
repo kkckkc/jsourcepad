@@ -26,7 +26,7 @@ public class TabView extends JLabel implements DocList.Listener, ActionListener,
 	public TabView(Window window) {
 		this.window = window;
 		
-		window.topic(DocList.Listener.class).subscribe(DispatchStrategy.ASYNC_EVENT, this);
+		window.topic(DocList.Listener.class).subscribe(DispatchStrategy.EVENT_ASYNC, this);
 		updateState(null);
 		
 		JPopupMenu popupMenu = new JPopupMenu();

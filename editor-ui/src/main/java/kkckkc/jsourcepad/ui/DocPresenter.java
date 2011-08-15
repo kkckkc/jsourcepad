@@ -112,8 +112,8 @@ public class DocPresenter implements Presenter<DocView> {
         actionContext.put(ActionContextKeys.FOCUSED_COMPONENT, doc);
         actionContext.commit();
 
-        subscriptions.add(doc.getDocList().getWindow().topic(Buffer.SelectionListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, ACTION_CONTEXT_UPDATER));
-        subscriptions.add(doc.getDocList().getWindow().topic(Doc.StateListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, ACTION_CONTEXT_UPDATER));
+        subscriptions.add(doc.getDocList().getWindow().topic(Buffer.SelectionListener.class).subscribe(DispatchStrategy.EVENT_ASYNC, ACTION_CONTEXT_UPDATER));
+        subscriptions.add(doc.getDocList().getWindow().topic(Doc.StateListener.class).subscribe(DispatchStrategy.EVENT_ASYNC, ACTION_CONTEXT_UPDATER));
         
         ActionContext.set(view.getComponent(), actionContext);
     }

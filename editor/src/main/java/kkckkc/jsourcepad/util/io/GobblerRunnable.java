@@ -18,7 +18,7 @@ class GobblerRunnable implements Runnable {
 
     public void run() {
         try {
-          CharStreams.copy(new BufferedReader(new InputStreamReader(is, "utf-8")), w);
+            CharStreams.copy(new BufferedReader(new InputStreamReader(is, "utf-8")), w);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

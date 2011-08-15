@@ -12,7 +12,7 @@ public class MacroRecordingView extends JPanel implements MacroManager.Listener 
     private boolean recording;
 
     public MacroRecordingView(Window window) {
-        window.topic(MacroManager.Listener.class).subscribe(DispatchStrategy.ASYNC_EVENT, this);
+        window.topic(MacroManager.Listener.class).subscribe(DispatchStrategy.EVENT_ASYNC, this);
         setOpaque(false);
     }
 

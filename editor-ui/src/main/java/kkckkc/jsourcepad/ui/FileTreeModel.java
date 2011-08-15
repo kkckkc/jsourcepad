@@ -3,6 +3,7 @@ package kkckkc.jsourcepad.ui;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import com.google.common.collect.MapMaker;
+import kkckkc.utils.LruMap;
 import kkckkc.utils.Os;
 
 import javax.swing.*;
@@ -38,11 +39,7 @@ public class FileTreeModel implements TreeModel {
 
     private static final int MAX_ENTRIES = 2000;
 
-    private Map<File, Node> nodeCache = new LinkedHashMap<File, Node>(MAX_ENTRIES, .75F, true) {
-        protected boolean removeEldestEntry(Map.Entry<File, Node> eldest) {
-            return size() > MAX_ENTRIES;
-        }
-    };
+    private Map<File, Node> nodeCache = new LruMap<File, Node>(MAX_ENTRIES);
 
 
     public FileTreeModel(final File root, final FileFilter filter, List<? extends Decorator> decorators) {

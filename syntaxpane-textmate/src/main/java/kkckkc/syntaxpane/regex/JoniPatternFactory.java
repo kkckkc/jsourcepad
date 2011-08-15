@@ -1,12 +1,12 @@
 package kkckkc.syntaxpane.regex;
 
+import kkckkc.utils.LruMap;
 import org.joni.Option;
 import org.joni.Regex;
 import org.joni.Region;
 import org.joni.Syntax;
 import org.joni.Syntax.MetaCharTable;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static org.joni.constants.MetaChar.INEFFECTIVE_META_CHAR;
@@ -14,11 +14,7 @@ import static org.joni.constants.MetaChar.INEFFECTIVE_META_CHAR;
 public class JoniPatternFactory implements PatternFactory {
 
 	private static final int MAX_ENTRIES = 1000;
-	private static final Map<String, JoniPattern> CACHE = new LinkedHashMap<String, JoniPattern>(MAX_ENTRIES, .75F, true) {
-	    protected boolean removeEldestEntry(Map.Entry<String, JoniPattern> eldest) {  
-	      return size() > MAX_ENTRIES;  
-	    }  
-	  };  
+	private static final Map<String, JoniPattern> CACHE = new LruMap<String, JoniPattern>(MAX_ENTRIES);
 	
 	private static final Syntax SYNTAX = new Syntax(
 	        ((  Syntax.GNU_REGEX_OP | Syntax.OP_QMARK_NON_GREEDY |

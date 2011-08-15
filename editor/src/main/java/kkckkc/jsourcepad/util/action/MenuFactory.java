@@ -9,19 +9,17 @@ import java.util.List;
 
 public class MenuFactory {
 	public JPopupMenu buildPopup(final ActionGroup actionGroup, ItemBuilder itemBuilder) {
-		final List<JMenuItem> items = Lists.newArrayList();
-
 		JPopupMenu jp = new JPopupMenu();
 		for (Action a : actionGroup.getItems()) {
 			if (a == null) {
 				jp.addSeparator();
 			} else if (a instanceof ActionGroup) {
-				items.add(jp.add(buildMenu((String) a.getValue(AbstractAction.NAME), (ActionGroup) a, itemBuilder, false)));
+				jp.add(buildMenu((String) a.getValue(AbstractAction.NAME), (ActionGroup) a, itemBuilder, false));
 			} else {
 				if (itemBuilder == null) {
-					items.add(jp.add(a));
+					jp.add(a);
 				} else {
-					items.add(itemBuilder.build(a));
+					itemBuilder.build(a);
 				}
 			}
 		}

@@ -12,22 +12,22 @@ import kkckkc.jsourcepad.util.AutoSuggestUtils;
 import kkckkc.jsourcepad.util.DefaultFileMonitor;
 import kkckkc.jsourcepad.util.FileMonitor;
 import kkckkc.jsourcepad.util.messagebus.DispatchStrategy;
+import kkckkc.utils.LruMap;
 import kkckkc.utils.PerformanceLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.regex.Pattern;
 
 public class ProjectImpl implements Project, DocList.Listener, Window.FocusListener, FileMonitor.Listener, SettingsManager.Listener<IgnorePatternProjectSettings> {
 	private static final int MAX_ENTRIES = 20;
-	private Map<File, Long> lru = new LinkedHashMap<File, Long>(MAX_ENTRIES, .75F, true) {
-		protected boolean removeEldestEntry(Map.Entry<File, Long> eldest) {
-			return size() > MAX_ENTRIES;
-		}
-	};
+	private Map<File, Long> lru = new LruMap<File, Long>(MAX_ENTRIES);
 
 
     private WeakHashMap<File, Long> refreshTimestamps = new WeakHashMap<File, Long>();

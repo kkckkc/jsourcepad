@@ -8,16 +8,20 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public interface DispatchStrategy { 
+    public static final Executor __EXECUTOR = new ThreadPoolExecutor(2, 4,
+            0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
+
 	public static final DispatchStrategy SYNC = new DispatchStrategy() {
     	public void execute(Runnable runnable) {
     		runnable.run();
     	}
     };
-	public static final DispatchStrategy ASYNC_EVENT = new DispatchStrategy() {
-    	public void execute(Runnable runnable) {
-    		EventQueue.invokeLater(runnable);
-    	}
+    public static final DispatchStrategy ASYNC = new DispatchStrategy() {
+        public void execute(Runnable runnable) {
+            __EXECUTOR.execute(runnable);
+        }
     };
+
     public static final DispatchStrategy EVENT = new DispatchStrategy() {
         public void execute(Runnable runnable) {
             if (EventQueue.isDispatchThread()) {
@@ -27,7 +31,12 @@ public interface DispatchStrategy {
             }
         }
     };
-    public static final DispatchStrategy SYNC_EVENT = new DispatchStrategy() {
+	public static final DispatchStrategy EVENT_ASYNC = new DispatchStrategy() {
+    	public void execute(Runnable runnable) {
+    		EventQueue.invokeLater(runnable);
+    	}
+    };
+    public static final DispatchStrategy EVENT_SYNC = new DispatchStrategy() {
         public void execute(Runnable runnable) {
             if (EventQueue.isDispatchThread()) {
                 runnable.run();
@@ -42,14 +51,6 @@ public interface DispatchStrategy {
             }
         }
     };
-	public static final DispatchStrategy ASYNC = new DispatchStrategy() {
-    	public void execute(Runnable runnable) {
-    		__EXECUTOR.execute(runnable);
-    	}
-    };
-
-    public static final Executor __EXECUTOR = new ThreadPoolExecutor(2, 4,
-            0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
 
 
     public void execute(Runnable runnable);
