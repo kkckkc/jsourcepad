@@ -12,7 +12,6 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.text.JTextComponent;
-import javax.swing.text.Keymap;
 import java.io.BufferedReader;
 import java.io.IOException;
 
@@ -65,7 +64,7 @@ public interface Buffer {
 	// Text manipulation
 	public String getText(Interval interval);
 	public void insertText(int position, String content, @Nullable Anchor[] anchors);
-	public void replaceText(Interval interval, String content, Anchor[] anchors);
+	public void replaceText(Interval interval, String content, @Nullable Anchor[] anchors);
 	
 	public void remove(Interval interval);
 
@@ -104,7 +103,7 @@ public interface Buffer {
 	public ActionMap getActionMap();
 
     public Finder getFinder();
-    public Finder newFinder(Interval scope, String searchFor, Finder.Options options);
+    public Finder newFinder(@Nullable Interval scope, String searchFor, Finder.Options options);
 
 
     public void undo();

@@ -582,7 +582,7 @@ public class BufferImpl implements Buffer {
         try {
             Rectangle re = this.textComponent.modelToView(position);
             if (scrollAlignment == ScrollAlignment.MIDDLE)
-                re.translate(0, this.textComponent.getVisibleRect().height / 2);
+                re.translate(0, - this.textComponent.getVisibleRect().height / 2);
             JViewport jvp = (JViewport) this.textComponent.getParent();
             jvp.setViewPosition(re.getLocation());
         } catch (BadLocationException e) {

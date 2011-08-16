@@ -46,6 +46,7 @@ public class Finder {
         Interval interval = findForward(position);
         if (interval != null) {
             buffer.setSelection(interval);
+            buffer.scrollTo(interval.getStart(), Buffer.ScrollAlignment.MIDDLE);
         }
 
         return interval;
@@ -55,6 +56,7 @@ public class Finder {
         Interval interval = findBackward(position);
         if (interval != null) {
             buffer.setSelection(interval);
+            buffer.scrollTo(interval.getStart(), Buffer.ScrollAlignment.MIDDLE);
         }
 
         return interval;

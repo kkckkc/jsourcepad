@@ -10,6 +10,7 @@ import kkckkc.syntaxpane.model.LineManager;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
+import javax.swing.*;
 import java.awt.Dialog.ModalityType;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -112,6 +113,10 @@ public class FindDialog implements Dialog<FindDialogView> {
 
         view.getReplace().setEnabled(findCommand.isFound());
         updateHistory(findCommand, true, false);
+
+        if (! findCommand.isFound()) {
+            JOptionPane.showMessageDialog(view.getJDialog(), "No more found");
+        }
     }
 
     private void previous() {
@@ -123,6 +128,10 @@ public class FindDialog implements Dialog<FindDialogView> {
 
         view.getReplace().setEnabled(findCommand.isFound());
         updateHistory(findCommand, true, false);
+
+        if (! findCommand.isFound()) {
+            JOptionPane.showMessageDialog(view.getJDialog(), "No more found");
+        }
     }
 
     private void replace() {

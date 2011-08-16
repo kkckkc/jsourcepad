@@ -20,7 +20,6 @@ import kkckkc.syntaxpane.parse.grammar.LanguageManager;
 import kkckkc.syntaxpane.parse.grammar.textmate.ColorUtils;
 import kkckkc.syntaxpane.style.*;
 import kkckkc.utils.io.FileUtils;
-import org.mortbay.jetty.servlet.Context;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
@@ -100,10 +99,6 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
 
     public SettingsManager getSettingsManager() {
         return settingsManager;
-    }
-
-    public Context getHttpServer() {
-	    return beanFactory.getBean(Context.class);
     }
 
 	public ExecutorService getThreadPool() {
