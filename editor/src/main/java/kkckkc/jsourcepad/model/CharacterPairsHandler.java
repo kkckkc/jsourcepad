@@ -7,6 +7,7 @@ import kkckkc.jsourcepad.model.bundle.BundleManager;
 import kkckkc.jsourcepad.model.bundle.PrefKeys;
 import kkckkc.syntaxpane.model.Interval;
 import kkckkc.syntaxpane.style.StyleBean;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
@@ -22,7 +23,7 @@ public class CharacterPairsHandler extends DocumentFilter {
 	private final Map<Anchor, Boolean> anchors;
 	private AnchorManager anchorManager;
 
-    public CharacterPairsHandler(Buffer buffer, AnchorManager anchorManager) {
+    public CharacterPairsHandler(@NotNull Buffer buffer, @NotNull AnchorManager anchorManager) {
 	    this.buffer = buffer;
 	    this.anchorManager = anchorManager;
 	    
@@ -76,6 +77,8 @@ public class CharacterPairsHandler extends DocumentFilter {
 	    }
 
 	    boolean handled = false;
+
+        // Is replacement
     	if (length > 0) {
 	        for (final List<String> pair : pairs) {
 	        	String start = pair.get(0);
@@ -83,8 +86,10 @@ public class CharacterPairsHandler extends DocumentFilter {
 	        	if (text.equals(start)) {
 	        		fb.replace(offset, 0, start, attrs);
 	        		fb.replace(offset + length + 1, 0, end, attrs);
-	        		
-	        		// TODO: Decide what to do with selection
+
+                    // Narrow selection to section between character pair
+                    buffer.setSelection(Interval.createWithLength(offset + 1, length));
+
 		        	handled = true;
 		        	break;
 	        	}
@@ -94,7 +99,7 @@ public class CharacterPairsHandler extends DocumentFilter {
 	        	String start = pair.get(0);
 	        	String end = pair.get(1);
 	        	
-	        	if (start.equals(text)) {
+	        	if (text.equals(start)) {
                     String charToTheRight = buffer.getText(Interval.createWithLength(offset, 1));
                     if (charToTheRight.equals(end)) {
                         Iterator<Map.Entry<Anchor, Boolean>> it = anchors.entrySet().iterator();
@@ -132,7 +137,7 @@ public class CharacterPairsHandler extends DocumentFilter {
                         handled = true;
                     }
 
- 	        	} else if (end.equals(text)) {
+ 	        	} else if (text.equals(end)) {
 	        		String charToTheRight = buffer.getText(Interval.createWithLength(offset, 1));
 	            	if (charToTheRight.equals(end)) {
 	            		Iterator<Map.Entry<Anchor, Boolean>> it = anchors.entrySet().iterator();
@@ -161,7 +166,9 @@ public class CharacterPairsHandler extends DocumentFilter {
         }
     }
 
-    
+
+
+    // TODO: We should probably rewrite some of this to use Buffer.processCharacters
     public void highlight() {
 	    InsertionPoint insertionPoint = buffer.getInsertionPoint();
 		if (insertionPoint.getPosition() == 0) return; 
@@ -171,13 +178,13 @@ public class CharacterPairsHandler extends DocumentFilter {
 
 	    if (pairs == null) return;
 	    
+        char cur = buffer.getText(Interval.createWithLength(insertionPoint.getPosition() - 1, 1)).charAt(0);
+        int pos = insertionPoint.getPosition();
+
 	    for (List<String> p : pairs) {
 	    	char start = p.get(0).charAt(0);
 	    	char end = p.get(1).charAt(0);
 
-	    	char cur = buffer.getText(Interval.createWithLength(insertionPoint.getPosition() - 1, 1)).charAt(0);
-	    	
-    		int pos = insertionPoint.getPosition();
     		if (end == cur) {
     			int level = 1, found = -1;
     			char[] chars = buffer.getText(Interval.createWithLength(0, pos - 1)).toCharArray();

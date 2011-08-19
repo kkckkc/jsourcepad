@@ -1,5 +1,6 @@
 package kkckkc.jsourcepad.action;
 
+import com.google.common.base.Function;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Buffer;
 import kkckkc.jsourcepad.model.Doc;
@@ -31,12 +32,35 @@ public class EditSelectEnclosingBracketsAction extends BaseAction {
             char start = p.get(0).charAt(0);
             char end = p.get(1).charAt(0);
 
+            class Finder implements Function<String, Interval> {
+                private char c;
+                private Buffer.Direction direction;
+
+                Finder(char c, Buffer.Direction direction) {
+                    this.c = c;
+                    this.direction = direction;
+                }
+
+                @Override
+                public Interval apply(String s) {
+                    if (direction == Buffer.Direction.Backward) {
+                        int p = s.lastIndexOf(c);
+                        if (p < 0) return null;
+                        return Interval.createWithLength(p, 1);
+                    } else {
+                        int p = s.indexOf(c);
+                        if (p < 0) return null;
+                        return Interval.createWithLength(p, 1);
+                    }
+                }
+            }
+
             Interval startMatch =
-                    buffer.find(insertionPoint.getPosition(), Character.toString(start), Buffer.FindType.Literal, Buffer.Direction.Backward);
+                    buffer.processCharacters(insertionPoint.getPosition(), new Finder(start, Buffer.Direction.Backward), Buffer.Direction.Backward);
             if (startMatch == null) continue;
 
             Interval endMatch =
-                    buffer.find(insertionPoint.getPosition(), Character.toString(end), Buffer.FindType.Literal, Buffer.Direction.Forward);
+                    buffer.processCharacters(insertionPoint.getPosition(), new Finder(end, Buffer.Direction.Forward), Buffer.Direction.Forward);
             if (endMatch == null) continue;
 
             Interval interval = new Interval(startMatch.getStart(), endMatch.getEnd());

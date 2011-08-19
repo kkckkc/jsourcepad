@@ -1,5 +1,6 @@
 package kkckkc.jsourcepad.model;
 
+import com.google.common.base.Function;
 import kkckkc.syntaxpane.model.FoldManager;
 import kkckkc.syntaxpane.model.Interval;
 import kkckkc.syntaxpane.model.LineManager;
@@ -92,9 +93,8 @@ public interface Buffer {
 
 	public enum HighlightType { Underline, Box }
 
-	public Interval find(int position, String pattern, FindType type, Direction direction);
+	public Interval processCharacters(int position, Function<String, Interval> func, Direction direction);
 	
-	public enum FindType { Literal, Regexp } 
 	public enum Direction { Forward, Backward }
 
 	public LineManager getLineManager();

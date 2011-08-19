@@ -1,5 +1,6 @@
 package kkckkc.jsourcepad.model;
 
+import com.google.common.base.Function;
 import kkckkc.jsourcepad.model.Doc.StateListener;
 import kkckkc.jsourcepad.model.Finder.Options;
 import kkckkc.jsourcepad.model.bundle.BundleManager;
@@ -754,24 +755,19 @@ public class BufferImpl implements Buffer {
     }
 
 	@Override
-    public Interval find(int position, String pattern, FindType type, Direction direction) {
+    public Interval processCharacters(int position, Function<String, Interval> func, Direction direction) {
+        // TODO: This can be optimized by not fetching all text at once
 		try {
-			if (type == FindType.Regexp) {
-				throw new UnsupportedOperationException("Not implemented yet");
-			} else {
-				if (direction == Direction.Backward) {
-					String s = document.getText(0, position);
-					int p = s.lastIndexOf(pattern);
-					if (p < 0) return null;
-					return Interval.createWithLength(p, pattern.length());
-				} else {
-					if (getLength() <= (position + 1)) return null;
-					String s = document.getText(position + 1, getLength() - (position + 1));
-					int p = s.indexOf(pattern);
-					if (p < 0) return null;
-					return Interval.createWithLength(p + position + 1, pattern.length());
-				}
-			}
+            if (direction == Direction.Backward) {
+                String s = document.getText(0, position);
+                return func.apply(s);
+            } else {
+                String s = document.getText(position + 1, getLength() - (position + 1));
+                Interval i = func.apply(s);
+                if (i == null) return null;
+
+                return Interval.offset(i, position + 1);
+            }
 		} catch (BadLocationException ble) {
 			throw new RuntimeException(ble);
 		}
