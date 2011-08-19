@@ -82,7 +82,6 @@ public class BufferImpl implements Buffer {
                 WORD_PATTERN = Pattern.compile(advancedSettings.getWordPattern());
             }
         }
-
     }
 
     public void close() {
@@ -107,20 +106,38 @@ public class BufferImpl implements Buffer {
 		jtc.setDocument(document);
         this.caret = jtc.getCaret();
 
-        // Work around issue with substance look and feel
+        class RestrictedEditorBinding implements ChangeListener, DocumentListener {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                if (restrictedEditor != null) restrictedEditor.caretPositionChanged(caret.getDot());
+            }
+
+            @Override
+			public void removeUpdate(DocumentEvent e) {
+				if (restrictedEditor != null) restrictedEditor.textChanged(e);
+			}
+
+            @Override
+			public void insertUpdate(DocumentEvent e) {
+				if (restrictedEditor != null) restrictedEditor.textChanged(e);
+			}
+
+            @Override
+			public void changedUpdate(DocumentEvent e) {
+			}
+        }
+
+        // To work around issue with substance look and feel this needs to be called "later" on the EventQueue
         EventQueue.invokeLater(new Runnable() {
 
             @Override
             public void run() {
-                BufferImpl.this.caret = jtc.getCaret();
-                BufferImpl.this.caret.addChangeListener(new ChangeListener() {
-                    @Override
-                    public void stateChanged(ChangeEvent e) {
-                        if (restrictedEditor != null) restrictedEditor.caretPositionChanged(caret.getDot());
-                    }
-                });
+                // Sometimes caret is null at this point, so let's get it again
+                caret = jtc.getCaret();
 
-                BufferImpl.this.caret.addChangeListener(new ChangeListener() {
+                caret.addChangeListener(new RestrictedEditorBinding());
+
+                caret.addChangeListener(new ChangeListener() {
                     @Override
                     public void stateChanged(ChangeEvent e) {
                         if (caret.getDot() == caret.getMark()) {
@@ -136,26 +153,11 @@ public class BufferImpl implements Buffer {
                     }
                 });
 
-                BufferImpl.this.caret.addChangeListener(completionManager);
+                caret.addChangeListener(completionManager);
             }
         });
 
-		document.addDocumentListener(new DocumentListener() {
-            @Override
-			public void removeUpdate(DocumentEvent e) {
-				if (restrictedEditor != null) restrictedEditor.textChanged(e);
-			}
-
-            @Override
-			public void insertUpdate(DocumentEvent e) {
-				if (restrictedEditor != null) restrictedEditor.textChanged(e);
-			}
-
-            @Override
-			public void changedUpdate(DocumentEvent e) {
-			}
-		});
-
+		document.addDocumentListener(new RestrictedEditorBinding());
 		document.addDocumentListener(documentStateListener);
 		document.addDocumentListener(anchorManager);
 
@@ -180,7 +182,7 @@ public class BufferImpl implements Buffer {
     }
 
 	@Override
-    public void replaceText(Interval interval, String s, Anchor[] anchors) {
+    public void replaceText(@NotNull Interval interval, @NotNull String replacement, @Nullable Anchor[] anchors) {
         boolean reselect = false;
         if (interval.equals(getSelection())) {
             reselect = true;
@@ -191,10 +193,9 @@ public class BufferImpl implements Buffer {
 		try {
             undoManager.beginCompoundOperation();
             try {
-			    document.replace(interval.getStart(), interval.getLength(), s, null);
+			    document.replace(interval.getStart(), interval.getLength(), replacement, null);
                 if (reselect) {
-                    Interval newSelection = Interval.createWithLength(interval.getStart(), s.length());
-                    setSelection(newSelection);
+                    setSelection(Interval.createWithLength(interval.getStart(), replacement.length()));
                 }
             } finally {
                 undoManager.endCompoundOperation();
@@ -207,7 +208,7 @@ public class BufferImpl implements Buffer {
 	}
 
 	@Override
-    public void insertText(int position, String content, @Nullable Anchor[] anchors) {
+    public void insertText(int position, @NotNull String content, @Nullable Anchor[] anchors) {
 		adjustAnchorList(position, anchors);
 		try {
 	        document.insertString(Math.max(position, 0), content, null);
@@ -228,8 +229,6 @@ public class BufferImpl implements Buffer {
 	
 	@Override
 	public TextInterval getSelection() {
-    // TODO: Investigate if we should enable the following
-//        if (selection == null || selection.isEmpty()) return null;
 		return selection;
 	}
 
@@ -242,6 +241,7 @@ public class BufferImpl implements Buffer {
 		return new BufferTextInterval(line.getStart(), line.getEnd());
 	}
 
+    @NotNull
     @Override
     public TextInterval getSelectionOrCurrentParagraph() {
         if (selection != null && ! selection.isEmpty()) return selection;
@@ -267,21 +267,23 @@ public class BufferImpl implements Buffer {
 
 
     @Override
-	public void setSelection(Interval selection) {
-		this.selection = new BufferTextInterval(selection);
+	public void setSelection(@NotNull Interval selection) {
+		this.selection = selection instanceof BufferTextInterval ?
+                (BufferTextInterval) selection : new BufferTextInterval(selection);
 		this.caret.setDot(selection.getStart());
 		if (! selection.isEmpty()) {
 			this.caret.moveDot(selection.getEnd());
 		}
 	}
 
+    @NotNull
 	@Override
     public TextInterval getCompleteDocument() {
 	    return new BufferTextInterval(0, document.getLength());
     }
 
 	@Override
-    public void remove(Interval interval) {
+    public void remove(@NotNull Interval interval) {
 	    try {
 	        document.remove(interval.getStart(), interval.getLength());
         } catch (BadLocationException e) {
@@ -341,22 +343,24 @@ public class BufferImpl implements Buffer {
 
         doc.getDocList().getWindow().beginWait(true, null);
 
-        StringBuilder builder = new StringBuilder();
-		try {
-			String line;
-			while ((line = br.readLine()) != null) {
-                builder.append(line).append("\n");
-			}
+        try {
+            // TODO: We should not really read the file line by line here, but rather read everything directly from the BufferedReader
+            StringBuilder builder = new StringBuilder();
+            try {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    builder.append(line).append("\n");
+                }
 
-            document.insertString(0, builder.toString(), null);
-		} catch (BadLocationException e) {
-			throw new RuntimeException(e);
-		}
+                document.insertString(0, builder.toString(), null);
+            } catch (BadLocationException e) {
+                throw new RuntimeException(e);
+            }
 
-		clearModified();
-
-        doc.getDocList().getWindow().endWait();
-
+            clearModified();
+        } finally {
+            doc.getDocList().getWindow().endWait();
+        }
 
 		documentStateListener.enable();
 
@@ -366,7 +370,7 @@ public class BufferImpl implements Buffer {
     }
 
 	@Override
-    public void indent(Interval interval) {
+    public void indent(@NotNull Interval interval) {
 	    Line line = document.getLineManager().getLineByPosition(interval.getStart());
 	    while (line.getStart() <= interval.getEnd()) {
 	    	indent(line);
@@ -376,20 +380,6 @@ public class BufferImpl implements Buffer {
 	    }
     }
 
-	private void adjustAnchorList(int position, Anchor[] anchors) {
-    	if (anchors == null) return;
-    	for (Anchor a : anchors) {
-    		a.move(position);
-    	}
-    }
-
-	private void postInsertionPointUpdate() {
-        window.topic(Buffer.InsertionPointListener.class).post().update(getInsertionPoint());
-    	window.topic(Buffer.SelectionListener.class).post().selectionModified(this);
-
-		characterPairsHandler.highlight();
-	}
-
 	private void indent(Line current) {
 		if (current == null) return;
 		
@@ -397,27 +387,30 @@ public class BufferImpl implements Buffer {
 		if (prev == null) return;
 
 		BundleManager bundleManager = Application.get().getBundleManager();
-		
+        TabManager tabManager = doc.getTabManager();
+
+        JoniPatternFactory factory = new JoniPatternFactory();
+
     	CharSequence prevLine = prev.getCharSequence(false);
-    	int indentCount = doc.getTabManager().getTabCount(prevLine);
+        int indentCount = tabManager.getTabCount(prevLine);
     	
     	String decrease = (String) bundleManager.getPreference(PrefKeys.INDENT_DECREASE, current.getScope());
     	String increase = (String) bundleManager.getPreference(PrefKeys.INDENT_INCREASE, current.getScope());
     	String indentNextLine = (String) bundleManager.getPreference(PrefKeys.INDENT_NEXT_LINE, current.getScope());
     	String unIndentedLinePattern = (String) bundleManager.getPreference(PrefKeys.INDENT_IGNORE, current.getScope());
 
-    	if (matches(unIndentedLinePattern, prevLine)) {
+    	if (matches(factory, unIndentedLinePattern, prevLine)) {
     		// Do nothing
-    	} else if (matches(increase, prevLine)) {
+    	} else if (matches(factory, increase, prevLine)) {
     		indentCount++;
-    	} else if (matches(indentNextLine, prevLine)) {
+    	} else if (matches(factory, indentNextLine, prevLine)) {
     		indentCount++;
-    	} else if (matches(decrease, prevLine)) {
+    	} else if (matches(factory, decrease, prevLine)) {
     		
     		Line prevprev = document.getLineManager().getPrevious(prev);
     		if (prevprev != null) {
-    			if (doc.getTabManager().getTabCount(prevprev.getCharSequence(false)) == indentCount && indentCount > 0) {
-    				String s = doc.getTabManager().getFirstIndentionString(prev.getCharSequence(false));
+    			if (tabManager.getTabCount(prevprev.getCharSequence(false)) == indentCount && indentCount > 0) {
+    				String s = tabManager.getFirstIndentionString(prev.getCharSequence(false));
     				Interval interval = Interval.createWithLength(prev.getStart(), s.length());
 	                doc.getActiveBuffer().remove(interval);
 
@@ -428,32 +421,45 @@ public class BufferImpl implements Buffer {
     	} else {
     		Line prevprev = document.getLineManager().getPrevious(prev);
     		if (prevprev != null) {
-    			if (matches(indentNextLine, prevprev.getCharSequence(false))) {
+    			if (matches(factory, indentNextLine, prevprev.getCharSequence(false))) {
     				indentCount--;
     			}
     		}
     	}
 
-        if (matches(decrease, current.getCharSequence(false))) {
+        if (matches(factory, decrease, current.getCharSequence(false))) {
             indentCount--;
         }
 
     	// Remove old indent
 		String s;
-		while ((s = doc.getTabManager().getFirstIndentionString(current.getCharSequence(false))) != null) {
+		while ((s = tabManager.getFirstIndentionString(current.getCharSequence(false))) != null) {
 			Interval interval = Interval.createWithLength(current.getStart(), s.length());
             doc.getActiveBuffer().remove(interval);
 		}
 
-    	String indent = doc.getTabManager().createIndent(indentCount);
+    	String indent = tabManager.createIndent(indentCount);
         doc.getActiveBuffer().insertText(current.getStart(), indent, null);
     }
 
-	private boolean matches(String pattern, CharSequence charSequence) {
-		JoniPatternFactory factory = new JoniPatternFactory();
-	    return pattern != null && factory.create(pattern).matcher(charSequence).matches();
+    private boolean matches(JoniPatternFactory factory, String pattern, CharSequence charSequence) {
+        return pattern != null && factory.create(pattern).matcher(charSequence).matches();
     }
-	
+
+    private void adjustAnchorList(int position, Anchor[] anchors) {
+        if (anchors == null) return;
+        for (Anchor a : anchors) {
+            a.move(position);
+        }
+    }
+
+    private void postInsertionPointUpdate() {
+        window.topic(Buffer.InsertionPointListener.class).post().update(getInsertionPoint());
+        window.topic(Buffer.SelectionListener.class).post().selectionModified(this);
+
+        characterPairsHandler.highlight();
+    }
+
 	@Override
 	public void shift(Interval interval, int length) {
 		LineManager lm = document.getLineManager();
@@ -578,7 +584,7 @@ public class BufferImpl implements Buffer {
     }
 
     @Override
-    public void scrollTo(int position, ScrollAlignment scrollAlignment) {
+    public void scrollTo(int position, @NotNull ScrollAlignment scrollAlignment) {
         try {
             Rectangle re = this.textComponent.modelToView(position);
             if (scrollAlignment == ScrollAlignment.MIDDLE)

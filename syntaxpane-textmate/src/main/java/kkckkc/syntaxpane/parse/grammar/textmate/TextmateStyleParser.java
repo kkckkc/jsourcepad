@@ -46,20 +46,30 @@ public class TextmateStyleParser implements kkckkc.syntaxpane.style.StyleParser 
 					color(global, "background"));
 			
 			final Style selectionStyle = new StyleBean(color(global, "foreground"), color(global, "selection"));
-			final Style lineNumberStyle = new StyleBean(
-					ColorUtils.offset(color(global, "foreground"), 3), 
-					ColorUtils.offset(color(global, "background"), 2),
-					ColorUtils.offset(color(global, "background"), 3));
-			
+
+			final Style lineNumberStyle = color(global, "lineNumber") == null ?
+                    new StyleBean(
+					    ColorUtils.offset(color(global, "foreground"), 3),
+					    ColorUtils.offset(color(global, "background"), 2),
+					    ColorUtils.offset(color(global, "background"), 3)) :
+                    new StyleBean(
+                        color(global, "foreground"),
+                        color(global, "lineNumber"),
+                        ColorUtils.offset(color(global, "lineNumber"), 1));
+
 			final Color caretColor = color(global, "caret");
 			final Color lineSelectionColor = color(global, "lineHighlight");
 			final Color invisibles = ColorUtils.resolveAlpha(color(global, "invisibles"), textStyle.getBackground());
 				
-			final Style rightMarginStyle = new StyleBean(
-					ColorUtils.offset(color(global, "background"), 2), 
-					ColorUtils.offset(color(global, "background"), 1)		
-			);
-			
+			final Style rightMarginStyle =
+                    color(global, "rightMargin") == null ?
+                        new StyleBean(
+					        ColorUtils.offset(color(global, "background"), 2),
+					        ColorUtils.offset(color(global, "background"), 1)) :
+                        new StyleBean(
+                            ColorUtils.offset(color(global, "rightMargin"), 1),
+                            color(global, "rightMargin"));
+
         	return new StyleScheme() {
         		public File getSource() { return file; }
 				public TextStyle getTextStyle() { return textStyle; }

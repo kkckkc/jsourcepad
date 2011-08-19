@@ -130,11 +130,17 @@ public class ScrollableSourcePane extends JPanel {
 	}
 
     private void updateCurrentLineHighlighter() {
-        CurrentLinePainter.apply(new CurrentLinePainter(
-            this.styleScheme.getLineSelectionColor(),
-            getStyleScheme().getRightMargin().getColor(),
-            getStyleScheme().getRightMargin().getBackground(),
-            getWrapColumn()), editorPane);
+        // The async nature of this call is to work around an issue with some lnfs
+        EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                CurrentLinePainter.apply(new CurrentLinePainter(
+                    styleScheme.getLineSelectionColor(),
+                    getStyleScheme().getRightMargin().getColor(),
+                    getStyleScheme().getRightMargin().getBackground(),
+                    getWrapColumn()), editorPane);
+            }
+        });
     }
 
     public JEditorPane getEditorPane() {
