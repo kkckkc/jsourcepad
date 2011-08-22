@@ -49,7 +49,7 @@ public class SourceEditorKit extends DefaultEditorKit {
 		BufferedReader br = new BufferedReader(in);
 		br.mark(1024);
 		
-		char[] buffer = new char[800];
+		char[] buffer = new char[80];
 		br.read(buffer);
 		br.reset();
 		

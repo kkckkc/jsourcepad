@@ -41,16 +41,15 @@ public class DocImpl implements Doc, ScopeRoot, BeanFactoryAware {
     @Autowired
 	public DocImpl(final Window window, final DocList docList, LanguageManager languageManager) {
 		this.docList = docList;
+        this.window = window;
+        this.languageManager = languageManager;
 
-        sourceDocument = new SourceDocument();
+        this.sourceDocument = new SourceDocument();
+        this.tabManager = new TabManagerImpl(this);
         this.buffer = new BufferImpl(sourceDocument, this, window);
 		this.buffer.setLanguage(languageManager.getLanguage(null));
-		
-		this.window = window;
-		this.languageManager = languageManager;
-		this.tabManager = new TabManagerImpl(this);
 
-        subscriptions.add(Application.get().topic(BundleListener.class).subscribe(DispatchStrategy.ASYNC, new BundleListener() {
+        this.subscriptions.add(Application.get().topic(BundleListener.class).subscribe(DispatchStrategy.ASYNC, new BundleListener() {
 
             @Override
             public void bundleAdded(Bundle bundle) {
@@ -73,7 +72,7 @@ public class DocImpl implements Doc, ScopeRoot, BeanFactoryAware {
             }
         }));
 
-        subscriptions.add(window.topic(Window.FocusListener.class).subscribe(DispatchStrategy.EVENT_ASYNC,
+        this.subscriptions.add(window.topic(Window.FocusListener.class).subscribe(DispatchStrategy.EVENT_ASYNC,
                 new Window.FocusListener() {
                     @Override
                     public void focusGained(Window window) {
@@ -87,7 +86,7 @@ public class DocImpl implements Doc, ScopeRoot, BeanFactoryAware {
                     }
                 }));
 
-        subscriptions.add(window.topic(DocList.Listener.class).subscribe(DispatchStrategy.EVENT_ASYNC,
+        this.subscriptions.add(window.topic(DocList.Listener.class).subscribe(DispatchStrategy.EVENT_ASYNC,
                 new DocList.Listener() {
                     @Override
                     public void created(Doc doc) {
@@ -175,47 +174,38 @@ public class DocImpl implements Doc, ScopeRoot, BeanFactoryAware {
 
 	@Override
 	public void save() {
-		try {
-            Writer fw = new OutputStreamWriter(new FileOutputStream(this.backingFile), Charsets.UTF_8);
-			fw.write(buffer.getText(buffer.getCompleteDocument()));
-			fw.close();
-
-            this.backingTimestamp = backingFile.lastModified();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-		getActiveBuffer().clearModified();
-
-        Project p = getDocList().getWindow().getProject();
-        p.refresh(backingFile);
-        p.refresh(backingFile.getParentFile());
-		window.topic(Doc.StateListener.class).post().modified(this, true, false);
+        saveToFile(this.backingFile);
 	}
 
 	@Override
 	public void saveAs(File file) {
-		try {
-			Writer fw = new OutputStreamWriter(new FileOutputStream(file), Charsets.UTF_8);
-			fw.write(buffer.getText(buffer.getCompleteDocument()));
-			fw.close();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-		getActiveBuffer().clearModified();
-		
-		this.backingFile = file;
+        saveToFile(file);
+
+        this.buffer.setLanguage(
+            languageManager.getLanguage(buffer.getText(Interval.createWithLength(0, Math.min(buffer.getLength(), 80))), file));
+	}
+
+    private void saveToFile(File file) {
+        try {
+            Writer fw = new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(file)), Charsets.UTF_8);
+            fw.write(buffer.getText(buffer.getCompleteDocument()));
+            fw.flush();
+            fw.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        getActiveBuffer().clearModified();
+
+        this.backingFile = file;
         this.backingTimestamp = file.lastModified();
 
         Project p = getDocList().getWindow().getProject();
         p.refresh(file);
         p.refresh(file.getParentFile());
-		window.topic(Doc.StateListener.class).post().modified(this, true, false);
+        window.topic(StateListener.class).post().modified(this, true, false);
+    }
 
-        Language language = languageManager.getLanguage(buffer.getText(Interval.createWithLength(0, Math.min(buffer.getLength(), 80))), file);
-        this.buffer.setLanguage(language);
-	}
-
-	@Override
+    @Override
 	public void open(File file) throws IOException {
 		this.backingFile = file;
         this.backingTimestamp = file.lastModified();
@@ -223,7 +213,7 @@ public class DocImpl implements Doc, ScopeRoot, BeanFactoryAware {
 		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), Charsets.UTF_8));
 		br.mark(1024);
 		
-		char[] buffer = new char[800];
+		char[] buffer = new char[80];
 		br.read(buffer);
 		br.reset();
 		
@@ -242,8 +232,7 @@ public class DocImpl implements Doc, ScopeRoot, BeanFactoryAware {
 
 	@Override
 	public void activate() {
-		InsertionPoint ip = this.buffer.getInsertionPoint();
-		window.topic(Buffer.InsertionPointListener.class).post().update(ip);
+		window.topic(Buffer.InsertionPointListener.class).post().update(this.buffer.getInsertionPoint());
 	}
 
 	@Override

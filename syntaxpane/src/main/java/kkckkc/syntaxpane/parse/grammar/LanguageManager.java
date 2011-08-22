@@ -1,5 +1,6 @@
 package kkckkc.syntaxpane.parse.grammar;
 
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,7 +83,7 @@ public class LanguageManager {
 		}
 	}
 
-	public Language getLanguage(String langId) {
+	public Language getLanguage(@Nullable String langId) {
 		Language language = provider.getLanguages(this).get(langId);
 		if (language == null) return provider.getDefaultLanguage();
 		if (! language.isCompiled()) {

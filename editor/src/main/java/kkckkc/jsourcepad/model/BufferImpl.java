@@ -292,7 +292,7 @@ public class BufferImpl implements Buffer {
         }
     }
 
-	@Override
+    @Override
 	public void setLanguage(Language language) {
 		documentStateListener.disable();
 		document.setLanguage(language);

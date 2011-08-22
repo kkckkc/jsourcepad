@@ -2,6 +2,7 @@ package kkckkc.jsourcepad.model;
 
 import com.google.common.collect.Lists;
 import kkckkc.jsourcepad.util.BeanFactoryLoader;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -38,7 +39,7 @@ public class DocListImpl implements DocList {
 		return doc;
 	}
 
-	private Doc createDoc(File file) {
+	private Doc createDoc(@Nullable File file) {
 		BeanFactory container = beanFactoryLoader.load(BeanFactoryLoader.DOCUMENT, window, file, null);
 		return container.getBean(Doc.class);
     }

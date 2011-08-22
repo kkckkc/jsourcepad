@@ -7,6 +7,7 @@ import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.utils.DomUtil;
 import kkckkc.utils.PerformanceLogger;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
 import org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor;
@@ -63,7 +64,7 @@ public class BeanFactoryLoader {
 		return load((Scope<ScopeRoot, Void>) scope, null, null, null);
 	}
 	
-	public <P extends ScopeRoot, C> DefaultListableBeanFactory load(Scope<P, C> scope, P parent, C context, Properties properties) {
+	public <P extends ScopeRoot, C> DefaultListableBeanFactory load(Scope<P, C> scope, @Nullable P parent, @Nullable C context, @Nullable Properties properties) {
 		PerformanceLogger.get().enter(this, "load");
 		
 		DefaultListableBeanFactory container;
