@@ -11,6 +11,7 @@ import kkckkc.jsourcepad.util.SedUtils;
 import kkckkc.syntaxpane.model.LineManager;
 import kkckkc.syntaxpane.model.LineManager.Line;
 import kkckkc.syntaxpane.model.Scope;
+import kkckkc.utils.CharSequenceUtils;
 import kkckkc.utils.Pair;
 
 import java.util.Collections;
@@ -56,7 +57,7 @@ public class SymbolList {
                 o = bundleManager.getPreference(PrefKeys.SYMBOL_SHOW_IN_LIST, scope);
 
             if (root != scope && o != null) {
-                String symbol = line.getCharSequence(false).subSequence(scope.getStart(), scope.getEnd()).toString();
+                String symbol = CharSequenceUtils.safeSubsequence(line.getCharSequence(false), scope.getStart(), scope.getEnd()).toString();
 
                 String transformation = (String) bundleManager.getPreference(PrefKeys.SYMBOL_TRANSFORMATION, scope);
                 if (transformation != null) {

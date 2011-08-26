@@ -23,5 +23,8 @@ public class CharSequenceUtils {
          }
          return true;
      }
-    
+
+    public static CharSequence safeSubsequence(CharSequence charSequence, int start, int end) {
+        return charSequence.subSequence(Math.max(0, start), Math.min(charSequence.length() - 1, end));
+    }
 }
