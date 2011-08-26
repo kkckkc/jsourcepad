@@ -220,7 +220,7 @@ public class DocPresenter implements Presenter<DocView> {
         @Override
         public void modified(Doc doc, boolean newState, boolean oldState) {
             // TODO: Why is this needed. Why do we need to change the state for all document modifications
-            actionContext.update();
+            actionContext.commit();
         }
 
         @Override

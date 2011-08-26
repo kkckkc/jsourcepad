@@ -1,4 +1,3 @@
-
 package kkckkc.jsourcepad.util.action;
 
 import com.google.common.collect.Maps;
@@ -99,10 +98,6 @@ public class ActionContext {
         if (parent != null) {
             parent.removeListener(listener);
         }
-    }
-
-    public void update() {
-        commit();
     }
 
 

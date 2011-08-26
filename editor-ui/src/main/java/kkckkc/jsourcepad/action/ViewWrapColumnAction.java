@@ -3,15 +3,15 @@ package kkckkc.jsourcepad.action;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.settings.SettingsManager;
 import kkckkc.jsourcepad.model.settings.StyleSettings;
+import kkckkc.jsourcepad.util.action.ActionPresenter;
 import kkckkc.jsourcepad.util.action.BaseAction;
-import kkckkc.jsourcepad.util.action.Presenter;
 import kkckkc.jsourcepad.util.messagebus.Subscription;
 
 import javax.annotation.PreDestroy;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class ViewWrapColumnAction extends BaseAction implements Presenter.Menu, SettingsManager.Listener<StyleSettings> {
+public class ViewWrapColumnAction extends BaseAction implements ActionPresenter.Menu, SettingsManager.Listener<StyleSettings> {
     private int column;
 
     private Subscription subscription;

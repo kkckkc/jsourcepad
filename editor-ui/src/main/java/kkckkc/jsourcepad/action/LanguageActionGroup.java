@@ -48,7 +48,7 @@ public class LanguageActionGroup extends ActionGroup implements BundleListener {
         }
         PerformanceLogger.get().exit();
 
-        updateDerivedComponents();
+        updateDerivedMenus();
     }
 
     @Override

@@ -80,7 +80,7 @@ public class OpenRecentActionGroup extends ActionGroup implements WindowManager.
         }
         setItems(items);
 
-        updateDerivedComponents();
+        updateDerivedMenus();
     }
 
     @Override

@@ -8,7 +8,7 @@ public class CompoundActionGroup extends ActionGroup {
             items.addAll(actionGroup1.items);
             items.addAll(actionGroup2.items);
 
-            updateDerivedComponents();
+            updateDerivedMenus();
         }
     };
     

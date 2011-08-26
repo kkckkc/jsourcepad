@@ -3,14 +3,14 @@ package kkckkc.jsourcepad.action;
 import kkckkc.jsourcepad.model.Window;
 import kkckkc.jsourcepad.model.settings.EditModeProjectSettings;
 import kkckkc.jsourcepad.model.settings.SettingsManager;
+import kkckkc.jsourcepad.util.action.ActionPresenter;
 import kkckkc.jsourcepad.util.action.BaseAction;
-import kkckkc.jsourcepad.util.action.Presenter;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class EditModeOverwriteModeAction extends BaseAction implements Presenter.Menu {
+public class EditModeOverwriteModeAction extends BaseAction implements ActionPresenter.Menu {
     private Window window;
 
     @Autowired

@@ -39,8 +39,8 @@ public class MenuFactory {
 			} else if (a instanceof ActionGroup) {
 				items.add(jMenu.add(buildMenu((String) a.getValue(AbstractAction.NAME), (ActionGroup) a, itemBuilder, lazy)));
 			} else {
-                if (a instanceof Presenter.Menu) {
-                    items.add(jMenu.add(((Presenter.Menu) a).getMenuItem()));
+                if (a instanceof ActionPresenter.Menu) {
+                    items.add(jMenu.add(((ActionPresenter.Menu) a).getMenuItem()));
                 } else if (itemBuilder == null) {
 					items.add(jMenu.add(a));
 				} else {
@@ -59,7 +59,7 @@ public class MenuFactory {
             jMenu.addMenuListener(new LazyLoadingMenuListener(items, actionGroup, jMenu, itemBuilder, lazy));
         }
 
-        actionGroup.registerDerivedComponent(jMenu);
+        actionGroup.registerDerivedMenu(jMenu);
     }
 
 	public JMenu buildMenu(String name, final ActionGroup actionGroup, final ItemBuilder itemBuilder, final boolean lazy) {

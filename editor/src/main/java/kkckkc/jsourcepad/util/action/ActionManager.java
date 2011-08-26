@@ -60,12 +60,9 @@ public class ActionManager implements BeanFactoryAware {
                     if (! (e.getNewValue() instanceof JComponent)) return;
 
                     JComponent component = (JComponent) e.getNewValue();
-                    if (component == null) return;
-         
-                    if (component instanceof JRootPane) return;
+                    if (component == null || component instanceof JRootPane) return;
 
                     Window w = Application.get().getWindowManager().getWindow(component);
-
                     if (w == null) return;
 
                     ActionManager actionManager = w.getActionManager();

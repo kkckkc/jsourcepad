@@ -50,7 +50,7 @@ public class BundleMenuProvider {
 
                     root.insertSorted(bundle.getName(), newActionGroup);
 
-                    root.updateDerivedComponents();
+                    root.updateDerivedMenus();
                 }
             }
 
@@ -62,7 +62,7 @@ public class BundleMenuProvider {
 
                     ActionGroup root = actionGroups.get(null);
                     root.remove(bundleActionGroup);
-                    root.updateDerivedComponents();
+                    root.updateDerivedMenus();
 
                     actionGroups.remove(bundle.getName());
                 }
@@ -81,7 +81,7 @@ public class BundleMenuProvider {
                     createMenu(newActionGroup, bundle.getMenu());
                     root.insertSorted(bundle.getName(), newActionGroup);
 
-                    root.updateDerivedComponents();
+                    root.updateDerivedMenus();
                 } else {
                     ActionGroup bundleActionGroup = actionGroups.get(bundle.getName());
                     if (bundleActionGroup == null) return;
@@ -89,7 +89,7 @@ public class BundleMenuProvider {
                     bundleActionGroup.clear();
                     createMenu(bundleActionGroup, bundle.getMenu());
 
-                    bundleActionGroup.updateDerivedComponents();
+                    bundleActionGroup.updateDerivedMenus();
                 }
             }
 

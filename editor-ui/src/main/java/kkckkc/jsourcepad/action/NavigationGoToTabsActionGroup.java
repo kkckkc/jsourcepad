@@ -26,21 +26,21 @@ public class NavigationGoToTabsActionGroup extends ActionGroup implements DocLis
             this.items.add(new GoToTabAction(doc));
         }
         updateKeyBindings();
-        updateDerivedComponents();
+        updateDerivedMenus();
     }
 
     @Override
     public void created(Doc doc) {
         this.items.add(new GoToTabAction(doc));
         updateKeyBindings();
-        updateDerivedComponents();
+        updateDerivedMenus();
     }
 
     @Override
     public void closed(int index, Doc doc) {
         this.items.remove(index);
         updateKeyBindings();
-        updateDerivedComponents();
+        updateDerivedMenus();
     }
 
     private void updateKeyBindings() {
@@ -65,7 +65,7 @@ public class NavigationGoToTabsActionGroup extends ActionGroup implements DocLis
                     gta.putValue(NAME, doc.getTitle());
                 }
             }
-            updateDerivedComponents();
+            updateDerivedMenus();
         }
     }
 

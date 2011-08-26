@@ -3,13 +3,13 @@ package kkckkc.jsourcepad.action;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.settings.SettingsManager;
 import kkckkc.jsourcepad.model.settings.StyleSettings;
+import kkckkc.jsourcepad.util.action.ActionPresenter;
 import kkckkc.jsourcepad.util.action.BaseAction;
-import kkckkc.jsourcepad.util.action.Presenter;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class ViewShowHideInvisiblesAction extends BaseAction implements Presenter.Menu {
+public class ViewShowHideInvisiblesAction extends BaseAction implements ActionPresenter.Menu {
     public ViewShowHideInvisiblesAction() {
         updateName();
     }

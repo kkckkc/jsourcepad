@@ -3,13 +3,13 @@ package kkckkc.jsourcepad.action;
 import kkckkc.jsourcepad.model.Application;
 import kkckkc.jsourcepad.model.settings.GutterSettings;
 import kkckkc.jsourcepad.model.settings.SettingsManager;
+import kkckkc.jsourcepad.util.action.ActionPresenter;
 import kkckkc.jsourcepad.util.action.BaseAction;
-import kkckkc.jsourcepad.util.action.Presenter;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class ViewGutterFoldingsAction extends BaseAction implements Presenter.Menu {
+public class ViewGutterFoldingsAction extends BaseAction implements ActionPresenter.Menu {
 	public ViewGutterFoldingsAction() {
         SettingsManager settingsManager = Application.get().getSettingsManager();
 

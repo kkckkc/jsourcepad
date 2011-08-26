@@ -12,7 +12,7 @@ public class ActionGroup extends AbstractAction {
 	private static final long serialVersionUID = 1L;
 
 	protected List<Action> items = Lists.newArrayList();
-	protected List<WeakReference<JComponent>> derivedComponents = Lists.newArrayList();
+	protected List<WeakReference<JMenu>> derivedMenus = Lists.newArrayList();
 	protected List<Runnable> derivedComponentsListeners = Lists.newArrayList();
 
     public ActionGroup() {
@@ -29,32 +29,6 @@ public class ActionGroup extends AbstractAction {
 	public void actionPerformed(ActionEvent e) {
 	}
 
-
-    public void removeAction(String actionId) {
-        BaseAction found = null;
-        for (Action a : items) {
-            if (a instanceof BaseAction) {
-                BaseAction ba = (BaseAction) a;
-                if (("action-" + actionId).equals(ba.getId())) {
-                    found = ba;
-                }
-            }
-        }
-
-        if (found != null) items.remove(found);
-
-        if (items.get(items.size() - 1) == null) {
-            items.remove(items.size() - 1);
-        }
-    }
-
-	
-	
-	/* ********************************************************************************
-	 *   Delegated methods
-	 * ********************************************************************************/
-	
-	
 	public boolean add(Action object) {
 		return items.add(object);
 	}
@@ -63,37 +37,9 @@ public class ActionGroup extends AbstractAction {
 		items.add(location, object);
 	}
 
-	public Action remove(int location) {
-		return items.remove(location);
-	}
-
 	public int size() {
 		return items.size();
 	}
-
-	public String toPrettyString() {
-	    StringBuilder builder = new StringBuilder();
-	    toPrettyString(builder, 0);
-		return builder.toString();
-    }
-
-	private void toPrettyString(StringBuilder builder, int i) {
-		StringBuilder indent = new StringBuilder();
-		for (int j = 0; j < i; j++) {
-			indent.append("    ");
-		}
-		
-	    for (Object o : items) {
-	    	if (o == null) {
-	    		builder.append(indent).append("-------------------------" + "\n");
-	    	} else if (o instanceof ActionGroup) {
-	    		builder.append(indent).append(((ActionGroup) o).getValue(Action.NAME)).append("\n");
-	    		((ActionGroup) o).toPrettyString(builder, i + 1);
-	    	} else {
-                builder.append(indent).append(o.toString()).append("\n");
-	    	}
-	    }
-    }
 
     public void setActionContext(ActionContext actionContext) {
         for (Object o : items) {
@@ -117,20 +63,20 @@ public class ActionGroup extends AbstractAction {
         }
     }
 
-    public void registerDerivedComponent(JComponent component) {
-        derivedComponents.add(new WeakReference<JComponent>(component));
+    public void registerDerivedMenu(JMenu component) {
+        derivedMenus.add(new WeakReference<JMenu>(component));
     }
 
     public void registerListener(Runnable runnable) {
         derivedComponentsListeners.add(runnable);
     }
 
-    public void updateDerivedComponents() {
+    public void updateDerivedMenus() {
         if (! EventQueue.isDispatchThread()) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    updateDerivedComponents();
+                    updateDerivedMenus();
                 }
             });
             return;
@@ -140,15 +86,13 @@ public class ActionGroup extends AbstractAction {
             r.run();
         }
 
-        for (WeakReference<JComponent> ref : derivedComponents) {
+        for (WeakReference<JMenu> ref : derivedMenus) {
             if (ref == null) continue;
 
-            JComponent comp = ref.get();
-            if (comp == null) continue;
-            if (! (comp instanceof JMenu)) continue;
+            JMenu jm = ref.get();
+            if (jm == null) continue;
 
             // Clear menu
-            final JMenu jm = (JMenu) comp;
             jm.removeAll();
 
             MenuFactory mf = new MenuFactory();
