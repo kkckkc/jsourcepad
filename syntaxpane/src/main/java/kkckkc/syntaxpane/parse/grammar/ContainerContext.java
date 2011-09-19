@@ -147,4 +147,8 @@ public class ContainerContext extends MatchableContext {
     public void setContentNameContext(boolean contentNameContext) {
         this.contentNameContext = contentNameContext;
     }
+
+    public boolean isContentNameContext() {
+        return contentNameContext;
+    }
 }
