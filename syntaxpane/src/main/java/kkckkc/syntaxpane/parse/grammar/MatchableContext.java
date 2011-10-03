@@ -16,17 +16,17 @@ public abstract class MatchableContext extends CompoundContext {
 	protected boolean onceOnly;
 	protected boolean extendParent;
 	protected Context[] children = EMPTY_CHILDREN;
-	protected Context[] unnestedChildren = null;
+	protected MatchableContext[] unnestedChildren = null;
 	
 	public Context[] getChildren() {
 		return children;
 	}
 
-	public Context[] getUnnestedChildren() {
+	public MatchableContext[] getUnnestedMatchableChildren() {
 		if (unnestedChildren == null) {
-			List<Context> unnested = new ArrayList<Context>();
+			List<MatchableContext> unnested = new ArrayList<MatchableContext>(30);
 			unnest(unnested);
-			this.unnestedChildren = unnested.toArray(new Context[unnested.size()]);
+			this.unnestedChildren = unnested.toArray(new MatchableContext[unnested.size()]);
 		}
 		return unnestedChildren;
 	}
@@ -132,7 +132,7 @@ public abstract class MatchableContext extends CompoundContext {
 		childReferences = null;	
 	}
 
-	void unnest(List<Context> dest) {
+	void unnest(List<MatchableContext> dest) {
 		for (Context context : children) {
 			if (context == null) {
 				continue;
@@ -142,8 +142,8 @@ public abstract class MatchableContext extends CompoundContext {
 				((ContainerContext) context).unnest(dest);
             } else if (context instanceof RootContext) {
                 ((RootContext) context).unnest(dest);
-			} else {
-				dest.add(context);
+			} else if (context instanceof MatchableContext) {
+				dest.add((MatchableContext) context);
 			}
 		}
 	}

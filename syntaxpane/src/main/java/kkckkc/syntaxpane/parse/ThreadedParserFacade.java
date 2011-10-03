@@ -38,6 +38,8 @@ public class ThreadedParserFacade {
     public void parse(Parser parser, int start, int end, Parser.ChangeEvent changeEvent) {
         Entry e = activeEntry;
         if (e != null) {
+
+            // How can this happend? when language changes?
             if (e.parser != parser) {
                 e.cancel();
             }

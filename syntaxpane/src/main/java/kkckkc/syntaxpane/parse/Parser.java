@@ -121,7 +121,7 @@ public class Parser {
 			MatchableContext def = (MatchableContext) scope.getContext();
 
 			// Resolve contexts 
-            MatchableContext[] contexts = findMatchableContexts(def);
+            MatchableContext[] contexts = def.getUnnestedMatchableChildren();
 			
             Matcher[] matchers = new Matcher[contexts.length + 1];
             int[] contextMapping = buildMatchers(scope, line, seq, def, contexts, matchers);
@@ -150,7 +150,7 @@ public class Parser {
 					scope = scope.getParent();
 					newContextToParse = true;
 					break;
-				} else {
+				} else if (child != null) {
 					if (child.isOnceOnly()) matchers[matcherIdx] = null;
 
                     // If a not a container context and length is 0, we will enter an infinite loop
@@ -180,14 +180,14 @@ public class Parser {
 	}
 
     private int[] buildMatchers(Scope scope, Line line, CharSequence seq, MatchableContext def, MatchableContext[] contexts, Matcher[] matchers) {
+        boolean isFirstLine = line.getIdx() == 0;
         int idx = 0;
-
         int[] contextMapping = new int[matchers.length];
 
         // Arrange items in order:
         // - extendParent
         for (int i = 0; i < contexts.length; i++) {
-            if (isNotApplicable(line.getIdx() == 0, contexts[i])) continue;
+            if (isNotApplicable(isFirstLine, contexts[i])) continue;
             if (contexts[i].isExtendParent()) {
                 matchers[idx++] = contexts[i].getMatcher(seq);
                 contextMapping[idx - 1] = i;
@@ -207,9 +207,9 @@ public class Parser {
 
         // - all children except extendParent and contentNameContexts
         for (int i = 0; i < contexts.length; i++) {
-            if (isNotApplicable(line.getIdx() == 0, contexts[i])) continue;
+            if (isNotApplicable(isFirstLine, contexts[i])) continue;
             if (contexts[i].isExtendParent()) continue;
-            if (contexts[i] instanceof ContainerContext && ((ContainerContext) contexts[i]).isContentNameContext()) continue;
+            if (isSynteticContentNameContext(contexts[i])) continue;
 
             matchers[idx++] = contexts[i].getMatcher(seq);
             contextMapping[idx - 1] = i;
@@ -225,10 +225,10 @@ public class Parser {
 
         // - all children where contentNameContexts
         for (int i = 0; i < contexts.length; i++) {
-            if (isNotApplicable(line.getIdx() == 0, contexts[i])) continue;
+            if (isNotApplicable(isFirstLine, contexts[i])) continue;
             if (contexts[i].isExtendParent()) continue;
 
-            if (contexts[i] instanceof ContainerContext && ((ContainerContext) contexts[i]).isContentNameContext()) {
+            if (isSynteticContentNameContext(contexts[i])) {
                 matchers[idx++] = contexts[i].getMatcher(seq);
                 contextMapping[idx - 1] = i;
             }
@@ -237,23 +237,12 @@ public class Parser {
         return contextMapping;
     }
 
-    private boolean isNotApplicable(boolean isFirstLine, MatchableContext context) {
-        if (context == null) return true;
-        if (context.isFirstLineOnly() && ! isFirstLine) return true;
-        return false;
+    private boolean isSynteticContentNameContext(MatchableContext context) {
+        return context instanceof ContainerContext && ((ContainerContext) context).isContentNameContext();
     }
 
-
-    private MatchableContext[] findMatchableContexts(MatchableContext def) {
-        int i = 0;
-        Context[] children = def.getUnnestedChildren();
-        MatchableContext[] contexts = new MatchableContext[children.length];
-        for (Context ctx : children) {
-            if (ctx instanceof MatchableContext) {
-                contexts[i++] =	(MatchableContext) ctx;
-            }
-        }
-        return contexts;
+    private boolean isNotApplicable(boolean isFirstLine, MatchableContext context) {
+        return context == null || context.isFirstLineOnly() && !isFirstLine;
     }
 
     private Scope copyScopeOfPreviousLine(Scope scope) {
