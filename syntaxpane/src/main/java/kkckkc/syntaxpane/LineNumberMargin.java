@@ -31,7 +31,6 @@ public class LineNumberMargin extends JComponent implements PropertyChangeListen
 
 	private int fontHeight;
     private int fontLeading;
-    private int fontDescent;
 
 
     public LineNumberMargin(JEditorPane editorPane) {
@@ -40,13 +39,13 @@ public class LineNumberMargin extends JComponent implements PropertyChangeListen
 		
 		Wiring.wire(editorPane, this, true, "font");
 
-		setPreferredWidth(99);
+		setPreferredWidth(9999);
     }
 
 	public void setPreferredWidth(int lines) {
 		int digits = String.valueOf(lines).length();
 
-		if (digits != currentDigits && digits > 1) {
+		if (digits > currentDigits && digits > 1) {
 			currentDigits = digits;
 			int width = fontMetrics.charWidth('0') * digits;
 			Dimension d = getPreferredSize();
@@ -61,7 +60,6 @@ public class LineNumberMargin extends JComponent implements PropertyChangeListen
 		fontMetrics = getFontMetrics(getFont());
 		fontHeight = fontMetrics.getHeight();
 		fontAscent = fontMetrics.getAscent();
-        fontDescent = fontMetrics.getDescent();
         fontLeading = fontMetrics.getLeading();
 	}
 
