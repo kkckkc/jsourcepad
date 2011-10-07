@@ -14,7 +14,7 @@ public class MutableLineManagerTest extends TestCase {
 		CharProvider p = new CharProvider.StringBuffer(b);
 		
 		MutableLineManager lineManager = new MutableLineManager(p);
-		lineManager.addInterval(new Interval(0, b.length()));
+		lineManager.intervalAdded(new Interval(0, b.length()));
 		
 		assertState(lineManager, new Interval(0, 11));
 	}
@@ -24,7 +24,7 @@ public class MutableLineManagerTest extends TestCase {
 		CharProvider p = new CharProvider.StringBuffer(b);
 		
 		MutableLineManager lineManager = new MutableLineManager(p);
-		lineManager.addInterval(new Interval(0, b.length()));
+		lineManager.intervalAdded(new Interval(0, b.length()));
 		
 		assertState(lineManager, new Interval(0, 11), new Interval(12, 26));
 	}
@@ -34,10 +34,10 @@ public class MutableLineManagerTest extends TestCase {
 		CharProvider p = new CharProvider.StringBuffer(b);
 		
 		MutableLineManager lineManager = new MutableLineManager(p);
-		lineManager.addInterval(new Interval(0, b.length()));
+		lineManager.intervalAdded(new Interval(0, b.length()));
 		
 		b.insert(12, "consectetuer\n");
-		lineManager.addInterval(new Interval(12, 12 + "consectetuer\n".length()));
+		lineManager.intervalAdded(new Interval(12, 12 + "consectetuer\n".length()));
 		
 		assertState(lineManager, new Interval(0, 11), new Interval(12, 24), new Interval(25, 39));
 	}
@@ -47,10 +47,10 @@ public class MutableLineManagerTest extends TestCase {
 		CharProvider p = new CharProvider.StringBuffer(b);
 		
 		MutableLineManager lineManager = new MutableLineManager(p);
-		lineManager.addInterval(new Interval(0, b.length()));
+		lineManager.intervalAdded(new Interval(0, b.length()));
 		
 		b.insert(11, " consectetuer");
-		lineManager.addInterval(new Interval(11, 11 + " consectetuer".length()));
+		lineManager.intervalAdded(new Interval(11, 11 + " consectetuer".length()));
 		
 		assertState(lineManager, new Interval(0, 24), new Interval(25, 39));
 	}
@@ -60,10 +60,10 @@ public class MutableLineManagerTest extends TestCase {
 		CharProvider p = new CharProvider.StringBuffer(b);
 		
 		MutableLineManager lineManager = new MutableLineManager(p);
-		lineManager.addInterval(new Interval(0, b.length()));
+		lineManager.intervalAdded(new Interval(0, b.length()));
 		
 		b.insert(11, " consectetuer\ntest\n");
-		lineManager.addInterval(new Interval(11, 11 + " consectetuer\ntest\n".length()));
+		lineManager.intervalAdded(new Interval(11, 11 + " consectetuer\ntest\n".length()));
 		
 		assertState(lineManager, new Interval(0, 24), new Interval(25, 29), new Interval(30, 30), new Interval(31, 45));
 	}
@@ -73,10 +73,10 @@ public class MutableLineManagerTest extends TestCase {
 		CharProvider p = new CharProvider.StringBuffer(b);
 		
 		MutableLineManager lineManager = new MutableLineManager(p);
-		lineManager.addInterval(new Interval(0, b.length()));
+		lineManager.intervalAdded(new Interval(0, b.length()));
 		
 		b.delete(12, 18);
-		lineManager.removeInterval(new Interval(12, 18));
+		lineManager.intervalRemoved(new Interval(12, 18));
 
 		assertState(lineManager, new Interval(0, 20));
 	}
@@ -86,10 +86,10 @@ public class MutableLineManagerTest extends TestCase {
 		CharProvider p = new CharProvider.StringBuffer(b);
 		
 		MutableLineManager lineManager = new MutableLineManager(p);
-		lineManager.addInterval(new Interval(0, b.length()));
+		lineManager.intervalAdded(new Interval(0, b.length()));
 		
 		b.delete(8, 18);
-		lineManager.removeInterval(new Interval(8, 18));
+		lineManager.intervalRemoved(new Interval(8, 18));
 		
 		assertState(lineManager, new Interval(0, 16));
 	}
@@ -99,10 +99,10 @@ public class MutableLineManagerTest extends TestCase {
 		CharProvider p = new CharProvider.StringBuffer(b);
 		
 		MutableLineManager lineManager = new MutableLineManager(p);
-		lineManager.addInterval(new Interval(0, b.length()));
+		lineManager.intervalAdded(new Interval(0, b.length()));
 		
 		b.delete(2, 3);
-		lineManager.removeInterval(new Interval(2, 3));
+		lineManager.intervalRemoved(new Interval(2, 3));
 
 		assertState(lineManager, new Interval(0, 0), new Interval(1, 1), new Interval(2, 2));
 	}

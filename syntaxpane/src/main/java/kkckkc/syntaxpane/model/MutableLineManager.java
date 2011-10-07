@@ -13,14 +13,15 @@ public class MutableLineManager extends LineManager {
 	    super(charProvider);
     }
 
-	public List<Line> addInterval(Interval interval) {
+	public Pair<Line, Line> intervalAdded(Interval interval) {
 		Line startLine = getLineByPosition(interval.start);
 
 		int idx = startLine.idx;
-		List<Line> newLines = new ArrayList<Line>();
+		List<Line> newLines = new ArrayList<Line>(Math.max(20, interval.getLength() / 10));
 		Line l = nextLine(idx, startLine.start);
 		newLines.add(l);
-		while (l.end < (startLine.end + interval.getLength())) {
+        int end = startLine.end + interval.getLength();
+        while (l.end < end) {
 			l = nextLine(++idx, l.end + 1);
 			newLines.add(l);
 		}
@@ -34,14 +35,14 @@ public class MutableLineManager extends LineManager {
 		lines.remove(startLine);
 		lines.addAll(newLines);
 		
-		return newLines;
+		return new Pair<Line, Line>(newLines.get(0), newLines.get(newLines.size() - 1));
 	}
 
-	public Pair<Line, Line> removeInterval(Interval interval) {
+	public Pair<Line, Line> intervalRemoved(Interval interval) {
 		Line startLine = getLineByPosition(interval.start);
 		Line endLine = getLineByPosition(interval.end);
 
-		List<Line> linesToRemove = new ArrayList<Line>();
+		List<Line> linesToRemove = new ArrayList<Line>(endLine.getIdx() - startLine.getIdx() + 5);
 		
 		if (startLine != endLine) {
 			Iterator<Line> it = lines.tailSet(startLine, false).iterator();

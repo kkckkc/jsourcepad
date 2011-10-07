@@ -1,7 +1,7 @@
 package kkckkc.syntaxpane.model;
 
 public interface FoldManager {
-    LineManager.Line getClosestFoldableLine(int idx);
+    LineManager.Line getClosestFoldStart(int idx);
 
     void toggle(LineManager.Line line);
 

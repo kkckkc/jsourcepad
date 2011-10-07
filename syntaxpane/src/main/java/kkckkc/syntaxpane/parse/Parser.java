@@ -9,8 +9,6 @@ import kkckkc.syntaxpane.parse.grammar.MatchableContext;
 import kkckkc.syntaxpane.regex.Matcher;
 import kkckkc.utils.Pair;
 
-import java.util.List;
-
 
 public class Parser {
     private static final int ROOT = -1;
@@ -37,16 +35,16 @@ public class Parser {
 
 		LineManager.Line line;
 		if (event == ChangeEvent.REMOVE) {
-			Pair<Line, Line> linePair = lineManager.removeInterval(new Interval(start, end));
+			Pair<Line, Line> linePair = lineManager.intervalRemoved(new Interval(start, end));
 			line = linePair.getFirst();
 			
-			foldChanges = foldManager.removeLines(new Interval(linePair.getFirst().getIdx(), linePair.getSecond().getIdx()));
+			foldChanges = foldManager.linesRemoved(new Interval(linePair.getFirst().getIdx(), linePair.getSecond().getIdx()));
 			
 		} else if (event == ChangeEvent.ADD) {
-			List<Line> lines = lineManager.addInterval(new Interval(start, end));
+			Pair<Line, Line> linePair = lineManager.intervalAdded(new Interval(start, end));
 
-			if (lines.size() > 1) {
-				foldChanges = foldManager.addLines(new Interval(lines.get(0).getIdx(), lines.get(lines.size() - 1).getIdx()));
+			if (linePair.getFirst() != linePair.getSecond()) {
+				foldChanges = foldManager.linesAdded(new Interval(linePair.getFirst().getIdx(), linePair.getSecond().getIdx()));
 			}
 			
 			line = lineManager.getLineByPosition(start);

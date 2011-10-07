@@ -21,7 +21,7 @@ public class ViewFoldCurrentBlockAction extends BaseAction {
 
         FoldManager foldManager = buffer.getFoldManager();
 
-        LineManager.Line line = foldManager.getClosestFoldableLine(buffer.getInsertionPoint().getPosition());
+        LineManager.Line line = foldManager.getClosestFoldStart(buffer.getInsertionPoint().getPosition());
         foldManager.toggle(line);
 	}
 

@@ -1,7 +1,7 @@
 package kkckkc.syntaxpane.parse;
 
 public abstract class AbstractCharProvider implements CharProvider {
-	private static final int BUFFER_SIZE = 100;
+	private static final int BUFFER_SIZE = 150;
 	
 	public int find(int start, char c) {
 		int o = start;

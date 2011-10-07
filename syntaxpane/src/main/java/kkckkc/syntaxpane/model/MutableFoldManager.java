@@ -26,7 +26,7 @@ public class MutableFoldManager implements FoldManager {
 	}
 
     @Override
-    public Line getClosestFoldableLine(int position) {
+    public Line getClosestFoldStart(int position) {
         Line line = lineManager.getLineByPosition(position);
         while (line != null && ! foldable.get(line.getIdx())) {
             line = lineManager.getPrevious(line);
@@ -46,10 +46,10 @@ public class MutableFoldManager implements FoldManager {
 	}
 
 	@Override
-    public Fold getFoldStartingWith(int id) {
+    public Fold getFoldStartingWith(int lineIdx) {
 		Fold foundFold = null;
 		for (Fold fold : folds) {
-			if (fold.getStart() == id) {
+			if (fold.getStart() == lineIdx) {
 				foundFold = fold;
 			}
 		}
@@ -58,11 +58,11 @@ public class MutableFoldManager implements FoldManager {
 	}
 	
 	// Optimization as folds are most often searched linearly idx by idx
-	private Interval cachedFold = null;
+	private Fold cachedFold = null;
 	@Override
     public Interval getFoldOverlapping(int id) {
 		if (cachedFold != null && cachedFold.contains(id)) return cachedFold;
-		for (Interval fold : folds) {
+		for (Fold fold : folds) {
 			if (fold.getStart() > id) {
 				break;
 			} else if (fold.contains(id)) {
@@ -224,7 +224,7 @@ public class MutableFoldManager implements FoldManager {
 	}
 
 
-	public boolean removeLines(Interval interval) {
+	public boolean linesRemoved(Interval interval) {
 		if (interval.isEmpty()) return false;
 		if (folds.isEmpty()) return false;
 		
@@ -255,7 +255,7 @@ public class MutableFoldManager implements FoldManager {
 		return ret;
 	}
 
-	public boolean addLines(Interval interval) {
+	public boolean linesAdded(Interval interval) {
 		if (folds.isEmpty()) return false;
 
 		boolean ret = false;
