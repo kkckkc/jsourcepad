@@ -337,7 +337,7 @@
     <bean id="action-edit-paste-previous" parent="action" class="kkckkc.jsourcepad.action.EditPastePreviousAction" autowire="constructor"/>
 	<bean id="action-edit-paste-from-history" parent="action" class="kkckkc.jsourcepad.action.EditPasteFromHistoryAction" autowire="constructor"/>
 	<bean id="action-edit-mode-overwrite-mode" parent="action" class="kkckkc.jsourcepad.action.EditModeOverwriteModeAction" autowire="constructor"/>
-    <bean id="action-edit-select-word" p:action="select-word" parent="action" class="kkckkc.jsourcepad.action.EditorAction" autowire="constructor">
+    <bean id="action-edit-select-word" parent="action" class="kkckkc.jsourcepad.action.EditorAction" autowire="constructor">
         <property name="action" value="select-word" />
     </bean>
     <bean id="action-edit-select-line" parent="action" class="kkckkc.jsourcepad.action.EditorAction" autowire="constructor">
