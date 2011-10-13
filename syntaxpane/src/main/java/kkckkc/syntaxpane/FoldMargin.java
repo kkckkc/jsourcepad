@@ -41,7 +41,7 @@ public class FoldMargin extends JComponent implements PropertyChangeListener {
 				
 				Line line = document.getLineManager().getLineByPosition(position);
 
-				document.getFoldManager().toggle(line);
+				document.getFoldManager().toggle(line.getIdx());
 				
 				Element el = document.getDefaultRootElement();
 				int index = el.getElementIndex(editorPane.getCaretPosition());

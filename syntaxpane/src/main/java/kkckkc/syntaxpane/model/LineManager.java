@@ -52,8 +52,15 @@ public abstract class LineManager {
 		dumpXml(buf);
 		return buf.toString();
 	}
-	
-	public class Line extends Interval {
+
+    public Line getLineByIdx(int lineIdx) {
+        for (Line l : lines) {
+            if (l.getIdx() == lineIdx) return l;
+        }
+        return null;
+    }
+
+    public class Line extends Interval {
 		protected int idx;
 		protected Scope scope;
 		

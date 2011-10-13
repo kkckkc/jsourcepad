@@ -1,19 +1,16 @@
 package kkckkc.syntaxpane.model;
 
 public interface FoldManager {
-    LineManager.Line getClosestFoldStart(int idx);
+    LineManager.Line getClosestFoldStart(int line);
+    Interval getFoldOverlapping(int line);
 
-    void toggle(LineManager.Line line);
-
-    MutableFoldManager.Fold getFoldStartingWith(int id);
-
-    Interval getFoldOverlapping(int id);
-
-    State getFoldState(int idx);
-
-    void fold(LineManager.Line line);
-
+    void fold(int line);
     void unfold(int line);
+    void toggle(int line);
 
+    State getFoldState(int line);
     public enum State { DEFAULT, FOLDABLE, FOLDED_FIRST_LINE, FOLDED_SECOND_LINE_AND_REST }
+
+
+    // level,foldstate
 }

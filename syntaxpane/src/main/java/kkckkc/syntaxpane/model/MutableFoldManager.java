@@ -35,18 +35,17 @@ public class MutableFoldManager implements FoldManager {
     }
 
 	@Override
-    public void toggle(Line line) {
-		Interval fold = getFoldStartingWith(line.getIdx());
+    public void toggle(int line) {
+		Interval fold = getFoldStartingWith(line);
 		
 		if (fold != null) {
-			unfold(line.getIdx());
+			unfold(line);
 		} else {
 			fold(line);
 		}
 	}
 
-	@Override
-    public Fold getFoldStartingWith(int lineIdx) {
+    private Fold getFoldStartingWith(int lineIdx) {
 		Fold foundFold = null;
 		for (Fold fold : folds) {
 			if (fold.getStart() == lineIdx) {
@@ -88,13 +87,13 @@ public class MutableFoldManager implements FoldManager {
 	}
 	
 	@Override
-    public void fold(Line line) {
-		if (! foldable.get(line.getIdx())) return;
+    public void fold(int line) {
+		if (! foldable.get(line)) return;
 		
 		synchronized (folds) {
 			List<Fold> newFolds = new ArrayList<Fold>(folds.size() + 1);
 			
-			Fold newFold = new Fold(line.getIdx(), getEndOfFold(line));
+			Fold newFold = new Fold(line, getEndOfFold(line));
 			
 			List<Fold> children = new ArrayList<Fold>();
 
@@ -136,7 +135,9 @@ public class MutableFoldManager implements FoldManager {
 	}
 	
 
-	private int getEndOfFold(Line line) {
+	private int getEndOfFold(int lineIdx) {
+        Line line = lineManager.getLineByIdx(lineIdx);
+
 		String s = line.getCharSequence(false).toString();
 		int i = 0;
 		while (Character.isWhitespace(s.charAt(i))) {
@@ -259,22 +260,13 @@ public class MutableFoldManager implements FoldManager {
 		if (folds.isEmpty()) return false;
 
 		boolean ret = false;
-		
-		List<Fold> newFolds = new ArrayList<Fold>(Math.max(10, folds.size() + interval.getLength()));
 
 		synchronized (folds) {
 			for (Fold fold : folds) {
 				if (fold.getStart() > interval.getStart()) {
 					fold.move(interval.getLength());
-					newFolds.add(fold);
 					ret = true;
-				} else {
-					newFolds.add(fold);
 				}
-			}
-			
-			if (ret) {
-				folds = newFolds;
 			}
 		}
 		
