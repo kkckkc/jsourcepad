@@ -96,7 +96,6 @@ public class LineNumberMargin extends JComponent implements PropertyChangeListen
                 int rowWidth = getSize().width;
 
                 g.drawString(lineNumber, rowWidth - stringWidth - MARGIN,
-                        //((foldManager.toVisibleIndex(startLine.getIdx()) + 1) * fontHeight) - (fontHeight - fontAscent));
                         ((foldManager.toVisibleIndex(startLine.getIdx()) + 1) * fontHeight) - fontLeading);
                 --max;
             }

@@ -163,10 +163,10 @@ public abstract class FoldablePlainView extends PlainView {
 			FoldManager.State state = getDocument().getFoldManager().getFoldState(index);
 			if (state == FoldManager.State.FOLDED_SECOND_LINE_AND_REST) {
 				if (direction == WEST) {
-					Interval foldInterval = getDocument().getFoldManager().getFoldOverlapping(index);
+					Interval foldInterval = getDocument().getFoldManager().getBiggestFoldedSectionOverlapping(index);
 					result = getElement().getElement(foldInterval.getStart()).getEndOffset() - 1;
 				} else if (direction == EAST) {
-					Interval foldInterval = getDocument().getFoldManager().getFoldOverlapping(index);
+					Interval foldInterval = getDocument().getFoldManager().getBiggestFoldedSectionOverlapping(index);
 					result = getElement().getElement(foldInterval.getEnd() + 1).getStartOffset();
 				}
 			}
@@ -177,10 +177,10 @@ public abstract class FoldablePlainView extends PlainView {
 			FoldManager.State state = getDocument().getFoldManager().getFoldState(index);
 			if (state == FoldManager.State.FOLDED_SECOND_LINE_AND_REST) {
 				if (direction == NORTH) {
-					Interval foldInterval = getDocument().getFoldManager().getFoldOverlapping(index);
+					Interval foldInterval = getDocument().getFoldManager().getBiggestFoldedSectionOverlapping(index);
 					result = getElement().getElement(foldInterval.getStart()).getEndOffset() - 1;
 				} else if (direction == SOUTH) {
-					Interval foldInterval = getDocument().getFoldManager().getFoldOverlapping(index);
+					Interval foldInterval = getDocument().getFoldManager().getBiggestFoldedSectionOverlapping(index);
 					result = getElement().getElement(foldInterval.getEnd() + 1).getStartOffset();
 				}
 			}

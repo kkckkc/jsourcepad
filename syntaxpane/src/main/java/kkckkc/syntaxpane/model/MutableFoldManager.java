@@ -2,22 +2,25 @@ package kkckkc.syntaxpane.model;
 
 import kkckkc.syntaxpane.model.LineManager.Line;
 import kkckkc.syntaxpane.regex.Pattern;
-import kkckkc.utils.CharSequenceUtils;
 
 import java.util.*;
 
 
 
 public class MutableFoldManager implements FoldManager {
-	private List<Fold> folds = new ArrayList<Fold>();
-	
-	private BitSet foldable = new BitSet();
-	private List<FoldListener> foldListeners = new ArrayList<FoldListener>();
-	private LineManager lineManager;
-	
-	private Pattern foldEndPattern;
-	
-	public MutableFoldManager(LineManager lineManager) {
+    private final Object LOCK = new Object();
+
+    private LineManager lineManager;
+    private Fold cachedFold = null;
+
+    private TreeMap<Integer, Fold> foldables = new TreeMap<Integer, Fold>();
+	private Set<Fold> outerFolds = new HashSet<Fold>();
+    private List<FoldListener> foldListeners = new ArrayList<FoldListener>();
+
+    private Pattern foldEndPattern;
+    private Pattern foldStartPattern;
+
+    public MutableFoldManager(LineManager lineManager) {
 		this.lineManager = lineManager;
 	}
 	
@@ -25,146 +28,139 @@ public class MutableFoldManager implements FoldManager {
 		this.foldEndPattern = foldEndPattern;
 	}
 
+    public void setFoldStartPattern(Pattern foldStartPattern) {
+        this.foldStartPattern = foldStartPattern;
+    }
+
     @Override
     public Line getClosestFoldStart(int position) {
         Line line = lineManager.getLineByPosition(position);
-        while (line != null && ! foldable.get(line.getIdx())) {
-            line = lineManager.getPrevious(line);
+
+        while (position >= 0 && ! isFoldable(position)) {
+            position--;
         }
-        return line;
+
+        return position >= 0 ? lineManager.getLineByPosition(position) : line;
     }
 
 	@Override
     public void toggle(int line) {
-		Interval fold = getFoldStartingWith(line);
-		
-		if (fold != null) {
+        Fold fold = foldables.get(line);
+        if (fold == null) return;
+
+		if (fold.isFolded()) {
 			unfold(line);
 		} else {
 			fold(line);
 		}
 	}
 
-    private Fold getFoldStartingWith(int lineIdx) {
-		Fold foundFold = null;
-		for (Fold fold : folds) {
-			if (fold.getStart() == lineIdx) {
-				foundFold = fold;
-			}
-		}
-		
-		return foundFold;
-	}
-	
-	// Optimization as folds are most often searched linearly idx by idx
-	private Fold cachedFold = null;
 	@Override
-    public Interval getFoldOverlapping(int id) {
-		if (cachedFold != null && cachedFold.contains(id)) return cachedFold;
-		for (Fold fold : folds) {
-			if (fold.getStart() > id) {
-				break;
-			} else if (fold.contains(id)) {
-				cachedFold = fold;
-				return fold;
-			} 
-		}
-		return null;
+    public Fold getBiggestFoldedSectionOverlapping(int id) {
+        if (cachedFold != null && cachedFold.contains(id)) {
+            return cachedFold;
+        }
+
+        for (Fold fold : outerFolds) {
+            if (fold.contains(id)) {
+                cachedFold = fold;
+                return fold;
+            }
+        }
+
+        return null;
 	}
 	
 	@Override
     public State getFoldState(int idx) {
-		Interval fold = getFoldOverlapping(idx);
-		if (fold != null && fold.getStart() == idx) {
-			return State.FOLDED_FIRST_LINE;
-		} else if (fold != null) {
-			return State.FOLDED_SECOND_LINE_AND_REST;
-		} else if (foldable.get(idx)) {
-			return State.FOLDABLE;
-		} else {
-			return State.DEFAULT;
-		}
+		Fold fold = getBiggestFoldedSectionOverlapping(idx);
+        if (fold != null) {
+            if (fold.getStart() == idx) {
+                return State.FOLDED_FIRST_LINE;
+            } else {
+                return State.FOLDED_SECOND_LINE_AND_REST;
+            }
+        } else {
+            if (isFoldable(idx)) {
+                return State.FOLDABLE;
+            } else {
+                return State.DEFAULT;
+            }
+        }
 	}
 	
 	@Override
     public void fold(int line) {
-		if (! foldable.get(line)) return;
-		
-		synchronized (folds) {
-			List<Fold> newFolds = new ArrayList<Fold>(folds.size() + 1);
-			
-			Fold newFold = new Fold(line, getEndOfFold(line));
-			
-			List<Fold> children = new ArrayList<Fold>();
+        Fold fold = foldables.get(line);
+        if (fold == null) return;
 
-			boolean inserted = false;
-			for (Fold fold : folds) {
-				if (newFold.contains(fold)) {
-					children.add(fold);
-				} else {
-					if (! inserted && fold.getStart() >= newFold.getStart()) {
-						newFolds.add(newFold);
-						inserted = true;
-					}
-					newFolds.add(fold);
-				}
-			}
+        boolean changed = !fold.isFolded();
+        fold.setFolded(true);
 
-			if (! inserted) {
-				newFolds.add(newFold);
-			}
-			
-			newFold.setChildren(children);
-			
-			folds = newFolds;
-		}
-		fireFoldUpdated();
+        updateOuterFolds(fold);
+
+		if (changed) fireFoldUpdated();
 	}
 
-	@Override
+    private boolean isFoldable(int line) {
+        return foldables.containsKey(line);
+    }
+
+    @Override
     public void unfold(int line) {
-		Fold fold = getFoldStartingWith(line);
-		if (fold == null) return;
-		
-		folds.remove(fold);
-		
-		folds.addAll(fold.getChildren());
-		Collections.sort(folds);
-		
-		fireFoldUpdated();
-	}
-	
+        Fold fold = foldables.get(line);
+        if (fold == null) return;
 
-	private int getEndOfFold(int lineIdx) {
-        Line line = lineManager.getLineByIdx(lineIdx);
+        boolean changed = fold.isFolded();
+        fold.setFolded(false);
 
-		String s = line.getCharSequence(false).toString();
-		int i = 0;
-		while (Character.isWhitespace(s.charAt(i))) {
-			i++;
-		}
-		String prefix = s.substring(0, i);
-		
-		int end = Integer.MAX_VALUE;
-		Line nextLine = lineManager.getNext(line);
-		while (nextLine != null) {
-			end = nextLine.getIdx();
+        updateOuterFolds(fold);
 
-			CharSequence lc = nextLine.getCharSequence(false);
-			if (CharSequenceUtils.startsWith(lc, prefix) && 
-					foldEndPattern.matcher(lc).matches() &&
-					! Character.isWhitespace(lc.charAt(prefix.length()))) {
-				break;
-			}
-			nextLine = lineManager.getNext(nextLine);
-		}
-		return end;
+		if (changed) fireFoldUpdated();
 	}
 
-	public int toVisibleIndex(int line) {
+    private void updateOuterFolds(Fold fold) {
+        synchronized (LOCK) {
+            Fold parentFold = null;
+            for (Fold f : outerFolds) {
+                if (f.contains(fold)) {
+                    parentFold = f;
+                }
+            }
+
+            if (parentFold != null) {
+                if (fold.isFolded()) {
+                    parentFold.getChildren().add(fold);
+                } else {
+                    parentFold.getChildren().remove(fold);
+                }
+            }
+
+            if (fold.isFolded()) {
+                Iterator<Fold> it = outerFolds.iterator();
+                while (it.hasNext()) {
+                    Fold f = it.next();
+                    if (fold.contains(f)) {
+                        it.remove();
+                        fold.getChildren().add(f);
+                    }
+                }
+
+                outerFolds.add(fold);
+            } else {
+                for (Fold f : fold.getChildren()) {
+                    outerFolds.add(f);
+                }
+
+                outerFolds.remove(fold);
+            }
+        }
+    }
+
+    public int toVisibleIndex(int line) {
 		int offset = 0;
-		for (Interval fold : folds) {
-			if (fold.getEnd() < line) {
+        for (Fold fold : outerFolds) {
+            if (fold.getEnd() < line) {
 				offset += fold.getLength();
 			}
 		}
@@ -172,20 +168,20 @@ public class MutableFoldManager implements FoldManager {
 	}
 
 	public int fromVisibleIndex(int line) {
-		for (Interval fold : folds) {
-			if (fold.getStart() < line) {
-				line += fold.getLength();
-			} else {
-				break;
-			}
+        for (Fold fold : outerFolds) {
+            if (fold.getStart() < line) {
+                line += fold.getLength();
+            } else {
+                break;
+            }
 		}
 		return line;
 	}
 
 	public int getVisibleLineCount() {
 		int lineCount = lineManager.size();
-		for (Interval fold : folds) {
-			lineCount -= fold.getLength();
+        for (Fold fold : outerFolds) {
+            lineCount -= fold.getLength();
 		}
 		return lineCount;
 	}
@@ -194,23 +190,29 @@ public class MutableFoldManager implements FoldManager {
 		return lineManager.size();
 	}
 
-	public boolean setFoldableFlag(int idx, boolean b) {
-		if (b) {
-			if (foldable.get(idx)) return false;
-			foldable.set(idx, b);
-			return true;
-		} else {
-			if (! foldable.get(idx)) return false;
-			foldable.clear(idx);
-			if (getFoldState(idx) == State.FOLDED_FIRST_LINE) {
-				unfold(idx);
-			}
-			return true;
-		}
+	private boolean setFoldableFlag(Line line, boolean b, int level) {
+        synchronized (LOCK) {
+            int idx = line.getIdx();
+            boolean change = false;
+            if (b) {
+                Fold old = foldables.put(idx, new Fold(idx, level));
+                change = old == null || old.getLevel() != level;
+            } else {
+                Fold old = foldables.get(idx);
+                if (old != null) {
+                    if (old.isFolded()) {
+                        unfold(idx);
+                    }
+                    foldables.remove(idx);
+                    change = true;
+                }
+            }
+            return change;
+        }
 	}
-	
+
 	public void fireFoldUpdated() {
-		cachedFold = null;
+        cachedFold = null;
 		for (FoldListener listener : foldListeners) {
 			listener.foldUpdated();
 		}
@@ -219,96 +221,164 @@ public class MutableFoldManager implements FoldManager {
 	public void addFoldListener(FoldListener foldListener) {
 		this.foldListeners.add(foldListener);
 	}
-	
-	public interface FoldListener extends EventListener {
+
+
+    public interface FoldListener extends EventListener {
 		public void foldUpdated();
 	}
 
 
-	public boolean linesRemoved(Interval interval) {
-		if (interval.isEmpty()) return false;
-		if (folds.isEmpty()) return false;
-		
-		boolean ret = false;
-		
-		List<Fold> newFolds = new ArrayList<Fold>(Math.max(10, folds.size()));
+	public void linesRemoved(Interval interval) {
+		if (interval.isEmpty()) return;
+        if (foldables.isEmpty()) return;
+
+		TreeMap<Integer, Fold> newFolds = new TreeMap<Integer, Fold>();
 			
-		synchronized (folds) {
-			for (Fold fold : folds) {
-				if (fold.overlaps(interval)) {
-					fold.updateForDelete(interval, newFolds);
-					
-					ret = true;
-				} else if (fold.getStart() > interval.getEnd()) {
+		synchronized (LOCK) {
+			for (Fold fold : foldables.values()) {
+                if (fold.getStart() > interval.getEnd()) {
 					fold.move(- interval.getLength());
-					newFolds.add(fold);
-					ret = true;
+					newFolds.put(fold.start, fold);
 				} else {
-					newFolds.add(fold);
+					newFolds.put(fold.start, fold);
 				}
 			}
 			
-			if (ret) {
-				folds = newFolds;
-			}
+            foldables = newFolds;
 		}
-		
-		return ret;
+
+        fireFoldUpdated();
 	}
 
-	public boolean linesAdded(Interval interval) {
-		if (folds.isEmpty()) return false;
+	public void linesAdded(Interval interval) {
+		boolean foldsUpdated = false;
 
-		boolean ret = false;
+        TreeMap<Integer, Fold> newFolds = new TreeMap<Integer, Fold>();
 
-		synchronized (folds) {
-			for (Fold fold : folds) {
-				if (fold.getStart() > interval.getStart()) {
-					fold.move(interval.getLength());
-					ret = true;
+        synchronized (LOCK) {
+            for (Fold fold : foldables.values()) {
+                if (fold.getStart() > interval.getStart()) {
+                    fold.move(interval.getLength());
+                    foldsUpdated = true;
+                    newFolds.put(fold.start, fold);
+                } else {
+					newFolds.put(fold.start, fold);
 				}
-			}
-		}
+            }
+
+            foldables = newFolds;
+        }
+
+        processText(interval);
 		
-		return ret;
+        if (foldsUpdated) fireFoldUpdated();
 	}
 	
-	
-	static class Fold extends Interval {
-		private List<Fold> children;
-		
-		public Fold(int start, int end) {
-			super(start, end);
-		}
-		
-		public void updateForDelete(Interval interval, List<Fold> newFolds) {
-			if (interval.overlaps(this)) {
-				if (children != null) {
-					for (Fold fold : children) {
-						fold.updateForDelete(interval, newFolds);
-					}
-				}
-			} else {
-				newFolds.add(this);
-			}
-		}
+    public void linesUpdated(Interval interval) {
+        boolean foldsUpdated = processText(interval);
+        if (foldsUpdated) fireFoldUpdated();
+    }
 
-		public void move(int offset) {
-			start += offset;
-			end += offset;
-			if (children != null) {
-				for (Fold fold : children) {
-					fold.move(offset);
-				}
-			}
-		}
+    private boolean processText(Interval interval) {
+        if (foldStartPattern == null) return false;
 
-		public void setChildren(List<Fold> children) {
-			this.children = children;
-		}
-		
-		public List<Fold> getChildren() {
-			return children;
-		}
-	}
+        boolean foldChanges = false;
+
+        Line line = lineManager.getLineByIdx(interval.getStart());
+
+        Stack<Fold> foldStack = new Stack<Fold>();
+
+        int level = getLevel(interval.getStart());
+        while (line != null) {
+            boolean change = false;
+            CharSequence lt = line.getCharSequence(false);
+            if (foldStartPattern.matcher(lt).matches()) {
+                change = setFoldableFlag(line, true, ++level);
+                Fold fold = foldables.get(line.getIdx());
+                foldStack.push(fold);
+            } else if (foldEndPattern.matcher(lt).matches()) {
+                String prefix = getPrefix(line);
+                while (! foldStack.isEmpty()) {
+                    Fold p = foldStack.pop();
+                    p.setEnd(line.getIdx());
+                    if (prefix.equals(getPrefix(lineManager.getLineByIdx(p.start)))) {
+                        break;
+                    }
+                    level--;
+                }
+            } else {
+                change = setFoldableFlag(line, false, level);
+            }
+
+            if (! change && line.getIdx() > interval.getEnd()) break;
+
+            foldChanges |= change;
+
+            line = lineManager.getNext(line);
+        }
+
+        return foldChanges;
+    }
+
+    private String getPrefix(Line line) {
+        String s = line.getCharSequence(false).toString();
+        int i = 0;
+        while (Character.isWhitespace(s.charAt(i))) {
+            i++;
+        }
+        return s.substring(0, i);
+    }
+
+    private int getLevel(int line) {
+        while (line >= 0 && ! foldables.containsKey(line)) {
+            line--;
+        }
+
+        Fold f = foldables.get(line);
+        if (f == null) return 0;
+        return f.getLevel();
+    }
+
+
+
+    static class Fold extends Interval {
+        private boolean folded;
+        private int level;
+        private List<Fold> children;
+
+        Fold(int start, int level) {
+            super(start, start);
+            this.setLevel(level);
+        }
+
+        public void move(int offset) {
+            start += offset;
+            end += offset;
+        }
+
+        public void setEnd(int end) {
+            this.end = end;
+        }
+
+        public boolean isFolded() {
+            return folded;
+        }
+
+        public void setFolded(boolean folded) {
+            this.folded = folded;
+        }
+
+        public int getLevel() {
+            return level;
+        }
+
+        public void setLevel(int level) {
+            this.level = level;
+        }
+
+        public List<Fold> getChildren() {
+            if (children == null) children = new ArrayList<Fold>();
+            return children;
+        }
+    }
 }

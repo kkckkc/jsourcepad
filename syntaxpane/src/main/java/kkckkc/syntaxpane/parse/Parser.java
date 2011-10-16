@@ -28,28 +28,31 @@ public class Parser {
 		this.foldManager = foldManager;
 
 		this.foldManager.setFoldEndPattern(language.getFoldEnd());
+        this.foldManager.setFoldStartPattern(language.getFoldStart());
 	}
 	
 	public Pair<Interval, Interval> parse(int start, int end, ChangeEvent event) {
-		boolean foldChanges = false;
-
+        // TODO: Move fold manager events until after partialParse is determined
 		LineManager.Line line;
 		if (event == ChangeEvent.REMOVE) {
 			Pair<Line, Line> linePair = lineManager.intervalRemoved(new Interval(start, end));
 			line = linePair.getFirst();
 			
-			foldChanges = foldManager.linesRemoved(new Interval(linePair.getFirst().getIdx(), linePair.getSecond().getIdx()));
+			foldManager.linesRemoved(new Interval(linePair.getFirst().getIdx(), linePair.getSecond().getIdx()));
 			
 		} else if (event == ChangeEvent.ADD) {
 			Pair<Line, Line> linePair = lineManager.intervalAdded(new Interval(start, end));
 
 			if (linePair.getFirst() != linePair.getSecond()) {
-				foldChanges = foldManager.linesAdded(new Interval(linePair.getFirst().getIdx(), linePair.getSecond().getIdx()));
-			}
+				foldManager.linesAdded(new Interval(linePair.getFirst().getIdx(), linePair.getSecond().getIdx()));
+			} else {
+                foldManager.linesUpdated(new Interval(linePair.getFirst().getIdx(), linePair.getSecond().getIdx()));
+            }
 			
 			line = lineManager.getLineByPosition(start);
 		} else {
 			line = lineManager.getLineByPosition(start);
+            foldManager.linesUpdated(new Interval(line.getIdx(), lineManager.getLineByPosition(end).getIdx()));
 		}
 
         long startTimestamp = System.nanoTime();
@@ -64,14 +67,6 @@ public class Parser {
 			Scope origScope = line.getScope();
 			line.setScope(scope);
 
-			if (language.getFoldStart() != null) {
-				if (language.getFoldStart().matcher(line.getCharSequence(false)).matches()) {
-					foldChanges |= foldManager.setFoldableFlag(line.getIdx(), true);
-				} else {
-					foldChanges |= foldManager.setFoldableFlag(line.getIdx(), false);
-				}
-			}
-			
 			line = lineManager.getNext(line);
 
             if ((++i % SAMPLE_INTERVAL) == 0) {
@@ -88,10 +83,6 @@ public class Parser {
 			if (origScope.hasSameSignature(scope)) {
 				break;
 			}
-		}
-
-		if (foldChanges) {
-			foldManager.fireFoldUpdated();
 		}
 
         return new Pair<Interval, Interval>(

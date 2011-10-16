@@ -84,12 +84,14 @@ public class FoldMargin extends JComponent implements PropertyChangeListener {
         LineManager lineManager = document.getLineManager();
         do {
             FoldManager.State foldState = document.getFoldManager().getFoldState(startLine.getIdx());
-            if (foldState == FoldManager.State.FOLDABLE || foldState == FoldManager.State.FOLDED_FIRST_LINE) {
+            if (foldState == FoldManager.State.FOLDABLE || foldState == FoldManager.State.FOLDED_FIRST_LINE || foldState == FoldManager.State.FOLDABLE_END) {
                 g.setColor(getForeground());
 
                 int yo = document.getFoldManager().toVisibleIndex(startLine.getIdx()) * h + (h / 2) - 3;
                 if (foldState == FoldManager.State.FOLDED_FIRST_LINE) {
                     paintFoldedFoldMark(g, yo);
+                } else if (foldState == FoldManager.State.FOLDABLE_END) {
+                    paintUnfoldedEndFoldMark(g, yo);
                 } else {
                     paintUnfoldedFoldMark(g, yo);
                 }
@@ -101,6 +103,10 @@ public class FoldMargin extends JComponent implements PropertyChangeListener {
 	private void paintUnfoldedFoldMark(Graphics g, int yo) {
 		g.fillPolygon(new int[] { 0, 6, 3 }, new int[] { yo, yo, yo + 6 }, 3);
 	}
+
+    private void paintUnfoldedEndFoldMark(Graphics g, int yo) {
+        g.fillPolygon(new int[] { 0, 6, 3 }, new int[] { yo + 6, yo + 6, yo }, 3);
+    }
 
 	private void paintFoldedFoldMark(Graphics g, int yo) {
 		g.fillPolygon(new int[] { 0, 6, 0 }, new int[] { yo, yo + 3, yo + 6 }, 3);
