@@ -230,5 +230,4 @@ public class SourceView extends FoldablePlainView implements ThreadedParserFacad
 		graphics.setFont(font);
 		return i;
 	}
-
 }

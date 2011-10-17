@@ -12,6 +12,8 @@ import java.awt.*;
 public abstract class FoldablePlainView extends PlainView {
 	private int tabBase;
 	private int firstLineOffset;
+    private int tabSize = 0;
+    private Font font = null;
 
 	public FoldablePlainView(Element elem) {
 		super(elem);
@@ -199,7 +201,7 @@ public abstract class FoldablePlainView extends PlainView {
 
 		Rectangle lineArea = lineToRect(shape, lineIndex);
 
-		// determine span from the start of the line
+		// determine span from the start of the lie
 		tabBase = lineArea.x;
 		Element line = map.getElement(lineIndex);
 
@@ -233,6 +235,26 @@ public abstract class FoldablePlainView extends PlainView {
 		}
 		return r;
 	}
-	
+
+    @Override
+    protected void updateMetrics() {
+        super.updateMetrics();
+
+        Component host = getContainer();
+	    Font f = host.getFont();
+	    if (font != f) {
+    	    tabSize = getTabSize() * metrics.charWidth('m');
+            font = f;
+	    }
+    }
+
+    public float nextTabStop(float x, int tabOffset) {
+	    if (tabSize == 0) {
+	        return x;
+	    }
+
+        int ntabs = (((int) x) - tabBase) / tabSize;
+        return tabBase + ((ntabs + 1) * tabSize);
+    }
 	
 }
