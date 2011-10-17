@@ -2,6 +2,7 @@ package kkckkc.syntaxpane.parse.grammar.textmate;
 	
 import kkckkc.syntaxpane.style.*;
 import kkckkc.utils.plist.PListReaderFacade;
+import kkckkc.utils.swing.ColorUtils;
 
 import java.awt.*;
 import java.io.File;

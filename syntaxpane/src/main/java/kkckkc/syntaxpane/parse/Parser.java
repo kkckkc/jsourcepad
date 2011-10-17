@@ -32,27 +32,26 @@ public class Parser {
 	}
 	
 	public Pair<Interval, Interval> parse(int start, int end, ChangeEvent event) {
-        // TODO: Move fold manager events until after partialParse is determined
 		LineManager.Line line;
 		if (event == ChangeEvent.REMOVE) {
 			Pair<Line, Line> linePair = lineManager.intervalRemoved(new Interval(start, end));
 			line = linePair.getFirst();
 			
-			foldManager.linesRemoved(new Interval(linePair.getFirst().getIdx(), linePair.getSecond().getIdx()));
+			foldManager.linesRemoved(linePair.getFirst(), linePair.getSecond());
 			
 		} else if (event == ChangeEvent.ADD) {
 			Pair<Line, Line> linePair = lineManager.intervalAdded(new Interval(start, end));
 
 			if (linePair.getFirst() != linePair.getSecond()) {
-				foldManager.linesAdded(new Interval(linePair.getFirst().getIdx(), linePair.getSecond().getIdx()));
+				foldManager.linesAdded(linePair.getFirst(), linePair.getSecond());
 			} else {
-                foldManager.linesUpdated(new Interval(linePair.getFirst().getIdx(), linePair.getSecond().getIdx()));
+                foldManager.linesUpdated(linePair.getFirst(), linePair.getSecond());
             }
 			
 			line = lineManager.getLineByPosition(start);
 		} else {
 			line = lineManager.getLineByPosition(start);
-            foldManager.linesUpdated(new Interval(line.getIdx(), lineManager.getLineByPosition(end).getIdx()));
+            foldManager.linesUpdated(line, lineManager.getLineByPosition(end));
 		}
 
         long startTimestamp = System.nanoTime();

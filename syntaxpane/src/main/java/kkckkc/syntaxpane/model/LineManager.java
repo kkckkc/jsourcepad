@@ -6,12 +6,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
-import java.util.TreeSet;
+import java.util.NavigableSet;
+import java.util.concurrent.ConcurrentSkipListSet;
 
-public abstract class LineManager {
+public abstract class LineManager implements Iterable<LineManager.Line> {
 	protected CharProvider charProvider;
-	protected TreeSet<Line> lines = new TreeSet<Line>();
-	
+	protected NavigableSet<Line> lines = new ConcurrentSkipListSet<Line>();
+	protected int size;
+
 	public LineManager(CharProvider charProvider) {
 		this.charProvider = charProvider;
 	}
@@ -34,13 +36,17 @@ public abstract class LineManager {
 	}
 
 	public int size() {
-		return lines.size();
+		return size;
 	}
 
 	public Iterator<Line> iterator() {
 		return lines.iterator();
 	}	
-	
+
+    public Iterator<Line> iterator(int start, int end) {
+        return lines.subSet(getLineByIdx(start), true, getLineByIdx(end), true).iterator();
+    }
+
 	public void dumpXml(StringBuffer b) {
 		for (Line l : lines) {
 			b.append(l.toXml()).append("\n");
@@ -54,19 +60,23 @@ public abstract class LineManager {
 	}
 
     public Line getLineByIdx(int lineIdx) {
-        for (Line l : lines) {
-            if (l.getIdx() == lineIdx) return l;
+        if (lineIdx == 0) {
+            return lines.first();
         }
-        return null;
+
+        Line l = new Line(-lineIdx, 0, 0);
+        return lines.lower(l);
     }
 
     public class Line extends Interval {
 		protected int idx;
 		protected Scope scope;
-		
+		protected long flags;
+
 		public Line(int idx, int start, int end) {
 			super(start, end);
 			this.idx = idx;
+            this.flags = 0;
 		}
 
 		public Scope getScope() {
@@ -81,13 +91,22 @@ public abstract class LineManager {
 		public int getIdx() {
 			return idx;
 		}
-		
-		public String toString() {
-			return String.format("%2d [%4d - %4d]   %s", 
+
+        public long getFlags() {
+            return flags;
+        }
+
+        public void setFlags(long flags) {
+            this.flags = flags;
+        }
+
+        public String toString() {
+			return String.format("%4d [%4d - %4d] %4d |%-100.100s|",
 					idx,
 					start,
 					end,
-					charProvider.getSubSequence(start, end));
+                    flags,
+					charProvider.getSubSequence(start, end).toString().replace("\t", "--->"));
 		}
 		 
 		public String toXml() {
@@ -101,5 +120,31 @@ public abstract class LineManager {
 			    return charProvider.getSubSequence(this.start, this.end);
             }
 		}
-	}
+
+        public void addFlag(int flag) {
+            this.flags |= flag;
+        }
+
+        public void clearFlag(int flag) {
+            this.flags &= ~flag;
+        }
+
+        public final int hashCode() {
+    		return this.idx;
+    	}
+
+    	public final boolean equals(Object other) {
+            return other instanceof Line && ((Line) other).idx == idx;
+        }
+
+        public int compareTo(Interval i) {
+            Line o = (Line) i;
+            if (idx < 0) {
+                if (-idx < o.idx) return -1;
+                else return 1;
+            } else {
+                return super.compareTo(i);
+            }
+        }
+    }
 }

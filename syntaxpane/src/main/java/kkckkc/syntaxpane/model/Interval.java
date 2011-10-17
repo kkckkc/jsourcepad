@@ -41,7 +41,7 @@ public class Interval implements Comparable<Interval> {
 					Math.min(this.end, oi.getEnd()));
 	}
 	
-	public final int hashCode() {
+	public int hashCode() {
 		return this.start << 8 | this.end;
 	}
 	
@@ -49,7 +49,7 @@ public class Interval implements Comparable<Interval> {
 		return end <= start;
 	}
 	
-	public final boolean equals(Object other) {
+	public boolean equals(Object other) {
         return other instanceof Interval && ((Interval) other).start == start && ((Interval) other).end == end;
     }
 	
@@ -57,7 +57,7 @@ public class Interval implements Comparable<Interval> {
 		return "[" + start + " - " + end + "]";
 	}
 
-	public final int compareTo(Interval o) {
+	public int compareTo(Interval o) {
         if (start > o.start) return 1;
         if (start < o.start) return -1;
         return 0;

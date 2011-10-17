@@ -10,6 +10,7 @@ import kkckkc.jsourcepad.util.messagebus.Subscription;
 import kkckkc.syntaxpane.model.Interval;
 import kkckkc.syntaxpane.model.LineManager;
 import kkckkc.syntaxpane.model.SourceDocument;
+import kkckkc.syntaxpane.model.TabManager;
 import kkckkc.syntaxpane.parse.grammar.Language;
 import kkckkc.syntaxpane.parse.grammar.LanguageManager;
 import org.springframework.beans.BeansException;
@@ -46,6 +47,8 @@ public class DocImpl implements Doc, ScopeRoot, BeanFactoryAware {
 
         this.sourceDocument = new SourceDocument();
         this.tabManager = new TabManagerImpl(this);
+        sourceDocument.setTabManager(tabManager);
+
         this.buffer = new BufferImpl(sourceDocument, this, window);
 		this.buffer.setLanguage(languageManager.getLanguage(null));
 

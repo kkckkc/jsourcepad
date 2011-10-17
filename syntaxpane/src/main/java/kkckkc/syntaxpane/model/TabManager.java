@@ -1,4 +1,4 @@
-package kkckkc.jsourcepad.model;
+package kkckkc.syntaxpane.model;
 
 public interface TabManager {
 	public String getFirstIndentionString(CharSequence line);

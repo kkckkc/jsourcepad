@@ -1,4 +1,4 @@
-package kkckkc.syntaxpane.parse.grammar.textmate;
+package kkckkc.utils.swing;
 
 import java.awt.*;
 
@@ -94,5 +94,13 @@ public class ColorUtils {
 		} else {
 			return Color.decode(colorString.substring(0, 7));
 		}
+    }
+
+    public static Color mix(Color c1, Color c2, double fraction) {
+        int red = Math.min(255, (int) (c1.getRed() + (c2.getRed() - c1.getRed()) * fraction));
+        int green = Math.min(255, (int) (c1.getGreen() + (c2.getGreen() - c1.getGreen()) * fraction));
+        int blue = Math.min(255, (int) (c1.getBlue() + (c2.getBlue() - c1.getBlue()) * fraction));
+
+        return new Color(red, green, blue);
     }
 }

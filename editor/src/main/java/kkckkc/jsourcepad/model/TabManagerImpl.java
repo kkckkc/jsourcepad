@@ -3,6 +3,7 @@ package kkckkc.jsourcepad.model;
 import kkckkc.jsourcepad.model.settings.SettingsManager;
 import kkckkc.jsourcepad.model.settings.TabProjectSettings;
 import kkckkc.jsourcepad.util.messagebus.Subscription;
+import kkckkc.syntaxpane.model.TabManager;
 import kkckkc.utils.CharSequenceUtils;
 
 import javax.annotation.PreDestroy;

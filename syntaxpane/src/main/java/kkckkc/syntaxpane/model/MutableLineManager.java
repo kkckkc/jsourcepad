@@ -19,7 +19,9 @@ public class MutableLineManager extends LineManager {
 		int idx = startLine.idx;
 		List<Line> newLines = new ArrayList<Line>(Math.max(20, interval.getLength() / 10));
 		Line l = nextLine(idx, startLine.start);
+        l.setFlags(startLine.flags);
 		newLines.add(l);
+
         int end = startLine.end + interval.getLength();
         while (l.end < end) {
 			l = nextLine(++idx, l.end + 1);
@@ -34,6 +36,8 @@ public class MutableLineManager extends LineManager {
 
 		lines.remove(startLine);
 		lines.addAll(newLines);
+
+        this.size = lines.size();
 		
 		return new Pair<Line, Line>(newLines.get(0), newLines.get(newLines.size() - 1));
 	}
@@ -58,6 +62,9 @@ public class MutableLineManager extends LineManager {
 		}
 
 		lines.removeAll(linesToRemove);
+
+        this.size = lines.size();
+
 		renumber(startLine, startLine.idx, interval.start, - interval.getLength());
 		
 		return new Pair<Line, Line>(startLine, endLine);

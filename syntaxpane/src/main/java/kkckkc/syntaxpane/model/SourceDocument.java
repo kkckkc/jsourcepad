@@ -86,4 +86,7 @@ public class SourceDocument extends PlainDocument {
 	    return this.parser.getLanguage();
     }
 
+    public void setTabManager(TabManager tabManager) {
+        foldManager.setTabManager(tabManager);
+    }
 }

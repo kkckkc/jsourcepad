@@ -17,9 +17,9 @@ import kkckkc.jsourcepad.util.io.ErrorDialog;
 import kkckkc.jsourcepad.util.messagebus.AbstractMessageBus;
 import kkckkc.jsourcepad.util.messagebus.MessageBus;
 import kkckkc.syntaxpane.parse.grammar.LanguageManager;
-import kkckkc.syntaxpane.parse.grammar.textmate.ColorUtils;
 import kkckkc.syntaxpane.style.*;
 import kkckkc.utils.io.FileUtils;
+import kkckkc.utils.swing.ColorUtils;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 

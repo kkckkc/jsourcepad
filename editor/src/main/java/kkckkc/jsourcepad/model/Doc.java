@@ -1,5 +1,7 @@
 package kkckkc.jsourcepad.model;
 
+import kkckkc.syntaxpane.model.TabManager;
+
 import java.io.File;
 import java.io.IOException;
 
