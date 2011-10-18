@@ -44,13 +44,15 @@ public class FoldMargin extends JComponent implements PropertyChangeListener {
 				int position = editorPane.viewToModel(new Point(0, e.getY()));
 
 				if (position > document.getLength()) return;
-				
-                document.getFoldManager().toggle(currentFoldInterval.getStart());
+                if (currentFoldInterval == null) return;
+
+                document.getFoldManager().toggle(
+                        document.getLineManager().getLineByIdx(currentFoldInterval.getStart()));
 
 				Element el = document.getDefaultRootElement();
 				int index = el.getElementIndex(editorPane.getCaretPosition());
 
-				FoldManager.State foldState = document.getFoldManager().getFoldState(index);
+				FoldManager.State foldState = document.getFoldManager().getFoldState(document.getLineManager().getLineByIdx(index));
 				if (foldState == FoldManager.State.FOLDED_SECOND_LINE_AND_REST) {
 					editorPane.setCaretPosition(Math.max(0, position - 1));
 				}
@@ -75,7 +77,7 @@ public class FoldMargin extends JComponent implements PropertyChangeListener {
 
                 Line line = document.getLineManager().getLineByPosition(position);
 
-                FoldManager.State state = document.getFoldManager().getFoldState(line.getIdx());
+                FoldManager.State state = document.getFoldManager().getFoldState(line);
                 if (state == FoldManager.State.FOLDABLE || state == FoldManager.State.FOLDABLE_END || state == FoldManager.State.FOLDED_FIRST_LINE) {
                     if (currentFoldInterval == null ||
                             (line.getIdx() != currentFoldInterval.getStart() && line.getIdx() != currentFoldInterval.getEnd())) {
@@ -126,7 +128,7 @@ public class FoldMargin extends JComponent implements PropertyChangeListener {
 
         LineManager lineManager = document.getLineManager();
         do {
-            FoldManager.State foldState = document.getFoldManager().getFoldState(startLine.getIdx());
+            FoldManager.State foldState = document.getFoldManager().getFoldState(startLine);
             if (foldState == FoldManager.State.FOLDABLE || foldState == FoldManager.State.FOLDED_FIRST_LINE || foldState == FoldManager.State.FOLDABLE_END) {
                 g.setColor(ColorUtils.mix(getBackground(), getForeground(), 0.5));
 

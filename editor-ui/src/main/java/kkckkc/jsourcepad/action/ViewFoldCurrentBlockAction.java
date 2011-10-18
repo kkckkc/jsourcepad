@@ -4,6 +4,7 @@ import kkckkc.jsourcepad.model.Buffer;
 import kkckkc.jsourcepad.model.Doc;
 import kkckkc.jsourcepad.util.action.BaseAction;
 import kkckkc.syntaxpane.model.FoldManager;
+import kkckkc.syntaxpane.model.Interval;
 import kkckkc.syntaxpane.model.LineManager;
 
 import java.awt.event.ActionEvent;
@@ -20,9 +21,10 @@ public class ViewFoldCurrentBlockAction extends BaseAction {
         Buffer buffer = doc.getActiveBuffer();
 
         FoldManager foldManager = buffer.getFoldManager();
+        LineManager lineManager = buffer.getLineManager();
 
-        LineManager.Line line = foldManager.getClosestFoldStart(buffer.getInsertionPoint().getPosition());
-        foldManager.toggle(line.getIdx());
+        Interval fold = foldManager.getFold(lineManager.getLineByPosition(buffer.getInsertionPoint().getPosition()));
+        foldManager.toggle(lineManager.getLineByIdx(fold.getStart()));
 	}
 
 }

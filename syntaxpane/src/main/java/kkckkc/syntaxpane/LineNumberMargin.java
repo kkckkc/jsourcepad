@@ -89,7 +89,7 @@ public class LineNumberMargin extends JComponent implements PropertyChangeListen
         MutableFoldManager foldManager = document.getFoldManager();
         int max = foldManager.getVisibleLineCount();
         do {
-            FoldManager.State foldState = document.getFoldManager().getFoldState(startLine.getIdx());
+            FoldManager.State foldState = document.getFoldManager().getFoldState(startLine);
             if (foldState != FoldManager.State.FOLDED_SECOND_LINE_AND_REST) {
                 String lineNumber = String.valueOf(startLine.getIdx() + 1);
                 int stringWidth = fontMetrics.stringWidth(lineNumber);
@@ -103,7 +103,7 @@ public class LineNumberMargin extends JComponent implements PropertyChangeListen
             startLine = document.getLineManager().getNext(startLine);
         } while (startLine != null && startLine.getIdx() <= endLine.getIdx() && max > 0);
 
-        setPreferredWidth(foldManager.getLineCount());
+        setPreferredWidth(document.getLineManager().size());
 	}
  
 	@Override

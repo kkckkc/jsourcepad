@@ -21,21 +21,21 @@ public class MutableFoldManagerTest extends TestCase {
                 FoldManager.State.DEFAULT, FoldManager.State.FOLDABLE_END, FoldManager.State.FOLDABLE_END);
 
 
-        foldManager.toggle(2);
+        foldManager.toggle(lineManager.getLineByIdx(2));
 
         assertFoldState(foldManager,
                 FoldManager.State.FOLDABLE, FoldManager.State.DEFAULT, FoldManager.State.FOLDED_FIRST_LINE,
                 FoldManager.State.FOLDED_SECOND_LINE_AND_REST, FoldManager.State.FOLDED_SECOND_LINE_AND_REST, FoldManager.State.FOLDABLE_END);
 
 
-        foldManager.toggle(0);
+        foldManager.toggle(lineManager.getLineByIdx(0));
 
         assertFoldState(foldManager,
                 FoldManager.State.FOLDED_FIRST_LINE, FoldManager.State.FOLDED_SECOND_LINE_AND_REST, FoldManager.State.FOLDED_SECOND_LINE_AND_REST,
                 FoldManager.State.FOLDED_SECOND_LINE_AND_REST, FoldManager.State.FOLDED_SECOND_LINE_AND_REST, FoldManager.State.FOLDED_SECOND_LINE_AND_REST);
 
 
-        foldManager.toggle(0);
+        foldManager.toggle(lineManager.getLineByIdx(0));
 
         assertFoldState(foldManager,
                 FoldManager.State.FOLDABLE, FoldManager.State.DEFAULT, FoldManager.State.FOLDED_FIRST_LINE,
@@ -80,7 +80,7 @@ public class MutableFoldManagerTest extends TestCase {
     private void assertFoldState(MutableFoldManager foldManager, FoldManager.State... states) {
         int i = 0;
         for (FoldManager.State state : states) {
-            assertEquals(state, foldManager.getFoldState(i));
+            assertEquals(state, foldManager.getFoldState(lineManager.getLineByIdx(i)));
             i++;
         }
     }

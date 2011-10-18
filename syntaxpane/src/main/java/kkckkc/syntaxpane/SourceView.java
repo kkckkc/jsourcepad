@@ -69,7 +69,7 @@ public class SourceView extends FoldablePlainView implements ThreadedParserFacad
 		
 		x = draw(graphics2d, x, y, start, end, segment, this, line, line.getScope().getRoot());
 		
-		FoldManager.State foldState = doc.getFoldManager().getFoldState(line.getIdx());
+		FoldManager.State foldState = doc.getFoldManager().getFoldState(line);
 		if (foldState == FoldManager.State.FOLDED_FIRST_LINE) {
 			x = drawSegment(editorKit.getSourcePane().getStyleScheme().getTextStyle(), null, graphics,
                     x + 10, y, new Segment(new char[]{'.', '.', '.'}, 0, 3),

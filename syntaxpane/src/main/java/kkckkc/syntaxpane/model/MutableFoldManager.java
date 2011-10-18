@@ -3,7 +3,6 @@ package kkckkc.syntaxpane.model;
 import com.google.common.collect.MapMaker;
 import kkckkc.syntaxpane.model.LineManager.Line;
 import kkckkc.syntaxpane.regex.Pattern;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -20,7 +19,6 @@ public class MutableFoldManager implements FoldManager {
     private Set<Fold> outerFolds = new TreeSet<Fold>();
 
     private LineManager lineManager;
-    private Fold cachedFold = null;
 
     private List<FoldListener> foldListeners = new ArrayList<FoldListener>();
 
@@ -41,22 +39,14 @@ public class MutableFoldManager implements FoldManager {
         this.foldStartPattern = foldStartPattern;
     }
 
-    @Override
-    public Line getClosestFoldStart(int position) {
-        Line line = lineManager.getLineByPosition(position);
-
-        while (! isFoldable(line)) {
-            line = lineManager.getPrevious(line);
-            if (line == null) break;
-        }
-
-        return line;
+    public void setTabManager(TabManager tabManager) {
+        this.tabManager = tabManager;
     }
 
 	@Override
-    public void toggle(int idx) {
-        Line line = lineManager.getLineByIdx(idx);
+    public void toggle(Line line) {
         if (line == null) return;
+
         Fold fold = folds.get(line);
         if (fold == null) return;
 
@@ -67,27 +57,8 @@ public class MutableFoldManager implements FoldManager {
 		}
 	}
 
-    private void fold(Fold fold) {
-        boolean changed = !fold.isFolded();
-        fold.setFolded(true);
-
-        updateOuterFolds(fold);
-
-        if (changed) fireFoldUpdated();
-    }
-
-    private void unfold(Fold fold) {
-        boolean changed = fold.isFolded();
-        fold.setFolded(false);
-
-        updateOuterFolds(fold);
-
-		if (changed) fireFoldUpdated();
-    }
-
     @Override
-    public void fold(int idx) {
-        Line line = lineManager.getLineByIdx(idx);
+    public void fold(Line line) {
         if (line == null) return;
 
         Fold fold = folds.get(line);
@@ -96,9 +67,17 @@ public class MutableFoldManager implements FoldManager {
         fold(fold);
     }
 
+    private void fold(Fold fold) {
+        if (fold.isFolded()) return;
+
+        fold.setFolded(true);
+
+        updateOuterFolds(fold);
+        fireFoldUpdated();
+    }
+
     @Override
-    public void unfold(int idx) {
-        Line line = lineManager.getLineByIdx(idx);
+    public void unfold(Line line) {
         if (line == null) return;
 
         Fold fold = folds.get(line);
@@ -107,25 +86,28 @@ public class MutableFoldManager implements FoldManager {
         unfold(fold);
 	}
 
-	@Override
-    public Fold getBiggestFoldedSectionOverlapping(int id) {
-        if (cachedFold != null && cachedFold.contains(id)) {
-            return cachedFold;
-        }
+    private void unfold(Fold fold) {
+        if (! fold.isFolded()) return;
 
+        fold.setFolded(false);
+
+        updateOuterFolds(fold);
+		fireFoldUpdated();
+    }
+
+	@Override
+    public Fold getFoldedSectionOverlapping(int id) {
         for (Fold fold : outerFolds) {
             if (fold.contains(id)) {
-                cachedFold = fold;
                 return fold;
             }
         }
 
         return null;
 	}
-	
-	@Override
-    public State getFoldState(int idx) {
-        Line line = lineManager.getLineByIdx(idx);
+
+    @Override
+    public State getFoldState(Line line) {
         if (line == null) return State.DEFAULT;
 
         long flag = line.getFlags();
@@ -146,20 +128,17 @@ public class MutableFoldManager implements FoldManager {
         }
 	}
 
-    private boolean isFoldable(@NotNull Line line) {
-        return folds.containsKey(line);
-    }
-
-
     private void updateOuterFolds(Fold fold) {
         synchronized (LOCK) {
             Fold parentFold = null;
             for (Fold f : outerFolds) {
                 if (f.contains(fold)) {
                     parentFold = f;
+                    break;
                 }
             }
 
+            // Add / remove from ancestor fold
             if (parentFold != null) {
                 if (fold.isFolded()) {
                     parentFold.getChildren().add(fold);
@@ -169,6 +148,7 @@ public class MutableFoldManager implements FoldManager {
             }
 
             if (fold.isFolded()) {
+                // Add any sub-folds to the children of current fold and remove from outerFolds
                 Iterator<Fold> it = outerFolds.iterator();
                 while (it.hasNext()) {
                     Fold f = it.next();
@@ -180,9 +160,11 @@ public class MutableFoldManager implements FoldManager {
 
                 outerFolds.add(fold);
             } else {
+                // Add all children to outerFolds and remove from children
                 for (Fold f : fold.getChildren()) {
                     outerFolds.add(f);
                 }
+                fold.getChildren().clear();
 
                 outerFolds.remove(fold);
             }
@@ -190,9 +172,7 @@ public class MutableFoldManager implements FoldManager {
             Iterator<Line> it = lineManager.iterator(fold.getStart(), fold.getEnd());
             while (it.hasNext()) {
                 Line l = it.next();
-
-                l.clearFlag(FLAG_FOLDABLE);
-                l.clearFlag(FLAG_FOLDED);
+                l.clearFlag(FLAG_FOLDABLE | FLAG_FOLDED);
 
                 for (Fold f : outerFolds) {
                     if (f.contains(l.getIdx())) {
@@ -222,7 +202,6 @@ public class MutableFoldManager implements FoldManager {
 	}
 
 	public int fromVisibleIndex(int line) {
-        int offset = 0;
         for (Fold fold : outerFolds) {
             if (fold.getStart() < line) {
                 line += fold.getLength();
@@ -241,14 +220,10 @@ public class MutableFoldManager implements FoldManager {
 		return lineCount;
 	}
 
-	public int getLineCount() {
-		return lineManager.size();
-	}
-
-	private boolean setFoldableFlag(Line line, boolean b, int level) {
+	private boolean setFoldableFlag(Line line, boolean folded, int level) {
         int idx = line.getIdx();
         boolean change = false;
-        if (b) {
+        if (folded) {
             Fold old = folds.get(line);
             change = old == null || old.getLevel() != level;
             if (old == null) {
@@ -263,7 +238,7 @@ public class MutableFoldManager implements FoldManager {
             Fold old = folds.get(line);
             if (old != null) {
                 if (old.isFolded()) {
-                    unfold(idx);
+                    unfold(line);
                 }
                 synchronized (LOCK) {
                     folds.remove(line);
@@ -278,7 +253,6 @@ public class MutableFoldManager implements FoldManager {
                     }
                 }
 
-
                 change = true;
             } else if ((line.getFlags() & FLAG_FOLDABLE_END) != 0) {
                 line.clearFlag(FLAG_FOLDABLE_END);
@@ -289,7 +263,6 @@ public class MutableFoldManager implements FoldManager {
 	}
 
 	public void fireFoldUpdated() {
-        cachedFold = null;
 		for (FoldListener listener : foldListeners) {
 			listener.foldUpdated();
 		}
@@ -298,10 +271,6 @@ public class MutableFoldManager implements FoldManager {
 	public void addFoldListener(FoldListener foldListener) {
 		this.foldListeners.add(foldListener);
 	}
-
-    public void setTabManager(TabManager tabManager) {
-        this.tabManager = tabManager;
-    }
 
     public Interval getFold(Line line) {
         int start = line.getIdx();
@@ -431,8 +400,6 @@ public class MutableFoldManager implements FoldManager {
         return f.getLevel();
     }
 
-
-
     static class Fold extends Interval {
         private boolean folded;
         private int level;
@@ -479,7 +446,7 @@ public class MutableFoldManager implements FoldManager {
         StringBuilder b = new StringBuilder();
         for (Line line : lineManager) {
             b.append(line).
-                    append(String.format("%-25s", getFoldState(line.getIdx()))).append(" ").
+                    append(String.format("%-25s", getFoldState(line))).append(" ").
                     append(((line.getFlags() & FLAG_FOLDABLE) != 0) ? "v" : " ").append(" ").
                     append(((line.getFlags() & FLAG_FOLDABLE_END) != 0) ? "^" : " ").append(" ").
                     append(((line.getFlags() & FLAG_FOLDED) != 0) ? "-" : " ").append(" ").
