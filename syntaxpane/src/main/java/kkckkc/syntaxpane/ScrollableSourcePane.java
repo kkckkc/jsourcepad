@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.Reader;
 
 
-
 public class ScrollableSourcePane extends JPanel {
 	private SourceJEditorPane editorPane;
 	private JScrollPane scrollPane;
@@ -46,7 +45,10 @@ public class ScrollableSourcePane extends JPanel {
 		lineNumberPane = new LineNumberMargin(editorPane);
 		
 		scrollPane = new JScrollPane(editorPane);
-		
+
+        final MiniMap mm = new MiniMap(scrollPane, editorPane);
+        add(mm, BorderLayout.EAST);
+
 		rowHeaderPane = new JPanel();
 		rowHeaderPane.setLayout(new BorderLayout());
 
@@ -195,7 +197,7 @@ public class ScrollableSourcePane extends JPanel {
         return editorPane.requestFocusInWindow();
     }
 
-    private static final class SourceJEditorPane extends JEditorPane {
+    public static final class SourceJEditorPane extends JEditorPane {
         private boolean overwriteMode;
 
         private StyleScheme styleScheme;

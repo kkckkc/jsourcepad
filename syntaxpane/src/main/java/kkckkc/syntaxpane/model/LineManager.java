@@ -61,7 +61,7 @@ public abstract class LineManager implements Iterable<LineManager.Line> {
 
     public Line getLineByIdx(int lineIdx) {
         if (lineIdx == 0) {
-            return lines.first();
+            return lines.isEmpty() ? null : lines.first();
         }
 
         Line l = new Line(-lineIdx, 0, 0);
