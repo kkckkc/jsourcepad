@@ -1,5 +1,6 @@
 package kkckkc.syntaxpane.model;
 
+import com.google.common.collect.Lists;
 import kkckkc.syntaxpane.parse.CharProvider;
 import kkckkc.utils.Pair;
 
@@ -37,6 +38,16 @@ public class MutableLineManager extends LineManager {
 		lines.remove(startLine);
 		lines.addAll(newLines);
 
+        if (newLines.size() == 1) {
+            for (LineListener list : listeners) {
+                list.linesUpdated(newLines);
+            }
+        } else if (! newLines.isEmpty()) {
+            for (LineListener list : listeners) {
+                list.linesAdded(newLines);
+            }
+        }
+
         this.size = lines.size();
 		
 		return new Pair<Line, Line>(newLines.get(0), newLines.get(newLines.size() - 1));
@@ -62,6 +73,12 @@ public class MutableLineManager extends LineManager {
 		}
 
 		lines.removeAll(linesToRemove);
+
+        if (! linesToRemove.isEmpty()) {
+            for (LineListener list : listeners) {
+                list.linesRemoved(linesToRemove);
+            }
+        }
 
         this.size = lines.size();
 
@@ -102,4 +119,10 @@ public class MutableLineManager extends LineManager {
 		}
 	}
 
+    public void intervalUpdated(Interval interval) {
+        ArrayList<Line> list = Lists.newArrayList(iterator(interval.getStart(), interval.getEnd()));
+        for (LineListener listener : listeners) {
+            listener.linesUpdated(list);
+        }
+    }
 }

@@ -8,15 +8,19 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 
-public class MiniMap extends JViewport {
+public class MiniMap extends JViewport implements LineManager.LineListener, PropertyChangeListener {
 
     private MiniMapPanel miniMapPanel;
     private JScrollPane scrollPane;
     private ScrollableSourcePane.SourceJEditorPane editorPane;
     private int fontHeight;
+    private SourceDocument document;
 
     public MiniMap(JScrollPane sp, ScrollableSourcePane.SourceJEditorPane ep) {
         this.miniMapPanel = new MiniMapPanel();
@@ -51,7 +55,21 @@ public class MiniMap extends JViewport {
                 }
             }
         });
+
+        this.editorPane = ep;
+        this.editorPane.addPropertyChangeListener("document", this);
     }
+
+
+    @Override
+    public void propertyChange(PropertyChangeEvent event) {
+        if (document != null) {
+            document.getLineManager().removeLineListener(this);
+        }
+        document = (SourceDocument) event.getNewValue();
+        document.getLineManager().addLineListener(this);
+    }
+
 
     @Override
     public void setFont(Font font) {
@@ -59,6 +77,21 @@ public class MiniMap extends JViewport {
 
         FontMetrics fontMetrics = getFontMetrics(font);
         fontHeight = fontMetrics.getHeight();
+    }
+
+    @Override
+    public void linesAdded(Collection<LineManager.Line> lines) {
+        repaint(100);
+    }
+
+    @Override
+    public void linesUpdated(Collection<LineManager.Line> lines) {
+        repaint(100);
+    }
+
+    @Override
+    public void linesRemoved(Collection<LineManager.Line> lines) {
+        repaint(100);
     }
 
     class MiniMapPanel extends JPanel {

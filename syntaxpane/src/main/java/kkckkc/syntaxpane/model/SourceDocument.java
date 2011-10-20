@@ -89,4 +89,6 @@ public class SourceDocument extends PlainDocument {
     public void setTabManager(TabManager tabManager) {
         foldManager.setTabManager(tabManager);
     }
+
+
 }

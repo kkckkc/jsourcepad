@@ -5,16 +5,16 @@ import kkckkc.syntaxpane.parse.grammar.RootContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Iterator;
-import java.util.NavigableSet;
+import java.util.*;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 public abstract class LineManager implements Iterable<LineManager.Line> {
 	protected CharProvider charProvider;
 	protected NavigableSet<Line> lines = new ConcurrentSkipListSet<Line>();
 	protected int size;
+    protected List<LineListener> listeners = new ArrayList<LineListener>();
 
-	public LineManager(CharProvider charProvider) {
+    public LineManager(CharProvider charProvider) {
 		this.charProvider = charProvider;
 	}
 
@@ -44,7 +44,10 @@ public abstract class LineManager implements Iterable<LineManager.Line> {
 	}	
 
     public Iterator<Line> iterator(int start, int end) {
-        return lines.subSet(getLineByIdx(start), true, getLineByIdx(end), true).iterator();
+        Line l1 = getLineByIdx(start);
+        Line l2 = getLineByIdx(end);
+        if (l1 == null && l2 == null) return lines.iterator();
+        return lines.subSet(l1, true, l2, true).iterator();
     }
 
 	public void dumpXml(StringBuffer b) {
@@ -66,6 +69,14 @@ public abstract class LineManager implements Iterable<LineManager.Line> {
 
         Line l = new Line(-lineIdx, 0, 0);
         return lines.lower(l);
+    }
+
+    public void addLineListener(LineListener listener) {
+        this.listeners.add(listener);
+    }
+
+    public void removeLineListener(LineListener listener) {
+        this.listeners.remove(listener);
     }
 
     public class Line extends Interval {
@@ -146,5 +157,12 @@ public abstract class LineManager implements Iterable<LineManager.Line> {
                 return super.compareTo(i);
             }
         }
+    }
+
+
+    public interface LineListener {
+        public void linesAdded(Collection<Line> lines);
+        public void linesUpdated(Collection<Line> lines);
+        public void linesRemoved(Collection<Line> lines);
     }
 }

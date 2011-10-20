@@ -51,6 +51,7 @@ public class Parser {
 			line = lineManager.getLineByPosition(start);
 		} else {
 			line = lineManager.getLineByPosition(start);
+            lineManager.intervalUpdated(new Interval(start, end));
             foldManager.linesUpdated(line, lineManager.getLineByPosition(end));
 		}
 
