@@ -21,6 +21,7 @@ public class ScrollableSourcePane extends JPanel {
 	private StyleScheme styleScheme;
 	private LineNumberMargin lineNumberPane;
 	private FoldMargin foldMargin;
+    private MiniMap miniMap;
 	private Color origBackground;
 
     private boolean lineNumbers;
@@ -46,8 +47,8 @@ public class ScrollableSourcePane extends JPanel {
 		
 		scrollPane = new JScrollPane(editorPane);
 
-        final MiniMap mm = new MiniMap(scrollPane, editorPane);
-        add(mm, BorderLayout.EAST);
+        miniMap = new MiniMap(scrollPane, editorPane);
+        add(miniMap, BorderLayout.EAST);
 
 		rowHeaderPane = new JPanel();
 		rowHeaderPane.setLayout(new BorderLayout());
@@ -106,6 +107,7 @@ public class ScrollableSourcePane extends JPanel {
 		boolean styleSchemeChanged = this.styleScheme != null;
 		this.styleScheme = styleScheme;
 
+
         setBackground(this.styleScheme.getTextStyle().getBackground());
         setForeground(this.styleScheme.getTextStyle().getColor());
 		
@@ -122,6 +124,10 @@ public class ScrollableSourcePane extends JPanel {
 		foldMargin.setForeground(this.styleScheme.getLineNumberStyle().getColor());
 		foldMargin.setBorderColor(this.styleScheme.getLineNumberStyle().getBorder());
         foldMargin.setTextAreaBackground(this.styleScheme.getTextStyle().getBackground());
+
+        miniMap.setBackground(this.styleScheme.getTextStyle().getBackground());
+        miniMap.setForeground(this.styleScheme.getTextStyle().getColor());
+		miniMap.setHighlightColor(this.styleScheme.getLineNumberStyle().getBackground());
 
         editorPane.setStyleScheme(styleScheme);
 

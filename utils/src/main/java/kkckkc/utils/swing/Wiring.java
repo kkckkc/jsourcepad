@@ -46,6 +46,7 @@ public class Wiring {
             try {
                 for (PropertyDescriptor pd : beanInfo.getPropertyDescriptors()) {
                     if (pd.getName().equals(name)) {
+                        pd.getWriteMethod().setAccessible(true);
                         pd.getWriteMethod().invoke(target, value);
                         return;
                     }
