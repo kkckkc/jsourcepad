@@ -188,7 +188,9 @@ class MiniMapPanel extends JPanel implements LineManager.LineListener, PropertyC
     @Override
     public void propertyChange(PropertyChangeEvent event) {
         if (document != null) {
-            document.getLineManager().removeLineListener(this);
+            if (document.getLineManager() != null) {
+                document.getLineManager().removeLineListener(this);
+            }
         }
         document = (SourceDocument) event.getNewValue();
         document.getLineManager().addLineListener(this);
@@ -201,20 +203,21 @@ class MiniMapPanel extends JPanel implements LineManager.LineListener, PropertyC
 
     @Override
     public void linesAdded(java.util.List<LineManager.Line> lines) {
-        repaint(REPAINT_DELAY, 0, lines.get(0).getIdx() * PIXELS_PER_LINE - 1,
-                getWidth(), getHeight());
+        int start = lines.get(0).getIdx() * PIXELS_PER_LINE - 1;
+        repaint(REPAINT_DELAY, 0, start, getWidth(), getHeight());
     }
 
     @Override
     public void linesUpdated(java.util.List<LineManager.Line> lines) {
-        repaint(REPAINT_DELAY, 0, lines.get(0).getIdx() * PIXELS_PER_LINE - 1,
-                getTabWidth(), lines.get(lines.size() - 1).getIdx() * PIXELS_PER_LINE + 1);
+        int start = lines.get(0).getIdx() * PIXELS_PER_LINE - 1;
+        int end = lines.get(lines.size() - 1).getIdx() * PIXELS_PER_LINE + 1;
+        repaint(REPAINT_DELAY, 0, start, getWidth(), end - start);
     }
 
     @Override
     public void linesRemoved(java.util.List<LineManager.Line> lines) {
-        repaint(REPAINT_DELAY, 0, lines.get(0).getIdx() * PIXELS_PER_LINE - 1,
-                getWidth(), getHeight());
+        int start = lines.get(0).getIdx() * PIXELS_PER_LINE - 1;
+        repaint(REPAINT_DELAY, 0, start, getWidth(), getHeight());
     }
 
     public void setHighlightColor(Color highlightColor) {
