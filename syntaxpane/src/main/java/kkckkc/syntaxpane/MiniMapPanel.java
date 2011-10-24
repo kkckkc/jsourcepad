@@ -1,9 +1,8 @@
 package kkckkc.syntaxpane;
 
-import kkckkc.syntaxpane.model.FoldManager;
-import kkckkc.syntaxpane.model.LineManager;
-import kkckkc.syntaxpane.model.MutableFoldManager;
-import kkckkc.syntaxpane.model.SourceDocument;
+import kkckkc.syntaxpane.model.*;
+import kkckkc.syntaxpane.style.ScopeSelectorManager;
+import kkckkc.syntaxpane.style.TextStyle;
 import kkckkc.utils.swing.ColorUtils;
 import kkckkc.utils.swing.Wiring;
 
@@ -21,7 +20,6 @@ import java.util.StringTokenizer;
 
 // TODO:
 //  - Enable / disable
-//  - Colors
 class MiniMapPanel extends JPanel implements LineManager.LineListener, PropertyChangeListener {
     private static final int PIXELS_PER_LINE = 2;
     private static final int LEFT_COLUMN = 3;
@@ -33,6 +31,7 @@ class MiniMapPanel extends JPanel implements LineManager.LineListener, PropertyC
     private ScrollableSourcePane.SourceJEditorPane editorPane;
     private JViewport viewPort;
     private SourceDocument document;
+    private ScopeSelectorManager scopeSelectorManager = new ScopeSelectorManager();
 
     // Properties
     private Color highlightColor;
@@ -131,22 +130,98 @@ class MiniMapPanel extends JPanel implements LineManager.LineListener, PropertyC
                 continue;
             }
 
-            int start = LEFT_COLUMN;
-            StringTokenizer tok = new StringTokenizer(l.getCharSequence(false).toString(), WHITESPACE, true);
-            while (tok.hasMoreTokens()) {
-                String item = tok.nextToken();
-                if (item.equals("\t")) {
-                    start += getTabWidth();
-                } else if (item.equals(" ")) {
-                    start++;
-                } else {
-                    g2.drawLine(start, y, start + item.length() - 1, (int) y);
-                    start += item.length();
-                }
-            }
+            paintLine(g2, y, l);
 
             y += PIXELS_PER_LINE;
         }
+    }
+
+    private void paintLine(Graphics2D g2, int y, LineManager.Line l) {
+        paintColoredLine(g2, 0, y, 0, l.getLength(), l, l.getScope().getRoot());
+/*
+        -- Enable this if you want black and white painting
+        g2.setColor(getForeground());
+        paintLineSegment(g2, 0, y, l.getCharSequence(false).toString());
+*/
+    }
+
+    private int paintLineSegment(Graphics2D g2, int x, int y, String s) {
+        int start = x;
+        StringTokenizer tok = new StringTokenizer(s, WHITESPACE, true);
+        while (tok.hasMoreTokens()) {
+            String item = tok.nextToken();
+            if (item.equals("\t")) {
+                start += getTabWidth();
+            } else if (item.equals(" ")) {
+                start++;
+            } else {
+                g2.drawLine(LEFT_COLUMN + start, y, LEFT_COLUMN + start + item.length() - 1, y);
+                start += item.length();
+            }
+        }
+        return start;
+    }
+
+    private int paintColoredLine(Graphics2D graphics, int x, int y, int s, int e, LineManager.Line line, Scope scope) {
+        TextStyle defaultStyle = editorPane.getStyleScheme().getTextStyle();
+        TextStyle style = null;
+
+        if (! scope.hasChildren()) {
+            int f = Math.max(scope.getStart(), s);
+            int t = Math.min(scope.getEnd(), e);
+            if (f < t) {
+                style = getStyleForScope(scope);
+                x = paintScopeSegment(style, defaultStyle, graphics, x, y, line, f, t);
+            }
+        } else {
+            int o = scope.getStart();
+            for (Scope c : scope.getChildren()) {
+                if (c.getStart() > o) {
+                    int f = Math.max(o, s);
+                    int t = Math.min(c.getStart(), e);
+
+                    if (f < t) {
+                        if (style == null) style = getStyleForScope(scope);
+                        x = paintScopeSegment(style, defaultStyle, graphics, x, y, line, f, t);
+                    }
+                }
+
+                x = paintColoredLine(graphics, x, y, s, e, line, c);
+                o = c.getEnd();
+            }
+
+            // Draw tail
+            int end = Math.min(scope.getEnd(), e);
+            int start = scope.getLastChild().getEnd();
+
+            if (end > start) {
+                int f = Math.max(start, s);
+                int t = Math.min(end, e);
+                if (f < t) {
+                    if (style == null) style = getStyleForScope(scope);
+                    x = paintScopeSegment(style, defaultStyle, graphics, x, y, line, f, t);
+                }
+            }
+        }
+
+        return x;
+    }
+
+    private TextStyle getStyleForScope(Scope scope) {
+        TextStyle style = scopeSelectorManager.getMatch(scope, editorPane.getStyleScheme().getStyles());
+
+        if (style == null) {
+            style = editorPane.getStyleScheme().getTextStyle();
+        }
+        return style;
+    }
+
+    private int paintScopeSegment(TextStyle style, TextStyle defaultStyle, Graphics2D g2, int x, int y, LineManager.Line line, int f, int t) {
+        Color c = style == null ? defaultStyle.getColor() : style.getColor();
+        if (c == null) c = defaultStyle.getColor();
+
+        g2.setColor(c);
+        return paintLineSegment(g2, x, y, line.getCharSequence(false).subSequence(f, t).toString());
     }
 
     private void paintHighlight(Graphics2D g2) {

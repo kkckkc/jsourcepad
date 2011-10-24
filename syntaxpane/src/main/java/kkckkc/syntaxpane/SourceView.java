@@ -112,12 +112,7 @@ public class SourceView extends FoldablePlainView implements ThreadedParserFacad
 			Segment segment, TabExpander tabExpander, Line line, Scope scope)
 			throws BadLocationException {
         TextStyle defaultStyle = editorKit.getSourcePane().getStyleScheme().getTextStyle();
-        TextStyle style = scopeSelectorManager.getMatch(scope, editorKit
-				.getSourcePane().getStyleScheme().getStyles());
-
-		if (style == null) {
-			style = editorKit.getSourcePane().getStyleScheme().getTextStyle();
-		}
+        TextStyle style = null;
 
         int fillRestOfLineFrom = -1;
 
@@ -126,6 +121,7 @@ public class SourceView extends FoldablePlainView implements ThreadedParserFacad
 			int t = Math.min(scope.getEnd(), e);
 			if (f < t) {
 				getText(line, segment, f, t);
+                style = getStyle(scope);
 				x = drawSegment(style, defaultStyle, graphics, x, y, segment, tabExpander);
                 if (isLineEndIncludingScope(line, scope)) fillRestOfLineFrom = x;
 			}
@@ -137,6 +133,7 @@ public class SourceView extends FoldablePlainView implements ThreadedParserFacad
 					int t = Math.min(c.getStart(), e);
 
 					if (f < t) {
+                        if (style == null) style = getStyle(scope);
 						getText(line, segment, f, t);
 						x = drawSegment(style, defaultStyle, graphics, x, y, segment, tabExpander);
                         if (isLineEndIncludingScope(line, c)) fillRestOfLineFrom = x;
@@ -155,6 +152,7 @@ public class SourceView extends FoldablePlainView implements ThreadedParserFacad
 				int f = Math.max(start, s);
 				int t = Math.min(end, e);
 				if (f < t) {
+                    if (style == null) style = getStyle(scope);
 					getText(line, segment, f, t);
 					x = drawSegment(style, defaultStyle, graphics, x, y, segment, tabExpander);
 				}
@@ -169,6 +167,16 @@ public class SourceView extends FoldablePlainView implements ThreadedParserFacad
 
 		return x;
 	}
+
+    private TextStyle getStyle(Scope scope) {
+        TextStyle style = scopeSelectorManager.getMatch(scope, editorKit
+				.getSourcePane().getStyleScheme().getStyles());
+
+        if (style == null) {
+            style = editorKit.getSourcePane().getStyleScheme().getTextStyle();
+        }
+        return style;
+    }
 
     private void fillRestOfLine(Graphics graphics, int x, int y, TextStyle style) {
         Graphics2D g2 = (Graphics2D) graphics;
