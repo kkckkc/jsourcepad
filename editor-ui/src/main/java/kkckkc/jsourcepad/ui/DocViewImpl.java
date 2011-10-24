@@ -4,7 +4,6 @@ import kkckkc.jsourcepad.model.Application;
 import kkckkc.syntaxpane.ScrollableSourcePane;
 
 import javax.swing.*;
-import javax.swing.text.PlainDocument;
 import java.awt.*;
 
 public class DocViewImpl implements DocView {
@@ -31,7 +30,7 @@ public class DocViewImpl implements DocView {
 
 	@Override
     public void updateTabSize(int tabSize) {
-		sourcePane.getDocument().putProperty(PlainDocument.tabSizeAttribute, tabSize);
+		sourcePane.updateTabSize(tabSize);
     }
 
 	@Override

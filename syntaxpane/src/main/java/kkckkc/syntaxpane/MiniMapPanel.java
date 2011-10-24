@@ -19,6 +19,9 @@ import java.beans.PropertyChangeListener;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 
+// TODO:
+//  - Enable / disable
+//  - Colors
 class MiniMapPanel extends JPanel implements LineManager.LineListener, PropertyChangeListener {
     private static final int PIXELS_PER_LINE = 2;
     private static final int LEFT_COLUMN = 3;
@@ -33,6 +36,7 @@ class MiniMapPanel extends JPanel implements LineManager.LineListener, PropertyC
 
     // Properties
     private Color highlightColor;
+    private int tabSize = 4;
 
     // State
     private boolean isDragAndDrop = false;
@@ -158,7 +162,7 @@ class MiniMapPanel extends JPanel implements LineManager.LineListener, PropertyC
     }
 
     private int getTabWidth() {
-        return 4;
+        return tabSize;
     }
 
     private LineManager getLineManager() {
@@ -230,6 +234,13 @@ class MiniMapPanel extends JPanel implements LineManager.LineListener, PropertyC
 
     @Override
     public void setUI(PanelUI ui) {
+    }
+
+    public void updateTabSize(int tabSize) {
+        if (this.tabSize != tabSize) {
+            this.tabSize = tabSize;
+            repaint();
+        }
     }
 
     private class MouseListener extends MouseAdapter {

@@ -34,4 +34,8 @@ public class MiniMap extends JViewport {
     public void setForeground(Color fg) {
         miniMapPanel.setForeground(fg);
     }
+
+    public void updateTabSize(int tabSize) {
+        miniMapPanel.updateTabSize(tabSize);
+    }
 }

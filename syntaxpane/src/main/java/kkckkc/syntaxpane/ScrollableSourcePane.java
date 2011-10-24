@@ -7,6 +7,7 @@ import kkckkc.syntaxpane.style.StyleScheme;
 import kkckkc.utils.swing.Wiring;
 
 import javax.swing.*;
+import javax.swing.text.PlainDocument;
 import java.awt.*;
 import java.io.File;
 import java.io.FileReader;
@@ -201,6 +202,11 @@ public class ScrollableSourcePane extends JPanel {
     @Override
     public boolean requestFocusInWindow() {
         return editorPane.requestFocusInWindow();
+    }
+
+    public void updateTabSize(int tabSize) {
+        getDocument().putProperty(PlainDocument.tabSizeAttribute, tabSize);
+        miniMap.updateTabSize(tabSize);
     }
 
     public static final class SourceJEditorPane extends JEditorPane {
