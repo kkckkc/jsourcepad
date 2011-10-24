@@ -138,4 +138,22 @@ public class ActionGroup extends AbstractAction {
 
         add(i, ag);
     }
+
+     public void removeAction(String actionId) {
+        BaseAction found = null;
+        for (Action a : items) {
+            if (a instanceof BaseAction) {
+                BaseAction ba = (BaseAction) a;
+                if (("action-" + actionId).equals(ba.getId())) {
+                    found = ba;
+                }
+            }
+        }
+
+        if (found != null) items.remove(found);
+
+        if (items.get(items.size() - 1) == null) {
+            items.remove(items.size() - 1);
+        }
+    }
 }

@@ -29,7 +29,7 @@ public class OsxProjectViewImpl extends ProjectViewImpl {
 			throw new RuntimeException(e);
 		}
 
-		window.topic(Window.FocusListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, new FocusListener() {
+		window.topic(Window.FocusListener.class).subscribe(DispatchStrategy.EVENT_ASYNC, new FocusListener() {
 			public void focusGained(Window window) {
 				setBackground(new Color(213, 221, 229));
 			}
