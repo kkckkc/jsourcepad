@@ -11,64 +11,6 @@
 
     <artifactId>theme-substance</artifactId>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>com.savage7.maven.plugins</groupId>
-                <artifactId>maven-external-dependency-plugin</artifactId>
-                <version>0.4</version>
-                <inherited>false</inherited>
-
-                <executions>
-                    <execution>
-                        <id>resolve-install-external-dependencies</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>resolve-external</goal>
-
-                            <goal>install-external</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>deploy-external-dependencies</id>
-                        <phase>deploy</phase>
-                        <goals>
-                            <goal>deploy-external</goal>
-                        </goals>
-                    </execution>
-                </executions>
-
-                <configuration>
-                    <artifactItems>
-                        <artifactItem>
-                            <groupId>substance</groupId>
-                            <artifactId>substance</artifactId>
-                            <version>6.1</version>
-                            <packaging>jar</packaging>
-                            <downloadUrl>
-                                https://substance.dev.java.net/files/documents/3294/149845/substance.jar
-                            </downloadUrl>
-                            <install>true</install>
-                            <force>false</force>
-                        </artifactItem>
-
-                        <artifactItem>
-                            <groupId>substance</groupId>
-                            <artifactId>trident</artifactId>
-                            <version>6.1</version>
-                            <packaging>jar</packaging>
-                            <downloadUrl>
-                                http://kenai.com/projects/trident/downloads/download/version%25201.3%2520-%2520stable%252Ftrident.jar
-                            </downloadUrl>
-                            <install>true</install>
-                            <force>false</force>
-                        </artifactItem>
-                    </artifactItems>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
     <dependencies>
         <dependency>
             <groupId>kkckkc.jsourcepad</groupId>
@@ -77,15 +19,15 @@
         </dependency>
 
         <dependency>
-            <groupId>substance</groupId>
+            <groupId>com.github.insubstantial</groupId>
             <artifactId>substance</artifactId>
-            <version>6.1</version>
+            <version>6.2</version>
         </dependency>
 
         <dependency>
-            <groupId>substance</groupId>
+            <groupId>com.github.insubstantial</groupId>
             <artifactId>trident</artifactId>
-            <version>6.1</version>
+            <version>6.2</version>
         </dependency>
     </dependencies>
 

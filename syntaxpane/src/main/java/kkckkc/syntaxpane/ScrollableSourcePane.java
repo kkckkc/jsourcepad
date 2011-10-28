@@ -37,9 +37,8 @@ public class ScrollableSourcePane extends JPanel {
 		SourceEditorKit editorKit = new SourceEditorKit(this, languageManager);
 
 		editorPane = new SourceJEditorPane();
-		editorPane.setOpaque(false);
+		editorPane.setOpaque(true);
 		editorPane.setEditorKit(editorKit);
-		editorPane.setUI(new javax.swing.plaf.basic.BasicEditorPaneUI());
 
 		Wiring.wire(this, editorPane, "font", "background", "foreground");
 		
@@ -108,15 +107,14 @@ public class ScrollableSourcePane extends JPanel {
 		boolean styleSchemeChanged = this.styleScheme != null;
 		this.styleScheme = styleScheme;
 
+        editorPane.setForcedBackground(this.styleScheme.getTextStyle().getBackground());
+        editorPane.setForcedForeground(this.styleScheme.getTextStyle().getColor());
 
-        setBackground(this.styleScheme.getTextStyle().getBackground());
-        setForeground(this.styleScheme.getTextStyle().getColor());
-		
 		editorPane.setCaretColor(this.styleScheme.getCaretColor());
 		
 		editorPane.setSelectionColor(this.styleScheme.getSelectionStyle().getBackground());
 		editorPane.setSelectedTextColor(this.styleScheme.getSelectionStyle().getColor());
-        editorPane.setOpaque(false);
+        editorPane.setOpaque(true);
 
 		lineNumberPane.setBackground(this.styleScheme.getLineNumberStyle().getBackground());
 		lineNumberPane.setForeground(this.styleScheme.getLineNumberStyle().getColor());
@@ -215,6 +213,15 @@ public class ScrollableSourcePane extends JPanel {
         private StyleScheme styleScheme;
         private int wrapColumn;
 
+        public SourceJEditorPane() {
+            super();
+            setUI(new javax.swing.plaf.basic.BasicEditorPaneUI());
+        }
+
+        @Override
+        public void updateUI() {
+        }
+
         public StyleScheme getStyleScheme() {
             return styleScheme;
         }
@@ -231,12 +238,13 @@ public class ScrollableSourcePane extends JPanel {
             this.wrapColumn = wrapColumn;
         }
 
+
         @Override
-	    public void paint(Graphics graphics) {
+	    public void paintComponent(Graphics graphics) {
 	    	Graphics2D graphics2d = (Graphics2D) graphics;
 
 	    	int wm = graphics.getFontMetrics().charWidth('m');
-	    	
+
 	    	Rectangle clip = graphics.getClipBounds();
 
             graphics2d.setColor(getStyleScheme().getTextStyle().getBackground());
@@ -251,7 +259,7 @@ public class ScrollableSourcePane extends JPanel {
             graphics2d.setColor(getStyleScheme().getRightMargin().getColor());
             graphics2d.drawLine(getWrapColumn() * wm, clip.y, getWrapColumn() * wm, clip.y + clip.height);
 
-	    	super.paint(graphics);
+	    	super.paintComponent(graphics);
 	    }
 
         private void setOverwriteMode(boolean overwriteMode) {
@@ -267,5 +275,20 @@ public class ScrollableSourcePane extends JPanel {
             super.replaceSelection(content);
         }
 
+        public void setForcedBackground(Color background) {
+            super.setBackground(background);
+        }
+
+        public void setForcedForeground(Color color) {
+            super.setForeground(color);
+        }
+
+        @Override
+        public void setBackground(Color bg) {
+        }
+
+        @Override
+        public void setForeground(Color fg) {
+        }
     }
 }
