@@ -21,7 +21,7 @@ public class OsxDocListViewImpl extends DocListViewImpl {
 		jtp.setUI(ui);
 		jtp.setBorder(BorderFactory.createEmptyBorder());
 
-		window.topic(Window.FocusListener.class).subscribe(DispatchStrategy.ASYNC_EVENT, new FocusListener() {
+		window.topic(Window.FocusListener.class).subscribe(DispatchStrategy.EVENT_ASYNC, new FocusListener() {
 			public void focusGained(Window window) {
 				ui.setFocused(true);
 				jtp.repaint();

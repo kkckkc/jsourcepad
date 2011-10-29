@@ -140,6 +140,12 @@ public class Application extends AbstractMessageBus implements MessageBus, Scope
             private synchronized void init() {
                 BundleManager bundleManager = getBundleManager();
                 Map<String, Map<ScopeSelector,Object>> preferences = bundleManager.getPreferences();
+
+                if (preferences == null) {
+                    this.inited = true;
+                    return;
+                }
+
                 Map<ScopeSelector, Object> foregrounds = preferences.get("foreground");
                 Map<ScopeSelector, Object> backgrounds = preferences.get("background");
 
