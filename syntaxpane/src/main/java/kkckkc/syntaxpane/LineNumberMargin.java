@@ -1,6 +1,7 @@
 package kkckkc.syntaxpane;
 
 import kkckkc.syntaxpane.model.FoldManager;
+import kkckkc.syntaxpane.model.LineManager;
 import kkckkc.syntaxpane.model.LineManager.Line;
 import kkckkc.syntaxpane.model.MutableFoldManager;
 import kkckkc.syntaxpane.model.MutableFoldManager.FoldListener;
@@ -13,12 +14,13 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
+import java.util.Iterator;
 
 
 public class LineNumberMargin extends JComponent implements PropertyChangeListener {
 	private static final long serialVersionUID = 1L;
 
+    private static final int UNSET = -1;
 	private final static int HEIGHT = Integer.MAX_VALUE - 1000000;
 	private final static int MARGIN = 5;
 
@@ -63,53 +65,60 @@ public class LineNumberMargin extends JComponent implements PropertyChangeListen
         fontLeading = fontMetrics.getLeading();
 	}
 
-	public int getStartOffset() {
-		return jEditorPane.getInsets().top + fontAscent;
-	}
-
 	public void paintComponent(Graphics g) {
+        LineManager lineManager = document.getLineManager();
+
 		Graphics2D graphics2d = (Graphics2D) g;
 		graphics2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
 				RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
 		graphics2d.setRenderingHint(RenderingHints.KEY_TEXT_LCD_CONTRAST, 200);
 
-		Rectangle drawHere = g.getClipBounds();
+		Rectangle clip = g.getClipBounds();
 
 		g.setColor(getBackground());
-		g.fillRect(drawHere.x, drawHere.y, drawHere.width, drawHere.height);
+		g.fillRect(clip.x, clip.y, clip.width, clip.height);
 
 		g.setColor(getForeground());
 		
-		int startPos = jEditorPane.viewToModel(new Point(drawHere.x, drawHere.y));
-		int endPos = jEditorPane.viewToModel(new Point(drawHere.x, drawHere.y + drawHere.height));
+		int startPos = jEditorPane.viewToModel(new Point(clip.x, clip.y));
+		int endPos = jEditorPane.viewToModel(new Point(clip.x, clip.y + clip.height));
 
-		Line startLine = document.getLineManager().getLineByPosition(startPos);
-		Line endLine = document.getLineManager().getLineByPosition(endPos);
+        Line startLine = lineManager.getLineByPosition(startPos);
+		Line endLine = lineManager.getLineByPosition(endPos);
 		
+        int rowWidth = getWidth();
+
         MutableFoldManager foldManager = document.getFoldManager();
-        int max = foldManager.getVisibleLineCount();
-        do {
-            FoldManager.State foldState = document.getFoldManager().getFoldState(startLine);
+
+        int visibleIndex = UNSET;
+
+        Iterator<Line> it = lineManager.iterator(startLine.getIdx(), endLine.getIdx());
+        while (it.hasNext()) {
+            startLine = it.next();
+
+            if (visibleIndex == UNSET) {
+                visibleIndex = foldManager.toVisibleIndex(startLine.getIdx());
+            }
+
+            FoldManager.State foldState = foldManager.getFoldState(startLine);
             if (foldState != FoldManager.State.FOLDED_SECOND_LINE_AND_REST) {
                 String lineNumber = String.valueOf(startLine.getIdx() + 1);
                 int stringWidth = fontMetrics.stringWidth(lineNumber);
-                int rowWidth = getSize().width;
 
-                g.drawString(lineNumber, rowWidth - stringWidth - MARGIN,
-                        ((foldManager.toVisibleIndex(startLine.getIdx()) + 1) * fontHeight) - fontLeading);
-                --max;
+                g.drawString(lineNumber, rowWidth - stringWidth - MARGIN, ((visibleIndex + 1) * fontHeight) - fontLeading);
+
+                visibleIndex++;
             }
+        }
 
-            startLine = document.getLineManager().getNext(startLine);
-        } while (startLine != null && startLine.getIdx() <= endLine.getIdx() && max > 0);
-
-        setPreferredWidth(document.getLineManager().size());
+        setPreferredWidth(lineManager.size());
 	}
  
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		document = (SourceDocument) event.getNewValue();
 
+        // TODO: This should be possible to optimize to only redraw visible section
 		document.addDocumentListener(new DocumentListener() {
 			public void removeUpdate(DocumentEvent e) {
 				repaint();

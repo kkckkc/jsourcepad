@@ -123,6 +123,7 @@ public class ScrollableSourcePane extends JPanel {
 		foldMargin.setForeground(this.styleScheme.getLineNumberStyle().getColor());
 		foldMargin.setBorderColor(this.styleScheme.getLineNumberStyle().getBorder());
         foldMargin.setTextAreaBackground(this.styleScheme.getTextStyle().getBackground());
+        foldMargin.applyColorChanges();
 
         miniMap.setBackground(this.styleScheme.getTextStyle().getBackground());
         miniMap.setForeground(this.styleScheme.getTextStyle().getColor());

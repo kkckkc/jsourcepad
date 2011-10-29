@@ -46,6 +46,7 @@ class MiniMapPanel extends JPanel implements LineManager.LineListener, PropertyC
     private int lineHeight;
 
     public MiniMapPanel(JViewport vp, JScrollPane sp, ScrollableSourcePane.SourceJEditorPane ep) {
+        setOpaque(true);
         this.scrollPane = sp;
         this.editorPane = ep;
         this.viewPort = vp;
@@ -228,7 +229,7 @@ class MiniMapPanel extends JPanel implements LineManager.LineListener, PropertyC
         Rectangle rect = highlightRectangle;
         if (rect.intersects(g2.getClipBounds())) {
             g2.setColor(highlightColor);
-            g2.fill(rect);
+            g2.fillRect(rect.x, rect.y, rect.width, rect.height);
 
             g2.setColor(ColorUtils.mix(highlightColor, getForeground(), isDragAndDrop ? 0.9 : 0.5));
             g2.drawLine(rect.x, rect.y + 1, rect.x + rect.width, rect.y + 1);
